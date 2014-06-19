@@ -1,11 +1,11 @@
-require 'chef/chef_fs/file_system/base_fs_dir'
-require 'chef/chef_fs/file_system/nonexistent_fs_object'
-require 'chef/chef_fs/file_system/memory_file'
+require 'seth/chef_fs/file_system/base_fs_dir'
+require 'seth/chef_fs/file_system/nonexistent_fs_object'
+require 'seth/chef_fs/file_system/memory_file'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
-      class MemoryDir < Chef::ChefFS::FileSystem::BaseFSDir
+      class MemoryDir < Seth::ChefFS::FileSystem::BaseFSDir
         def initialize(name, parent)
           super(name, parent)
           @children = []
@@ -14,7 +14,7 @@ class Chef
         attr_reader :children
 
         def child(name)
-          @children.select { |child| child.name == name }.first || Chef::ChefFS::FileSystem::NonexistentFSObject.new(name, self)
+          @children.select { |child| child.name == name }.first || Seth::ChefFS::FileSystem::NonexistentFSObject.new(name, self)
         end
 
         def add_child(child)

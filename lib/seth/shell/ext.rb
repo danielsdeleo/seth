@@ -17,21 +17,21 @@
 #
 
 require 'tempfile'
-require 'chef/recipe'
+require 'seth/recipe'
 require 'fileutils'
-require 'chef/dsl/platform_introspection'
-require 'chef/version'
-require 'chef/shell/shell_session'
-require 'chef/shell/model_wrapper'
-require 'chef/shell/shell_rest'
-require 'chef/json_compat'
+require 'seth/dsl/platform_introspection'
+require 'seth/version'
+require 'seth/shell/shell_session'
+require 'seth/shell/model_wrapper'
+require 'seth/shell/shell_rest'
+require 'seth/json_compat'
 
 module Shell
   module Extensions
 
     Help = Struct.new(:cmd, :desc, :explanation)
 
-    # Extensions to be included in every 'main' object in chef-shell.
+    # Extensions to be included in every 'main' object in seth-shell.
     # These objects are extended with this module.
     module ObjectCoreExtensions
 
@@ -68,7 +68,7 @@ module Shell
       def help_banner
         banner = []
         banner << ""
-        banner << "chef-shell Help"
+        banner << "seth-shell Help"
         banner << "".ljust(80, "=")
         banner << "| " + "Command".ljust(25) + "| " + "Description"
         banner << "".ljust(80, "=")
@@ -193,7 +193,7 @@ module Shell
       explain(<<-E)
 ## SUMMARY ##
   When called with no argument, +help+ prints a table of all
-  chef-shell commands. When called with an argument COMMAND, +help+
+  seth-shell commands. When called with an argument COMMAND, +help+
   prints a detailed explanation of the command if available, or the
   description if no explanation is available.
 E
@@ -207,11 +207,11 @@ E
       end
       alias :halp :help
 
-      desc "prints information about chef"
+      desc "prints information about seth"
       def version
-        puts  "This is the chef-shell.\n" +
-              " Chef Version: #{::Chef::VERSION}\n" +
-              " http://www.opscode.com/chef\n" +
+        puts  "This is the seth-shell.\n" +
+              " Seth Version: #{::Chef::VERSION}\n" +
+              " http://www.opscode.com/seth\n" +
               " http://docs.opscode.com/"
         :ucanhaz_automation
       end
@@ -229,21 +229,21 @@ E
         :attributes
       end
 
-      desc "run chef using the current recipe"
-      def run_chef
-        Chef::Log.level = :debug
+      desc "run seth using the current recipe"
+      def run_seth
+        Seth::Log.level = :debug
         session = Shell.session
-        runrun = Chef::Runner.new(session.run_context).converge
-        Chef::Log.level = :info
+        runrun = Seth::Runner.new(session.run_context).converge
+        Seth::Log.level = :info
         runrun
       end
 
-      desc "returns an object to control a paused chef run"
-      subcommands :resume       => "resume the chef run",
+      desc "returns an object to control a paused seth run"
+      subcommands :resume       => "resume the seth run",
                   :step         => "run only the next resource",
                   :skip_back    => "move back in the run list",
                   :skip_forward => "move forward in the run list"
-      def chef_run
+      def seth_run
         Shell.session.resource_collection.iterator
       end
 
@@ -310,9 +310,9 @@ E
       new_node = edit(existing_node)
 
 ## EDITOR SELECTION ##
-  chef-shell looks for an editor using the following logic
+  seth-shell looks for an editor using the following logic
   1. Looks for an EDITOR set by Shell.editor = "EDITOR"
-  2. Looks for an EDITOR configured in your chef-shell config file
+  2. Looks for an EDITOR configured in your seth-shell config file
   3. Uses the value of the EDITOR environment variable
 E
       def edit(object)
@@ -321,7 +321,7 @@ E
           return :failburger
         end
 
-        filename = "chef-shell-edit-#{object.class.name}-"
+        filename = "seth-shell-edit-#{object.class.name}-"
         if object.respond_to?(:name)
           filename += object.name
         elsif object.respond_to?(:id)
@@ -330,25 +330,25 @@ E
 
         edited_data = Tempfile.open([filename, ".js"]) do |tempfile|
           tempfile.sync = true
-          tempfile.puts Chef::JSONCompat.to_json(object)
+          tempfile.puts Seth::JSONCompat.to_json(object)
           system("#{Shell.editor.to_s} #{tempfile.path}")
           tempfile.rewind
           tempfile.read
         end
 
-        Chef::JSONCompat.from_json(edited_data)
+        Seth::JSONCompat.from_json(edited_data)
       end
 
       desc "Find and edit API clients"
       explain(<<-E)
 ## SUMMARY ##
-  +clients+ allows you to query you chef server for information about your api
+  +clients+ allows you to query you seth server for information about your api
   clients.
 
 ## LIST ALL CLIENTS ##
   To see all clients on the system, use
 
-      clients.all #=> [<Chef::ApiClient...>, ...]
+      clients.all #=> [<Seth::ApiClient...>, ...]
 
   If the output from all is too verbose, or you're only interested in a specific
   value from each of the objects, you can give a code block to +all+:
@@ -398,7 +398,7 @@ E
                   :search     => "search for API clients",
                   :transform  => "edit all api clients via a code block and save them"
       def clients
-        @clients ||= Shell::ModelWrapper.new(Chef::ApiClient, :client)
+        @clients ||= Shell::ModelWrapper.new(Seth::ApiClient, :client)
       end
 
       desc "Find and edit cookbooks"
@@ -406,18 +406,18 @@ E
                   :show       => "load a cookbook by name",
                   :transform  => "edit all cookbooks via a code block and save them"
       def cookbooks
-        @cookbooks ||= Shell::ModelWrapper.new(Chef::CookbookVersion)
+        @cookbooks ||= Shell::ModelWrapper.new(Seth::CookbookVersion)
       end
 
       desc "Find and edit nodes via the API"
       explain(<<-E)
 ## SUMMARY ##
-  +nodes+ Allows you to query your chef server for information about your nodes.
+  +nodes+ Allows you to query your seth server for information about your nodes.
 
 ## LIST ALL NODES ##
   You can list all nodes using +all+ or +list+
 
-      nodes.all #=> [<Chef::Node...>, <Chef::Node...>, ...]
+      nodes.all #=> [<Seth::Node...>, <Chef::Node...>, ...]
 
   To limit the information returned for each node, pass a code block to the +all+
   subcommand:
@@ -427,12 +427,12 @@ E
 ## SHOW ONE NODE ##
   You can show the data for a single node using the +show+ subcommand:
 
-      nodes.show("NODE_NAME") => <Chef::Node @name="NODE_NAME" ...>
+      nodes.show("NODE_NAME") => <Seth::Node @name="NODE_NAME" ...>
 
 ## SEARCH FOR NODES ##
   You can search for nodes using the +search+ or +find+ subcommands:
 
-      nodes.find(:name => "app*") #=> [<Chef::Node @name="app1.example.com" ...>, ...]
+      nodes.find(:name => "app*") #=> [<Seth::Node @name="app1.example.com" ...>, ...]
 
   Similarly to +all+, you can pass a code block to limit or transform the
   information returned:
@@ -460,13 +460,13 @@ E
                   :search     => "search for nodes",
                   :transform  => "edit all nodes via a code block and save them"
       def nodes
-        @nodes ||= Shell::ModelWrapper.new(Chef::Node)
+        @nodes ||= Shell::ModelWrapper.new(Seth::Node)
       end
 
       desc "Find and edit roles via the API"
       explain(<<-E)
 ## SUMMARY ##
-  +roles+ allows you to query and edit roles on your Chef server.
+  +roles+ allows you to query and edit roles on your Seth server.
 
 ## SUBCOMMANDS ##
   * all       (list)
@@ -482,14 +482,14 @@ E
                   :search     => "search for roles",
                   :transform  => "edit all roles via a code block and save them"
       def roles
-        @roles ||= Shell::ModelWrapper.new(Chef::Role)
+        @roles ||= Shell::ModelWrapper.new(Seth::Role)
       end
 
       desc "Find and edit +databag_name+ via the api"
       explain(<<-E)
 ## SUMMARY ##
   +databags(DATABAG_NAME)+ allows you to query and edit data bag items on your
-  Chef server. Unlike other commands for working with data on the server,
+  Seth server. Unlike other commands for working with data on the server,
   +databags+ requires the databag name as an argument, for example:
     databags(:users).all
 
@@ -515,7 +515,7 @@ E
       desc "Find and edit environments via the API"
       explain(<<-E)
 ## SUMMARY ##
-  +environments+ allows you to query and edit environments on your Chef server.
+  +environments+ allows you to query and edit environments on your Seth server.
 
 ## SUBCOMMANDS ##
   * all       (list)
@@ -531,12 +531,12 @@ E
                   :search     => "search for environments",
                   :transform  => "edit all environments via a code block and save them"
       def environments
-        @environments ||= Shell::ModelWrapper.new(Chef::Environment)
+        @environments ||= Shell::ModelWrapper.new(Seth::Environment)
       end
 
       desc "A REST Client configured to authenticate with the API"
       def api
-        @rest = Shell::ShellREST.new(Chef::Config[:chef_server_url])
+        @rest = Shell::ShellREST.new(Seth::Config[:seth_server_url])
       end
 
     end
@@ -560,8 +560,8 @@ E
       obj.instance_eval(&MainContextExtensions)
       obj.instance_eval(&RESTApiExtensions)
       obj.extend(FileUtils)
-      obj.extend(Chef::DSL::PlatformIntrospection)
-      obj.extend(Chef::DSL::DataQuery)
+      obj.extend(Seth::DSL::PlatformIntrospection)
+      obj.extend(Seth::DSL::DataQuery)
     end
 
     def self.extend_context_node(node_obj)

@@ -16,9 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-class Chef
+class Seth
   class Resource
-    class Log < Chef::Resource
+    class Log < Seth::Resource
 
       identity_attr :message
 
@@ -41,7 +41,7 @@ class Chef
       # === Parameters
       # name<String>:: Message to log
       # collection<Array>:: Collection of included recipes
-      # node<Chef::Node>:: Node where resource will be used
+      # node<Seth::Node>:: Node where resource will be used
       def initialize(name, run_context=nil)
         super
         @resource_name = :log

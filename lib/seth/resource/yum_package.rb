@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/provider/package/yum'
+require 'seth/resource/package'
+require 'seth/provider/package/yum'
 
-class Chef
+class Seth
   class Resource
-    class YumPackage < Chef::Resource::Package
+    class YumPackage < Seth::Resource::Package
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :yum_package
-        @provider = Chef::Provider::Package::Yum
+        @provider = Seth::Provider::Package::Yum
         @flush_cache = { :before => false, :after => false }
         @allow_downgrade = false
       end

@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
 
     class NodeEdit < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
-        require 'chef/knife/core/node_editor'
+        require 'seth/node'
+        require 'seth/json_compat'
+        require 'seth/knife/core/node_editor'
       end
 
       banner "knife node edit NODE (options)"
@@ -62,7 +62,7 @@ class Chef
       end
 
       def node
-        @node ||= Chef::Node.load(node_name)
+        @node ||= Seth::Node.load(node_name)
       end
 
     end

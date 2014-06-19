@@ -22,9 +22,9 @@ require 'webrick/https'
 require 'rack'
 #require 'thin'
 require 'singleton'
-require 'chef/json_compat'
+require 'seth/json_compat'
 require 'open-uri'
-require 'chef/config'
+require 'seth/config'
 
 module TinyServer
 

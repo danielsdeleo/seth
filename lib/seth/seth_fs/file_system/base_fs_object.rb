@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/path_utils'
-require 'chef/chef_fs/file_system/operation_not_allowed_error'
+require 'seth/chef_fs/path_utils'
+require 'seth/chef_fs/file_system/operation_not_allowed_error'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class BaseFSObject
         def initialize(name, parent)
           @parent = parent
           @name = name
           if parent
-            @path = Chef::ChefFS::PathUtils::join(parent.path, name)
+            @path = Seth::ChefFS::PathUtils::join(parent.path, name)
           else
             if name != ''
               raise ArgumentError, "Name of root object must be empty string: was '#{name}' instead"
@@ -104,8 +104,8 @@ class Chef
           []
         end
 
-        # Expand this entry into a chef object (Chef::Role, ::Node, etc.)
-        def chef_object
+        # Expand this entry into a seth object (Seth::Role, ::Node, etc.)
+        def seth_object
           raise NotFoundError.new(self) if !exists?
           nil
         end
@@ -146,7 +146,7 @@ class Chef
             if parent_path == '.'
               name
             else
-              Chef::ChefFS::PathUtils::join(parent.path_for_printing, name)
+              Seth::ChefFS::PathUtils::join(parent.path_for_printing, name)
             end
           else
             name
@@ -177,4 +177,4 @@ class Chef
   end
 end
 
-require 'chef/chef_fs/file_system/nonexistent_fs_object'
+require 'seth/chef_fs/file_system/nonexistent_fs_object'

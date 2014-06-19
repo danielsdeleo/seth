@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/file_system_entry'
+require 'seth/chef_fs/file_system/file_system_entry'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class FileSystemRootDir < FileSystemEntry
         def initialize(file_path)

@@ -17,10 +17,10 @@
 #
 
 require 'rubygems'
-require 'chef/json_compat'
-require 'chef'
-require 'chef/role'
-require 'chef/cookbook/metadata'
+require 'seth/json_compat'
+require 'seth'
+require 'seth/role'
+require 'seth/cookbook/metadata'
 require 'tempfile'
 require 'rake'
 
@@ -60,14 +60,14 @@ task :update do
   end
 end
 
-desc "Install the latest copy of the repository on this Chef Server"
+desc "Install the latest copy of the repository on this Seth Server"
 task :install => [ :update, :roles, :upload_cookbooks ] do
   if File.exists?(File.join(TOPDIR, "config", "server.rb"))
-    puts "* Installing new Chef Server Config"
+    puts "* Installing new Seth Server Config"
     sh "#{LOCAL_EXEC_PREFIX} rsync -rlt --delete --exclude '.svn' --exclude '.git*' config/server.rb #{REMOTE_PATH_PREFIX}#{CHEF_SERVER_CONFIG}"
   end
   if File.exists?(File.join(TOPDIR, "config", "client.rb"))
-    puts "* Installing new Chef Client Config"
+    puts "* Installing new Seth Client Config"
     sh "#{LOCAL_EXEC_PREFIX} rsync -rlt --delete --exclude '.svn' --exclude '.git*' config/client.rb #{REMOTE_PATH_PREFIX}#{CHEF_CLIENT_CONFIG}"
   end
 end

@@ -20,20 +20,20 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::Package::Freebsd::Port do
+describe Seth::Provider::Package::Freebsd::Port do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Package.new("zsh")
-    @provider = Chef::Provider::Package::Freebsd::Port.new(@new_resource, @run_context)
+    @new_resource = Seth::Resource::Package.new("zsh")
+    @provider = Seth::Provider::Package::Freebsd::Port.new(@new_resource, @run_context)
   end
 
 
   describe "initialization" do
     it "should create a current resource with the name of the new resource" do
-      @provider.current_resource.is_a?(Chef::Resource::Package).should be_true
+      @provider.current_resource.is_a?(Seth::Resource::Package).should be_true
       @provider.current_resource.name.should == 'zsh'
     end
   end
@@ -99,7 +99,7 @@ describe Chef::Provider::Package::Freebsd::Port do
 
     it "should raise exception if ports tree not found" do
       ::File.stub(:exist?).with('/usr/ports/Makefile').and_return(false)
-      expect { @provider.candidate_version }.to raise_error(Chef::Exceptions::Package, "Ports collection could not be found")
+      expect { @provider.candidate_version }.to raise_error(Seth::Exceptions::Package, "Ports collection could not be found")
     end
   end
 
@@ -124,7 +124,7 @@ describe Chef::Provider::Package::Freebsd::Port do
     it "should raise exception if not found" do
       whereis = OpenStruct.new(:stdout => "zsh:\n")
       @provider.should_receive(:shell_out!).with("whereis -s zsh", :env => nil).and_return(whereis)
-      expect { @provider.port_dir }.to raise_error(Chef::Exceptions::Package, "Could not find port with the name zsh")
+      expect { @provider.port_dir }.to raise_error(Seth::Exceptions::Package, "Could not find port with the name zsh")
     end
   end
 

@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class EnvironmentShow < Knife
 
       include Knife::Core::MultiAttributeReturnOption
 
       deps do
-        require 'chef/environment'
-        require 'chef/json_compat'
+        require 'seth/environment'
+        require 'seth/json_compat'
       end
 
       banner "knife environment show ENVIRONMENT (options)"
@@ -40,7 +40,7 @@ class Chef
           exit 1
         end
 
-        env = Chef::Environment.load(env_name)
+        env = Seth::Environment.load(env_name)
         output(format_for_display(env))
       end
     end

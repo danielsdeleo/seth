@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service do
+describe Seth::Provider::Service do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Service.new("chef")
-    @current_resource = Chef::Resource::Service.new("chef")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Service.new("seth")
+    @current_resource = Seth::Resource::Service.new("seth")
 
-    @provider = Chef::Provider::Service.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Service.new(@new_resource, @run_context)
     @provider.current_resource = @current_resource
     @provider.stub(:load_current_resource)
   end
@@ -125,7 +125,7 @@ describe Chef::Provider::Service do
     it "should raise an exception if reload isn't supported" do
       @new_resource.supports(:reload => false)
       @new_resource.stub(:reload_command).and_return(false)
-      lambda { @provider.run_action(:reload) }.should raise_error(Chef::Exceptions::UnsupportedAction)
+      lambda { @provider.run_action(:reload) }.should raise_error(Seth::Exceptions::UnsupportedAction)
     end
 
     it "should reload the service if it is running and set the resource as updated" do
@@ -144,26 +144,26 @@ describe Chef::Provider::Service do
   end
 
   it "delegates enable_service to subclasses" do
-    lambda { @provider.enable_service }.should raise_error(Chef::Exceptions::UnsupportedAction)
+    lambda { @provider.enable_service }.should raise_error(Seth::Exceptions::UnsupportedAction)
   end
 
   it "delegates disable_service to subclasses" do
-    lambda { @provider.disable_service }.should raise_error(Chef::Exceptions::UnsupportedAction)
+    lambda { @provider.disable_service }.should raise_error(Seth::Exceptions::UnsupportedAction)
   end
 
   it "delegates start_service to subclasses" do
-    lambda { @provider.start_service }.should raise_error(Chef::Exceptions::UnsupportedAction)
+    lambda { @provider.start_service }.should raise_error(Seth::Exceptions::UnsupportedAction)
   end
 
   it "delegates stop_service to subclasses" do
-    lambda { @provider.stop_service }.should raise_error(Chef::Exceptions::UnsupportedAction)
+    lambda { @provider.stop_service }.should raise_error(Seth::Exceptions::UnsupportedAction)
   end
 
   it "delegates restart_service to subclasses" do
-    lambda { @provider.restart_service }.should raise_error(Chef::Exceptions::UnsupportedAction)
+    lambda { @provider.restart_service }.should raise_error(Seth::Exceptions::UnsupportedAction)
   end
 
   it "delegates reload_service to subclasses" do
-    lambda { @provider.reload_service }.should raise_error(Chef::Exceptions::UnsupportedAction)
+    lambda { @provider.reload_service }.should raise_error(Seth::Exceptions::UnsupportedAction)
   end
 end

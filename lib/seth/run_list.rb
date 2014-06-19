@@ -19,15 +19,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/run_list/run_list_item'
-require 'chef/run_list/run_list_expansion'
-require 'chef/run_list/versioned_recipe_list'
-require 'chef/mixin/params_validate'
+require 'seth/run_list/run_list_item'
+require 'seth/run_list/run_list_expansion'
+require 'seth/run_list/versioned_recipe_list'
+require 'seth/mixin/params_validate'
 
-class Chef
+class Seth
   class RunList
     include Enumerable
-    include Chef::Mixin::ParamsValidate
+    include Seth::Mixin::ParamsValidate
 
     # @run_list_items is an array of RunListItems that describe the items to
     # execute in order. RunListItems can load from and convert to the string
@@ -70,7 +70,7 @@ class Chef
     alias :add :<<
 
     def ==(other)
-      if other.kind_of?(Chef::RunList)
+      if other.kind_of?(Seth::RunList)
         other.run_list_items == @run_list_items
       else
         return false unless other.respond_to?(:size) && (other.size == @run_list_items.size)
@@ -116,7 +116,7 @@ class Chef
     def reset!(*args)
       @run_list_items.clear
       args.flatten.each do |item|
-        if item.kind_of?(Chef::RunList)
+        if item.kind_of?(Seth::RunList)
           item.each { |r| self << r }
         else
           self << item

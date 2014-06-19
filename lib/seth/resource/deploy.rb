@@ -30,14 +30,14 @@
 #   action :deploy # or :rollback
 #   restart_command "touch tmp/restart.txt"
 #   git_ssh_wrapper "wrap-ssh4git.sh"
-#   scm_provider Chef::Provider::Git # is the default, for svn: Chef::Provider::Subversion
+#   scm_provider Seth::Provider::Git # is the default, for svn: Chef::Provider::Subversion
 #   svn_username "whoami"
 #   svn_password "supersecret"
 # end
 
-require "chef/resource/scm"
+require "seth/resource/scm"
 
-class Chef
+class Seth
   class Resource
 
     # Deploy: Deploy apps from a source control repository.
@@ -47,11 +47,11 @@ class Chef
     # is evaluated as an embedded recipe, and run at the specified
     # point in the deploy process. If given a string, the string is taken as
     # a path to a callback file/recipe. Paths are evaluated relative to the
-    # release directory. Callback files can contain chef code (resources, etc.)
+    # release directory. Callback files can contain seth code (resources, etc.)
     #
-    class Deploy < Chef::Resource
+    class Deploy < Seth::Resource
 
-      provider_base Chef::Provider::Deploy
+      provider_base Seth::Provider::Deploy
 
       identity_attr :repository
 
@@ -75,9 +75,9 @@ class Chef
         @remote = "origin"
         @enable_submodules = false
         @shallow_clone = false
-        @scm_provider = Chef::Provider::Git
+        @scm_provider = Seth::Provider::Git
         @svn_force_export = false
-        @provider = Chef::Provider::Deploy::Timestamped
+        @provider = Seth::Provider::Deploy::Timestamped
         @allowed_actions.push(:force_deploy, :deploy, :rollback)
         @additional_remotes = Hash[]
         @keep_releases = 5
@@ -292,8 +292,8 @@ class Chef
 
       def environment(arg=nil)
         if arg.is_a?(String)
-          Chef::Log.debug "Setting RAILS_ENV, RACK_ENV, and MERB_ENV to `#{arg}'"
-          Chef::Log.warn "[DEPRECATED] please modify your deploy recipe or attributes to set the environment using a hash"
+          Seth::Log.debug "Setting RAILS_ENV, RACK_ENV, and MERB_ENV to `#{arg}'"
+          Seth::Log.warn "[DEPRECATED] please modify your deploy recipe or attributes to set the environment using a hash"
           arg = {"RAILS_ENV"=>arg,"MERB_ENV"=>arg,"RACK_ENV"=>arg}
         end
         set_or_return(

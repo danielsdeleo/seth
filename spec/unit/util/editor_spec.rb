@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'chef/util/editor'
+require 'seth/util/editor'
 
-describe Chef::Util::Editor do
+describe Seth::Util::Editor do
   describe '#initialize' do
     it 'takes an Enumerable of lines' do
       editor = described_class.new(File.open(__FILE__))

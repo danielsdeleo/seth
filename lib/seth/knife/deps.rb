@@ -1,15 +1,15 @@
-require 'chef/chef_fs/knife'
+require 'seth/chef_fs/knife'
 
-class Chef
+class Seth
   class Knife
-    class Deps < Chef::ChefFS::Knife
+    class Deps < Seth::ChefFS::Knife
       banner "knife deps PATTERN1 [PATTERNn]"
 
       category "path-based"
 
       deps do
-        require 'chef/chef_fs/file_system'
-        require 'chef/run_list'
+        require 'seth/chef_fs/file_system'
+        require 'seth/run_list'
       end
 
       option :recurse,
@@ -34,10 +34,10 @@ class Chef
         end
         config[:recurse] = true if config[:recurse].nil?
 
-        @root = config[:remote] ? chef_fs : local_fs
+        @root = config[:remote] ? seth_fs : local_fs
         dependencies = {}
         pattern_args.each do |pattern|
-          Chef::ChefFS::FileSystem.list(@root, pattern).each do |entry|
+          Seth::ChefFS::FileSystem.list(@root, pattern).each do |entry|
             if config[:tree]
               print_dependencies_tree(entry, dependencies)
             else
@@ -52,7 +52,7 @@ class Chef
         if !dependencies[entry.path]
           dependencies[entry.path] = get_dependencies(entry)
           dependencies[entry.path].each do |child|
-            child_entry = Chef::ChefFS::FileSystem.resolve_path(@root, child)
+            child_entry = Seth::ChefFS::FileSystem.resolve_path(@root, child)
             print_flattened_dependencies(child_entry, dependencies)
           end
           output format_path(entry)
@@ -65,7 +65,7 @@ class Chef
         if !printed[entry.path] && (config[:recurse] || depth == 0)
           printed[entry.path] = true
           dependencies[entry.path].each do |child|
-            child_entry = Chef::ChefFS::FileSystem.resolve_path(@root, child)
+            child_entry = Seth::ChefFS::FileSystem.resolve_path(@root, child)
             print_dependencies_tree(child_entry, dependencies, printed, depth+1)
           end
         end
@@ -74,13 +74,13 @@ class Chef
       def get_dependencies(entry)
         begin
           if entry.parent && entry.parent.path == '/cookbooks'
-            return entry.chef_object.metadata.dependencies.keys.map { |cookbook| "/cookbooks/#{cookbook}" }
+            return entry.seth_object.metadata.dependencies.keys.map { |cookbook| "/cookbooks/#{cookbook}" }
 
           elsif entry.parent && entry.parent.path == '/nodes'
             node = JSON.parse(entry.read, :create_additions => false)
             result = []
-            if node['chef_environment'] && node['chef_environment'] != '_default'
-              result << "/environments/#{node['chef_environment']}.json"
+            if node['seth_environment'] && node['chef_environment'] != '_default'
+              result << "/environments/#{node['seth_environment']}.json"
             end
             if node['run_list']
               result += dependencies_from_runlist(node['run_list'])
@@ -105,12 +105,12 @@ class Chef
             result
 
           elsif !entry.exists?
-            raise Chef::ChefFS::FileSystem::NotFoundError.new(entry)
+            raise Seth::ChefFS::FileSystem::NotFoundError.new(entry)
 
           else
             []
           end
-        rescue Chef::ChefFS::FileSystem::NotFoundError => e
+        rescue Seth::ChefFS::FileSystem::NotFoundError => e
           ui.error "#{format_path(e.entry)}: No such file or directory"
           self.exit_code = 2
           []
@@ -118,9 +118,9 @@ class Chef
       end
 
       def dependencies_from_runlist(run_list)
-        chef_run_list = Chef::RunList.new
-        chef_run_list.reset!(run_list)
-        chef_run_list.map do |run_list_item|
+        seth_run_list = Seth::RunList.new
+        seth_run_list.reset!(run_list)
+        seth_run_list.map do |run_list_item|
           case run_list_item.type
           when :role
             "/roles/#{run_list_item.name}.json"

@@ -20,7 +20,7 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::User::Useradd do
+describe Seth::Provider::User::Useradd do
 
   subject(:provider) do
     p = described_class.new(@new_resource, @run_context)
@@ -39,7 +39,7 @@ describe Chef::Provider::User::Useradd do
   include_examples "a useradd-based user provider", supported_useradd_options
 
   describe "manage_user" do
-    # CHEF-5247: Chef::Provider::User::Solaris subclasses Chef::Provider::User::Useradd, but does not use usermod to change passwords.
+    # CHEF-5247: Seth::Provider::User::Solaris subclasses Chef::Provider::User::Useradd, but does not use usermod to change passwords.
     # Thus, a call to Solaris#manage_user calls Solaris#manage_password and Useradd#manage_user, but the latter should be a no-op.
     it "should not run the command if universal_options is an empty array" do
       provider.stub(:universal_options).and_return([])

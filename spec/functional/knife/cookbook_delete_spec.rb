@@ -19,20 +19,20 @@
 require 'spec_helper'
 require 'tiny_server'
 
-describe Chef::Knife::CookbookDelete do
+describe Seth::Knife::CookbookDelete do
   before(:all) do
     @server = TinyServer::Manager.new
     @server.start
   end
 
   before(:each) do
-    @knife = Chef::Knife::CookbookDelete.new
+    @knife = Seth::Knife::CookbookDelete.new
     @api = TinyServer::API.instance
     @api.clear
 
-    Chef::Config[:node_name] = nil
-    Chef::Config[:client_key] = nil
-    Chef::Config[:chef_server_url] = 'http://localhost:9000'
+    Seth::Config[:node_name] = nil
+    Seth::Config[:client_key] = nil
+    Seth::Config[:seth_server_url] = 'http://localhost:9000'
   end
 
   after(:all) do
@@ -43,8 +43,8 @@ describe Chef::Knife::CookbookDelete do
     before do
       @log_output = StringIO.new
 
-      Chef::Log.logger = Logger.new(@log_output)
-      Chef::Log.level = :debug
+      Seth::Log.logger = Logger.new(@log_output)
+      Seth::Log.level = :debug
 
       @knife.name_args = %w{no-such-cookbook}
       @api.get("/cookbooks/no-such-cookbook", 404, {'error'=>'dear Tim, no. -Sent from my iPad'}.to_json)

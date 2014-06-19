@@ -16,40 +16,40 @@
 # limitations under the License.
 #
 #
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/resource/package'
-require 'chef/mixin/get_source_from_package'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/resource/package'
+require 'seth/mixin/get_source_from_package'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Aix < Chef::Provider::Package
+      class Aix < Seth::Provider::Package
 
-        include Chef::Mixin::GetSourceFromPackage
+        include Seth::Mixin::GetSourceFromPackage
 
         def define_resource_requirements
           super
           requirements.assert(:install) do |a|
             a.assertion { @new_resource.source }
-            a.failure_message Chef::Exceptions::Package, "Source for package #{@new_resource.name} required for action install"
+            a.failure_message Seth::Exceptions::Package, "Source for package #{@new_resource.name} required for action install"
           end
           requirements.assert(:all_actions) do |a|
             a.assertion { !@new_resource.source || @package_source_found }
-            a.failure_message Chef::Exceptions::Package, "Package #{@new_resource.name} not found: #{@new_resource.source}"
+            a.failure_message Seth::Exceptions::Package, "Package #{@new_resource.name} not found: #{@new_resource.source}"
             a.whyrun "would assume #{@new_resource.source} would be have previously been made available"
           end
         end
 
         def load_current_resource
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
           @new_resource.version(nil)
 
           if @new_resource.source
             @package_source_found = ::File.exists?(@new_resource.source)
             if @package_source_found
-              Chef::Log.debug("#{@new_resource} checking pkg status")
+              Seth::Log.debug("#{@new_resource} checking pkg status")
               status = popen4("installp -L -d #{@new_resource.source}") do |pid, stdin, stdout, stderr|
                 package_found = false
                 stdout.each do |line|
@@ -64,20 +64,20 @@ class Chef
             end
           end
 
-          Chef::Log.debug("#{@new_resource} checking install state")
+          Seth::Log.debug("#{@new_resource} checking install state")
           status = popen4("lslpp -lcq #{@current_resource.package_name}") do |pid, stdin, stdout, stderr|
             stdout.each do |line|
               case line
               when /#{@current_resource.package_name}/
                 fields = line.split(":")
-                Chef::Log.debug("#{@new_resource} version #{fields[2]} is already installed")
+                Seth::Log.debug("#{@new_resource} version #{fields[2]} is already installed")
                 @current_resource.version(fields[2])
               end
             end
           end
 
           unless status.exitstatus == 0 || status.exitstatus == 1
-            raise Chef::Exceptions::Package, "lslpp failed - #{status.inspect}!"
+            raise Seth::Exceptions::Package, "lslpp failed - #{status.inspect}!"
           end
 
           @current_resource
@@ -92,12 +92,12 @@ class Chef
                 fields = line.split(":")
                 @candidate_version = fields[2]
                 @new_resource.version(fields[2])
-                Chef::Log.debug("#{@new_resource} setting install candidate version to #{@candidate_version}")
+                Seth::Log.debug("#{@new_resource} setting install candidate version to #{@candidate_version}")
               end
             end
           end
           unless status.exitstatus == 0
-            raise Chef::Exceptions::Package, "installp -L -d #{@new_resource.source} - #{status.inspect}!"
+            raise Seth::Exceptions::Package, "installp -L -d #{@new_resource.source} - #{status.inspect}!"
           end
           @candidate_version
         end
@@ -110,17 +110,17 @@ class Chef
         # So far, the code has been tested only with standalone packages.
         #
         def install_package(name, version)
-          Chef::Log.debug("#{@new_resource} package install options: #{@new_resource.options}")
+          Seth::Log.debug("#{@new_resource} package install options: #{@new_resource.options}")
           if @new_resource.options.nil?
             run_command_with_systems_locale(
                     :command => "installp -aYF -d #{@new_resource.source} #{@new_resource.package_name}"
                   )
-            Chef::Log.debug("#{@new_resource} installed version #{@new_resource.version} from: #{@new_resource.source}")
+            Seth::Log.debug("#{@new_resource} installed version #{@new_resource.version} from: #{@new_resource.source}")
           else
             run_command_with_systems_locale(
               :command => "installp -aYF #{expand_options(@new_resource.options)} -d #{@new_resource.source} #{@new_resource.package_name}"
             )
-            Chef::Log.debug("#{@new_resource} installed version #{@new_resource.version} from: #{@new_resource.source}")
+            Seth::Log.debug("#{@new_resource} installed version #{@new_resource.version} from: #{@new_resource.source}")
           end
         end
 
@@ -131,12 +131,12 @@ class Chef
             run_command_with_systems_locale(
                     :command => "installp -u #{name}"
                   )
-            Chef::Log.debug("#{@new_resource} removed version #{@new_resource.version}")
+            Seth::Log.debug("#{@new_resource} removed version #{@new_resource.version}")
           else
             run_command_with_systems_locale(
               :command => "installp -u #{expand_options(@new_resource.options)} #{name}"
             )
-            Chef::Log.debug("#{@new_resource} removed version #{@new_resource.version}")
+            Seth::Log.debug("#{@new_resource} removed version #{@new_resource.version}")
           end
         end
 

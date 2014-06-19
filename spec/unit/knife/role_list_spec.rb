@@ -18,26 +18,26 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::RoleList do
+describe Seth::Knife::RoleList do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::RoleList.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::RoleList.new
     @knife.stub(:output).and_return(true)
     @list = {
       "foo" => "http://example.com/foo",
       "bar" => "http://example.com/foo"
     }
-    Chef::Role.stub(:list).and_return(@list)
+    Seth::Role.stub(:list).and_return(@list)
   end
 
   describe "run" do
     it "should list the roles" do
-      Chef::Role.should_receive(:list).and_return(@list)
+      Seth::Role.should_receive(:list).and_return(@list)
       @knife.run
     end
 
     it "should pretty print the list" do
-      Chef::Role.should_receive(:list).and_return(@list)
+      Seth::Role.should_receive(:list).and_return(@list)
       @knife.should_receive(:output).with([ "bar", "foo" ])
       @knife.run
     end
@@ -45,7 +45,7 @@ describe Chef::Knife::RoleList do
     describe "with -w or --with-uri" do
       it "should pretty print the hash" do
         @knife.config[:with_uri] = true
-        Chef::Role.should_receive(:list).and_return(@list)
+        Seth::Role.should_receive(:list).and_return(@list)
         @knife.should_receive(:output).with(@list)
         @knife.run
       end

@@ -1,7 +1,7 @@
 #
-# Author:: Joshua Timberman (<joshua@getchef.com>)
-# Author:: Lamont Granquist (<lamont@getchef.com>)
-# Copyright:: Copyright (c) 2008-2014 Chef Software, Inc.
+# Author:: Joshua Timberman (<joshua@getseth.com>)
+# Author:: Lamont Granquist (<lamont@getseth.com>)
+# Copyright:: Copyright (c) 2008-2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,16 +19,16 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Mount do
+describe Seth::Provider::Mount do
 
-  let(:node) { Chef::Node.new }
+  let(:node) { Seth::Node.new }
 
-  let(:events) { Chef::EventDispatch::Dispatcher.new }
+  let(:events) { Seth::EventDispatch::Dispatcher.new }
 
-  let(:run_context) { Chef::RunContext.new(node, {}, events) }
+  let(:run_context) { Seth::RunContext.new(node, {}, events) }
 
   let(:new_resource) do
-    new_resource = Chef::Resource::Mount.new('/tmp/foo')
+    new_resource = Seth::Resource::Mount.new('/tmp/foo')
     new_resource.device      "/dev/sdz1"
     new_resource.name        "/tmp/foo"
     new_resource.mount_point "/tmp/foo"
@@ -38,7 +38,7 @@ describe Chef::Provider::Mount do
 
   let(:current_resource) do
     # this abstract superclass has no load_current_resource to call
-    current_resource = Chef::Resource::Mount.new('/tmp/foo')
+    current_resource = Seth::Resource::Mount.new('/tmp/foo')
     current_resource.device      "/dev/sdz1"
     current_resource.name        "/tmp/foo"
     current_resource.mount_point "/tmp/foo"
@@ -47,7 +47,7 @@ describe Chef::Provider::Mount do
   end
 
   let(:provider) do
-    provider = Chef::Provider::Mount.new(new_resource, run_context)
+    provider = Seth::Provider::Mount.new(new_resource, run_context)
     provider.current_resource = current_resource
     provider
   end
@@ -124,7 +124,7 @@ describe Chef::Provider::Mount do
       provider.unmount_retries = 1
       expect(provider).to receive(:umount_fs)
       expect(provider).to receive(:mounted?).and_return(true, true)
-      expect{ provider.run_action(:remount) }.to raise_error(Chef::Exceptions::Mount)
+      expect{ provider.run_action(:remount) }.to raise_error(Seth::Exceptions::Mount)
     end
   end
 
@@ -172,22 +172,22 @@ describe Chef::Provider::Mount do
 
 
   it "should delegates the mount implementation to subclasses" do
-    expect { provider.mount_fs }.to raise_error(Chef::Exceptions::UnsupportedAction)
+    expect { provider.mount_fs }.to raise_error(Seth::Exceptions::UnsupportedAction)
   end
 
   it "should delegates the umount implementation to subclasses" do
-    expect { provider.umount_fs }.to raise_error(Chef::Exceptions::UnsupportedAction)
+    expect { provider.umount_fs }.to raise_error(Seth::Exceptions::UnsupportedAction)
   end
 
   it "should delegates the remount implementation to subclasses" do
-    expect { provider.remount_fs }.to raise_error(Chef::Exceptions::UnsupportedAction)
+    expect { provider.remount_fs }.to raise_error(Seth::Exceptions::UnsupportedAction)
   end
 
   it "should delegates the enable implementation to subclasses" do
-    expect { provider.enable_fs }.to raise_error(Chef::Exceptions::UnsupportedAction)
+    expect { provider.enable_fs }.to raise_error(Seth::Exceptions::UnsupportedAction)
   end
 
   it "should delegates the disable implementation to subclasses" do
-    expect { provider.disable_fs }.to raise_error(Chef::Exceptions::UnsupportedAction)
+    expect { provider.disable_fs }.to raise_error(Seth::Exceptions::UnsupportedAction)
   end
 end

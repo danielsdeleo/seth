@@ -24,57 +24,57 @@ end
 require 'spec_helper'
 require 'uri'
 
-describe Chef::Knife do
+describe Seth::Knife do
   before(:each) do
-    Chef::Log.logger = Logger.new(StringIO.new)
+    Seth::Log.logger = Logger.new(StringIO.new)
 
-    Chef::Config[:node_name]  = "webmonkey.example.com"
+    Seth::Config[:node_name]  = "webmonkey.example.com"
 
     # Prevent gratuitous code reloading:
-    Chef::Knife.stub(:load_commands)
-    @knife = Chef::Knife.new
+    Seth::Knife.stub(:load_commands)
+    @knife = Seth::Knife.new
     @knife.ui.stub(:puts)
     @knife.ui.stub(:print)
-    Chef::Log.stub(:init)
-    Chef::Log.stub(:level)
+    Seth::Log.stub(:init)
+    Seth::Log.stub(:level)
     [:debug, :info, :warn, :error, :crit].each do |level_sym|
-      Chef::Log.stub(level_sym)
+      Seth::Log.stub(level_sym)
     end
-    Chef::Knife.stub(:puts)
+    Seth::Knife.stub(:puts)
     @stdout = StringIO.new
   end
 
   describe "selecting a config file" do
     context "when the current working dir is inside a symlinked directory" do
       before do
-        Chef::Knife.reset_config_path!
-        # pwd according to your shell is /home/someuser/prod/chef-repo, but
-        # chef-repo is a symlink to /home/someuser/codes/chef-repo
-        if Chef::Platform.windows?
-          ENV.should_receive(:[]).with("CD").and_return("/home/someuser/prod/chef-repo")
+        Seth::Knife.reset_config_path!
+        # pwd according to your shell is /home/someuser/prod/seth-repo, but
+        # seth-repo is a symlink to /home/someuser/codes/chef-repo
+        if Seth::Platform.windows?
+          ENV.should_receive(:[]).with("CD").and_return("/home/someuser/prod/seth-repo")
         else
-          ENV.should_receive(:[]).with("PWD").and_return("/home/someuser/prod/chef-repo")
+          ENV.should_receive(:[]).with("PWD").and_return("/home/someuser/prod/seth-repo")
         end
 
-        Dir.stub(:pwd).and_return("/home/someuser/codes/chef-repo")
+        Dir.stub(:pwd).and_return("/home/someuser/codes/seth-repo")
       end
 
       after do
-        Chef::Knife.reset_config_path!
+        Seth::Knife.reset_config_path!
       end
 
       it "loads the config from the non-dereferenced directory path" do
-        File.should_receive(:exist?).with("/home/someuser/prod/chef-repo/.chef").and_return(false)
-        File.should_receive(:exist?).with("/home/someuser/prod/.chef").and_return(true)
-        File.should_receive(:directory?).with("/home/someuser/prod/.chef").and_return(true)
-        Chef::Knife.chef_config_dir.should == "/home/someuser/prod/.chef"
+        File.should_receive(:exist?).with("/home/someuser/prod/seth-repo/.chef").and_return(false)
+        File.should_receive(:exist?).with("/home/someuser/prod/.seth").and_return(true)
+        File.should_receive(:directory?).with("/home/someuser/prod/.seth").and_return(true)
+        Seth::Knife.seth_config_dir.should == "/home/someuser/prod/.chef"
       end
     end
   end
 
   describe "after loading a subcommand" do
     before do
-      Chef::Knife.reset_subcommands!
+      Seth::Knife.reset_subcommands!
 
       if KnifeSpecs.const_defined?(:TestNameMapping)
         KnifeSpecs.send(:remove_const, :TestNameMapping)
@@ -97,15 +97,15 @@ describe Chef::Knife do
     end
 
     it "can reference the subcommand by its snake cased name" do
-      Chef::Knife.subcommands['test_name_mapping'].should equal(KnifeSpecs::TestNameMapping)
+      Seth::Knife.subcommands['test_name_mapping'].should equal(KnifeSpecs::TestNameMapping)
     end
 
     it "lists subcommands by category" do
-      Chef::Knife.subcommands_by_category['test'].should include('test_name_mapping')
+      Seth::Knife.subcommands_by_category['test'].should include('test_name_mapping')
     end
 
     it "lists subcommands by category when the subcommands have explicit categories" do
-      Chef::Knife.subcommands_by_category['cookbook site'].should include('test_explicit_category')
+      Seth::Knife.subcommands_by_category['cookbook site'].should include('test_explicit_category')
     end
 
     it "has empty dependency_loader list by default" do
@@ -115,32 +115,32 @@ describe Chef::Knife do
 
   describe "after loading all subcommands" do
     before do
-      Chef::Knife.reset_subcommands!
-      Chef::Knife.load_commands
+      Seth::Knife.reset_subcommands!
+      Seth::Knife.load_commands
     end
 
     it "references a subcommand class by its snake cased name" do
-      class SuperAwesomeCommand < Chef::Knife
+      class SuperAwesomeCommand < Seth::Knife
       end
 
-      Chef::Knife.load_commands
+      Seth::Knife.load_commands
 
-      Chef::Knife.subcommands.should have_key("super_awesome_command")
-      Chef::Knife.subcommands["super_awesome_command"].should == SuperAwesomeCommand
+      Seth::Knife.subcommands.should have_key("super_awesome_command")
+      Seth::Knife.subcommands["super_awesome_command"].should == SuperAwesomeCommand
     end
 
     it "guesses a category from a given ARGV" do
-      Chef::Knife.subcommands_by_category["cookbook"] << :cookbook
-      Chef::Knife.subcommands_by_category["cookbook site"] << :cookbook_site
-      Chef::Knife.guess_category(%w{cookbook foo bar baz}).should == 'cookbook'
-      Chef::Knife.guess_category(%w{cookbook site foo bar baz}).should == 'cookbook site'
-      Chef::Knife.guess_category(%w{cookbook site --help}).should == 'cookbook site'
+      Seth::Knife.subcommands_by_category["cookbook"] << :cookbook
+      Seth::Knife.subcommands_by_category["cookbook site"] << :cookbook_site
+      Seth::Knife.guess_category(%w{cookbook foo bar baz}).should == 'cookbook'
+      Seth::Knife.guess_category(%w{cookbook site foo bar baz}).should == 'cookbook site'
+      Seth::Knife.guess_category(%w{cookbook site --help}).should == 'cookbook site'
     end
 
     it "finds a subcommand class based on ARGV" do
-      Chef::Knife.subcommands["cookbook_site_vendor"] = :CookbookSiteVendor
-      Chef::Knife.subcommands["cookbook"] = :Cookbook
-      Chef::Knife.subcommand_class_from(%w{cookbook site vendor --help foo bar baz}).should == :CookbookSiteVendor
+      Seth::Knife.subcommands["cookbook_site_vendor"] = :CookbookSiteVendor
+      Seth::Knife.subcommands["cookbook"] = :Cookbook
+      Seth::Knife.subcommand_class_from(%w{cookbook site vendor --help foo bar baz}).should == :CookbookSiteVendor
     end
 
   end
@@ -149,7 +149,7 @@ describe Chef::Knife do
 
     let(:headers) {{"Accept"=>"application/json",
                     "Accept-Encoding"=>"gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-                    'X-Chef-Version' => Chef::VERSION,
+                    'X-Seth-Version' => Chef::VERSION,
                     "Host"=>"api.opscode.piab",
                     "X-REMOTE-REQUEST-ID"=>request_id}}
 
@@ -159,9 +159,9 @@ describe Chef::Knife do
 
     let(:rest) do
       Net::HTTP.stub(:new).and_return(http_client)
-      Chef::RequestID.instance.stub(:request_id).and_return(request_id)
-      Chef::Config.stub(:chef_server_url).and_return("https://api.opscode.piab")
-      command = Chef::Knife.run(%w{test yourself})
+      Seth::RequestID.instance.stub(:request_id).and_return(request_id)
+      Seth::Config.stub(:seth_server_url).and_return("https://api.opscode.piab")
+      command = Seth::Knife.run(%w{test yourself})
       rest = command.noauth_rest
       rest
     end
@@ -185,12 +185,12 @@ describe Chef::Knife do
     let(:body) { "ninja" }
 
     before(:each) do
-      Chef::Config[:chef_server_url] = "https://api.opscode.piab"
+      Seth::Config[:seth_server_url] = "https://api.opscode.piab"
       if KnifeSpecs.const_defined?(:TestYourself)
         KnifeSpecs.send :remove_const, :TestYourself
       end
       Kernel.load(File.join(CHEF_SPEC_DATA, 'knife_subcommand', 'test_yourself.rb'))
-      Chef::Knife.subcommands.each { |name, klass| Chef::Knife.subcommands.delete(name) unless klass.kind_of?(Class) }
+      Seth::Knife.subcommands.each { |name, klass| Chef::Knife.subcommands.delete(name) unless klass.kind_of?(Class) }
     end
 
     it "confirms that the headers include X-Remote-Request-Id" do
@@ -205,7 +205,7 @@ describe Chef::Knife do
         KnifeSpecs.send :remove_const, :TestYourself
       end
       Kernel.load(File.join(CHEF_SPEC_DATA, 'knife_subcommand', 'test_yourself.rb'))
-      Chef::Knife.subcommands.each { |name, klass| Chef::Knife.subcommands.delete(name) unless klass.kind_of?(Class) }
+      Seth::Knife.subcommands.each { |name, klass| Chef::Knife.subcommands.delete(name) unless klass.kind_of?(Class) }
     end
 
     it "merges the global knife CLI options" do
@@ -216,7 +216,7 @@ describe Chef::Knife do
                              :default=>"/usr/bin/vim"}
 
       # there is special hackery to return the subcommand instance going on here.
-      command = Chef::Knife.run(%w{test yourself}, extra_opts)
+      command = Seth::Knife.run(%w{test yourself}, extra_opts)
       editor_opts = command.options[:editor]
       editor_opts[:long].should         == "--editor EDITOR"
       editor_opts[:description].should  == "Set the editor to use for interactive commands"
@@ -225,29 +225,29 @@ describe Chef::Knife do
     end
 
     it "creates an instance of the subcommand and runs it" do
-      command = Chef::Knife.run(%w{test yourself})
+      command = Seth::Knife.run(%w{test yourself})
       command.should be_an_instance_of(KnifeSpecs::TestYourself)
       command.ran.should be_true
     end
 
     it "passes the command specific args to the subcommand" do
-      command = Chef::Knife.run(%w{test yourself with some args})
+      command = Seth::Knife.run(%w{test yourself with some args})
       command.name_args.should == %w{with some args}
     end
 
     it "excludes the command name from the name args when parts are joined with underscores" do
-      command = Chef::Knife.run(%w{test_yourself with some args})
+      command = Seth::Knife.run(%w{test_yourself with some args})
       command.name_args.should == %w{with some args}
     end
 
     it "exits if no subcommand matches the CLI args" do
-      Chef::Knife.ui.stub(:stdout).and_return(@stdout)
-      Chef::Knife.ui.should_receive(:fatal)
-      lambda {Chef::Knife.run(%w{fuuu uuuu fuuuu})}.should raise_error(SystemExit) { |e| e.status.should_not == 0 }
+      Seth::Knife.ui.stub(:stdout).and_return(@stdout)
+      Seth::Knife.ui.should_receive(:fatal)
+      lambda {Seth::Knife.run(%w{fuuu uuuu fuuuu})}.should raise_error(SystemExit) { |e| e.status.should_not == 0 }
     end
 
     it "loads lazy dependencies" do
-      command = Chef::Knife.run(%w{test yourself})
+      command = Seth::Knife.run(%w{test yourself})
       KnifeSpecs::TestYourself.test_deps_loaded.should be_true
     end
 
@@ -256,7 +256,7 @@ describe Chef::Knife do
       KnifeSpecs::TestYourself.class_eval do
         deps { other_deps_loaded = true }
       end
-      command = Chef::Knife.run(%w{test yourself})
+      command = Seth::Knife.run(%w{test yourself})
       KnifeSpecs::TestYourself.test_deps_loaded.should be_true
       other_deps_loaded.should be_true
     end
@@ -270,21 +270,21 @@ describe Chef::Knife do
 
       it "prefers the default value if no config or command line value is present" do
         knife_command = KnifeSpecs::TestYourself.new([]) #empty argv
-        knife_command.configure_chef
+        knife_command.configure_seth
         knife_command.config[:opt_with_default].should == "default-value"
       end
 
-      it "prefers a value in Chef::Config[:knife] to the default" do
-        Chef::Config[:knife][:opt_with_default] = "from-knife-config"
+      it "prefers a value in Seth::Config[:knife] to the default" do
+        Seth::Config[:knife][:opt_with_default] = "from-knife-config"
         knife_command = KnifeSpecs::TestYourself.new([]) #empty argv
-        knife_command.configure_chef
+        knife_command.configure_seth
         knife_command.config[:opt_with_default].should == "from-knife-config"
       end
 
-      it "prefers a value from command line over Chef::Config and the default" do
-        Chef::Config[:knife][:opt_with_default] = "from-knife-config"
+      it "prefers a value from command line over Seth::Config and the default" do
+        Seth::Config[:knife][:opt_with_default] = "from-knife-config"
         knife_command = KnifeSpecs::TestYourself.new(["-D", "from-cli"])
-        knife_command.configure_chef
+        knife_command.configure_seth
         knife_command.config[:opt_with_default].should == "from-cli"
       end
     end
@@ -315,14 +315,14 @@ describe Chef::Knife do
   describe "when formatting exceptions" do
     before do
       @stdout, @stderr, @stdin = StringIO.new, StringIO.new, StringIO.new
-      @knife.ui = Chef::Knife::UI.new(@stdout, @stderr, @stdin, {})
+      @knife.ui = Seth::Knife::UI.new(@stdout, @stderr, @stdin, {})
       @knife.should_receive(:exit).with(100)
     end
 
     it "formats 401s nicely" do
       response = Net::HTTPUnauthorized.new("1.1", "401", "Unauthorized")
       response.instance_variable_set(:@read, true) # I hate you, net/http.
-      response.stub(:body).and_return(Chef::JSONCompat.to_json(:error => "y u no syncronize your clock?"))
+      response.stub(:body).and_return(Seth::JSONCompat.to_json(:error => "y u no syncronize your clock?"))
       @knife.stub(:run).and_raise(Net::HTTPServerException.new("401 Unauthorized", response))
       @knife.run_with_pretty_exceptions
       @stderr.string.should match(/ERROR: Failed to authenticate to/)
@@ -332,7 +332,7 @@ describe Chef::Knife do
     it "formats 403s nicely" do
       response = Net::HTTPForbidden.new("1.1", "403", "Forbidden")
       response.instance_variable_set(:@read, true) # I hate you, net/http.
-      response.stub(:body).and_return(Chef::JSONCompat.to_json(:error => "y u no administrator"))
+      response.stub(:body).and_return(Seth::JSONCompat.to_json(:error => "y u no administrator"))
       @knife.stub(:run).and_raise(Net::HTTPServerException.new("403 Forbidden", response))
       @knife.stub(:username).and_return("sadpanda")
       @knife.run_with_pretty_exceptions
@@ -343,7 +343,7 @@ describe Chef::Knife do
     it "formats 400s nicely" do
       response = Net::HTTPBadRequest.new("1.1", "400", "Bad Request")
       response.instance_variable_set(:@read, true) # I hate you, net/http.
-      response.stub(:body).and_return(Chef::JSONCompat.to_json(:error => "y u search wrong"))
+      response.stub(:body).and_return(Seth::JSONCompat.to_json(:error => "y u search wrong"))
       @knife.stub(:run).and_raise(Net::HTTPServerException.new("400 Bad Request", response))
       @knife.run_with_pretty_exceptions
       @stderr.string.should match(%r[ERROR: The data in your request was invalid])
@@ -353,7 +353,7 @@ describe Chef::Knife do
     it "formats 404s nicely" do
       response = Net::HTTPNotFound.new("1.1", "404", "Not Found")
       response.instance_variable_set(:@read, true) # I hate you, net/http.
-      response.stub(:body).and_return(Chef::JSONCompat.to_json(:error => "nothing to see here"))
+      response.stub(:body).and_return(Seth::JSONCompat.to_json(:error => "nothing to see here"))
       @knife.stub(:run).and_raise(Net::HTTPServerException.new("404 Not Found", response))
       @knife.run_with_pretty_exceptions
       @stderr.string.should match(%r[ERROR: The object you are looking for could not be found])
@@ -363,7 +363,7 @@ describe Chef::Knife do
     it "formats 500s nicely" do
       response = Net::HTTPInternalServerError.new("1.1", "500", "Internal Server Error")
       response.instance_variable_set(:@read, true) # I hate you, net/http.
-      response.stub(:body).and_return(Chef::JSONCompat.to_json(:error => "sad trombone"))
+      response.stub(:body).and_return(Seth::JSONCompat.to_json(:error => "sad trombone"))
       @knife.stub(:run).and_raise(Net::HTTPFatalError.new("500 Internal Server Error", response))
       @knife.run_with_pretty_exceptions
       @stderr.string.should match(%r[ERROR: internal server error])
@@ -373,7 +373,7 @@ describe Chef::Knife do
     it "formats 502s nicely" do
       response = Net::HTTPBadGateway.new("1.1", "502", "Bad Gateway")
       response.instance_variable_set(:@read, true) # I hate you, net/http.
-      response.stub(:body).and_return(Chef::JSONCompat.to_json(:error => "sadder trombone"))
+      response.stub(:body).and_return(Seth::JSONCompat.to_json(:error => "sadder trombone"))
       @knife.stub(:run).and_raise(Net::HTTPFatalError.new("502 Bad Gateway", response))
       @knife.run_with_pretty_exceptions
       @stderr.string.should match(%r[ERROR: bad gateway])
@@ -383,7 +383,7 @@ describe Chef::Knife do
     it "formats 503s nicely" do
       response = Net::HTTPServiceUnavailable.new("1.1", "503", "Service Unavailable")
       response.instance_variable_set(:@read, true) # I hate you, net/http.
-      response.stub(:body).and_return(Chef::JSONCompat.to_json(:error => "saddest trombone"))
+      response.stub(:body).and_return(Seth::JSONCompat.to_json(:error => "saddest trombone"))
       @knife.stub(:run).and_raise(Net::HTTPFatalError.new("503 Service Unavailable", response))
       @knife.run_with_pretty_exceptions
       @stderr.string.should match(%r[ERROR: Service temporarily unavailable])
@@ -393,7 +393,7 @@ describe Chef::Knife do
     it "formats other HTTP errors nicely" do
       response = Net::HTTPPaymentRequired.new("1.1", "402", "Payment Required")
       response.instance_variable_set(:@read, true) # I hate you, net/http.
-      response.stub(:body).and_return(Chef::JSONCompat.to_json(:error => "nobugfixtillyoubuy"))
+      response.stub(:body).and_return(Seth::JSONCompat.to_json(:error => "nobugfixtillyoubuy"))
       @knife.stub(:run).and_raise(Net::HTTPServerException.new("402 Payment Required", response))
       @knife.run_with_pretty_exceptions
       @stderr.string.should match(%r[ERROR: Payment Required])
@@ -409,10 +409,10 @@ describe Chef::Knife do
     end
 
     it "formats missing private key errors nicely" do
-      @knife.stub(:run).and_raise(Chef::Exceptions::PrivateKeyMissing.new('key not there'))
-      @knife.stub(:api_key).and_return("/home/root/.chef/no-key-here.pem")
+      @knife.stub(:run).and_raise(Seth::Exceptions::PrivateKeyMissing.new('key not there'))
+      @knife.stub(:api_key).and_return("/home/root/.seth/no-key-here.pem")
       @knife.run_with_pretty_exceptions
-      @stderr.string.should match(%r[ERROR: Your private key could not be loaded from /home/root/.chef/no-key-here.pem])
+      @stderr.string.should match(%r[ERROR: Your private key could not be loaded from /home/root/.seth/no-key-here.pem])
       @stdout.string.should match(%r[Check your configuration file and ensure that your private key is readable])
     end
 

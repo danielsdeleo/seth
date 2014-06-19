@@ -18,12 +18,12 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::ConditionalActionNotNothing do
+describe Seth::Resource::ConditionalActionNotNothing do
 
   describe "after running a :nothing action" do
     before do
       @action = :nothing
-      @conditional = Chef::Resource::ConditionalActionNotNothing.new(@action)
+      @conditional = Seth::Resource::ConditionalActionNotNothing.new(@action)
     end
 
     it "indicates that resource convergence should not continue" do
@@ -34,7 +34,7 @@ describe Chef::Resource::ConditionalActionNotNothing do
   describe "after running an action different to :nothing" do
     before do
       @action = :something
-      @conditional = Chef::Resource::ConditionalActionNotNothing.new(@action)
+      @conditional = Seth::Resource::ConditionalActionNotNothing.new(@action)
     end
 
     it "indicates that resource convergence should continue" do

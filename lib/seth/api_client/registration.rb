@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/rest'
-require 'chef/exceptions'
+require 'seth/config'
+require 'seth/rest'
+require 'seth/exceptions'
 
-class Chef
+class Seth
   class ApiClient
 
-    # ==Chef::ApiClient::Registration
-    # Manages the process of creating or updating a Chef::ApiClient on the
+    # ==Seth::ApiClient::Registration
+    # Manages the process of creating or updating a Seth::ApiClient on the
     # server and writing the resulting private key to disk. Registration uses
     # the validator credentials for its API calls. This allows it to bootstrap
     # a new client/node identity by borrowing the validator client identity
@@ -40,12 +40,12 @@ class Chef
       end
 
       # Runs the client registration process, including creating the client on
-      # the chef-server and writing its private key to disk.
+      # the seth-server and writing its private key to disk.
       #--
       # If client creation fails with a 5xx, it is retried up to 5 times. These
       # retries are on top of the retries with randomized exponential backoff
-      # built in to Chef::REST. The retries here are a workaround for failures
-      # caused by resource contention in Hosted Chef when creating a very large
+      # built in to Seth::REST. The retries here are a workaround for failures
+      # caused by resource contention in Hosted Seth when creating a very large
       # number of clients simultaneously, (e.g., spinning up 100s of ec2 nodes
       # at once). Future improvements to the affected component should make
       # these retries unnecessary.
@@ -58,8 +58,8 @@ class Chef
           # HTTPFatalError implies 5xx.
           raise if retries <= 0
           retries -= 1
-          Chef::Log.warn("Failed to register new client, #{retries} tries remaining")
-          Chef::Log.warn("Response: HTTP #{e.response.code} - #{e}")
+          Seth::Log.warn("Failed to register new client, #{retries} tries remaining")
+          Seth::Log.warn("Response: HTTP #{e.response.code} - #{e}")
           retry
         end
         write_key
@@ -67,7 +67,7 @@ class Chef
 
       def assert_destination_writable!
         if (File.exists?(destination) && !File.writable?(destination)) or !File.writable?(File.dirname(destination))
-          raise Chef::Exceptions::CannotWritePrivateKey, "I cannot write your private key to #{destination} - check permissions?"
+          raise Seth::Exceptions::CannotWritePrivateKey, "I cannot write your private key to #{destination} - check permissions?"
         end
       end
 
@@ -76,7 +76,7 @@ class Chef
           f.print(private_key)
         end
       rescue IOError => e
-        raise Chef::Exceptions::CannotWritePrivateKey, "Error writing private key to #{destination}: #{e}"
+        raise Seth::Exceptions::CannotWritePrivateKey, "Error writing private key to #{destination}: #{e}"
       end
 
       def create_or_update
@@ -96,9 +96,9 @@ class Chef
 
       def update
         response = http_api.put("clients/#{name}", put_data)
-        if response.respond_to?(:private_key) # Chef 11
+        if response.respond_to?(:private_key) # Seth 11
           @server_generated_private_key = response.private_key
-        else # Chef 10
+        else # Seth 10
           @server_generated_private_key = response["private_key"]
         end
         response
@@ -122,16 +122,16 @@ class Chef
 
 
       def http_api
-        @http_api_as_validator ||= Chef::REST.new(Chef::Config[:chef_server_url],
-                                                  Chef::Config[:validation_client_name],
-                                                  Chef::Config[:validation_key])
+        @http_api_as_validator ||= Seth::REST.new(Chef::Config[:seth_server_url],
+                                                  Seth::Config[:validation_client_name],
+                                                  Seth::Config[:validation_key])
       end
 
       # Whether or not to generate keys locally and post the public key to the
-      # server. Delegates to `Chef::Config.local_key_generation`. Servers
+      # server. Delegates to `Seth::Config.local_key_generation`. Servers
       # before 11.0 do not support this feature.
       def self_generate_keys?
-        Chef::Config.local_key_generation
+        Seth::Config.local_key_generation
       end
 
       def private_key

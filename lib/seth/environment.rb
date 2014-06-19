@@ -19,21 +19,21 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/mash'
-require 'chef/mixin/params_validate'
-require 'chef/mixin/from_file'
-require 'chef/version_constraint'
+require 'seth/config'
+require 'seth/mash'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/from_file'
+require 'seth/version_constraint'
 
-class Chef
+class Seth
   class Environment
 
     DEFAULT = "default"
 
-    include Chef::Mixin::ParamsValidate
-    include Chef::Mixin::FromFile
+    include Seth::Mixin::ParamsValidate
+    include Seth::Mixin::FromFile
 
-    COMBINED_COOKBOOK_CONSTRAINT = /(.+)(?:[\s]+)((?:#{Chef::VersionConstraint::OPS.join('|')})(?:[\s]+).+)$/.freeze
+    COMBINED_COOKBOOK_CONSTRAINT = /(.+)(?:[\s]+)((?:#{Seth::VersionConstraint::OPS.join('|')})(?:[\s]+).+)$/.freeze
 
     def initialize
       @name = ''
@@ -43,12 +43,12 @@ class Chef
       @cookbook_versions = Hash.new
     end
 
-    def chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
-    def self.chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def self.seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
     def name(arg=nil)
@@ -98,7 +98,7 @@ class Chef
         {
           :kind_of => Hash,
           :callbacks => {
-            "should be a valid set of cookbook version requirements" => lambda { |cv| Chef::Environment.validate_cookbook_versions(cv) }
+            "should be a valid set of cookbook version requirements" => lambda { |cv| Seth::Environment.validate_cookbook_versions(cv) }
           }
         }
       )
@@ -109,7 +109,7 @@ class Chef
         :version => version
       },{
         :version => {
-          :callbacks => { "should be a valid version requirement" => lambda { |v| Chef::Environment.validate_cookbook_version(v) } }
+          :callbacks => { "should be a valid version requirement" => lambda { |v| Seth::Environment.validate_cookbook_version(v) } }
         }
       })
       @cookbook_versions[cookbook] = version
@@ -121,7 +121,7 @@ class Chef
         "description" => @description,
         "cookbook_versions" =>  @cookbook_versions,
         "json_class" => self.class.name,
-        "chef_type" => "environment",
+        "seth_type" => "environment",
         "default_attributes" => @default_attributes,
         "override_attributes" => @override_attributes
       }
@@ -143,10 +143,10 @@ class Chef
 
     def update_attributes_from_params(params)
       unless params[:default_attributes].nil? || params[:default_attributes].size == 0
-        default_attributes(Chef::JSONCompat.from_json(params[:default_attributes]))
+        default_attributes(Seth::JSONCompat.from_json(params[:default_attributes]))
       end
       unless params[:override_attributes].nil? || params[:override_attributes].size == 0
-        override_attributes(Chef::JSONCompat.from_json(params[:override_attributes]))
+        override_attributes(Seth::JSONCompat.from_json(params[:override_attributes]))
       end
     end
 
@@ -159,7 +159,7 @@ class Chef
 
       begin
         name(params[:name])
-      rescue Chef::Exceptions::ValidationFailed => e
+      rescue Seth::Exceptions::ValidationFailed => e
         invalid_fields[:name] = e.message
         valid = false
       end
@@ -227,65 +227,65 @@ class Chef
     def self.list(inflate=false)
       if inflate
         response = Hash.new
-        Chef::Search::Query.new.search(:environment) do |e|
+        Seth::Search::Query.new.search(:environment) do |e|
           response[e.name] = e unless e.nil?
         end
         response
       else
-        chef_server_rest.get_rest("environments")
+        seth_server_rest.get_rest("environments")
       end
     end
 
     def self.load(name)
-      if Chef::Config[:solo]
+      if Seth::Config[:solo]
         load_from_file(name)
       else
-        chef_server_rest.get_rest("environments/#{name}")
+        seth_server_rest.get_rest("environments/#{name}")
       end
     end
 
     def self.load_from_file(name)
-      unless File.directory?(Chef::Config[:environment_path])
-        raise Chef::Exceptions::InvalidEnvironmentPath, "Environment path '#{Chef::Config[:environment_path]}' is invalid"
+      unless File.directory?(Seth::Config[:environment_path])
+        raise Seth::Exceptions::InvalidEnvironmentPath, "Environment path '#{Chef::Config[:environment_path]}' is invalid"
       end
 
-      js_file = File.join(Chef::Config[:environment_path], "#{name}.json")
-      rb_file = File.join(Chef::Config[:environment_path], "#{name}.rb")
+      js_file = File.join(Seth::Config[:environment_path], "#{name}.json")
+      rb_file = File.join(Seth::Config[:environment_path], "#{name}.rb")
 
       if File.exists?(js_file)
         # from_json returns object.class => json_class in the JSON.
-        Chef::JSONCompat.from_json(IO.read(js_file))
+        Seth::JSONCompat.from_json(IO.read(js_file))
       elsif File.exists?(rb_file)
-        environment = Chef::Environment.new
+        environment = Seth::Environment.new
         environment.name(name)
         environment.from_file(rb_file)
         environment
       else
-        raise Chef::Exceptions::EnvironmentNotFound, "Environment '#{name}' could not be loaded from disk"
+        raise Seth::Exceptions::EnvironmentNotFound, "Environment '#{name}' could not be loaded from disk"
       end
     end
 
     def destroy
-      chef_server_rest.delete_rest("environments/#{@name}")
+      seth_server_rest.delete_rest("environments/#{@name}")
     end
 
     def save
       begin
-        chef_server_rest.put_rest("environments/#{@name}", self)
+        seth_server_rest.put_rest("environments/#{@name}", self)
       rescue Net::HTTPServerException => e
         raise e unless e.response.code == "404"
-        chef_server_rest.post_rest("environments", self)
+        seth_server_rest.post_rest("environments", self)
       end
       self
     end
 
     def create
-      chef_server_rest.post_rest("environments", self)
+      seth_server_rest.post_rest("environments", self)
       self
     end
 
     def self.load_filtered_recipe_list(environment)
-      chef_server_rest.get_rest("environments/#{environment}/recipes")
+      seth_server_rest.get_rest("environments/#{environment}/recipes")
     end
 
     def to_s
@@ -295,18 +295,18 @@ class Chef
     def self.validate_cookbook_versions(cv)
       return false unless cv.kind_of?(Hash)
       cv.each do |cookbook, version|
-        return false unless Chef::Environment.validate_cookbook_version(version)
+        return false unless Seth::Environment.validate_cookbook_version(version)
       end
       true
     end
 
     def self.validate_cookbook_version(version)
       begin
-        if Chef::Config[:solo]
-          raise Chef::Exceptions::IllegalVersionConstraint,
-                "Environment cookbook version constraints not allowed in chef-solo"
+        if Seth::Config[:solo]
+          raise Seth::Exceptions::IllegalVersionConstraint,
+                "Environment cookbook version constraints not allowed in seth-solo"
         else
-          Chef::VersionConstraint.new version
+          Seth::VersionConstraint.new version
           true
         end
       rescue ArgumentError

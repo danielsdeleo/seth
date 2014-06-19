@@ -17,18 +17,18 @@
 # limitations under the License.
 #
 
-require 'chef/resource_platform_map'
-require 'chef/mixin/convert_to_class_name'
+require 'seth/resource_platform_map'
+require 'seth/mixin/convert_to_class_name'
 
-class Chef
+class Seth
   module DSL
 
-    # == Chef::DSL::Recipe
-    # Provides the primary recipe DSL functionality for defining Chef resource
+    # == Seth::DSL::Recipe
+    # Provides the primary recipe DSL functionality for defining Seth resource
     # objects via method calls.
     module Recipe
 
-      include Chef::Mixin::ConvertToClassName
+      include Seth::Mixin::ConvertToClassName
 
       def method_missing(method_symbol, *args, &block)
         # If we have a definition that matches, we want to use that instead.  This should
@@ -68,7 +68,7 @@ class Chef
         new_def.instance_eval(&block) if block
 
 
-        new_recipe = Chef::Recipe.new(cookbook_name, recipe_name, run_context)
+        new_recipe = Seth::Recipe.new(cookbook_name, recipe_name, run_context)
         new_recipe.params = new_def.params
         new_recipe.params[:name] = args[0]
         new_recipe.instance_eval(&new_def.recipe)
@@ -96,7 +96,7 @@ class Chef
         created_at ||= caller[0]
 
         # Checks the new platform => short_name => resource mapping initially
-        # then fall back to the older approach (Chef::Resource.const_get) for
+        # then fall back to the older approach (Seth::Resource.const_get) for
         # backward compatibility
         resource_class = resource_class_for(type)
 
@@ -112,7 +112,7 @@ class Chef
         resource.cookbook_name = cookbook_name
         resource.recipe_name = recipe_name
         # Determine whether this resource is being created in the context of an enclosing Provider
-        resource.enclosing_provider = self.is_a?(Chef::Provider) ? self : nil
+        resource.enclosing_provider = self.is_a?(Seth::Provider) ? self : nil
 
         # XXX: This is very crufty, but it's required for resource definitions
         # to work properly :(
@@ -128,7 +128,7 @@ class Chef
       end
 
       def resource_class_for(snake_case_name)
-        Chef::Resource.resource_for_node(snake_case_name, run_context.node)
+        Seth::Resource.resource_for_node(snake_case_name, run_context.node)
       end
 
       def have_resource_class_for?(snake_case_name)
@@ -153,8 +153,8 @@ end
 
 # We require this at the BOTTOM of this file to avoid circular requires (it is used
 # at runtime but not load time)
-require 'chef/resource'
+require 'seth/resource'
 
 # **DEPRECATED**
-# This used to be part of chef/mixin/recipe_definition_dsl_core. Load the file to activate the deprecation code.
-require 'chef/mixin/recipe_definition_dsl_core'
+# This used to be part of seth/mixin/recipe_definition_dsl_core. Load the file to activate the deprecation code.
+require 'seth/mixin/recipe_definition_dsl_core'

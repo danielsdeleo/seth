@@ -20,19 +20,19 @@ require 'spec_helper'
 
 shared_examples_for "a registry key" do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::RegistryKey.new("windows is fun", @run_context)
+    @new_resource = Seth::Resource::RegistryKey.new("windows is fun", @run_context)
     @new_resource.key keyname
     @new_resource.values( testval1 )
     @new_resource.recursive false
 
-    @provider = Chef::Provider::RegistryKey.new(@new_resource, @run_context)
+    @provider = Seth::Provider::RegistryKey.new(@new_resource, @run_context)
 
     @provider.stub(:running_on_windows!).and_return(true)
-    @double_registry = double(Chef::Win32::Registry)
+    @double_registry = double(Seth::Win32::Registry)
     @provider.stub(:registry).and_return(@double_registry)
   end
 
@@ -260,7 +260,7 @@ shared_examples_for "a registry key" do
 
 end
 
-describe Chef::Provider::RegistryKey do
+describe Seth::Provider::RegistryKey do
   context "when the key data is safe" do
     let(:keyname) { 'HKLM\Software\Opscode\Testing\Safe' }
     let(:testval1) { { :name => "one", :type => :string, :data => "1" } }

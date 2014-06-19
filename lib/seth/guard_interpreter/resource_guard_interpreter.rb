@@ -1,5 +1,5 @@
 #
-# Author:: Adam Edwards (<adamed@getchef.com>)
+# Author:: Adam Edwards (<adamed@getseth.com>)
 # Copyright:: Copyright (c) 2014 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/guard_interpreter/default_guard_interpreter'
+require 'seth/guard_interpreter/default_guard_interpreter'
 
-class Chef
+class Seth
   class GuardInterpreter
     class ResourceGuardInterpreter < DefaultGuardInterpreter
 
@@ -73,18 +73,18 @@ class Chef
           raise ArgumentError, "Node for guard resource parent must not be nil"
         end
 
-        resource_class = Chef::Resource.resource_for_node(parent_resource.guard_interpreter, parent_resource.node)
+        resource_class = Seth::Resource.resource_for_node(parent_resource.guard_interpreter, parent_resource.node)
 
         if resource_class.nil?
           raise ArgumentError, "Specified guard_interpreter resource #{parent_resource.guard_interpreter.to_s} unknown for this platform"
         end
 
-        if ! resource_class.ancestors.include?(Chef::Resource::Script)
-          raise ArgumentError, "Specified guard interpreter class #{resource_class} must be a kind of Chef::Resource::Script resource"
+        if ! resource_class.ancestors.include?(Seth::Resource::Script)
+          raise ArgumentError, "Specified guard interpreter class #{resource_class} must be a kind of Seth::Resource::Script resource"
         end
 
-        empty_events = Chef::EventDispatch::Dispatcher.new
-        anonymous_run_context = Chef::RunContext.new(parent_resource.node, {}, empty_events)
+        empty_events = Seth::EventDispatch::Dispatcher.new
+        anonymous_run_context = Seth::RunContext.new(parent_resource.node, {}, empty_events)
         interpreter_resource = resource_class.new('Guard resource', anonymous_run_context)
 
         interpreter_resource

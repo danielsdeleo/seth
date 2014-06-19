@@ -18,13 +18,13 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::UserReregister do
+describe Seth::Knife::UserReregister do
   before(:each) do
-    Chef::Knife::UserReregister.load_deps
-    @knife = Chef::Knife::UserReregister.new
+    Seth::Knife::UserReregister.load_deps
+    @knife = Seth::Knife::UserReregister.new
     @knife.name_args = [ 'a_user' ]
     @user_mock = double('user_mock', :private_key => "private_key")
-    Chef::User.stub(:load).and_return(@user_mock)
+    Seth::User.stub(:load).and_return(@user_mock)
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
   end

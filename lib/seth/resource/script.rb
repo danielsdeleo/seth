@@ -17,11 +17,11 @@
 # limitations under the License.
 #
 
-require 'chef/resource/execute'
+require 'seth/resource/execute'
 
-class Chef
+class Seth
   class Resource
-    class Script < Chef::Resource::Execute
+    class Script < Seth::Resource::Execute
 
       identity_attr :command
 

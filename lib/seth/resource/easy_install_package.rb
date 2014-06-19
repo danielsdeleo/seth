@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
+require 'seth/resource/package'
 
-class Chef
+class Seth
   class Resource
-    class EasyInstallPackage < Chef::Resource::Package
+    class EasyInstallPackage < Seth::Resource::Package
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :easy_install_package
-        @provider = Chef::Provider::Package::EasyInstall
+        @provider = Seth::Provider::Package::EasyInstall
       end
 
       def easy_install_binary(arg=nil)

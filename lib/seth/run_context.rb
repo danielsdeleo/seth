@@ -17,25 +17,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/resource_collection'
-require 'chef/cookbook_version'
-require 'chef/node'
-require 'chef/role'
-require 'chef/log'
-require 'chef/recipe'
-require 'chef/run_context/cookbook_compiler'
-require 'chef/event_dispatch/events_output_stream'
+require 'seth/resource_collection'
+require 'seth/cookbook_version'
+require 'seth/node'
+require 'seth/role'
+require 'seth/log'
+require 'seth/recipe'
+require 'seth/run_context/cookbook_compiler'
+require 'seth/event_dispatch/events_output_stream'
 
-class Chef
+class Seth
 
-  # == Chef::RunContext
-  # Value object that loads and tracks the context of a Chef run
+  # == Seth::RunContext
+  # Value object that loads and tracks the context of a Seth run
   class RunContext
 
-    # Chef::Node object for this run
+    # Seth::Node object for this run
     attr_reader :node
 
-    # Chef::CookbookCollection for this run
+    # Seth::CookbookCollection for this run
     attr_reader :cookbook_collection
 
     # Resource Definitions for this run. Populated when the files in
@@ -46,30 +46,30 @@ class Chef
     # These need to be settable so deploy can run a resource_collection
     # independent of any cookbooks via +recipe_eval+
 
-    # The Chef::ResourceCollection for this run. Populated by evaluating
+    # The Seth::ResourceCollection for this run. Populated by evaluating
     # recipes, which is triggered by #load. (See also: CookbookCompiler)
     attr_accessor :resource_collection
 
     # A Hash containing the immediate notifications triggered by resources
-    # during the converge phase of the chef run.
+    # during the converge phase of the seth run.
     attr_accessor :immediate_notification_collection
 
     # A Hash containing the delayed (end of run) notifications triggered by
-    # resources during the converge phase of the chef run.
+    # resources during the converge phase of the seth run.
     attr_accessor :delayed_notification_collection
 
     # Event dispatcher for this run.
     attr_reader :events
 
-    # Creates a new Chef::RunContext object and populates its fields. This object gets
-    # used by the Chef Server to generate a fully compiled recipe list for a node.
+    # Creates a new Seth::RunContext object and populates its fields. This object gets
+    # used by the Seth Server to generate a fully compiled recipe list for a node.
     #
     # === Returns
-    # object<Chef::RunContext>:: Duh. :)
+    # object<Seth::RunContext>:: Duh. :)
     def initialize(node, cookbook_collection, events)
       @node = node
       @cookbook_collection = cookbook_collection
-      @resource_collection = Chef::ResourceCollection.new
+      @resource_collection = Seth::ResourceCollection.new
       @immediate_notification_collection = Hash.new {|h,k| h[k] = []}
       @delayed_notification_collection = Hash.new {|h,k| h[k] = []}
       @definitions = Hash.new
@@ -82,8 +82,8 @@ class Chef
       @cookbook_compiler = nil
     end
 
-    # Triggers the compile phase of the chef run. Implemented by
-    # Chef::RunContext::CookbookCompiler
+    # Triggers the compile phase of the seth run. Implemented by
+    # Seth::RunContext::CookbookCompiler
     def load(run_list_expansion)
       @cookbook_compiler = CookbookCompiler.new(self, run_list_expansion, events)
       @cookbook_compiler.compile
@@ -91,10 +91,10 @@ class Chef
 
     # Adds an immediate notification to the
     # +immediate_notification_collection+. The notification should be a
-    # Chef::Resource::Notification or duck type.
+    # Seth::Resource::Notification or duck type.
     def notifies_immediately(notification)
       nr = notification.notifying_resource
-      if nr.instance_of?(Chef::Resource)
+      if nr.instance_of?(Seth::Resource)
         @immediate_notification_collection[nr.name] << notification
       else
         @immediate_notification_collection[nr.to_s] << notification
@@ -102,10 +102,10 @@ class Chef
     end
 
     # Adds a delayed notification to the +delayed_notification_collection+. The
-    # notification should be a Chef::Resource::Notification or duck type.
+    # notification should be a Seth::Resource::Notification or duck type.
     def notifies_delayed(notification)
       nr = notification.notifying_resource
-      if nr.instance_of?(Chef::Resource)
+      if nr.instance_of?(Seth::Resource)
         @delayed_notification_collection[nr.name] << notification
       else
         @delayed_notification_collection[nr.to_s] << notification
@@ -113,7 +113,7 @@ class Chef
     end
 
     def immediate_notifications(resource)
-      if resource.instance_of?(Chef::Resource)
+      if resource.instance_of?(Seth::Resource)
         return @immediate_notification_collection[resource.name]
       else
         return @immediate_notification_collection[resource.to_s]
@@ -121,7 +121,7 @@ class Chef
     end
 
     def delayed_notifications(resource)
-      if resource.instance_of?(Chef::Resource)
+      if resource.instance_of?(Seth::Resource)
         return @delayed_notification_collection[resource.name]
       else
         return @delayed_notification_collection[resource.to_s]
@@ -141,12 +141,12 @@ class Chef
 
     # Evaluates the recipe +recipe_name+. Used by DSL::IncludeRecipe
     def load_recipe(recipe_name)
-      Chef::Log.debug("Loading Recipe #{recipe_name} via include_recipe")
+      Seth::Log.debug("Loading Recipe #{recipe_name} via include_recipe")
 
-      cookbook_name, recipe_short_name = Chef::Recipe.parse_recipe_name(recipe_name)
+      cookbook_name, recipe_short_name = Seth::Recipe.parse_recipe_name(recipe_name)
 
       if unreachable_cookbook?(cookbook_name) # CHEF-4367
-        Chef::Log.warn(<<-ERROR_MESSAGE)
+        Seth::Log.warn(<<-ERROR_MESSAGE)
 MissingCookbookDependency:
 Recipe `#{recipe_name}` is not in the run_list, and cookbook '#{cookbook_name}'
 is not a dependency of any cookbook in the run_list.  To load this recipe,
@@ -157,7 +157,7 @@ ERROR_MESSAGE
 
 
       if loaded_fully_qualified_recipe?(cookbook_name, recipe_short_name)
-        Chef::Log.debug("I am not loading #{recipe_name}, because I have already seen it.")
+        Seth::Log.debug("I am not loading #{recipe_name}, because I have already seen it.")
         false
       else
         loaded_recipe(cookbook_name, recipe_short_name)
@@ -169,11 +169,11 @@ ERROR_MESSAGE
 
     def load_recipe_file(recipe_file)
       if !File.exist?(recipe_file)
-        raise Chef::Exceptions::RecipeNotFound, "could not find recipe file #{recipe_file}"
+        raise Seth::Exceptions::RecipeNotFound, "could not find recipe file #{recipe_file}"
       end
 
-      Chef::Log.debug("Loading Recipe File #{recipe_file}")
-      recipe = Chef::Recipe.new('@recipe_files', recipe_file, self)
+      Seth::Log.debug("Loading Recipe File #{recipe_file}")
+      recipe = Seth::Recipe.new('@recipe_files', recipe_file, self)
       recipe.from_file(recipe_file)
       recipe
     end
@@ -182,10 +182,10 @@ ERROR_MESSAGE
     # +attr_file_name+. Used by DSL::IncludeAttribute
     def resolve_attribute(cookbook_name, attr_file_name)
       cookbook = cookbook_collection[cookbook_name]
-      raise Chef::Exceptions::CookbookNotFound, "could not find cookbook #{cookbook_name} while loading attribute #{name}" unless cookbook
+      raise Seth::Exceptions::CookbookNotFound, "could not find cookbook #{cookbook_name} while loading attribute #{name}" unless cookbook
 
       attribute_filename = cookbook.attribute_filenames_by_short_filename[attr_file_name]
-      raise Chef::Exceptions::AttributeNotFound, "could not find filename for attribute #{attr_file_name} in cookbook #{cookbook_name}" unless attribute_filename
+      raise Seth::Exceptions::AttributeNotFound, "could not find filename for attribute #{attr_file_name} in cookbook #{cookbook_name}" unless attribute_filename
 
       attribute_filename
     end
@@ -218,7 +218,7 @@ ERROR_MESSAGE
     # names are expanded, so `loaded_recipe?("nginx")` and
     # `loaded_recipe?("nginx::default")` are valid and give identical results.
     def loaded_recipe?(recipe)
-      cookbook, recipe_name = Chef::Recipe.parse_recipe_name(recipe)
+      cookbook, recipe_name = Seth::Recipe.parse_recipe_name(recipe)
       loaded_fully_qualified_recipe?(cookbook, recipe_name)
     end
 

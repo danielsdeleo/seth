@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::WindowsScript::PowershellScript, :windows_only do
+describe Seth::Resource::WindowsScript::PowershellScript, :windows_only do
 
-  include_context Chef::Resource::WindowsScript
+  include_context Seth::Resource::WindowsScript
 
   let(:successful_executable_script_content) { "#{ENV['SystemRoot']}\\system32\\attrib.exe $env:systemroot" }
   let(:failed_executable_script_content) { "#{ENV['SystemRoot']}\\system32\\attrib.exe /badargument" }
@@ -37,7 +37,7 @@ describe Chef::Resource::WindowsScript::PowershellScript, :windows_only do
   let(:invalid_powershell_interpreter_flag) { "/thisflagisinvalid" }
   let(:valid_powershell_interpreter_flag) { "-Sta" }
   let!(:resource) do
-    r = Chef::Resource::WindowsScript::PowershellScript.new("Powershell resource functional test", @run_context)
+    r = Seth::Resource::WindowsScript::PowershellScript.new("Powershell resource functional test", @run_context)
     r.code(successful_executable_script_content)
     r
   end
@@ -177,8 +177,8 @@ describe Chef::Resource::WindowsScript::PowershellScript, :windows_only do
 
     it "raises an exception if :x86_64 process architecture is specified" do
       begin
-        resource.architecture(:x86_64).should raise_error Chef::Exceptions::Win32ArchitectureIncorrect
-      rescue Chef::Exceptions::Win32ArchitectureIncorrect
+        resource.architecture(:x86_64).should raise_error Seth::Exceptions::Win32ArchitectureIncorrect
+      rescue Seth::Exceptions::Win32ArchitectureIncorrect
       end
     end
   end

@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'chef/win32/process'
+require 'seth/win32/process'
 
 module RSpec
   module Prof
@@ -32,11 +32,11 @@ module RSpec
         end
 
         def working_set_size
-          Chef::ReservedNames::Win32::Process.get_current_process.memory_info[:WorkingSetSize]
+          Seth::ReservedNames::Win32::Process.get_current_process.memory_info[:WorkingSetSize]
         end
 
         def handle_count
-          Chef::ReservedNames::Win32::Process.get_current_process.handle_count
+          Seth::ReservedNames::Win32::Process.get_current_process.handle_count
         end
       end
 

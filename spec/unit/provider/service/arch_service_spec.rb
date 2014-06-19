@@ -24,20 +24,20 @@ require 'ostruct'
 # most of this code has been ripped from init_service_spec.rb
 # and is only slightly modified to match "arch" needs.
 
-describe Chef::Provider::Service::Arch, "load_current_resource" do
+describe Seth::Provider::Service::Arch, "load_current_resource" do
   before(:each) do
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.automatic_attrs[:command] = {:ps => "ps -ef"}
 
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Service.new("chef")
-    @new_resource.pattern("chef")
+    @new_resource = Seth::Resource::Service.new("seth")
+    @new_resource.pattern("seth")
     @new_resource.supports({:status => false})
 
 
-    @provider = Chef::Provider::Service::Arch.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Service::Arch.new(@new_resource, @run_context)
 
     ::File.stub(:exists?).with("/etc/rc.conf").and_return(true)
     ::File.stub(:read).with("/etc/rc.conf").and_return("DAEMONS=(network apache sshd)")
@@ -47,7 +47,7 @@ describe Chef::Provider::Service::Arch, "load_current_resource" do
     it "should set the current resources service name to the new resources service name" do
       @provider.stub(:shell_out).and_return(OpenStruct.new(:exitstatus => 0, :stdout => ""))
       @provider.load_current_resource
-      @provider.current_resource.service_name.should == 'chef'
+      @provider.current_resource.service_name.should == 'seth'
     end
   end
 
@@ -58,24 +58,24 @@ describe Chef::Provider::Service::Arch, "load_current_resource" do
     end
 
     it "should run '/etc/rc.d/service_name status'" do
-      @provider.should_receive(:shell_out).with("/etc/rc.d/chef status").and_return(OpenStruct.new(:exitstatus => 0))
+      @provider.should_receive(:shell_out).with("/etc/rc.d/seth status").and_return(OpenStruct.new(:exitstatus => 0))
       @provider.load_current_resource
     end
 
     it "should set running to true if the status command returns 0" do
-      @provider.stub(:shell_out).with("/etc/rc.d/chef status").and_return(OpenStruct.new(:exitstatus => 0))
+      @provider.stub(:shell_out).with("/etc/rc.d/seth status").and_return(OpenStruct.new(:exitstatus => 0))
       @provider.load_current_resource
       @provider.current_resource.running.should be_true
     end
 
     it "should set running to false if the status command returns anything except 0" do
-      @provider.stub(:shell_out).with("/etc/rc.d/chef status").and_return(OpenStruct.new(:exitstatus => 1))
+      @provider.stub(:shell_out).with("/etc/rc.d/seth status").and_return(OpenStruct.new(:exitstatus => 1))
       @provider.load_current_resource
       @provider.current_resource.running.should be_false
     end
 
     it "should set running to false if the status command raises" do
-      @provider.stub(:shell_out).with("/etc/rc.d/chef status").and_raise(Mixlib::ShellOut::ShellCommandFailed)
+      @provider.stub(:shell_out).with("/etc/rc.d/seth status").and_raise(Mixlib::ShellOut::ShellCommandFailed)
       @provider.load_current_resource
       @provider.current_resource.running.should be_false
     end
@@ -85,11 +85,11 @@ describe Chef::Provider::Service::Arch, "load_current_resource" do
 
   describe "when a status command has been specified" do
     before do
-      @new_resource.status_command("/etc/rc.d/chefhasmonkeypants status")
+      @new_resource.status_command("/etc/rc.d/sethhasmonkeypants status")
     end
 
     it "should run the services status command if one has been specified" do
-      @provider.should_receive(:shell_out).with("/etc/rc.d/chefhasmonkeypants status").and_return(OpenStruct.new(:exitstatus => 0))
+      @provider.should_receive(:shell_out).with("/etc/rc.d/sethhasmonkeypants status").and_return(OpenStruct.new(:exitstatus => 0))
       @provider.load_current_resource
     end
 
@@ -99,25 +99,25 @@ describe Chef::Provider::Service::Arch, "load_current_resource" do
     @node.automatic_attrs[:command] = {:ps => nil}
     @provider.define_resource_requirements
     @provider.action = :start
-    lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+    lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
   end
 
   it "should raise error if the node has an empty ps attribute and no other means to get status" do
     @node.automatic_attrs[:command] = {:ps => ""}
     @provider.define_resource_requirements
     @provider.action = :start
-    lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+    lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
   end
 
 
   it "should fail if file /etc/rc.conf does not exist" do
     ::File.stub(:exists?).with("/etc/rc.conf").and_return(false)
-    lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::Service)
+    lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::Service)
   end
 
   it "should fail if file /etc/rc.conf does not contain DAEMONS array" do
     ::File.stub(:read).with("/etc/rc.conf").and_return("")
-    lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::Service)
+    lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::Service)
   end
 
   describe "when discovering service status with ps" do
@@ -135,7 +135,7 @@ DEFAULT_PS
 
     it "determines the service is running when it appears in ps" do
       @stdout = StringIO.new(<<-RUNNING_PS)
-aj        7842  5057  0 21:26 pts/2    00:00:06 chef
+aj        7842  5057  0 21:26 pts/2    00:00:06 seth
 aj        7842  5057  0 21:26 pts/2    00:00:06 poos
 RUNNING_PS
       @status.stub(:stdout).and_return(@stdout)
@@ -154,7 +154,7 @@ RUNNING_PS
       @provider.load_current_resource
       @provider.action = :start
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
   end
 
@@ -165,70 +165,70 @@ RUNNING_PS
 
   context "when the current service status is known" do
     before do
-      @current_resource = Chef::Resource::Service.new("chef")
+      @current_resource = Seth::Resource::Service.new("seth")
       @provider.current_resource = @current_resource
     end
 
-    describe Chef::Provider::Service::Arch, "enable_service" do
+    describe Seth::Provider::Service::Arch, "enable_service" do
       # before(:each) do
-      #   @new_resource = double("Chef::Resource::Service",
+      #   @new_resource = double("Seth::Resource::Service",
       #     :null_object => true,
-      #     :name => "chef",
-      #     :service_name => "chef",
+      #     :name => "seth",
+      #     :service_name => "seth",
       #     :running => false
       #   )
       #   @new_resource.stub(:start_command).and_return(false)
       #
-      #   @provider = Chef::Provider::Service::Arch.new(@node, @new_resource)
-      #   Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      #   @provider = Seth::Provider::Service::Arch.new(@node, @new_resource)
+      #   Seth::Resource::Service.stub(:new).and_return(@current_resource)
       # end
 
-      it "should add chef to DAEMONS array" do
+      it "should add seth to DAEMONS array" do
         ::File.stub(:read).with("/etc/rc.conf").and_return("DAEMONS=(network)")
-        @provider.should_receive(:update_daemons).with(['network', 'chef'])
+        @provider.should_receive(:update_daemons).with(['network', 'seth'])
         @provider.enable_service()
       end
     end
 
-    describe Chef::Provider::Service::Arch, "disable_service" do
+    describe Seth::Provider::Service::Arch, "disable_service" do
       # before(:each) do
-      #   @new_resource = double("Chef::Resource::Service",
+      #   @new_resource = double("Seth::Resource::Service",
       #     :null_object => true,
-      #     :name => "chef",
-      #     :service_name => "chef",
+      #     :name => "seth",
+      #     :service_name => "seth",
       #     :running => false
       #   )
       #   @new_resource.stub(:start_command).and_return(false)
       #
-      #   @provider = Chef::Provider::Service::Arch.new(@node, @new_resource)
-      #   Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      #   @provider = Seth::Provider::Service::Arch.new(@node, @new_resource)
+      #   Seth::Resource::Service.stub(:new).and_return(@current_resource)
       # end
 
-      it "should remove chef from DAEMONS array" do
-        ::File.stub(:read).with("/etc/rc.conf").and_return("DAEMONS=(network chef)")
-        @provider.should_receive(:update_daemons).with(['network', '!chef'])
+      it "should remove seth from DAEMONS array" do
+        ::File.stub(:read).with("/etc/rc.conf").and_return("DAEMONS=(network seth)")
+        @provider.should_receive(:update_daemons).with(['network', '!seth'])
         @provider.disable_service()
       end
     end
 
 
-    describe Chef::Provider::Service::Arch, "start_service" do
+    describe Seth::Provider::Service::Arch, "start_service" do
       # before(:each) do
-      #   @new_resource = double("Chef::Resource::Service",
+      #   @new_resource = double("Seth::Resource::Service",
       #     :null_object => true,
-      #     :name => "chef",
-      #     :service_name => "chef",
+      #     :name => "seth",
+      #     :service_name => "seth",
       #     :running => false
       #   )
       #   @new_resource.stub(:start_command).and_return(false)
       #
-      #   @provider = Chef::Provider::Service::Arch.new(@node, @new_resource)
-      #   Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      #   @provider = Seth::Provider::Service::Arch.new(@node, @new_resource)
+      #   Seth::Resource::Service.stub(:new).and_return(@current_resource)
       # end
 
       it "should call the start command if one is specified" do
-        @new_resource.stub(:start_command).and_return("/etc/rc.d/chef startyousillysally")
-        @provider.should_receive(:shell_out!).with("/etc/rc.d/chef startyousillysally")
+        @new_resource.stub(:start_command).and_return("/etc/rc.d/seth startyousillysally")
+        @provider.should_receive(:shell_out!).with("/etc/rc.d/seth startyousillysally")
         @provider.start_service()
       end
 
@@ -238,23 +238,23 @@ RUNNING_PS
       end
     end
 
-    describe Chef::Provider::Service::Arch, "stop_service" do
+    describe Seth::Provider::Service::Arch, "stop_service" do
       # before(:each) do
-      #   @new_resource = double("Chef::Resource::Service",
+      #   @new_resource = double("Seth::Resource::Service",
       #     :null_object => true,
-      #     :name => "chef",
-      #     :service_name => "chef",
+      #     :name => "seth",
+      #     :service_name => "seth",
       #     :running => false
       #   )
       #   @new_resource.stub(:stop_command).and_return(false)
       #
-      #   @provider = Chef::Provider::Service::Arch.new(@node, @new_resource)
-      #   Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      #   @provider = Seth::Provider::Service::Arch.new(@node, @new_resource)
+      #   Seth::Resource::Service.stub(:new).and_return(@current_resource)
       # end
 
       it "should call the stop command if one is specified" do
-        @new_resource.stub(:stop_command).and_return("/etc/rc.d/chef itoldyoutostop")
-        @provider.should_receive(:shell_out!).with("/etc/rc.d/chef itoldyoutostop")
+        @new_resource.stub(:stop_command).and_return("/etc/rc.d/seth itoldyoutostop")
+        @provider.should_receive(:shell_out!).with("/etc/rc.d/seth itoldyoutostop")
         @provider.stop_service()
       end
 
@@ -264,19 +264,19 @@ RUNNING_PS
       end
     end
 
-    describe Chef::Provider::Service::Arch, "restart_service" do
+    describe Seth::Provider::Service::Arch, "restart_service" do
       # before(:each) do
-      #   @new_resource = double("Chef::Resource::Service",
+      #   @new_resource = double("Seth::Resource::Service",
       #     :null_object => true,
-      #     :name => "chef",
-      #     :service_name => "chef",
+      #     :name => "seth",
+      #     :service_name => "seth",
       #     :running => false
       #   )
       #   @new_resource.stub(:restart_command).and_return(false)
       #   @new_resource.stub(:supports).and_return({:restart => false})
       #
-      #   @provider = Chef::Provider::Service::Arch.new(@node, @new_resource)
-      #   Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      #   @provider = Seth::Provider::Service::Arch.new(@node, @new_resource)
+      #   Seth::Resource::Service.stub(:new).and_return(@current_resource)
       # end
 
       it "should call 'restart' on the service_name if the resource supports it" do
@@ -286,7 +286,7 @@ RUNNING_PS
       end
 
       it "should call the restart_command if one has been specified" do
-        @new_resource.stub(:restart_command).and_return("/etc/rc.d/chef restartinafire")
+        @new_resource.stub(:restart_command).and_return("/etc/rc.d/seth restartinafire")
         @provider.should_receive(:shell_out!).with("/etc/rc.d/#{@new_resource.service_name} restartinafire")
         @provider.restart_service()
       end
@@ -299,19 +299,19 @@ RUNNING_PS
       end
     end
 
-    describe Chef::Provider::Service::Arch, "reload_service" do
+    describe Seth::Provider::Service::Arch, "reload_service" do
       # before(:each) do
-      #   @new_resource = double("Chef::Resource::Service",
+      #   @new_resource = double("Seth::Resource::Service",
       #     :null_object => true,
-      #     :name => "chef",
-      #     :service_name => "chef",
+      #     :name => "seth",
+      #     :service_name => "seth",
       #     :running => false
       #   )
       #   @new_resource.stub(:reload_command).and_return(false)
       #   @new_resource.stub(:supports).and_return({:reload => false})
       #
-      #   @provider = Chef::Provider::Service::Arch.new(@node, @new_resource)
-      #   Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      #   @provider = Seth::Provider::Service::Arch.new(@node, @new_resource)
+      #   Seth::Resource::Service.stub(:new).and_return(@current_resource)
       # end
 
       it "should call 'reload' on the service if it supports it" do
@@ -321,7 +321,7 @@ RUNNING_PS
       end
 
       it "should should run the user specified reload command if one is specified and the service doesn't support reload" do
-        @new_resource.stub(:reload_command).and_return("/etc/rc.d/chef lollerpants")
+        @new_resource.stub(:reload_command).and_return("/etc/rc.d/seth lollerpants")
         @provider.should_receive(:shell_out!).with("/etc/rc.d/#{@new_resource.service_name} lollerpants")
         @provider.reload_service()
       end

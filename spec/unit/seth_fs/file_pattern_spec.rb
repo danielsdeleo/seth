@@ -17,16 +17,16 @@
 #
 
 require 'spec_helper'
-require 'chef/chef_fs/file_pattern'
+require 'seth/chef_fs/file_pattern'
 
-describe Chef::ChefFS::FilePattern do
+describe Seth::ChefFS::FilePattern do
   def p(str)
-    Chef::ChefFS::FilePattern.new(str)
+    Seth::ChefFS::FilePattern.new(str)
   end
 
   # Different kinds of patterns
   context 'with empty pattern ""' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('') }
     it 'match?' do
       pattern.match?('').should be_true
       pattern.match?('/').should be_false
@@ -43,7 +43,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with root pattern "/"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/') }
     it 'match?' do
       pattern.match?('/').should be_true
       pattern.match?('').should be_false
@@ -63,7 +63,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with simple pattern "abc"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('abc') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('abc') }
     it 'match?' do
       pattern.match?('abc').should be_true
       pattern.match?('a').should be_false
@@ -83,7 +83,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with simple pattern "/abc"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/abc') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/abc') }
     it 'match?' do
       pattern.match?('/abc').should be_true
       pattern.match?('abc').should be_false
@@ -107,7 +107,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with simple pattern "abc/def/ghi"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('abc/def/ghi') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('abc/def/ghi') }
     it 'match?' do
       pattern.match?('abc/def/ghi').should be_true
       pattern.match?('/abc/def/ghi').should be_false
@@ -132,7 +132,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with simple pattern "/abc/def/ghi"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/abc/def/ghi') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/abc/def/ghi') }
     it 'match?' do
       pattern.match?('/abc/def/ghi').should be_true
       pattern.match?('abc/def/ghi').should be_false
@@ -157,8 +157,8 @@ describe Chef::ChefFS::FilePattern do
     end
   end
 
-  context 'with simple pattern "a\*\b"', :pending => (Chef::Platform.windows?) do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('a\*\b') }
+  context 'with simple pattern "a\*\b"', :pending => (Seth::Platform.windows?) do
+    let(:pattern) { Seth::ChefFS::FilePattern.new('a\*\b') }
     it 'match?' do
       pattern.match?('a*b').should be_true
       pattern.match?('ab').should be_false
@@ -174,7 +174,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with star pattern "/abc/*/ghi"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/abc/*/ghi') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/abc/*/ghi') }
     it 'match?' do
       pattern.match?('/abc/def/ghi').should be_true
       pattern.match?('/abc/ghi').should be_false
@@ -198,7 +198,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with star pattern "/abc/d*f/ghi"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/abc/d*f/ghi') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/abc/d*f/ghi') }
     it 'match?' do
       pattern.match?('/abc/def/ghi').should be_true
       pattern.match?('/abc/dxf/ghi').should be_true
@@ -232,7 +232,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with star pattern "/abc/d??f/ghi"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/abc/d??f/ghi') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/abc/d??f/ghi') }
     it 'match?' do
       pattern.match?('/abc/deef/ghi').should be_true
       pattern.match?('/abc/deeef/ghi').should be_false
@@ -264,8 +264,8 @@ describe Chef::ChefFS::FilePattern do
     end
   end
 
-  context 'with star pattern "/abc/d[a-z][0-9]f/ghi"', :pending => (Chef::Platform.windows?) do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/abc/d[a-z][0-9]f/ghi') }
+  context 'with star pattern "/abc/d[a-z][0-9]f/ghi"', :pending => (Seth::Platform.windows?) do
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/abc/d[a-z][0-9]f/ghi') }
     it 'match?' do
       pattern.match?('/abc/de1f/ghi').should be_true
       pattern.match?('/abc/deef/ghi').should be_false
@@ -303,7 +303,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with star pattern "/abc/**/ghi"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/abc/**/ghi') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/abc/**/ghi') }
     it 'match?' do
       pattern.match?('/abc/def/ghi').should be_true
       pattern.match?('/abc/d/e/f/ghi').should be_true
@@ -332,7 +332,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with star pattern "/abc**/ghi"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/abc**/ghi') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/abc**/ghi') }
     it 'match?' do
       pattern.match?('/abc/def/ghi').should be_true
       pattern.match?('/abc/d/e/f/ghi').should be_true
@@ -366,7 +366,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with star pattern "/abc/**ghi"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('/abc/**ghi') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('/abc/**ghi') }
     it 'match?' do
       pattern.match?('/abc/def/ghi').should be_true
       pattern.match?('/abc/def/ghi/ghi').should be_true
@@ -397,7 +397,7 @@ describe Chef::ChefFS::FilePattern do
   end
 
   context 'with star pattern "a**b**c"' do
-    let(:pattern) { Chef::ChefFS::FilePattern.new('a**b**c') }
+    let(:pattern) { Seth::ChefFS::FilePattern.new('a**b**c') }
     it 'match?' do
       pattern.match?('axybzwc').should be_true
       pattern.match?('abc').should be_true
@@ -476,8 +476,8 @@ describe Chef::ChefFS::FilePattern do
       p('abc**/def/../ghi').match?('ghi').should be_false
     end
     it 'raises error on dotdot with overlapping double star' do
-      lambda { Chef::ChefFS::FilePattern.new('abc/**/../def').exact_path }.should raise_error(ArgumentError)
-      lambda { Chef::ChefFS::FilePattern.new('abc/**/abc/../../def').exact_path }.should raise_error(ArgumentError)
+      lambda { Seth::ChefFS::FilePattern.new('abc/**/../def').exact_path }.should raise_error(ArgumentError)
+      lambda { Seth::ChefFS::FilePattern.new('abc/**/abc/../../def').exact_path }.should raise_error(ArgumentError)
     end
     it 'handles leading dotdot' do
       p('../abc/def').exact_path.should == '../abc/def'

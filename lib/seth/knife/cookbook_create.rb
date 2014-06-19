@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class CookbookCreate < Knife
 
       deps do
-        require 'chef/json_compat'
+        require 'seth/json_compat'
         require 'uri'
         require 'fileutils'
       end
@@ -56,7 +56,7 @@ class Chef
         :description => "Email address of cookbook maintainer"
 
       def run
-        self.config = Chef::Config.merge!(config)
+        self.config = Seth::Config.merge!(config)
         if @name_args.length < 1
           show_usage
           ui.fatal("You must specify a cookbook name")
@@ -436,7 +436,7 @@ EOH
       private
 
       def default_cookbook_path_empty?
-        Chef::Config[:cookbook_path].nil? || Chef::Config[:cookbook_path].empty?
+        Seth::Config[:cookbook_path].nil? || Chef::Config[:cookbook_path].empty?
       end
 
       def parameter_empty?(parameter)

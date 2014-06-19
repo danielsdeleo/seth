@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-gemspec :name => "chef"
+gemspec :name => "seth"
 
 gem "activesupport", "< 4.0.0", :group => :compat_testing, :platform => "ruby"
 
@@ -15,5 +15,5 @@ group(:development, :test) do
 end
 
 # If you want to load debugging tools into the bundle exec sandbox,
-# add these additional dependencies into chef/Gemfile.local
+# add these additional dependencies into seth/Gemfile.local
 eval(IO.read(__FILE__ + '.local'), binding) if File.exists?(__FILE__ + '.local')

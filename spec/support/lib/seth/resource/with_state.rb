@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
-require 'chef/json_compat'
+require 'seth/knife'
+require 'seth/json_compat'
 
-class Chef
+class Seth
   class Resource
-    class WithState < Chef::Resource
+    class WithState < Seth::Resource
       attr_accessor :state
 
       def initialize(name, run_context=nil)

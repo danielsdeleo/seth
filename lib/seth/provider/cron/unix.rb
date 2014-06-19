@@ -18,13 +18,13 @@
 # limitations under the License.
 #
 
-require 'chef/log'
-require 'chef/provider'
+require 'seth/log'
+require 'seth/provider'
 
-class Chef
+class Seth
   class Provider
     class Cron
-      class Unix < Chef::Provider::Cron
+      class Unix < Seth::Provider::Cron
 
         private
 
@@ -34,13 +34,13 @@ class Chef
             crontab = stdout.read
           end
           if status.exitstatus > 1
-            raise Chef::Exceptions::Cron, "Error determining state of #{@new_resource.name}, exit: #{status.exitstatus}"
+            raise Seth::Exceptions::Cron, "Error determining state of #{@new_resource.name}, exit: #{status.exitstatus}"
           end
           crontab
         end
 
         def write_crontab(crontab)
-          tempcron = Tempfile.new("chef-cron")
+          tempcron = Tempfile.new("seth-cron")
           tempcron << crontab
           tempcron.flush
           tempcron.chmod(0644)
@@ -54,19 +54,19 @@ class Chef
               error_message = stderr
               exit_status = 1
             end
-          rescue Chef::Exceptions::Exec => e
-            Chef::Log.debug(e.message)
+          rescue Seth::Exceptions::Exec => e
+            Seth::Log.debug(e.message)
             exit_status = 1
             error_message = e.message
           rescue ArgumentError => e
             # usually raised on invalid user.
-            Chef::Log.debug(e.message)
+            Seth::Log.debug(e.message)
             exit_status = 1
             error_message = e.message
           end
           tempcron.close!
           if exit_status > 0
-            raise Chef::Exceptions::Cron, "Error updating state of #{@new_resource.name}, exit: #{exit_status}, message: #{error_message}"
+            raise Seth::Exceptions::Cron, "Error updating state of #{@new_resource.name}, exit: #{exit_status}, message: #{error_message}"
           end
         end
 

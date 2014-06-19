@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Mixin
     module ConvertToClassName
       extend self

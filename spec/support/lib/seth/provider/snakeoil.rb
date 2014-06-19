@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Provider
-    class SnakeOil < Chef::Provider
+    class SnakeOil < Seth::Provider
       def load_current_resource
         true
       end

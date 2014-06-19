@@ -16,30 +16,30 @@
 # limitations under the License.
 #
 
-require 'chef/provider/user'
+require 'seth/provider/user'
 if RUBY_PLATFORM =~ /mswin|mingw32|windows/
-  require 'chef/util/windows/net_user'
+  require 'seth/util/windows/net_user'
 end
 
-class Chef
+class Seth
   class Provider
     class User
-      class Windows < Chef::Provider::User
+      class Windows < Seth::Provider::User
 
         def initialize(new_resource,run_context)
           super
-          @net_user = Chef::Util::Windows::NetUser.new(@new_resource.name)
+          @net_user = Seth::Util::Windows::NetUser.new(@new_resource.name)
         end
 
         def load_current_resource
-          @current_resource = Chef::Resource::User.new(@new_resource.name)
+          @current_resource = Seth::Resource::User.new(@new_resource.name)
           @current_resource.username(@new_resource.username)
           user_info = nil
           begin
             user_info = @net_user.get_info
           rescue
             @user_exists = false
-            Chef::Log.debug("#{@new_resource} does not exist")
+            Seth::Log.debug("#{@new_resource} does not exist")
           end
 
           if user_info
@@ -60,7 +60,7 @@ class Chef
         # <false>:: If the users are identical
         def compare_user
           unless @net_user.validate_credentials(@new_resource.password)
-            Chef::Log.debug("#{@new_resource} password has changed")
+            Seth::Log.debug("#{@new_resource} password has changed")
             return true
           end
           [ :uid, :gid, :comment, :home, :shell ].any? do |user_attrib|
@@ -109,7 +109,7 @@ class Chef
             if @current_resource.send(field_symbol) != @new_resource.send(field_symbol)
               if @new_resource.send(field_symbol)
                 unless field_symbol == :password
-                  Chef::Log.debug("#{@new_resource} setting #{field} to #{@new_resource.send(field_symbol)}")
+                  Seth::Log.debug("#{@new_resource} setting #{field} to #{@new_resource.send(field_symbol)}")
                 end
                 opts[option.to_sym] = @new_resource.send(field_symbol)
               end

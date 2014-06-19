@@ -18,10 +18,10 @@
 #
 
 require 'ffi'
-require 'chef/reserved_names'
-require 'chef/exceptions'
+require 'seth/reserved_names'
+require 'seth/exceptions'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     module API
 
@@ -33,7 +33,7 @@ class Chef
           attach_function(win32_func.to_sym, *args)
         rescue FFI::NotFoundError
           define_method(win32_func.to_sym) do |*margs|
-            raise Chef::Exceptions::Win32APIFunctionNotImplemented, "This version of Windows does not implement the Win32 function [#{win32_func}]."
+            raise Seth::Exceptions::Win32APIFunctionNotImplemented, "This version of Windows does not implement the Win32 function [#{win32_func}]."
           end
         end
       end

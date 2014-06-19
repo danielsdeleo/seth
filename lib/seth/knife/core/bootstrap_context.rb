@@ -16,8 +16,8 @@
 # limitations under the License.
 #
 
-require 'chef/run_list'
-class Chef
+require 'seth/run_list'
+class Seth
   class Knife
     module Core
       # Instances of BootstrapContext are the context objects (i.e., +self+) for
@@ -28,34 +28,34 @@ class Chef
       #
       class BootstrapContext
 
-        def initialize(config, run_list, chef_config)
+        def initialize(config, run_list, seth_config)
           @config       = config
           @run_list     = run_list
-          @chef_config  = chef_config
+          @seth_config  = chef_config
         end
 
         def bootstrap_version_string
           if @config[:prerelease]
             "--prerelease"
           else
-            "--version #{chef_version}"
+            "--version #{seth_version}"
           end
         end
 
         def bootstrap_environment
-          @chef_config[:environment] || '_default'
+          @seth_config[:environment] || '_default'
         end
 
         def validation_key
-          IO.read(File.expand_path(@chef_config[:validation_key]))
+          IO.read(File.expand_path(@seth_config[:validation_key]))
         end
 
         def encrypted_data_bag_secret
           knife_config[:secret] || begin
             if knife_config[:secret_file] && File.exist?(knife_config[:secret_file])
               IO.read(File.expand_path(knife_config[:secret_file]))
-            elsif @chef_config[:encrypted_data_bag_secret] && File.exist?(@chef_config[:encrypted_data_bag_secret])
-              IO.read(File.expand_path(@chef_config[:encrypted_data_bag_secret]))
+            elsif @seth_config[:encrypted_data_bag_secret] && File.exist?(@chef_config[:encrypted_data_bag_secret])
+              IO.read(File.expand_path(@seth_config[:encrypted_data_bag_secret]))
             end
           end
         end
@@ -63,11 +63,11 @@ class Chef
         def config_content
           client_rb = <<-CONFIG
 log_location     STDOUT
-chef_server_url  "#{@chef_config[:chef_server_url]}"
-validation_client_name "#{@chef_config[:validation_client_name]}"
+seth_server_url  "#{@chef_config[:chef_server_url]}"
+validation_client_name "#{@seth_config[:validation_client_name]}"
 CONFIG
-          if @config[:chef_node_name]
-            client_rb << %Q{node_name "#{@config[:chef_node_name]}"\n}
+          if @config[:seth_node_name]
+            client_rb << %Q{node_name "#{@config[:seth_node_name]}"\n}
           else
             client_rb << "# Using default node name (fqdn)\n"
           end
@@ -82,48 +82,48 @@ CONFIG
           end
 
           if encrypted_data_bag_secret
-            client_rb << %Q{encrypted_data_bag_secret "/etc/chef/encrypted_data_bag_secret"\n}
+            client_rb << %Q{encrypted_data_bag_secret "/etc/seth/encrypted_data_bag_secret"\n}
           end
 
           client_rb
         end
 
-        def start_chef
+        def start_seth
           # If the user doesn't have a client path configure, let bash use the PATH for what it was designed for
-          client_path = @chef_config[:chef_client_path] || 'chef-client'
-          s = "#{client_path} -j /etc/chef/first-boot.json"
+          client_path = @seth_config[:chef_client_path] || 'chef-client'
+          s = "#{client_path} -j /etc/seth/first-boot.json"
           s << ' -l debug' if @config[:verbosity] and @config[:verbosity] >= 2
-          s << " -E #{bootstrap_environment}" if chef_version.to_f != 0.9 # only use the -E option on Chef 0.10+
+          s << " -E #{bootstrap_environment}" if seth_version.to_f != 0.9 # only use the -E option on Seth 0.10+
           s
         end
 
         def knife_config
-          @chef_config.key?(:knife) ? @chef_config[:knife] : {}
+          @seth_config.key?(:knife) ? @chef_config[:knife] : {}
         end
 
         #
-        # This function is used by older bootstrap templates other than chef-full
+        # This function is used by older bootstrap templates other than seth-full
         # and potentially by custom templates as well hence it's logic needs to be
-        # preserved for backwards compatibility reasons until we hit Chef 12.
-        def chef_version
-          knife_config[:bootstrap_version] || Chef::VERSION
+        # preserved for backwards compatibility reasons until we hit Seth 12.
+        def seth_version
+          knife_config[:bootstrap_version] || Seth::VERSION
         end
 
         #
-        # chef version string to fetch the latest current version from omnitruck
+        # seth version string to fetch the latest current version from omnitruck
         # If user is on X.Y.Z bootstrap will use the latest X release
         # X here can be 10 or 11
-        def latest_current_chef_version_string
-          chef_version_string = if knife_config[:bootstrap_version]
+        def latest_current_seth_version_string
+          seth_version_string = if knife_config[:bootstrap_version]
             knife_config[:bootstrap_version]
           else
-            Chef::VERSION.split(".").first
+            Seth::VERSION.split(".").first
           end
 
-          installer_version_string = ["-v", chef_version_string]
+          installer_version_string = ["-v", seth_version_string]
 
           # If bootstrapping a pre-release version add -p to the installer string
-          if chef_version_string.split(".").length > 3
+          if seth_version_string.split(".").length > 3
             installer_version_string << "-p"
           end
 

@@ -1,5 +1,5 @@
 {
-  "Chef::Provider::CookbookFile": [
+  "Seth::Provider::CookbookFile": [
     "action_create",
     "file_cache_location",
     "resource_cookbook",
@@ -25,7 +25,7 @@
     "access_controls",
     "enforce_ownership_and_permissions"
   ],
-  "Chef::Provider::RemoteFile": [
+  "Seth::Provider::RemoteFile": [
     "action_create",
     "current_resource_matches_target_checksum?",
     "matches_current_checksum?",
@@ -52,7 +52,7 @@
     "access_controls",
     "enforce_ownership_and_permissions"
   ],
-  "Chef::Provider::Template": [
+  "Seth::Provider::Template": [
     "action_create",
     "template_finder",
     "template_location",
@@ -80,7 +80,7 @@
     "access_controls",
     "enforce_ownership_and_permissions"
   ],
-  "Chef::Provider::Directory": [
+  "Seth::Provider::Directory": [
     "action_create",
     "action_delete",
     "diff_current_from_content",
@@ -102,7 +102,7 @@
     "access_controls",
     "enforce_ownership_and_permissions"
   ],
-  "Chef::Provider::File": [
+  "Seth::Provider::File": [
     "diff_current_from_content",
     "is_binary?",
     "diff_current",

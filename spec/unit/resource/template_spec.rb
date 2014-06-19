@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Template do
+describe Seth::Resource::Template do
 
   before(:each) do
-    @resource = Chef::Resource::Template.new("fakey_fakerton")
+    @resource = Seth::Resource::Template.new("fakey_fakerton")
   end
 
   describe "initialize" do
-    it "should create a new Chef::Resource::Template" do
-      @resource.should be_a_kind_of(Chef::Resource)
-      @resource.should be_a_kind_of(Chef::Resource::File)
-      @resource.should be_a_kind_of(Chef::Resource::Template)
+    it "should create a new Seth::Resource::Template" do
+      @resource.should be_a_kind_of(Seth::Resource)
+      @resource.should be_a_kind_of(Seth::Resource::File)
+      @resource.should be_a_kind_of(Seth::Resource::Template)
     end
   end
 
@@ -43,7 +43,7 @@ describe Chef::Resource::Template do
     end
 
     it "should use only the basename of the file as the default" do
-      r = Chef::Resource::Template.new("/tmp/obit/fakey_fakerton")
+      r = Seth::Resource::Template.new("/tmp/obit/fakey_fakerton")
       r.source.should eql("fakey_fakerton.erb")
     end
   end
@@ -97,7 +97,7 @@ describe Chef::Resource::Template do
     end
 
     context "on windows", :windows_only do
-      # according to Chef::Resource::File, windows state attributes are rights + deny_rights
+      # according to Seth::Resource::File, windows state attributes are rights + deny_rights
       pending "it describes its state"
     end
 
@@ -141,11 +141,11 @@ describe Chef::Resource::Template do
     end
 
     it "raises an error when attempting to define a helper method without a method body" do
-      lambda { @resource.helper(:example) }.should raise_error(Chef::Exceptions::ValidationFailed)
+      lambda { @resource.helper(:example) }.should raise_error(Seth::Exceptions::ValidationFailed)
     end
 
     it "raises an error when attempting to define a helper method with a non-Symbod method name" do
-      lambda { @resource.helper("example") { "fail" } }.should raise_error(Chef::Exceptions::ValidationFailed)
+      lambda { @resource.helper("example") { "fail" } }.should raise_error(Seth::Exceptions::ValidationFailed)
     end
 
     it "collects helper module bodies as blocks" do
@@ -172,15 +172,15 @@ describe Chef::Resource::Template do
     end
 
     it "raises an error when no block or module name is given for helpers definition" do
-      lambda { @resource.helpers() }.should raise_error(Chef::Exceptions::ValidationFailed)
+      lambda { @resource.helpers() }.should raise_error(Seth::Exceptions::ValidationFailed)
     end
 
     it "raises an error when a non-module is given for helpers definition" do
-      lambda { @resource.helpers("NotAModule") }.should raise_error(Chef::Exceptions::ValidationFailed)
+      lambda { @resource.helpers("NotAModule") }.should raise_error(Seth::Exceptions::ValidationFailed)
     end
 
     it "raises an error when a module name and block are both given for helpers definition" do
-      lambda { @resource.helpers(ExampleHelpers) { module_code } }.should raise_error(Chef::Exceptions::ValidationFailed)
+      lambda { @resource.helpers(ExampleHelpers) { module_code } }.should raise_error(Seth::Exceptions::ValidationFailed)
     end
 
     it "collects helper modules" do

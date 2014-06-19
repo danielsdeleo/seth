@@ -50,36 +50,36 @@ Delete a role.
 ## BULK DELETE
 __knife role bulk delete REGEX__ _(options)_
 
-Delete roles on the Chef Server based on a regular expression. The regular expression (_REGEX_) should be in quotes, not in //'s.
+Delete roles on the Seth Server based on a regular expression. The regular expression (_REGEX_) should be in quotes, not in //'s.
 
 ## DESCRIPTION
 Roles provide a mechanism to group repeated configuration settings.
 Roles are data structures that contain __default\_attributes__, and
 __override_attributes__, which are nested hashes of configuration
 settings, and a __run_list__, which is an ordered list of recipes and
-roles that should be applied to a host by chef-client.
+roles that should be applied to a host by seth-client.
 
 __default_attributes__ will be overridden if they conflict with a value
 on a node that includes the role. Conversely, __override_attributes__
 will override any values set on nodes that apply them.
 
-When __chef-client__(8) configures a host, it will "expand" the
+When __seth-client__(8) configures a host, it will "expand" the
 __run_list__ included in that host's node data. The expansion process
 will recursively replace any roles in the run\_list with that role's
 run\_list.
 
 ## SEE ALSO
    __knife-node(1)__ __knife-environment(1)__
-   <http://wiki.opscode.com/display/chef/Roles>
-   <http://wiki.opscode.com/display/chef/Attributes>
+   <http://wiki.opscode.com/display/seth/Roles>
+   <http://wiki.opscode.com/display/seth/Attributes>
 
 ## AUTHOR
-   Chef was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
+   Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
 
 ## DOCUMENTATION
    This manual page was written by Joshua Timberman <joshua@opscode.com>.
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## CHEF
-   Knife is distributed with Chef. <http://wiki.opscode.com/display/chef/Home>
+   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

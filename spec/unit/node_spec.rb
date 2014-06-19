@@ -19,26 +19,26 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Node do
+describe Seth::Node do
 
-  let(:node) { Chef::Node.new() }
+  let(:node) { Seth::Node.new() }
   let(:platform_introspector) { node }
 
   it_behaves_like "a platform introspector"
 
   it "creates a node and assigns it a name" do
-    node = Chef::Node.build('solo-node')
+    node = Seth::Node.build('solo-node')
     node.name.should == 'solo-node'
   end
 
   it "should validate the name of the node" do
-    lambda{Chef::Node.build('solo node')}.should raise_error(Chef::Exceptions::ValidationFailed)
+    lambda{Seth::Node.build('solo node')}.should raise_error(Chef::Exceptions::ValidationFailed)
   end
 
   it "should be sortable" do
-    n1 = Chef::Node.build('alpha')
-    n2 = Chef::Node.build('beta')
-    n3 = Chef::Node.build('omega')
+    n1 = Seth::Node.build('alpha')
+    n2 = Seth::Node.build('beta')
+    n3 = Seth::Node.build('omega')
     [n3, n1, n2].sort.should == [n1, n2, n3]
   end
 
@@ -46,14 +46,14 @@ describe Chef::Node do
     before do
       response = OpenStruct.new(:code => '404')
       exception = Net::HTTPServerException.new("404 not found", response)
-      Chef::Node.stub(:load).and_raise(exception)
+      Seth::Node.stub(:load).and_raise(exception)
       node.name("created-node")
     end
 
     it "creates a new node for find_or_create" do
-      Chef::Node.stub(:new).and_return(node)
+      Seth::Node.stub(:new).and_return(node)
       node.should_receive(:create).and_return(node)
-      node = Chef::Node.find_or_create("created-node")
+      node = Seth::Node.find_or_create("created-node")
       node.name.should == 'created-node'
       node.should equal(node)
     end
@@ -62,11 +62,11 @@ describe Chef::Node do
   describe "when the node exists on the server" do
     before do
       node.name('existing-node')
-      Chef::Node.stub(:load).and_return(node)
+      Seth::Node.stub(:load).and_return(node)
     end
 
     it "loads the node via the REST API for find_or_create" do
-      Chef::Node.find_or_create('existing-node').should equal(node)
+      Seth::Node.find_or_create('existing-node').should equal(node)
     end
   end
 
@@ -78,9 +78,9 @@ describe Chef::Node do
   end
 
   describe "initialize" do
-    it "should default to the '_default' chef_environment" do
-      n = Chef::Node.new
-      n.chef_environment.should == '_default'
+    it "should default to the '_default' seth_environment" do
+      n = Seth::Node.new
+      n.seth_environment.should == '_default'
     end
   end
 
@@ -99,31 +99,31 @@ describe Chef::Node do
     end
 
     it "cannot be blank" do
-      lambda { node.name("")}.should raise_error(Chef::Exceptions::ValidationFailed)
+      lambda { node.name("")}.should raise_error(Seth::Exceptions::ValidationFailed)
     end
 
     it "should not accept name doesn't match /^[\-[:alnum:]_:.]+$/" do
-      lambda { node.name("space in it")}.should raise_error(Chef::Exceptions::ValidationFailed)
+      lambda { node.name("space in it")}.should raise_error(Seth::Exceptions::ValidationFailed)
     end
   end
 
-  describe "chef_environment" do
-    it "should set an environment with chef_environment(something)" do
-      lambda { node.chef_environment("latte") }.should_not raise_error
+  describe "seth_environment" do
+    it "should set an environment with seth_environment(something)" do
+      lambda { node.seth_environment("latte") }.should_not raise_error
     end
 
-    it "should return the chef_environment with chef_environment()" do
-      node.chef_environment("latte")
-      node.chef_environment.should == "latte"
+    it "should return the seth_environment with chef_environment()" do
+      node.seth_environment("latte")
+      node.seth_environment.should == "latte"
     end
 
     it "should disallow non-strings" do
-      lambda { node.chef_environment(Hash.new) }.should raise_error(ArgumentError)
-      lambda { node.chef_environment(42) }.should raise_error(ArgumentError)
+      lambda { node.seth_environment(Hash.new) }.should raise_error(ArgumentError)
+      lambda { node.seth_environment(42) }.should raise_error(ArgumentError)
     end
 
     it "cannot be blank" do
-      lambda { node.chef_environment("")}.should raise_error(Chef::Exceptions::ValidationFailed)
+      lambda { node.seth_environment("")}.should raise_error(Seth::Exceptions::ValidationFailed)
     end
   end
 
@@ -143,7 +143,7 @@ describe Chef::Node do
     end
 
     it "does not allow you to set an attribute via node[]=" do
-      lambda  { node["secret"] = "shush" }.should raise_error(Chef::Exceptions::ImmutableAttributeModification)
+      lambda  { node["secret"] = "shush" }.should raise_error(Seth::Exceptions::ImmutableAttributeModification)
     end
 
     it "should allow you to query whether an attribute exists with attribute?" do
@@ -159,7 +159,7 @@ describe Chef::Node do
     end
 
     it "does not allow you to set an attribute via method_missing" do
-      lambda { node.sunshine = "is bright"}.should raise_error(Chef::Exceptions::ImmutableAttributeModification)
+      lambda { node.sunshine = "is bright"}.should raise_error(Seth::Exceptions::ImmutableAttributeModification)
     end
 
     it "should allow you get get an attribute via method_missing" do
@@ -326,9 +326,9 @@ describe Chef::Node do
     end
 
     it "consumes the run list portion of a collection of attributes and returns the remainder" do
-      attrs = {"run_list" => [ "role[base]", "recipe[chef::server]" ], "foo" => "bar"}
+      attrs = {"run_list" => [ "role[base]", "recipe[seth::server]" ], "foo" => "bar"}
       node.consume_run_list(attrs).should == {"foo" => "bar"}
-      node.run_list.should == [ "role[base]", "recipe[chef::server]" ]
+      node.run_list.should == [ "role[base]", "recipe[seth::server]" ]
     end
 
     it "should overwrites the run list with the run list it consumes" do
@@ -350,7 +350,7 @@ describe Chef::Node do
     end
 
     it "raises an exception if you provide both recipe and run_list attributes, since this is ambiguous" do
-      lambda { node.consume_run_list "recipes" => "stuff", "run_list" => "other_stuff" }.should raise_error(Chef::Exceptions::AmbiguousRunlistSpecification)
+      lambda { node.consume_run_list "recipes" => "stuff", "run_list" => "other_stuff" }.should raise_error(Seth::Exceptions::AmbiguousRunlistSpecification)
     end
 
     it "should add json attributes to the node" do
@@ -387,7 +387,7 @@ describe Chef::Node do
 
   end
 
-  describe "preparing for a chef client run" do
+  describe "preparing for a seth client run" do
     before do
       @ohai_data = {:platform => 'foobuntu', :platform_version => '23.42'}
     end
@@ -404,7 +404,7 @@ describe Chef::Node do
     end
 
     it "saves non-runlist json attrs for later" do
-      expansion = Chef::RunList::RunListExpansion.new('_default', [])
+      expansion = Seth::RunList::RunListExpansion.new('_default', [])
       node.run_list.stub(:expand).and_return(expansion)
       node.consume_external_attrs(@ohai_data, {"foo" => "bar"})
       node.expand!
@@ -415,21 +415,21 @@ describe Chef::Node do
 
   describe "when expanding its run list and merging attributes" do
     before do
-      @environment = Chef::Environment.new.tap do |e|
+      @environment = Seth::Environment.new.tap do |e|
         e.name('rspec_env')
         e.default_attributes("env default key" => "env default value")
         e.override_attributes("env override key" => "env override value")
       end
-      Chef::Environment.should_receive(:load).with("rspec_env").and_return(@environment)
-      @expansion = Chef::RunList::RunListExpansion.new("rspec_env", [])
-      node.chef_environment("rspec_env")
+      Seth::Environment.should_receive(:load).with("rspec_env").and_return(@environment)
+      @expansion = Seth::RunList::RunListExpansion.new("rspec_env", [])
+      node.seth_environment("rspec_env")
       node.run_list.stub(:expand).and_return(@expansion)
     end
 
     it "sets the 'recipes' automatic attribute to the recipes in the expanded run_list" do
-      @expansion.recipes << 'recipe[chef::client]' << 'recipe[nginx::default]'
+      @expansion.recipes << 'recipe[seth::client]' << 'recipe[nginx::default]'
       node.expand!
-      node.automatic_attrs[:recipes].should == ['recipe[chef::client]', 'recipe[nginx::default]']
+      node.automatic_attrs[:recipes].should == ['recipe[seth::client]', 'recipe[nginx::default]']
     end
 
     it "sets the 'roles' automatic attribute to the expanded role list" do
@@ -531,16 +531,16 @@ describe Chef::Node do
 
   describe "when merging environment attributes" do
     before do
-      node.chef_environment = "rspec"
-      @expansion = Chef::RunList::RunListExpansion.new("rspec", [])
+      node.seth_environment = "rspec"
+      @expansion = Seth::RunList::RunListExpansion.new("rspec", [])
       @expansion.default_attrs.replace({:default => "from role", :d_role => "role only"})
       @expansion.override_attrs.replace({:override => "from role", :o_role => "role only"})
 
 
-      @environment = Chef::Environment.new
+      @environment = Seth::Environment.new
       @environment.default_attributes = {:default => "from env", :d_env => "env only" }
       @environment.override_attributes = {:override => "from env", :o_env => "env only"}
-      Chef::Environment.stub(:load).and_return(@environment)
+      Seth::Environment.stub(:load).and_return(@environment)
       node.apply_expansion_attributes(@expansion)
     end
 
@@ -572,13 +572,13 @@ describe Chef::Node do
   describe "when evaluating attributes files" do
     before do
       @cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-      @cookbook_loader = Chef::CookbookLoader.new(@cookbook_repo)
+      @cookbook_loader = Seth::CookbookLoader.new(@cookbook_repo)
       @cookbook_loader.load_cookbooks
 
-      @cookbook_collection = Chef::CookbookCollection.new(@cookbook_loader.cookbooks_by_name)
+      @cookbook_collection = Seth::CookbookCollection.new(@cookbook_loader.cookbooks_by_name)
 
-      @events = Chef::EventDispatch::Dispatcher.new
-      @run_context = Chef::RunContext.new(node, @cookbook_collection, @events)
+      @events = Seth::EventDispatch::Dispatcher.new
+      @run_context = Seth::RunContext.new(node, @cookbook_collection, @events)
 
       node.include_attribute("openldap::default")
       node.include_attribute("openldap::smokey")
@@ -592,7 +592,7 @@ describe Chef::Node do
     end
 
     it "gives a sensible error when attempting to load a missing attributes file" do
-      lambda { node.include_attribute("nope-this::doesnt-exist") }.should raise_error(Chef::Exceptions::CookbookNotFound)
+      lambda { node.include_attribute("nope-this::doesnt-exist") }.should raise_error(Seth::Exceptions::CookbookNotFound)
     end
   end
 
@@ -612,8 +612,8 @@ describe Chef::Node do
   end
 
   describe "run_list" do
-    it "should have a Chef::RunList of recipes and roles that should be applied" do
-      node.run_list.should be_a_kind_of(Chef::RunList)
+    it "should have a Seth::RunList of recipes and roles that should be applied" do
+      node.run_list.should be_a_kind_of(Seth::RunList)
     end
 
     it "should allow you to query the run list with arguments" do
@@ -645,7 +645,7 @@ describe Chef::Node do
   describe "update_from!" do
     before(:each) do
       node.name("orig")
-      node.chef_environment("dev")
+      node.seth_environment("dev")
       node.default_attrs = { "one" => { "two" => "three", "four" => "five", "eight" => "nine" } }
       node.override_attrs = { "one" => { "two" => "three", "four" => "six" } }
       node.normal_attrs = { "one" => { "two" => "seven" } }
@@ -653,9 +653,9 @@ describe Chef::Node do
       node.run_list << "role[leninist]"
       node.run_list << "recipe[stalinist]"
 
-      @example = Chef::Node.new()
+      @example = Seth::Node.new()
       @example.name("newname")
-      @example.chef_environment("prod")
+      @example.seth_environment("prod")
       @example.default_attrs = { "alpha" => { "bravo" => "charlie", "delta" => "echo" } }
       @example.override_attrs = { "alpha" => { "bravo" => "foxtrot", "delta" => "golf" } }
       @example.normal_attrs = { "alpha" => { "bravo" => "hotel" } }
@@ -667,7 +667,7 @@ describe Chef::Node do
     it "allows update of everything except name" do
       node.update_from!(@example)
       node.name.should == "orig"
-      node.chef_environment.should == @example.chef_environment
+      node.seth_environment.should == @example.chef_environment
       node.default_attrs.should == @example.default_attrs
       node.override_attrs.should == @example.override_attrs
       node.normal_attrs.should == @example.normal_attrs
@@ -682,7 +682,7 @@ describe Chef::Node do
 
   describe "to_hash" do
     it "should serialize itself as a hash" do
-      node.chef_environment("dev")
+      node.seth_environment("dev")
       node.default_attrs = { "one" => { "two" => "three", "four" => "five", "eight" => "nine" } }
       node.override_attrs = { "one" => { "two" => "three", "four" => "six" } }
       node.normal_attrs = { "one" => { "two" => "seven" } }
@@ -698,17 +698,17 @@ describe Chef::Node do
       h["run_list"].should be_include("role[marxist]")
       h["run_list"].should be_include("role[leninist]")
       h["run_list"].should be_include("recipe[stalinist]")
-      h["chef_environment"].should == "dev"
+      h["seth_environment"].should == "dev"
     end
   end
 
   describe "converting to or from json" do
     it "should serialize itself as json", :json => true do
       node.from_file(File.expand_path("nodes/test.example.com.rb", CHEF_SPEC_DATA))
-      json = Chef::JSONCompat.to_json(node)
+      json = Seth::JSONCompat.to_json(node)
       json.should =~ /json_class/
       json.should =~ /name/
-      json.should =~ /chef_environment/
+      json.should =~ /seth_environment/
       json.should =~ /normal/
       json.should =~ /default/
       json.should =~ /override/
@@ -716,11 +716,11 @@ describe Chef::Node do
     end
 
     it 'should serialize valid json with a run list', :json => true do
-      #This test came about because activesupport mucks with Chef json serialization
+      #This test came about because activesupport mucks with Seth json serialization
       #Test should pass with and without Activesupport
       node.run_list << {"type" => "role", "name" => 'Cthulu'}
       node.run_list << {"type" => "role", "name" => 'Hastur'}
-      json = Chef::JSONCompat.to_json(node)
+      json = Seth::JSONCompat.to_json(node)
       json.should =~ /\"run_list\":\[\"role\[Cthulu\]\",\"role\[Hastur\]\"\]/
     end
 
@@ -729,7 +729,7 @@ describe Chef::Node do
       node.run_list << "role[leninist]"
       node.override_runlist << "role[stalinist]"
       node.run_list.should be_include("role[stalinist]")
-      json = Chef::JSONCompat.to_json(node)
+      json = Seth::JSONCompat.to_json(node)
       json.should =~ /\"run_list\":\[\"role\[marxist\]\",\"role\[leninist\]\"\]/
     end
 
@@ -752,11 +752,11 @@ describe Chef::Node do
 
     it "should deserialize itself from json", :json => true do
       node.from_file(File.expand_path("nodes/test.example.com.rb", CHEF_SPEC_DATA))
-      json = Chef::JSONCompat.to_json(node)
-      serialized_node = Chef::JSONCompat.from_json(json)
-      serialized_node.should be_a_kind_of(Chef::Node)
+      json = Seth::JSONCompat.to_json(node)
+      serialized_node = Seth::JSONCompat.from_json(json)
+      serialized_node.should be_a_kind_of(Seth::Node)
       serialized_node.name.should eql(node.name)
-      serialized_node.chef_environment.should eql(node.chef_environment)
+      serialized_node.seth_environment.should eql(node.chef_environment)
       node.each_attribute do |k,v|
         serialized_node[k].should eql(v)
       end
@@ -773,25 +773,25 @@ describe Chef::Node do
 
   describe "api model" do
     before(:each) do
-      @rest = double("Chef::REST")
-      Chef::REST.stub(:new).and_return(@rest)
-      @query = double("Chef::Search::Query")
-      Chef::Search::Query.stub(:new).and_return(@query)
+      @rest = double("Seth::REST")
+      Seth::REST.stub(:new).and_return(@rest)
+      @query = double("Seth::Search::Query")
+      Seth::Search::Query.stub(:new).and_return(@query)
     end
 
     describe "list" do
       describe "inflated" do
         it "should return a hash of node names and objects" do
-          n1 = double("Chef::Node", :name => "one")
+          n1 = double("Seth::Node", :name => "one")
           @query.should_receive(:search).with(:node).and_yield(n1)
-          r = Chef::Node.list(true)
+          r = Seth::Node.list(true)
           r["one"].should == n1
         end
       end
 
       it "should return a hash of node names and urls" do
         @rest.should_receive(:get_rest).and_return({ "one" => "http://foo" })
-        r = Chef::Node.list
+        r = Seth::Node.list
         r["one"].should == "http://foo"
       end
     end
@@ -799,7 +799,7 @@ describe Chef::Node do
     describe "load" do
       it "should load a node by name" do
         @rest.should_receive(:get_rest).with("nodes/monkey").and_return("foo")
-        Chef::Node.load("monkey").should == "foo"
+        Seth::Node.load("monkey").should == "foo"
       end
     end
 
@@ -838,10 +838,10 @@ describe Chef::Node do
 
       describe "when whyrun mode is enabled" do
         before do
-          Chef::Config[:why_run] = true
+          Seth::Config[:why_run] = true
         end
         after do
-          Chef::Config[:why_run] = false
+          Seth::Config[:why_run] = false
         end
         it "should not save" do
           node.name("monkey")
@@ -853,7 +853,7 @@ describe Chef::Node do
 
       context "with whitelisted attributes configured" do
         it "should only save whitelisted attributes (and subattributes)" do
-          Chef::Config[:automatic_attribute_whitelist] = [
+          Seth::Config[:automatic_attribute_whitelist] = [
             ["filesystem", "/dev/disk0s2"],
             "network/interfaces/eth0"
           ]
@@ -895,7 +895,7 @@ describe Chef::Node do
         end
 
         it "should not save any attributes if the whitelist is empty" do
-          Chef::Config[:automatic_attribute_whitelist] = []
+          Seth::Config[:automatic_attribute_whitelist] = []
 
           data = {
             "automatic" => {

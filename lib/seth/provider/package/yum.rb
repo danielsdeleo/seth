@@ -16,19 +16,19 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/mixin/shell_out'
-require 'chef/resource/package'
+require 'seth/config'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/mixin/shell_out'
+require 'seth/resource/package'
 require 'singleton'
-require 'chef/mixin/get_source_from_package'
+require 'seth/mixin/get_source_from_package'
 
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Yum < Chef::Provider::Package
+      class Yum < Seth::Provider::Package
 
         class RPMUtils
           class << self
@@ -646,8 +646,8 @@ class Chef
 
         # Cache for our installed and available packages, pulled in from yum-dump.py
         class YumCache
-          include Chef::Mixin::Command
-          include Chef::Mixin::ShellOut
+          include Seth::Mixin::Command
+          include Seth::Mixin::ShellOut
           include Singleton
 
           def initialize
@@ -670,7 +670,7 @@ class Chef
             @extra_repo_control = nil
 
             # these are for subsequent runs if we are on an interval
-            Chef::Client.when_run_starts do
+            Seth::Client.when_run_starts do
               YumCache.instance.reload
             end
           end
@@ -704,7 +704,7 @@ class Chef
               opts << " #{@extra_repo_control}"
             end
 
-            opts << " --yum-lock-timeout #{Chef::Config[:yum_lock_timeout]}"
+            opts << " --yum-lock-timeout #{Seth::Config[:yum_lock_timeout]}"
 
             one_line = false
             error = nil
@@ -713,7 +713,7 @@ class Chef
             status = nil
 
             begin
-              status = shell_out!("/usr/bin/python #{helper}#{opts}", :timeout => Chef::Config[:yum_timeout])
+              status = shell_out!("/usr/bin/python #{helper}#{opts}", :timeout => Seth::Config[:yum_timeout])
               status.stdout.each_line do |line|
                 one_line = true
 
@@ -723,7 +723,7 @@ class Chef
                   if $1 == "installonlypkgs"
                     @allow_multi_install = $2.split
                   else
-                    raise Chef::Exceptions::Package, "Strange, unknown option line '#{line}' from yum-dump.py"
+                    raise Seth::Exceptions::Package, "Strange, unknown option line '#{line}' from yum-dump.py"
                   end
                   next
                 end
@@ -738,7 +738,7 @@ class Chef
                   type     = $7
                   repoid   = $8
                 else
-                  Chef::Log.warn("Problem parsing line '#{line}' from yum-dump.py! " +
+                  Seth::Log.warn("Problem parsing line '#{line}' from yum-dump.py! " +
                                  "Please check your yum configuration.")
                   next
                 end
@@ -763,15 +763,15 @@ class Chef
 
               error = status.stderr
             rescue Mixlib::ShellOut::CommandTimeout => e
-              Chef::Log.error("#{helper} exceeded timeout #{Chef::Config[:yum_timeout]}")
+              Seth::Log.error("#{helper} exceeded timeout #{Chef::Config[:yum_timeout]}")
               raise(e)
             end
 
             if status.exitstatus != 0
-              raise Chef::Exceptions::Package, "Yum failed - #{status.inspect} - returns: #{error}"
+              raise Seth::Exceptions::Package, "Yum failed - #{status.inspect} - returns: #{error}"
             else
               unless one_line
-                Chef::Log.warn("Odd, no output from yum-dump.py. Please check " +
+                Seth::Log.warn("Odd, no output from yum-dump.py. Please check " +
                                "your yum configuration.")
               end
             end
@@ -948,8 +948,8 @@ class Chef
 
         end # YumCache
 
-        include Chef::Mixin::GetSourceFromPackage
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::GetSourceFromPackage
+        include Seth::Mixin::ShellOut
 
         def initialize(new_resource, run_context)
           super
@@ -992,12 +992,12 @@ class Chef
         end
 
         def yum_command(command)
-          status, stdout, stderr = output_of_command(command, {:timeout => Chef::Config[:yum_timeout]})
+          status, stdout, stderr = output_of_command(command, {:timeout => Seth::Config[:yum_timeout]})
 
           # This is fun: rpm can encounter errors in the %post/%postun scripts which aren't
           # considered fatal - meaning the rpm is still successfully installed. These issue
           # cause yum to emit a non fatal warning but still exit(1). As there's currently no
-          # way to suppress this behavior and an exit(1) will break a Chef run we make an
+          # way to suppress this behavior and an exit(1) will break a Seth run we make an
           # effort to trap these and re-run the same install command - it will either fail a
           # second time or succeed.
           #
@@ -1007,9 +1007,9 @@ class Chef
             stdout.each_line do |l|
               # rpm-4.4.2.3 lib/psm.c line 2182
               if l =~ %r{^error: %(post|postun)\(.*\) scriptlet failed, exit status \d+$}
-                Chef::Log.warn("#{@new_resource} caught non-fatal scriptlet issue: \"#{l}\". Can't trust yum exit status " +
+                Seth::Log.warn("#{@new_resource} caught non-fatal scriptlet issue: \"#{l}\". Can't trust yum exit status " +
                                "so running install again to verify.")
-                status, stdout, stderr = output_of_command(command, {:timeout => Chef::Config[:yum_timeout]})
+                status, stdout, stderr = output_of_command(command, {:timeout => Seth::Config[:yum_timeout]})
                 break
               end
             end
@@ -1064,16 +1064,16 @@ class Chef
             parse_arch
           end
 
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
 
           if @new_resource.source
             unless ::File.exists?(@new_resource.source)
-              raise Chef::Exceptions::Package, "Package #{@new_resource.name} not found: #{@new_resource.source}"
+              raise Seth::Exceptions::Package, "Package #{@new_resource.name} not found: #{@new_resource.source}"
             end
 
-            Chef::Log.debug("#{@new_resource} checking rpm status")
-            shell_out!("rpm -qp --queryformat '%{NAME} %{VERSION}-%{RELEASE}\n' #{@new_resource.source}", :timeout => Chef::Config[:yum_timeout]).stdout.each_line do |line|
+            Seth::Log.debug("#{@new_resource} checking rpm status")
+            shell_out!("rpm -qp --queryformat '%{NAME} %{VERSION}-%{RELEASE}\n' #{@new_resource.source}", :timeout => Seth::Config[:yum_timeout]).stdout.each_line do |line|
               case line
               when /([\w\d_.-]+)\s([\w\d_.-]+)/
                 @current_resource.package_name($1)
@@ -1088,14 +1088,14 @@ class Chef
             new_resource = "#{@new_resource.package_name}#{yum_arch}"
           end
 
-          Chef::Log.debug("#{@new_resource} checking yum info for #{new_resource}")
+          Seth::Log.debug("#{@new_resource} checking yum info for #{new_resource}")
 
           installed_version = @yum.installed_version(@new_resource.package_name, arch)
           @current_resource.version(installed_version)
 
           @candidate_version = @yum.candidate_version(@new_resource.package_name, arch)
 
-          Chef::Log.debug("#{@new_resource} installed version: #{installed_version || "(none)"} candidate version: " +
+          Seth::Log.debug("#{@new_resource} installed version: #{installed_version || "(none)"} candidate version: " +
                           "#{@candidate_version || "(none)"}")
 
           @current_resource
@@ -1124,18 +1124,18 @@ class Chef
                     log_method = "downgrading"
                   else
                     # we bail like yum when the package is older
-                    raise Chef::Exceptions::Package, "Installed package #{name}-#{@current_resource.version} is newer " +
+                    raise Seth::Exceptions::Package, "Installed package #{name}-#{@current_resource.version} is newer " +
                                                      "than candidate package #{name}-#{version}"
                   end
                 end
               end
 
               repo = @yum.package_repository(name, version, arch)
-              Chef::Log.info("#{@new_resource} #{log_method} #{name}-#{version}#{yum_arch} from #{repo} repository")
+              Seth::Log.info("#{@new_resource} #{log_method} #{name}-#{version}#{yum_arch} from #{repo} repository")
 
               yum_command("yum -d0 -e0 -y#{expand_options(@new_resource.options)} #{method} #{name}-#{version}#{yum_arch}")
             else
-              raise Chef::Exceptions::Package, "Version #{version} of #{name} not found. Did you specify both version " +
+              raise Seth::Exceptions::Package, "Version #{version} of #{name} not found. Did you specify both version " +
                                                "and release? (version-release, e.g. 1.84-10.fc6)"
             end
           end
@@ -1162,7 +1162,7 @@ class Chef
           elsif RPMVersion.parse(candidate_version) > RPMVersion.parse(@current_resource.version)
             super
           else
-            Chef::Log.debug("#{@new_resource} is at the latest version - nothing to do")
+            Seth::Log.debug("#{@new_resource} is at the latest version - nothing to do")
           end
         end
 
@@ -1229,7 +1229,7 @@ class Chef
             # Don't bother if we are just ensuring a package is removed - we don't need Provides data
             actions = Array(@new_resource.action)
             unless actions.size == 1 and (actions[0] == :remove || actions[0] == :purge)
-              Chef::Log.debug("#{@new_resource} couldn't match #{@new_resource.package_name} in " +
+              Seth::Log.debug("#{@new_resource} couldn't match #{@new_resource.package_name} in " +
                             "installed Provides, loading available Provides - this may take a moment")
               @yum.reload_provides
               packages = @yum.packages_from_require(yum_require)
@@ -1238,7 +1238,7 @@ class Chef
 
           unless packages.empty?
             new_package_name = packages.first.name
-            Chef::Log.debug("#{@new_resource} no package found for #{@new_resource.package_name} " +
+            Seth::Log.debug("#{@new_resource} no package found for #{@new_resource.package_name} " +
                             "but matched Provides for #{new_package_name}")
 
             # Ensure it's not the same package under a different architecture
@@ -1249,7 +1249,7 @@ class Chef
             unique_names.uniq!
 
             if unique_names.size > 1
-              Chef::Log.warn("#{@new_resource} matched multiple Provides for #{@new_resource.package_name} " +
+              Seth::Log.warn("#{@new_resource} matched multiple Provides for #{@new_resource.package_name} " +
                              "but we can only use the first match: #{new_package_name}. Please use a more " +
                              "specific version.")
             end

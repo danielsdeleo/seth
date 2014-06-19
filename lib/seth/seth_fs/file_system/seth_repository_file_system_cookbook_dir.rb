@@ -16,26 +16,26 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/chef_repository_file_system_cookbook_entry'
-require 'chef/chef_fs/file_system/cookbook_dir'
-require 'chef/chef_fs/file_system/not_found_error'
-require 'chef/cookbook/chefignore'
-require 'chef/cookbook/cookbook_version_loader'
+require 'seth/chef_fs/file_system/chef_repository_file_system_cookbook_entry'
+require 'seth/chef_fs/file_system/cookbook_dir'
+require 'seth/chef_fs/file_system/not_found_error'
+require 'seth/cookbook/chefignore'
+require 'seth/cookbook/cookbook_version_loader'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
-      class ChefRepositoryFileSystemCookbookDir < ChefRepositoryFileSystemCookbookEntry
+      class SethRepositoryFileSystemCookbookDir < ChefRepositoryFileSystemCookbookEntry
         def initialize(name, parent, file_path = nil)
           super(name, parent, file_path)
         end
 
-        def chef_object
+        def seth_object
           begin
-            loader = Chef::Cookbook::CookbookVersionLoader.new(file_path, parent.chefignore)
+            loader = Seth::Cookbook::CookbookVersionLoader.new(file_path, parent.sethignore)
             # We need the canonical cookbook name if we are using versioned cookbooks, but we don't
-            # want to spend a lot of time adding code to the main Chef libraries
-            if Chef::Config[:versioned_cookbooks]
+            # want to spend a lot of time adding code to the main Seth libraries
+            if Seth::Config[:versioned_cookbooks]
               _canonical_name = canonical_cookbook_name(File.basename(file_path))
               fail "When versioned_cookbooks mode is on, cookbook #{file_path} must match format <cookbook_name>-x.y.z"  unless _canonical_name
 
@@ -46,13 +46,13 @@ class Chef
             loader.load_cookbooks
             cb = loader.cookbook_version
             if !cb
-              Chef::Log.error("Cookbook #{file_path} empty.")
+              Seth::Log.error("Cookbook #{file_path} empty.")
               raise "Cookbook #{file_path} empty."
             end
             cb
           rescue => e
-            Chef::Log.error("Could not read #{path_for_printing} into a Chef object: #{e}")
-            Chef::Log.error(e.backtrace.join("\n"))
+            Seth::Log.error("Could not read #{path_for_printing} into a Chef object: #{e}")
+            Seth::Log.error(e.backtrace.join("\n"))
             raise
           end
         end
@@ -64,7 +64,7 @@ class Chef
                 map { |child_name| make_child(child_name) }.
                 select { |entry| !(entry.dir? && entry.children.size == 0) }
           rescue Errno::ENOENT
-            raise Chef::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 
@@ -72,7 +72,7 @@ class Chef
           if is_dir
             # Only the given directories will be uploaded.
             return CookbookDir::COOKBOOK_SEGMENT_INFO.keys.include?(name.to_sym) && name != 'root_files'
-          elsif name == Chef::Cookbook::CookbookVersionLoader::UPLOADED_COOKBOOK_VERSION_FILE
+          elsif name == Seth::Cookbook::CookbookVersionLoader::UPLOADED_COOKBOOK_VERSION_FILE
             return false
           end
           super(name, is_dir)
@@ -80,7 +80,7 @@ class Chef
 
         # Exposed as a class method so that it can be used elsewhere
         def self.canonical_cookbook_name(entry_name)
-          name_match = Chef::ChefFS::FileSystem::CookbookDir::VALID_VERSIONED_COOKBOOK_NAME.match(entry_name)
+          name_match = Seth::ChefFS::FileSystem::CookbookDir::VALID_VERSIONED_COOKBOOK_NAME.match(entry_name)
           return nil if name_match.nil?
           return name_match[1]
         end
@@ -90,7 +90,7 @@ class Chef
         end
 
         def uploaded_cookbook_version_path
-          File.join(file_path, Chef::Cookbook::CookbookVersionLoader::UPLOADED_COOKBOOK_VERSION_FILE)
+          File.join(file_path, Seth::Cookbook::CookbookVersionLoader::UPLOADED_COOKBOOK_VERSION_FILE)
         end
 
         def can_upload?
@@ -101,7 +101,7 @@ class Chef
 
         def make_child(child_name)
           segment_info = CookbookDir::COOKBOOK_SEGMENT_INFO[child_name.to_sym] || {}
-          ChefRepositoryFileSystemCookbookEntry.new(child_name, self, nil, segment_info[:ruby_only], segment_info[:recursive])
+          SethRepositoryFileSystemCookbookEntry.new(child_name, self, nil, segment_info[:ruby_only], segment_info[:recursive])
         end
       end
     end

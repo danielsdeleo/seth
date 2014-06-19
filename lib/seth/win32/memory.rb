@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/win32/error'
-require 'chef/win32/api/memory'
+require 'seth/win32/error'
+require 'seth/win32/api/memory'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     class Memory
-      include Chef::ReservedNames::Win32::API::Memory
-      extend Chef::ReservedNames::Win32::API::Memory
+      include Seth::ReservedNames::Win32::API::Memory
+      extend Seth::ReservedNames::Win32::API::Memory
 
       # local_alloc(length[, flags]) [BLOCK]
       # Allocates memory using LocalAlloc
@@ -32,7 +32,7 @@ class Chef
       def self.local_alloc(length, flags = LPTR, &block)
         result = LocalAlloc(flags, length)
         if result.null?
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
         # If a block is passed, handle freeing the memory at the end
         if block != nil
@@ -58,7 +58,7 @@ class Chef
       def self.local_flags(pointer)
         result = LocalFlags(pointer)
         if result == LMEM_INVALID_HANDLE
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
         [ result & ~LMEM_LOCKCOUNT, result & LMEM_LOCKCOUNT ]
       end
@@ -68,7 +68,7 @@ class Chef
       def self.local_free(pointer)
         result = LocalFree(pointer)
         if !result.null?
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
       end
 
@@ -77,7 +77,7 @@ class Chef
       def self.local_realloc(pointer, size, flags = LMEM_MOVEABLE | LMEM_ZEROINIT)
         result = LocalReAlloc(pointer, size, flags)
         if result.null?
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
         result
       end
@@ -87,7 +87,7 @@ class Chef
       def self.local_size(pointer)
         result = LocalSize(pointer)
         if result == 0
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
         result
       end

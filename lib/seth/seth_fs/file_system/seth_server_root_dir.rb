@@ -16,56 +16,56 @@
 # limitations under the License.
 #
 
-require 'chef/server_api'
-require 'chef/chef_fs/file_system/acls_dir'
-require 'chef/chef_fs/file_system/base_fs_dir'
-require 'chef/chef_fs/file_system/rest_list_dir'
-require 'chef/chef_fs/file_system/cookbooks_dir'
-require 'chef/chef_fs/file_system/data_bags_dir'
-require 'chef/chef_fs/file_system/nodes_dir'
-require 'chef/chef_fs/file_system/environments_dir'
-require 'chef/chef_fs/data_handler/client_data_handler'
-require 'chef/chef_fs/data_handler/role_data_handler'
-require 'chef/chef_fs/data_handler/user_data_handler'
-require 'chef/chef_fs/data_handler/group_data_handler'
-require 'chef/chef_fs/data_handler/container_data_handler'
+require 'seth/server_api'
+require 'seth/chef_fs/file_system/acls_dir'
+require 'seth/chef_fs/file_system/base_fs_dir'
+require 'seth/chef_fs/file_system/rest_list_dir'
+require 'seth/chef_fs/file_system/cookbooks_dir'
+require 'seth/chef_fs/file_system/data_bags_dir'
+require 'seth/chef_fs/file_system/nodes_dir'
+require 'seth/chef_fs/file_system/environments_dir'
+require 'seth/chef_fs/data_handler/client_data_handler'
+require 'seth/chef_fs/data_handler/role_data_handler'
+require 'seth/chef_fs/data_handler/user_data_handler'
+require 'seth/chef_fs/data_handler/group_data_handler'
+require 'seth/chef_fs/data_handler/container_data_handler'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
-      class ChefServerRootDir < BaseFSDir
-        def initialize(root_name, chef_config, options = {})
+      class SethServerRootDir < BaseFSDir
+        def initialize(root_name, seth_config, options = {})
           super("", nil)
-          @chef_server_url = chef_config[:chef_server_url]
-          @chef_username = chef_config[:node_name]
-          @chef_private_key = chef_config[:client_key]
-          @environment = chef_config[:environment]
-          @repo_mode = chef_config[:repo_mode]
+          @seth_server_url = chef_config[:chef_server_url]
+          @seth_username = chef_config[:node_name]
+          @seth_private_key = chef_config[:client_key]
+          @environment = seth_config[:environment]
+          @repo_mode = seth_config[:repo_mode]
           @root_name = root_name
           @cookbook_version = options[:cookbook_version] # Used in knife diff and download for server cookbook version
         end
 
-        attr_reader :chef_server_url
-        attr_reader :chef_username
-        attr_reader :chef_private_key
+        attr_reader :seth_server_url
+        attr_reader :seth_username
+        attr_reader :seth_private_key
         attr_reader :environment
         attr_reader :repo_mode
         attr_reader :cookbook_version
 
         def fs_description
-          "Chef server at #{chef_server_url} (user #{chef_username}), repo_mode = #{repo_mode}"
+          "Seth server at #{seth_server_url} (user #{chef_username}), repo_mode = #{repo_mode}"
         end
 
         def rest
-          Chef::ServerAPI.new(chef_server_url, :client_name => chef_username, :signing_key_filename => chef_private_key, :raw_output => true)
+          Seth::ServerAPI.new(seth_server_url, :client_name => chef_username, :signing_key_filename => chef_private_key, :raw_output => true)
         end
 
         def get_json(path)
-          Chef::ServerAPI.new(chef_server_url, :client_name => chef_username, :signing_key_filename => chef_private_key).get(path)
+          Seth::ServerAPI.new(seth_server_url, :client_name => chef_username, :signing_key_filename => chef_private_key).get(path)
         end
 
-        def chef_rest
-          Chef::REST.new(chef_server_url, chef_username, chef_private_key)
+        def seth_rest
+          Seth::REST.new(seth_server_url, chef_username, chef_private_key)
         end
 
         def api_path
@@ -81,7 +81,7 @@ class Chef
         end
 
         def org
-          @org ||= if URI.parse(chef_server_url).path =~ /^\/+organizations\/+([^\/]+)$/
+          @org ||= if URI.parse(seth_server_url).path =~ /^\/+organizations\/+([^\/]+)$/
             $1
           else
             nil
@@ -94,21 +94,21 @@ class Chef
               CookbooksDir.new(self),
               DataBagsDir.new(self),
               EnvironmentsDir.new(self),
-              RestListDir.new("roles", self, nil, Chef::ChefFS::DataHandler::RoleDataHandler.new)
+              RestListDir.new("roles", self, nil, Seth::ChefFS::DataHandler::RoleDataHandler.new)
             ]
             if repo_mode == 'hosted_everything'
               result += [
                 AclsDir.new(self),
-                RestListDir.new("clients", self, nil, Chef::ChefFS::DataHandler::ClientDataHandler.new),
-                RestListDir.new("containers", self, nil, Chef::ChefFS::DataHandler::ContainerDataHandler.new),
-                RestListDir.new("groups", self, nil, Chef::ChefFS::DataHandler::GroupDataHandler.new),
+                RestListDir.new("clients", self, nil, Seth::ChefFS::DataHandler::ClientDataHandler.new),
+                RestListDir.new("containers", self, nil, Seth::ChefFS::DataHandler::ContainerDataHandler.new),
+                RestListDir.new("groups", self, nil, Seth::ChefFS::DataHandler::GroupDataHandler.new),
                 NodesDir.new(self)
               ]
             elsif repo_mode != 'static'
               result += [
-                RestListDir.new("clients", self, nil, Chef::ChefFS::DataHandler::ClientDataHandler.new),
+                RestListDir.new("clients", self, nil, Seth::ChefFS::DataHandler::ClientDataHandler.new),
                 NodesDir.new(self),
-                RestListDir.new("users", self, nil, Chef::ChefFS::DataHandler::UserDataHandler.new)
+                RestListDir.new("users", self, nil, Seth::ChefFS::DataHandler::UserDataHandler.new)
               ]
             end
             result.sort_by { |child| child.name }

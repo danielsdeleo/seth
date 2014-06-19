@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module DSL
 
-    # == Chef::DSL::PlatformIntrospection
+    # == Seth::DSL::PlatformIntrospection
     # Provides the DSL for platform-dependent switch logic, such as
     # #value_for_platform.
     module PlatformIntrospection
@@ -29,7 +29,7 @@ class Chef
 
         # Create a platform dependent value object.
         # === Arguments
-        # platform_hash (Hash) a hash of the same structure as Chef::Platform,
+        # platform_hash (Hash) a hash of the same structure as Seth::Platform,
         # like this:
         #   {
         #     :debian => {:default => 'the value for all debian'}
@@ -213,6 +213,6 @@ class Chef
 end
 
 # **DEPRECATED**
-# This used to be part of chef/mixin/language. Load the file to activate the deprecation code.
-require 'chef/mixin/language'
+# This used to be part of seth/mixin/language. Load the file to activate the deprecation code.
+require 'seth/mixin/language'
 

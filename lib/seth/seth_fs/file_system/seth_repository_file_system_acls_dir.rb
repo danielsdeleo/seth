@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/chef_repository_file_system_entry'
-require 'chef/chef_fs/file_system/acls_dir'
-require 'chef/chef_fs/data_handler/acl_data_handler'
+require 'seth/chef_fs/file_system/chef_repository_file_system_entry'
+require 'seth/chef_fs/file_system/acls_dir'
+require 'seth/chef_fs/data_handler/acl_data_handler'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
-      class ChefRepositoryFileSystemAclsDir < ChefRepositoryFileSystemEntry
+      class SethRepositoryFileSystemAclsDir < ChefRepositoryFileSystemEntry
         def initialize(name, parent, path = nil)
-          super(name, parent, path, Chef::ChefFS::DataHandler::AclDataHandler.new)
+          super(name, parent, path, Seth::ChefFS::DataHandler::AclDataHandler.new)
         end
 
         def can_have_child?(name, is_dir)
-          is_dir ? Chef::ChefFS::FileSystem::AclsDir::ENTITY_TYPES.include?(name) : name == 'organization.json'
+          is_dir ? Seth::ChefFS::FileSystem::AclsDir::ENTITY_TYPES.include?(name) : name == 'organization.json'
         end
       end
     end

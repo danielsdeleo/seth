@@ -18,8 +18,8 @@ require 'spec_helper'
 class WorkerThreadError < StandardError
 end
 
-describe Chef::Util::ThreadedJobQueue do
-  let(:queue) { Chef::Util::ThreadedJobQueue.new }
+describe Seth::Util::ThreadedJobQueue do
+  let(:queue) { Seth::Util::ThreadedJobQueue.new }
 
   it "should pass mutex to jobs with an arity of 1" do
     job = double()

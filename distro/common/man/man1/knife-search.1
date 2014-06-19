@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-SEARCH" "1" "Chef 11.12.0" "" "knife search"
+.TH "KNIFE-SEARCH" "1" "Seth 11.12.0" "" "knife search"
 .SH NAME
 knife-search \- The man page for the knife search subcommand.
 .
@@ -31,9 +31,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-Search indexes allow queries to be made for any type of data that is indexed by the Chef server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full\-text query that can be done from several locations, including from within a recipe, by using the \fBsearch\fP subcommand in Knife, or by using the \fB/search\fP or \fB/search/INDEX\fP endpoints in the Chef Server API\&. The search engine is based on Apache Solr and is run from the Chef server\&.
+Search indexes allow queries to be made for any type of data that is indexed by the Seth server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full\-text query that can be done from several locations, including from within a recipe, by using the \fBsearch\fP subcommand in Knife, or by using the \fB/search\fP or \fB/search/INDEX\fP endpoints in the Chef Server API\&. The search engine is based on Apache Solr and is run from the Chef server\&.
 .sp
-The \fBknife search\fP subcommand is used run a search query for information that is indexed on a Chef server\&.
+The \fBknife search\fP subcommand is used run a search query for information that is indexed on a Seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -134,8 +134,8 @@ The row at which return results will begin.
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -165,7 +165,7 @@ Indicates that only matching object IDs will be shown.
 The name of the index to be queried: \fBclient\fP, \fBenvironment\fP, \fBnode\fP, \fBrole\fP, or \fBDATA_BAG_NAME\fP\&. Default index: \fBnode\fP\&.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-l\fP, \fB\-\-long\fP
 Display long output when searching nodes while using the default summary format.
@@ -189,16 +189,16 @@ Indicates that only the run\-list will be shown.
 The number of rows to be returned.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fBSEARCH_QUERY\fP
-The search query used to identify a a list of items on a Chef server\&. This option uses the same syntax as the \fBsearch\fP sub\-command.
+The search query used to identify a a list of items on a Seth server\&. This option uses the same syntax as the \fBsearch\fP sub\-command.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -207,7 +207,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -298,7 +298,7 @@ To search for all nodes running CentOS in the production environment, enter:
 .sp
 .nf
 .ft C
-$ knife search node \(aqchef_environment:production AND platform:centos\(aq
+$ knife search node \(aqseth_environment:production AND platform:centos\(aq
 .ft P
 .fi
 .UNINDENT
@@ -354,6 +354,6 @@ $ knife search node "role:web NOT name:web03"
 .sp
 where the query in the previous example will search all servers that have the \fBweb\fP role, but not on the server named \fBweb03\fP\&.
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

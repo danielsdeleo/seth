@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-COOKBOOK-SITE" "1" "Chef 11.12.0" "" "knife cookbook site"
+.TH "KNIFE-COOKBOOK-SITE" "1" "Seth 11.12.0" "" "knife cookbook site"
 .SH NAME
 knife-cookbook-site \- The man page for the knife cookbook site subcommand.
 .
@@ -39,8 +39,8 @@ The \fBknife cookbook site\fP subcommand is used to interact with cookbooks that
 The following options may be used with any of the arguments available to the \fBknife cookbook site\fP subcommand:
 .INDENT 0.0
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
@@ -64,7 +64,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -73,22 +73,22 @@ Indicates whether colored output will be used.
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .SH DOWNLOAD
 .sp
@@ -152,7 +152,7 @@ Cookbook saved: /Users/sdanna/opscodesupport/getting\-started\-0.3.0.tar.gz
 .UNINDENT
 .SH INSTALL
 .sp
-The \fBinstall\fP argument is used to install a cookbook that has been downloaded from the community site to a local git repository . This action uses the git version control system in conjunction with the \fI\%http://community.opscode.com/\fP site to install community\-contributed cookbooks to the local chef\-repo\&. Using this argument does the following:
+The \fBinstall\fP argument is used to install a cookbook that has been downloaded from the community site to a local git repository . This action uses the git version control system in conjunction with the \fI\%http://community.opscode.com/\fP site to install community\-contributed cookbooks to the local seth\-repo\&. Using this argument does the following:
 .INDENT 0.0
 .INDENT 3.5
 .INDENT 0.0
@@ -227,14 +227,14 @@ to return something like:
 .sp
 .nf
 .ft C
-Installing getting\-started to /Users/sdanna/opscodesupport/.chef/../cookbooks
+Installing getting\-started to /Users/sdanna/opscodesupport/.seth/../cookbooks
 Checking out the master branch.
-Creating pristine copy branch chef\-vendor\-getting\-started
+Creating pristine copy branch seth\-vendor\-getting\-started
 Downloading getting\-started from the cookbooks site at version 0.3.0 to
-  /Users/sdanna/opscodesupport/.chef/../cookbooks/getting\-started.tar.gz
-Cookbook saved: /Users/sdanna/opscodesupport/.chef/../cookbooks/getting\-started.tar.gz
+  /Users/sdanna/opscodesupport/.seth/../cookbooks/getting\-started.tar.gz
+Cookbook saved: /Users/sdanna/opscodesupport/.seth/../cookbooks/getting\-started.tar.gz
 Removing pre\-existing version.
-Uncompressing getting\-started version /Users/sdanna/opscodesupport/.chef/../cookbooks.
+Uncompressing getting\-started version /Users/sdanna/opscodesupport/.seth/../cookbooks.
 removing downloaded tarball
 1 files updated, committing changes
 Creating tag cookbook\-site\-imported\-getting\-started\-0.3.0
@@ -246,14 +246,14 @@ Fast\-forward
  cookbooks/getting\-started/metadata.json            |   29 ++++++++++++++++++++
  cookbooks/getting\-started/metadata.rb              |    6 ++++
  cookbooks/getting\-started/recipes/default.rb       |   23 +++++++++++++++
- .../templates/default/chef\-getting\-started.txt.erb |    5 +++
+ .../templates/default/seth\-getting\-started.txt.erb |    5 +++
  6 files changed, 68 insertions(+), 0 deletions(\-)
  create mode 100644 cookbooks/getting\-started/README.rdoc
  create mode 100644 cookbooks/getting\-started/attributes/default.rb
  create mode 100644 cookbooks/getting\-started/metadata.json
  create mode 100644 cookbooks/getting\-started/metadata.rb
  create mode 100644 cookbooks/getting\-started/recipes/default.rb
- create mode 100644 cookbooks/getting\-started/templates/default/chef\-getting\-started.txt.erb
+ create mode 100644 cookbooks/getting\-started/templates/default/seth\-getting\-started.txt.erb
 Cookbook getting\-started version 0.3.0 successfully installed
 .ft P
 .fi
@@ -308,7 +308,7 @@ to return:
 .ft C
 1password             homesick              rabbitmq
 7\-zip                 hostname              rabbitmq\-management
-AmazonEC2Tag          hosts                 rabbitmq_chef
+AmazonEC2Tag          hosts                 rabbitmq_seth
 R                     hosts\-awareness       rackspaceknife
 accounts              htop                  radiant
 ack\-grep              hudson                rails
@@ -544,6 +544,6 @@ $ knife cookbook site unshare getting\-started
 .UNINDENT
 .UNINDENT
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

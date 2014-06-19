@@ -17,26 +17,26 @@
 #
 
 require 'spec_helper'
-require 'chef/dsl/platform_introspection'
+require 'seth/dsl/platform_introspection'
 
 class LanguageTester
   attr_reader :node
   def initialize(node)
     @node = node
   end
-  include Chef::DSL::PlatformIntrospection
+  include Seth::DSL::PlatformIntrospection
 end
 
 describe "PlatformIntrospection implementors" do
 
-  let(:node) { Chef::Node.new }
+  let(:node) { Seth::Node.new }
   let(:platform_introspector) { LanguageTester.new(node) }
 
   it_behaves_like "a platform introspector"
 
 end
 
-describe Chef::DSL::PlatformIntrospection::PlatformDependentValue do
+describe Seth::DSL::PlatformIntrospection::PlatformDependentValue do
   before do
     platform_hash = {
       :openbsd => {:default => 'free, functional, secure'},
@@ -44,7 +44,7 @@ describe Chef::DSL::PlatformIntrospection::PlatformDependentValue do
       :ubuntu => {'10.04' => 'using upstart more', :default => 'using init more'},
       :default => 'bork da bork'
     }
-    @platform_specific_value = Chef::DSL::PlatformIntrospection::PlatformDependentValue.new(platform_hash)
+    @platform_specific_value = Seth::DSL::PlatformIntrospection::PlatformDependentValue.new(platform_hash)
   end
 
   it "returns the default value when the platform doesn't match" do
@@ -72,17 +72,17 @@ describe Chef::DSL::PlatformIntrospection::PlatformDependentValue do
   it "returns nil if there is no default and no platforms match" do
     # this matches the behavior in the original implementation.
     # whether or not it's correct is another matter.
-    platform_specific_value = Chef::DSL::PlatformIntrospection::PlatformDependentValue.new({})
+    platform_specific_value = Seth::DSL::PlatformIntrospection::PlatformDependentValue.new({})
     platform_specific_value.value_for_node(:platform => 'foo').should be_nil
   end
 
   it "raises an argument error if the platform hash is not correctly structured" do
     bad_hash = {:ubuntu => :foo} # should be :ubuntu => {:default => 'foo'}
-    lambda {Chef::DSL::PlatformIntrospection::PlatformDependentValue.new(bad_hash)}.should raise_error(ArgumentError)
+    lambda {Seth::DSL::PlatformIntrospection::PlatformDependentValue.new(bad_hash)}.should raise_error(ArgumentError)
   end
 
 end
-describe Chef::DSL::PlatformIntrospection::PlatformFamilyDependentValue do
+describe Seth::DSL::PlatformIntrospection::PlatformFamilyDependentValue do
   before do
     @array_values = [:stop, :start, :reload]
 
@@ -94,7 +94,7 @@ describe Chef::DSL::PlatformIntrospection::PlatformFamilyDependentValue do
       :default => "default value"
     }
 
-    @platform_family_value = Chef::DSL::PlatformIntrospection::PlatformFamilyDependentValue.new(@platform_family_hash)
+    @platform_family_value = Seth::DSL::PlatformIntrospection::PlatformFamilyDependentValue.new(@platform_family_hash)
   end
 
   it "returns the default value when the platform family doesn't match" do
@@ -123,7 +123,7 @@ describe Chef::DSL::PlatformIntrospection::PlatformFamilyDependentValue do
   end
 
   it "returns nil if there is no default and no platforms match" do
-    platform_specific_value = Chef::DSL::PlatformIntrospection::PlatformFamilyDependentValue.new({})
+    platform_specific_value = Seth::DSL::PlatformIntrospection::PlatformFamilyDependentValue.new({})
     platform_specific_value.value_for_node(:platform_family => 'foo').should be_nil
   end
 

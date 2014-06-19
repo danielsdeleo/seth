@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-DATA-BAG" "1" "Chef 11.12.0" "" "knife data bag"
+.TH "KNIFE-DATA-BAG" "1" "Seth 11.12.0" "" "knife data bag"
 .SH NAME
 knife-data-bag \- The man page for the knife data bag subcommand.
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-A data bag is a global variable that is stored as JSON data and is accessible from a Chef server\&. A data bag is indexed for searching and can be loaded by a recipe or accessed during a search.
+A data bag is a global variable that is stored as JSON data and is accessible from a Seth server\&. A data bag is indexed for searching and can be loaded by a recipe or accessed during a search.
 .sp
 A data bag item may be encrypted using \fI\%shared secret encryption\fP\&. This allows each data bag item to store confidential information (such as a database password) or to be managed in a source control system (without plain\-text data appearing in revision history). Each data bag item may be encrypted individually; if a data bag contains multiple encrypted data bag items, these data bag items are not required to share the same encryption keys.
 .sp
@@ -41,8 +41,8 @@ The \fBknife data bag\fP subcommand is used to manage arbitrary stores of global
 The following options may be used with any of the arguments available to the \fBknife data bag\fP subcommand:
 .INDENT 0.0
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
@@ -66,7 +66,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -75,26 +75,26 @@ Indicates whether colored output will be used.
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .SH CREATE
 .sp
-The \fBcreate\fP argument is used to add a data bag to the Chef server\&.
+The \fBcreate\fP argument is used to add a data bag to the Seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -159,7 +159,7 @@ Created data_bag[admins]
 .UNINDENT
 .SH DELETE
 .sp
-The \fBdelete\fP argument is used to delete a data bag or a data bag item from a Chef server\&.
+The \fBdelete\fP argument is used to delete a data bag or a data bag item from a Seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -211,7 +211,7 @@ $ knife data bag delete admins charlie
 Type \fBY\fP to confirm a deletion.
 .SH EDIT
 .sp
-The \fBedit\fP argument is used to edit the data contained in a data bag. If encryption is being used, the data bag will be decrypted, the data will be made available in the $EDITOR, and then encrypted again before saving it to the Chef server\&.
+The \fBedit\fP argument is used to edit the data contained in a data bag. If encryption is being used, the data bag will be decrypted, the data will be made available in the $EDITOR, and then encrypted again before saving it to the Seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -275,7 +275,7 @@ $ knife data bag edit admins charlie
 .UNINDENT
 .UNINDENT
 .sp
-to open the $EDITOR\&. Once opened, you can update the data before saving it to the Chef server\&. For example, by changing:
+to open the $EDITOR\&. Once opened, you can update the data before saving it to the Seth server\&. For example, by changing:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -308,7 +308,7 @@ to:
 .UNINDENT
 .SH FROM FILE
 .sp
-The \fBfrom file\fP argument is used to create a data bag on the Chef server from a file. The path to the data bag file must specify one of the following:
+The \fBfrom file\fP argument is used to create a data bag on the Seth server from a file. The path to the data bag file must specify one of the following:
 .INDENT 0.0
 .IP \(bu 2
 the name of a data bag
@@ -321,7 +321,7 @@ If the name of a data bag is specified, Knife will search for the data bag in \f
 \fBWARNING:\fP
 .INDENT 0.0
 .INDENT 3.5
-A chef\-client must be version 11.6 (or higher) when using the \fBknife data bag from file\fP argument with the Enterprise Chef or Open Source Chef version 11 servers.
+A seth\-client must be version 11.6 (or higher) when using the \fBknife data bag from file\fP argument with the Enterprise Seth or Open Source Chef version 11 servers.
 .UNINDENT
 .UNINDENT
 .sp
@@ -363,7 +363,7 @@ For encrypted data bag items, use \fIeither\fP \fB\-\-secret\fP or \fB\-\-secret
 .sp
 \fBExamples\fP
 .sp
-To create a data bag on the Chef server from a file:
+To create a data bag on the Seth server from a file:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -388,7 +388,7 @@ $ knife data bag from file devops_data \-\-secret\-file "path to decryption file
 .UNINDENT
 .SH LIST
 .sp
-The \fBlist\fP argument is used to view a list of data bags that are currently available on the Chef server\&.
+The \fBlist\fP argument is used to view a list of data bags that are currently available on the Seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -588,6 +588,6 @@ $ knife data bag show admins \-F json
 .sp
 Other formats available include \fBtext\fP, \fByaml\fP, and \fBpp\fP\&.
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

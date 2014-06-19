@@ -16,13 +16,13 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'chef/knife/list'
-require 'chef/knife/delete'
-require 'chef/knife/show'
-require 'chef/knife/raw'
-require 'chef/knife/cookbook_upload'
+require 'seth/knife/list'
+require 'seth/knife/delete'
+require 'seth/knife/show'
+require 'seth/knife/raw'
+require 'seth/knife/cookbook_upload'
 
-describe 'ChefFSDataStore tests' do
+describe 'SethFSDataStore tests' do
   extend IntegrationSupport
   include KnifeSupport
 

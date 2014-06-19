@@ -17,7 +17,7 @@
 #
 
 require 'spec_helper'
-require 'chef/monkey_patches/string'
+require 'seth/monkey_patches/string'
 
 describe String do
 

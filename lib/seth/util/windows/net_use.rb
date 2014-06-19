@@ -20,9 +20,9 @@
 #see also: WNetAddConnection2 and WNetAddConnection3
 #see also cmd.exe: net use /?
 
-require 'chef/util/windows'
+require 'seth/util/windows'
 
-class Chef::Util::Windows::NetUse < Chef::Util::Windows
+class Seth::Util::Windows::NetUse < Chef::Util::Windows
 
   private
 

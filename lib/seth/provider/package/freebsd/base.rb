@@ -19,12 +19,12 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/provider/package'
-require 'chef/mixin/shell_out'
-require 'chef/mixin/get_source_from_package'
+require 'seth/resource/package'
+require 'seth/provider/package'
+require 'seth/mixin/shell_out'
+require 'seth/mixin/get_source_from_package'
 
-class Chef
+class Seth
   class Provider
     class Package
       module Freebsd
@@ -50,7 +50,7 @@ class Chef
             else
               whereis = shell_out!("whereis -s #{port}", :env => nil)
               unless _path = whereis.stdout[/^#{Regexp.escape(port)}:\s+(.+)$/, 1]
-                raise Chef::Exceptions::Package, "Could not find port with the name #{port}"
+                raise Seth::Exceptions::Package, "Could not find port with the name #{port}"
               end
               _path
             end
@@ -64,23 +64,23 @@ class Chef
         end
 
 
-        class Base < Chef::Provider::Package
-          include Chef::Mixin::ShellOut
-          include Chef::Mixin::GetSourceFromPackage
+        class Base < Seth::Provider::Package
+          include Seth::Mixin::ShellOut
+          include Seth::Mixin::GetSourceFromPackage
 
           def initialize(*args)
             super
-            @current_resource = Chef::Resource::Package.new(@new_resource.name)
+            @current_resource = Seth::Resource::Package.new(@new_resource.name)
           end
 
           def load_current_resource
             @current_resource.package_name(@new_resource.package_name)
 
             @current_resource.version(current_installed_version)
-            Chef::Log.debug("#{@new_resource} current version is #{@current_resource.version}") if @current_resource.version
+            Seth::Log.debug("#{@new_resource} current version is #{@current_resource.version}") if @current_resource.version
 
             @candidate_version = candidate_version
-            Chef::Log.debug("#{@new_resource} candidate version is #{@candidate_version}") if @candidate_version
+            Seth::Log.debug("#{@new_resource} candidate version is #{@candidate_version}") if @candidate_version
 
             @current_resource
           end

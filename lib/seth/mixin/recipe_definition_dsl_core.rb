@@ -19,17 +19,17 @@
 
 ###
 # NOTE: This file and constant are here only for backwards compatibility.
-# New code should use Chef::DSL::Recipe instead.
+# New code should use Seth::DSL::Recipe instead.
 #
 # This constant (module name) will eventually be deprecated and then removed.
 ###
 
-require 'chef/mixin/deprecation'
+require 'seth/mixin/deprecation'
 
-class Chef
+class Seth
   module Mixin
-    deprecate_constant(:RecipeDefinitionDSLCore, Chef::DSL::Recipe, <<-EOM)
-Chef::Mixin::RecipeDefinitionDSLCore is deprecated. Use Chef::DSL::Recipe instead.
+    deprecate_constant(:RecipeDefinitionDSLCore, Seth::DSL::Recipe, <<-EOM)
+Seth::Mixin::RecipeDefinitionDSLCore is deprecated. Use Chef::DSL::Recipe instead.
 EOM
   end
 end

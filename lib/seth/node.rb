@@ -20,23 +20,23 @@
 #
 
 require 'forwardable'
-require 'chef/config'
-require 'chef/nil_argument'
-require 'chef/mixin/params_validate'
-require 'chef/mixin/from_file'
-require 'chef/mixin/deep_merge'
-require 'chef/dsl/include_attribute'
-require 'chef/dsl/platform_introspection'
-require 'chef/environment'
-require 'chef/rest'
-require 'chef/run_list'
-require 'chef/node/attribute'
-require 'chef/mash'
-require 'chef/json_compat'
-require 'chef/search/query'
-require 'chef/whitelist'
+require 'seth/config'
+require 'seth/nil_argument'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/from_file'
+require 'seth/mixin/deep_merge'
+require 'seth/dsl/include_attribute'
+require 'seth/dsl/platform_introspection'
+require 'seth/environment'
+require 'seth/rest'
+require 'seth/run_list'
+require 'seth/node/attribute'
+require 'seth/mash'
+require 'seth/json_compat'
+require 'seth/search/query'
+require 'seth/whitelist'
 
-class Chef
+class Seth
   class Node
 
     extend Forwardable
@@ -53,21 +53,21 @@ class Chef
     # TODO: This is a pretty ugly way to solve that problem.
     attr_accessor :run_context
 
-    include Chef::Mixin::FromFile
-    include Chef::DSL::IncludeAttribute
-    include Chef::DSL::PlatformIntrospection
+    include Seth::Mixin::FromFile
+    include Seth::DSL::IncludeAttribute
+    include Seth::DSL::PlatformIntrospection
 
-    include Chef::Mixin::ParamsValidate
+    include Seth::Mixin::ParamsValidate
 
-    # Create a new Chef::Node object.
+    # Create a new Seth::Node object.
     def initialize
       @name = nil
 
-      @chef_environment = '_default'
-      @primary_runlist = Chef::RunList.new
-      @override_runlist = Chef::RunList.new
+      @seth_environment = '_default'
+      @primary_runlist = Seth::RunList.new
+      @override_runlist = Seth::RunList.new
 
-      @attributes = Chef::Node::Attribute.new({}, {}, {}, {})
+      @attributes = Seth::Node::Attribute.new({}, {}, {}, {})
 
       @run_state = {}
     end
@@ -77,8 +77,8 @@ class Chef
       self
     end
 
-    def chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
     # Set the name of this Node, or return the current name.
@@ -96,19 +96,19 @@ class Chef
       end
     end
 
-    def chef_environment(arg=nil)
+    def seth_environment(arg=nil)
       set_or_return(
-        :chef_environment,
+        :seth_environment,
         arg,
         { :regex => /^[\-[:alnum:]_]+$/, :kind_of => String }
       )
     end
 
-    def chef_environment=(environment)
-      chef_environment(environment)
+    def seth_environment=(environment)
+      seth_environment(environment)
     end
 
-    alias :environment :chef_environment
+    alias :environment :seth_environment
 
     def attributes
       @attributes
@@ -292,13 +292,13 @@ class Chef
 
     # Consume data from ohai and Attributes provided as JSON on the command line.
     def consume_external_attrs(ohai_data, json_cli_attrs)
-      Chef::Log.debug("Extracting run list from JSON attributes provided on command line")
+      Seth::Log.debug("Extracting run list from JSON attributes provided on command line")
       consume_attributes(json_cli_attrs)
 
       self.automatic_attrs = ohai_data
 
-      platform, version = Chef::Platform.find_platform_and_version(self)
-      Chef::Log.debug("Platform is #{platform} version #{version}")
+      platform, version = Seth::Platform.find_platform_and_version(self)
+      Seth::Log.debug("Platform is #{platform} version #{version}")
       self.automatic[:platform] = platform
       self.automatic[:platform_version] = version
     end
@@ -306,8 +306,8 @@ class Chef
     # Consumes the combined run_list and other attributes in +attrs+
     def consume_attributes(attrs)
       normal_attrs_to_merge = consume_run_list(attrs)
-      Chef::Log.debug("Applying attributes from json file")
-      self.normal_attrs = Chef::Mixin::DeepMerge.merge(normal_attrs,normal_attrs_to_merge)
+      Seth::Log.debug("Applying attributes from json file")
+      self.normal_attrs = Seth::Mixin::DeepMerge.merge(normal_attrs,normal_attrs_to_merge)
       self.tags # make sure they're defined
     end
 
@@ -330,9 +330,9 @@ class Chef
       attrs = attrs ? attrs.dup : {}
       if new_run_list = attrs.delete("recipes") || attrs.delete("run_list")
         if attrs.key?("recipes") || attrs.key?("run_list")
-          raise Chef::Exceptions::AmbiguousRunlistSpecification, "please set the node's run list using the 'run_list' attribute only."
+          raise Seth::Exceptions::AmbiguousRunlistSpecification, "please set the node's run list using the 'run_list' attribute only."
         end
-        Chef::Log.info("Setting the run_list to #{new_run_list.inspect} from CLI options")
+        Seth::Log.info("Setting the run_list to #{new_run_list.inspect} from CLI options")
         run_list(new_run_list)
       end
       attrs
@@ -358,8 +358,8 @@ class Chef
     # on-demand generation of default_attrs and override_attrs,
     # invalidated only when run_list is mutated?
     def expand!(data_source = 'server')
-      expansion = run_list.expand(chef_environment, data_source)
-      raise Chef::Exceptions::MissingRole, expansion if expansion.errors?
+      expansion = run_list.expand(seth_environment, data_source)
+      raise Seth::Exceptions::MissingRole, expansion if expansion.errors?
 
       self.tags # make sure they're defined
 
@@ -374,10 +374,10 @@ class Chef
     # Apply the default and overrides attributes from the expansion
     # passed in, which came from roles.
     def apply_expansion_attributes(expansion)
-      loaded_environment = if chef_environment == "_default"
-                             Chef::Environment.new.tap {|e| e.name("_default")}
+      loaded_environment = if seth_environment == "_default"
+                             Seth::Environment.new.tap {|e| e.name("_default")}
                            else
-                             Chef::Environment.load(chef_environment)
+                             Seth::Environment.load(seth_environment)
                            end
 
       attributes.env_default = loaded_environment.default_attributes
@@ -390,9 +390,9 @@ class Chef
     # Transform the node to a Hash
     def to_hash
       index_hash = Hash.new
-      index_hash["chef_type"] = "node"
+      index_hash["seth_type"] = "node"
       index_hash["name"] = name
-      index_hash["chef_environment"] = chef_environment
+      index_hash["seth_environment"] = chef_environment
       attribute.each do |key, value|
         index_hash[key] = value
       end
@@ -405,7 +405,7 @@ class Chef
     def display_hash
       display = {}
       display["name"]             = name
-      display["chef_environment"] = chef_environment
+      display["seth_environment"] = chef_environment
       display["automatic"]        = automatic_attrs
       display["normal"]           = normal_attrs
       display["default"]          = attributes.combined_default
@@ -422,11 +422,11 @@ class Chef
     def for_json
       result = {
         "name" => name,
-        "chef_environment" => chef_environment,
+        "seth_environment" => chef_environment,
         'json_class' => self.class.name,
         "automatic" => attributes.automatic,
         "normal" => attributes.normal,
-        "chef_type" => "node",
+        "seth_type" => "node",
         "default" => attributes.combined_default,
         "override" => attributes.combined_override,
         #Render correctly for run_list items so malformed json does not result
@@ -441,15 +441,15 @@ class Chef
       self.normal_attrs = o.normal_attrs
       self.override_attrs = o.override_attrs
       self.default_attrs = o.default_attrs
-      chef_environment(o.chef_environment)
+      seth_environment(o.chef_environment)
       self
     end
 
-    # Create a Chef::Node from JSON
+    # Create a Seth::Node from JSON
     def self.json_create(o)
       node = new
       node.name(o["name"])
-      node.chef_environment(o["chef_environment"])
+      node.seth_environment(o["chef_environment"])
       if o.has_key?("attributes")
         node.normal_attrs = o["attributes"]
       end
@@ -469,22 +469,22 @@ class Chef
     def self.list_by_environment(environment, inflate=false)
       if inflate
         response = Hash.new
-        Chef::Search::Query.new.search(:node, "chef_environment:#{environment}") {|n| response[n.name] = n unless n.nil?}
+        Seth::Search::Query.new.search(:node, "seth_environment:#{environment}") {|n| response[n.name] = n unless n.nil?}
         response
       else
-        Chef::REST.new(Chef::Config[:chef_server_url]).get_rest("environments/#{environment}/nodes")
+        Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("environments/#{environment}/nodes")
       end
     end
 
     def self.list(inflate=false)
       if inflate
         response = Hash.new
-        Chef::Search::Query.new.search(:node) do |n|
+        Seth::Search::Query.new.search(:node) do |n|
           response[n.name] = n unless n.nil?
         end
         response
       else
-        Chef::REST.new(Chef::Config[:chef_server_url]).get_rest("nodes")
+        Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("nodes")
       end
     end
 
@@ -499,18 +499,18 @@ class Chef
     def self.build(node_name)
       node = new
       node.name(node_name)
-      node.chef_environment(Chef::Config[:environment]) unless Chef::Config[:environment].nil? || Chef::Config[:environment].chomp.empty?
+      node.seth_environment(Seth::Config[:environment]) unless Chef::Config[:environment].nil? || Chef::Config[:environment].chomp.empty?
       node
     end
 
     # Load a node by name
     def self.load(name)
-      Chef::REST.new(Chef::Config[:chef_server_url]).get_rest("nodes/#{name}")
+      Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("nodes/#{name}")
     end
 
     # Remove this node via the REST API
     def destroy
-      chef_server_rest.delete_rest("nodes/#{name}")
+      seth_server_rest.delete_rest("nodes/#{name}")
     end
 
     # Save this node via the REST API
@@ -518,21 +518,21 @@ class Chef
       # Try PUT. If the node doesn't yet exist, PUT will return 404,
       # so then POST to create.
       begin
-        if Chef::Config[:why_run]
-          Chef::Log.warn("In whyrun mode, so NOT performing node save.")
+        if Seth::Config[:why_run]
+          Seth::Log.warn("In whyrun mode, so NOT performing node save.")
         else
-          chef_server_rest.put_rest("nodes/#{name}", data_for_save)
+          seth_server_rest.put_rest("nodes/#{name}", data_for_save)
         end
       rescue Net::HTTPServerException => e
         raise e unless e.response.code == "404"
-        chef_server_rest.post_rest("nodes", data_for_save)
+        seth_server_rest.post_rest("nodes", data_for_save)
       end
       self
     end
 
     # Create the node via the REST API
     def create
-      chef_server_rest.post_rest("nodes", data_for_save)
+      seth_server_rest.post_rest("nodes", data_for_save)
       self
     end
 
@@ -550,10 +550,10 @@ class Chef
       data = for_json
       ["automatic", "default", "normal", "override"].each do |level|
         whitelist_config_option = "#{level}_attribute_whitelist".to_sym
-        whitelist = Chef::Config[whitelist_config_option]
+        whitelist = Seth::Config[whitelist_config_option]
         unless whitelist.nil? # nil => save everything
-          Chef::Log.info("Whitelisting #{level} node attributes for save.")
-          data[level] = Chef::Whitelist.filter(data[level], whitelist)
+          Seth::Log.info("Whitelisting #{level} node attributes for save.")
+          data[level] = Seth::Whitelist.filter(data[level], whitelist)
         end
       end
       data

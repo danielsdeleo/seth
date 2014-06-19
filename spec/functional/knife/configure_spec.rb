@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-require 'chef/knife/configure'
+require 'seth/knife/configure'
 require 'ohai'
 
 describe "knife configure" do
@@ -31,7 +31,7 @@ describe "knife configure" do
   end
 
   it "loads the fqdn from Ohai" do
-    knife_configure = Chef::Knife::Configure.new
+    knife_configure = Seth::Knife::Configure.new
     hostname_guess = ohai[:fqdn] || ohai[:machinename] || ohai[:hostname] || 'localhost'
     expect(knife_configure.guess_servername).to eql(hostname_guess)
   end

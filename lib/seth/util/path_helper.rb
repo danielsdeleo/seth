@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,25 +16,25 @@
 # limitations under the License.
 #
 
-require 'chef/platform'
-require 'chef/exceptions'
+require 'seth/platform'
+require 'seth/exceptions'
 
-class Chef
+class Seth
   class Util
     class PathHelper
       # Maximum characters in a standard Windows path (260 including drive letter and NUL)
       WIN_MAX_PATH = 259
 
       def self.validate_path(path)
-        if Chef::Platform.windows?
+        if Seth::Platform.windows?
           unless printable?(path)
             msg = "Path '#{path}' contains non-printable characters. Check that backslashes are escaped with another backslash (e.g. C:\\\\Windows) in double-quoted strings."
-            Chef::Log.error(msg)
-            raise Chef::Exceptions::ValidationFailed, msg
+            Seth::Log.error(msg)
+            raise Seth::Exceptions::ValidationFailed, msg
           end
             
           if windows_max_length_exceeded?(path)
-            Chef::Log.debug("Path '#{path}' is longer than #{WIN_MAX_PATH}, prefixing with'\\\\?\\'")
+            Seth::Log.debug("Path '#{path}' is longer than #{WIN_MAX_PATH}, prefixing with'\\\\?\\'")
             path.insert(0, "\\\\?\\")
           end
         end
@@ -72,7 +72,7 @@ class Chef
         # First remove extra separators and resolve any relative paths
         abs_path = File.absolute_path(path)
 
-        if Chef::Platform.windows?
+        if Seth::Platform.windows?
           # Add the \\?\ API prefix on Windows unless add_prefix is false
           # Downcase on Windows where paths are still case-insensitive
           abs_path.gsub!(::File::SEPARATOR, ::File::ALT_SEPARATOR)

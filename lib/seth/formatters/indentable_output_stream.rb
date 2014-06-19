@@ -1,4 +1,4 @@
-class Chef
+class Seth
   module Formatters
     # Handles basic indentation and colorization tasks
     class IndentableOutputStream
@@ -122,7 +122,7 @@ class Chef
           @line_started = false
         end
 
-        if Chef::Config[:color] && options[:colors]
+        if Seth::Config[:color] && options[:colors]
           @out.print highline.color(line, *options[:colors])
         else
           @out.print line

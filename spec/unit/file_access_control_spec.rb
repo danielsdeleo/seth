@@ -19,26 +19,26 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::FileAccessControl do
+describe Seth::FileAccessControl do
   describe "Unix" do
     before do
       platform_mock :unix do
         # we have to re-load the file so the proper
         # platform specific module is mixed in
-        @node = Chef::Node.new
-        load File.join(File.dirname(__FILE__), "..", "..", "lib", "chef", "file_access_control.rb")
-        @resource = Chef::Resource::File.new('/tmp/a_file.txt')
+        @node = Seth::Node.new
+        load File.join(File.dirname(__FILE__), "..", "..", "lib", "seth", "file_access_control.rb")
+        @resource = Seth::Resource::File.new('/tmp/a_file.txt')
         @resource.owner('toor')
         @resource.group('wheel')
         @resource.mode('0400')
 
-        @events = Chef::EventDispatch::Dispatcher.new
-        @run_context = Chef::RunContext.new(@node, {}, @events)
-        @current_resource = Chef::Resource::File.new('/tmp/different_file.txt')
-        @provider_requirements = Chef::Provider::ResourceRequirements.new(@resource, @run_context)
+        @events = Seth::EventDispatch::Dispatcher.new
+        @run_context = Seth::RunContext.new(@node, {}, @events)
+        @current_resource = Seth::Resource::File.new('/tmp/different_file.txt')
+        @provider_requirements = Seth::Provider::ResourceRequirements.new(@resource, @run_context)
         @provider = double("File provider", :requirements => @provider_requirements, :manage_symlink_access? => false)
 
-        @fac = Chef::FileAccessControl.new(@current_resource, @resource, @provider)
+        @fac = Seth::FileAccessControl.new(@current_resource, @resource, @provider)
       end
     end
 
@@ -59,20 +59,20 @@ describe Chef::FileAccessControl do
       @fac.target_uid.should == 2342
     end
 
-    it "raises a Chef::Exceptions::UserIDNotFound error when Etc can't find the user's name" do
+    it "raises a Seth::Exceptions::UserIDNotFound error when Etc can't find the user's name" do
       Etc.should_receive(:getpwnam).with('toor').and_raise(ArgumentError)
-      lambda { @fac.target_uid ; @provider_requirements.run(:create) }.should raise_error(Chef::Exceptions::UserIDNotFound, "cannot determine user id for 'toor', does the user exist on this system?")
+      lambda { @fac.target_uid ; @provider_requirements.run(:create) }.should raise_error(Seth::Exceptions::UserIDNotFound, "cannot determine user id for 'toor', does the user exist on this system?")
     end
 
     it "does not attempt to resolve the uid if the user is not specified" do
-      resource = Chef::Resource::File.new("a file")
-      fac = Chef::FileAccessControl.new(@current_resource, resource, @provider)
+      resource = Seth::Resource::File.new("a file")
+      fac = Seth::FileAccessControl.new(@current_resource, resource, @provider)
       fac.target_uid.should be_nil
     end
 
     it "does not want to update the owner if none is specified" do
-      resource = Chef::Resource::File.new("a file")
-      fac = Chef::FileAccessControl.new(@current_resource, resource, @provider)
+      resource = Seth::Resource::File.new("a file")
+      fac = Seth::FileAccessControl.new(@current_resource, resource, @provider)
       fac.should_update_owner?.should be_false
     end
 
@@ -118,10 +118,10 @@ describe Chef::FileAccessControl do
     end
 
     it "includes updating ownership in its list of desired changes" do
-      resource = Chef::Resource::File.new("a file")
+      resource = Seth::Resource::File.new("a file")
       resource.owner(2342)
       @current_resource.owner(100)
-      fac = Chef::FileAccessControl.new(@current_resource, resource, @provider)
+      fac = Seth::FileAccessControl.new(@current_resource, resource, @provider)
       fac.describe_changes.should == ["change owner from '100' to '2342'"]
     end
 
@@ -156,20 +156,20 @@ describe Chef::FileAccessControl do
       @fac.target_gid.should == 2342
     end
 
-    it "raises a Chef::Exceptions::GroupIDNotFound error when Etc can't find the user's name" do
+    it "raises a Seth::Exceptions::GroupIDNotFound error when Etc can't find the user's name" do
       Etc.should_receive(:getgrnam).with('wheel').and_raise(ArgumentError)
-      lambda { @fac.target_gid; @provider_requirements.run(:create) }.should raise_error(Chef::Exceptions::GroupIDNotFound, "cannot determine group id for 'wheel', does the group exist on this system?")
+      lambda { @fac.target_gid; @provider_requirements.run(:create) }.should raise_error(Seth::Exceptions::GroupIDNotFound, "cannot determine group id for 'wheel', does the group exist on this system?")
     end
 
     it "does not attempt to resolve a gid when none is supplied" do
-      resource = Chef::Resource::File.new('crab')
-      fac = Chef::FileAccessControl.new(@current_resource, resource, @provider)
+      resource = Seth::Resource::File.new('crab')
+      fac = Seth::FileAccessControl.new(@current_resource, resource, @provider)
       fac.target_gid.should be_nil
     end
 
     it "does not want to update the group when no target group is specified" do
-      resource = Chef::Resource::File.new('crab')
-      fac = Chef::FileAccessControl.new(@current_resource, resource, @provider)
+      resource = Seth::Resource::File.new('crab')
+      fac = Seth::FileAccessControl.new(@current_resource, resource, @provider)
       fac.should_update_group?.should be_false
     end
 
@@ -191,10 +191,10 @@ describe Chef::FileAccessControl do
     end
 
     it "includes updating the group in the list of changes" do
-      resource = Chef::Resource::File.new('crab')
+      resource = Seth::Resource::File.new('crab')
       resource.group(2342)
       @current_resource.group(815)
-      fac = Chef::FileAccessControl.new(@current_resource, resource, @provider)
+      fac = Seth::FileAccessControl.new(@current_resource, resource, @provider)
       fac.describe_changes.should == ["change group from '815' to '2342'"]
     end
 
@@ -234,14 +234,14 @@ describe Chef::FileAccessControl do
     end
 
     it "does not try to determine the mode when none is given" do
-      resource = Chef::Resource::File.new('blahblah')
-      fac = Chef::FileAccessControl.new(@current_resource, resource, @provider)
+      resource = Seth::Resource::File.new('blahblah')
+      fac = Seth::FileAccessControl.new(@current_resource, resource, @provider)
       fac.target_mode.should be_nil
     end
 
     it "doesn't want to update the mode when no target mode is given" do
-      resource = Chef::Resource::File.new('blahblah')
-      fac = Chef::FileAccessControl.new(@current_resource, resource, @provider)
+      resource = Seth::Resource::File.new('blahblah')
+      fac = Seth::FileAccessControl.new(@current_resource, resource, @provider)
       fac.should_update_mode?.should be_false
     end
 
@@ -258,10 +258,10 @@ describe Chef::FileAccessControl do
     end
 
     it "includes changing the mode in the list of desired changes" do
-      resource = Chef::Resource::File.new('blahblah')
+      resource = Seth::Resource::File.new('blahblah')
       resource.mode("0750")
       @current_resource.mode("0444")
-      fac = Chef::FileAccessControl.new(@current_resource, resource, @provider)
+      fac = Seth::FileAccessControl.new(@current_resource, resource, @provider)
       fac.describe_changes.should == ["change mode from '0444' to '0750'"]
     end
 

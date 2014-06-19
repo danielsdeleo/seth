@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class NodeRunListSet < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife node run_list set NODE ENTRIES (options)"
@@ -43,7 +43,7 @@ class Chef
           # Convert to array and remove the extra spaces
           entries = @name_args[1].split(',').map { |e| e.strip }
         end
-        node = Chef::Node.load(@name_args[0])
+        node = Seth::Node.load(@name_args[0])
 
         set_run_list(node, entries)
 

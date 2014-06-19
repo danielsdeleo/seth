@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>knife list &mdash; chef-client Man Pages</title>
+    <title>knife list &mdash; seth-client Man Pages</title>
     
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="shortcut icon" href="_static/chef.ico"/>
+    <link rel="shortcut icon" href="_static/seth.ico"/>
 
 
   </head>
   <body>
 <div style="background-color: #212c35; text-align: left; padding: 0px 0px 0px 0px">
-<a href="http://docs.opscode.com/"><img src="_static/chef_html_logo.png" border="0" alt="Chef"/></a>
+<a href="http://docs.opscode.com/"><img src="_static/seth_html_logo.png" border="0" alt="Seth"/></a>
 </div>
 
 
@@ -42,7 +42,7 @@
             
   <div class="section" id="knife-list">
 <h1>knife list<a class="headerlink" href="#knife-list" title="Permalink to this headline">¶</a></h1>
-<p>The <strong>knife list</strong> subcommand is used to view a list of objects on the Chef server. This subcommand works similar to <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">cookbook</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">data</span> <span class="pre">bag</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">environment</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">node</span> <span class="pre">list</span></tt>, and <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">role</span> <span class="pre">list</span></tt>, but with a single verb (and a single action).</p>
+<p>The <strong>knife list</strong> subcommand is used to view a list of objects on the Seth server. This subcommand works similar to <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">cookbook</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">data</span> <span class="pre">bag</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">environment</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">node</span> <span class="pre">list</span></tt>, and <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">role</span> <span class="pre">list</span></tt>, but with a single verb (and a single action).</p>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <p>This subcommand has the following syntax:</p>
@@ -60,8 +60,8 @@
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">-1</span></tt></dt>
 <dd>Indicates that only one column of results will be shown. Default: <tt class="docutils literal"><span class="pre">false</span></tt>.</dd>
-<dt><tt class="docutils literal"><span class="pre">--chef-repo-path</span> <span class="pre">PATH</span></tt></dt>
-<dd>The path to the chef-repo. This setting will override the default path to the chef-repo. Default: same value as specified by <tt class="docutils literal"><span class="pre">chef_repo_path</span></tt> in client.rb.</dd>
+<dt><tt class="docutils literal"><span class="pre">--seth-repo-path</span> <span class="pre">PATH</span></tt></dt>
+<dd>The path to the seth-repo. This setting will override the default path to the chef-repo. Default: same value as specified by <tt class="docutils literal"><span class="pre">chef_repo_path</span></tt> in client.rb.</dd>
 <dt><tt class="docutils literal"><span class="pre">--concurrency</span></tt></dt>
 <dd>The number of allowed concurrent connections. Default: <tt class="docutils literal"><span class="pre">10</span></tt>.</dd>
 <dt><tt class="docutils literal"><span class="pre">-d</span></tt></dt>
@@ -75,24 +75,24 @@
 <dt><tt class="docutils literal"><span class="pre">-R</span></tt></dt>
 <dd>Indicates that directories will be listed recursively. Default: <tt class="docutils literal"><span class="pre">false</span></tt>.</dd>
 <dt><tt class="docutils literal"><span class="pre">--repo-mode</span> <span class="pre">MODE</span></tt></dt>
-<dd>The layout of the local chef-repo. Possible values: <tt class="docutils literal"><span class="pre">static</span></tt>, <tt class="docutils literal"><span class="pre">everything</span></tt>, or <tt class="docutils literal"><span class="pre">hosted_everything</span></tt>. Use <tt class="docutils literal"><span class="pre">static</span></tt> for just roles, environments, cookbooks, and data bags. By default, <tt class="docutils literal"><span class="pre">everything</span></tt> and <tt class="docutils literal"><span class="pre">hosted_everything</span></tt> are dynamically selected depending on the server type. Default: <tt class="docutils literal"><span class="pre">everything</span></tt> / <tt class="docutils literal"><span class="pre">hosted_everything</span></tt>.</dd>
+<dd>The layout of the local seth-repo. Possible values: <tt class="docutils literal"><span class="pre">static</span></tt>, <tt class="docutils literal"><span class="pre">everything</span></tt>, or <tt class="docutils literal"><span class="pre">hosted_everything</span></tt>. Use <tt class="docutils literal"><span class="pre">static</span></tt> for just roles, environments, cookbooks, and data bags. By default, <tt class="docutils literal"><span class="pre">everything</span></tt> and <tt class="docutils literal"><span class="pre">hosted_everything</span></tt> are dynamically selected depending on the server type. Default: <tt class="docutils literal"><span class="pre">everything</span></tt> / <tt class="docutils literal"><span class="pre">hosted_everything</span></tt>.</dd>
 </dl>
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>The following examples show how to use this Knife subcommand:</p>
 <p><strong>List roles</strong></p>
-<p>For example, to view a list of roles on the Chef server:</p>
+<p>For example, to view a list of roles on the Seth server:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife list roles/
 </pre></div>
 </div>
 <p><strong>List roles and environments</strong></p>
-<p>To view a list of roles and environments on the Chef server:</p>
+<p>To view a list of roles and environments on the Seth server:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife list roles/ environments/
 </pre></div>
 </div>
 <p><strong>List everything</strong></p>
-<p>To view a list of absolutely everything on the Chef server:</p>
+<p>To view a list of absolutely everything on the Seth server:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife list -R /
 </pre></div>
 </div>

@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/path_utils'
-require 'chef/chef_fs/file_system/default_environment_cannot_be_modified_error'
-require 'chef/chef_fs/file_system/operation_failed_error'
-require 'chef/chef_fs/file_system/operation_not_allowed_error'
-require 'chef/chef_fs/parallelizer'
+require 'seth/chef_fs/path_utils'
+require 'seth/chef_fs/file_system/default_environment_cannot_be_modified_error'
+require 'seth/chef_fs/file_system/operation_failed_error'
+require 'seth/chef_fs/file_system/operation_not_allowed_error'
+require 'seth/chef_fs/parallelizer'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       # Returns a list of all things under (and including) this entry that match the
       # given pattern.
@@ -31,7 +31,7 @@ class Chef
       # ==== Attributes
       #
       # * +root+ - Entry to start listing under
-      # * +pattern+ - Chef::ChefFS::FilePattern to match children under
+      # * +pattern+ - Seth::ChefFS::FilePattern to match children under
       #
       def self.list(root, pattern)
         Lister.new(root, pattern)
@@ -72,7 +72,7 @@ class Chef
 
             # Otherwise, go through all children and find any matches
             elsif entry.dir?
-              results = Parallelizer::parallelize(entry.children) { |child| Chef::ChefFS::FileSystem.list(child, pattern) }
+              results = Parallelizer::parallelize(entry.children) { |child| Seth::ChefFS::FileSystem.list(child, pattern) }
               results.flatten(1).each(&block)
             end
           end
@@ -91,7 +91,7 @@ class Chef
       #
       # ==== Examples
       #
-      #     Chef::ChefFS::FileSystem.resolve_path(root_path, 'cookbooks/java/recipes/default.rb')
+      #     Seth::ChefFS::FileSystem.resolve_path(root_path, 'cookbooks/java/recipes/default.rb')
       #
       def self.resolve_path(entry, path)
         return entry if path.length == 0
@@ -101,7 +101,7 @@ class Chef
         end
 
         result = entry
-        Chef::ChefFS::PathUtils::split(path).each do |part|
+        Seth::ChefFS::PathUtils::split(path).each do |part|
           result = result.child(part)
         end
         result
@@ -114,7 +114,7 @@ class Chef
       #
       # ==== Attributes
       #
-      # * +pattern+ - Chef::ChefFS::FilePattern to match children under
+      # * +pattern+ - Seth::ChefFS::FilePattern to match children under
       # * +src_root+ - the root from which things will be copied
       # * +dest_root+ - the root to which things will be copied
       # * +recurse_depth+ - the maximum depth to copy things. +nil+
@@ -131,8 +131,8 @@ class Chef
       #
       # ==== Examples
       #
-      #     Chef::ChefFS::FileSystem.copy_to(FilePattern.new('/cookbooks'),
-      #       chef_fs, local_fs, nil, true) do |message|
+      #     Seth::ChefFS::FileSystem.copy_to(FilePattern.new('/cookbooks'),
+      #       seth_fs, local_fs, nil, true) do |message|
       #       puts message
       #     end
       #
@@ -163,7 +163,7 @@ class Chef
       #
       # ==== Example
       #
-      #     Chef::ChefFS::FileSystem.list_pairs(FilePattern.new('**x.txt', a_root, b_root)).each do |a, b|
+      #     Seth::ChefFS::FileSystem.list_pairs(FilePattern.new('**x.txt', a_root, b_root)).each do |a, b|
       #       ...
       #     end
       #
@@ -187,17 +187,17 @@ class Chef
         def each
           # Make sure everything on the server is also on the filesystem, and diff
           found_paths = Set.new
-          Chef::ChefFS::FileSystem.list(a_root, pattern).each do |a|
+          Seth::ChefFS::FileSystem.list(a_root, pattern).each do |a|
             found_paths << a.path
-            b = Chef::ChefFS::FileSystem.resolve_path(b_root, a.path)
+            b = Seth::ChefFS::FileSystem.resolve_path(b_root, a.path)
             yield [ a, b ]
           end
 
           # Check the outer regex pattern to see if it matches anything on the
           # filesystem that isn't on the server
-          Chef::ChefFS::FileSystem.list(b_root, pattern).each do |b|
+          Seth::ChefFS::FileSystem.list(b_root, pattern).each do |b|
             if !found_paths.include?(b.path)
-              a = Chef::ChefFS::FileSystem.resolve_path(a_root, b.path)
+              a = Seth::ChefFS::FileSystem.resolve_path(a_root, b.path)
               yield [ a, b ]
             end
           end
@@ -217,7 +217,7 @@ class Chef
       #
       # ==== Example
       #
-      #     Chef::ChefFS::FileSystem.child_pairs(a, b).length
+      #     Seth::ChefFS::FileSystem.child_pairs(a, b).length
       #
       def self.child_pairs(a, b)
         # If both are directories, recurse into them and diff the children instead of returning ourselves.
@@ -246,12 +246,12 @@ class Chef
           # TODO these reads can be parallelized
           begin
             a_value = a.read if a_value.nil?
-          rescue Chef::ChefFS::FileSystem::NotFoundError
+          rescue Seth::ChefFS::FileSystem::NotFoundError
             a_value = :none
           end
           begin
             b_value = b.read if b_value.nil?
-          rescue Chef::ChefFS::FileSystem::NotFoundError
+          rescue Seth::ChefFS::FileSystem::NotFoundError
             b_value = :none
           end
           are_same = (a_value == b_value)
@@ -419,7 +419,7 @@ class Chef
       end
 
       def self.parallel_do(enum, options = {}, &block)
-        Chef::ChefFS::Parallelizer.parallel_do(enum, options, &block)
+        Seth::ChefFS::Parallelizer.parallel_do(enum, options, &block)
       end
     end
   end

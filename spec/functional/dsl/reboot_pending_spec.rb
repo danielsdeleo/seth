@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require "chef/dsl/reboot_pending"
-require "chef/win32/registry"
+require "seth/dsl/reboot_pending"
+require "seth/win32/registry"
 require "spec_helper"
 
-describe Chef::DSL::RebootPending, :windows_only do
+describe Seth::DSL::RebootPending, :windows_only do
   def run_ohai
     ohai = Ohai::System.new
     # Would be nice to limit this to platform/kernel/arch etc for Ohai 7
@@ -37,12 +37,12 @@ describe Chef::DSL::RebootPending, :windows_only do
     !registry.key_exists?('HKLM\SOFTWARE\Microsoft\Updates\UpdateExeVolatile')
   end
 
-  let(:node) { Chef::Node.new }
-  let(:events) { Chef::EventDispatch::Dispatcher.new }
+  let(:node) { Seth::Node.new }
+  let(:events) { Seth::EventDispatch::Dispatcher.new }
   let!(:ohai) { run_ohai } # Ensure we have necessary node data
-  let(:run_context) { Chef::RunContext.new(node, {}, events) }
-  let(:recipe) { Chef::Recipe.new("a windows cookbook", "the windows recipe", run_context) }
-  let(:registry) { Chef::Win32::Registry.new(run_context) }
+  let(:run_context) { Seth::RunContext.new(node, {}, events) }
+  let(:recipe) { Seth::Recipe.new("a windows cookbook", "the windows recipe", run_context) }
+  let(:registry) { Seth::Win32::Registry.new(run_context) }
 
   describe "reboot_pending?" do
 

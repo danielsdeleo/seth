@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Package::EasyInstall do
+describe Seth::Provider::Package::EasyInstall do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::EasyInstallPackage.new('boto')
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::EasyInstallPackage.new('boto')
     @new_resource.version('1.8d')
 
-    @current_resource = Chef::Resource::EasyInstallPackage.new('boto')
+    @current_resource = Seth::Resource::EasyInstallPackage.new('boto')
     @current_resource.version('1.8d')
 
-    @provider = Chef::Provider::Package::EasyInstall.new(@new_resource, @run_context)
-    Chef::Resource::Package.stub(:new).and_return(@current_resource)
+    @provider = Seth::Provider::Package::EasyInstall.new(@new_resource, @run_context)
+    Seth::Resource::Package.stub(:new).and_return(@current_resource)
 
     @stdin = StringIO.new
     @stdout = StringIO.new
@@ -41,9 +41,9 @@ describe Chef::Provider::Package::EasyInstall do
   end
 
   describe "easy_install_binary_path" do
-    it "should return a Chef::Provider::EasyInstall object" do
-      provider = Chef::Provider::Package::EasyInstall.new(@node, @new_resource)
-      provider.should be_a_kind_of(Chef::Provider::Package::EasyInstall)
+    it "should return a Seth::Provider::EasyInstall object" do
+      provider = Seth::Provider::Package::EasyInstall.new(@node, @new_resource)
+      provider.should be_a_kind_of(Seth::Provider::Package::EasyInstall)
     end
 
     it "should set the current resources package name to the new resources package name" do

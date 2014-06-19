@@ -1,5 +1,5 @@
-chef_env ||= nil
-case chef_env
+seth_env ||= nil
+case seth_env
 when "prod"
   default[:ldap_server] = "ops1prod"
   default[:ldap_basedn] = "dc=hjksolutions,dc=com"

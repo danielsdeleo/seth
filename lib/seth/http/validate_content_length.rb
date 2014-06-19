@@ -1,6 +1,6 @@
 #--
-# Author:: Lamont Granquist (<lamont@getchef.com>)
-# Copyright:: Copyright (c) 2013 Chef Software, Inc.
+# Author:: Lamont Granquist (<lamont@getseth.com>)
+# Copyright:: Copyright (c) 2013 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,9 @@
 #
 
 require 'pp'
-require 'chef/log'
+require 'seth/log'
 
-class Chef
+class Seth
   class HTTP
 
     # Middleware that validates the Content-Length header against the downloaded number of bytes.
@@ -55,7 +55,7 @@ class Chef
 
       def handle_stream_complete(http_response, rest_request, return_value)
         if @content_length_counter.nil?
-          Chef::Log.debug("No content-length information collected for the streamed download, cannot identify streamed download.")
+          Seth::Log.debug("No content-length information collected for the streamed download, cannot identify streamed download.")
         else
           validate(http_response, @content_length_counter.content_length)
         end
@@ -87,22 +87,22 @@ class Chef
         content_encoding  = http_response['content-encoding']
 
         if content_length.nil?
-          Chef::Log.debug "HTTP server did not include a Content-Length header in response, cannot identify truncated downloads."
+          Seth::Log.debug "HTTP server did not include a Content-Length header in response, cannot identify truncated downloads."
           return true
         end
 
         # if Transfer-Encoding is set the RFC states that we must ignore the Content-Length field
         # CHEF-5041: some proxies uncompress gzip content, leave the incorrect content-length, but set the transfer-encoding field
         unless transfer_encoding.nil?
-          Chef::Log.debug "Transfer-Encoding header is set, skipping Content-Length check."
+          Seth::Log.debug "Transfer-Encoding header is set, skipping Content-Length check."
           return true
         end
 
         if response_length != content_length
-          raise Chef::Exceptions::ContentLengthMismatch.new(response_length, content_length)
+          raise Seth::Exceptions::ContentLengthMismatch.new(response_length, content_length)
         end
 
-        Chef::Log.debug "Content-Length validated correctly."
+        Seth::Log.debug "Content-Length validated correctly."
         true
       end
     end

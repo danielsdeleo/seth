@@ -17,17 +17,17 @@
 # limitations under the License.
 #
 
-require 'chef/win32/api'
-require 'chef/win32/api/security'
-require 'chef/win32/api/system'
+require 'seth/win32/api'
+require 'seth/win32/api/security'
+require 'seth/win32/api/system'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     module API
       module File
-        extend Chef::ReservedNames::Win32::API
-        include Chef::ReservedNames::Win32::API::Security
-        include Chef::ReservedNames::Win32::API::System
+        extend Seth::ReservedNames::Win32::API
+        include Seth::ReservedNames::Win32::API::Security
+        include Seth::ReservedNames::Win32::API::System
 
         ###############################################
         # Win32 API Constants
@@ -482,7 +482,7 @@ BOOL WINAPI DeviceIoControl(
             find_data = WIN32_FIND_DATA.new
             handle = FindFirstFileW(path, find_data)
             if handle == INVALID_HANDLE_VALUE
-              Chef::ReservedNames::Win32::Error.raise!
+              Seth::ReservedNames::Win32::Error.raise!
             end
             block.call(handle, find_data)
           ensure
@@ -500,7 +500,7 @@ BOOL WINAPI DeviceIoControl(
                                   nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS, nil)
 
             if handle == INVALID_HANDLE_VALUE
-              Chef::ReservedNames::Win32::Error.raise!
+              Seth::ReservedNames::Win32::Error.raise!
             end
             block.call(handle)
           ensure
@@ -515,7 +515,7 @@ BOOL WINAPI DeviceIoControl(
                                   nil, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, nil)
 
             if handle == INVALID_HANDLE_VALUE
-              Chef::ReservedNames::Win32::Error.raise!
+              Seth::ReservedNames::Win32::Error.raise!
             end
             block.call(handle)
           ensure
@@ -529,7 +529,7 @@ BOOL WINAPI DeviceIoControl(
             file_information = BY_HANDLE_FILE_INFORMATION.new
             success = GetFileInformationByHandle(handle, file_information)
             if success == 0
-              Chef::ReservedNames::Win32::Error.raise!
+              Seth::ReservedNames::Win32::Error.raise!
             end
           end
           file_information

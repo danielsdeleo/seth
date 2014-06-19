@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>knife user &mdash; chef-client Man Pages</title>
+    <title>knife user &mdash; seth-client Man Pages</title>
     
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="shortcut icon" href="_static/chef.ico"/>
+    <link rel="shortcut icon" href="_static/seth.ico"/>
 
 
   </head>
   <body>
 <div style="background-color: #212c35; text-align: left; padding: 0px 0px 0px 0px">
-<a href="http://docs.opscode.com/"><img src="_static/chef_html_logo.png" border="0" alt="Chef"/></a>
+<a href="http://docs.opscode.com/"><img src="_static/seth_html_logo.png" border="0" alt="Seth"/></a>
 </div>
 
 
@@ -45,7 +45,7 @@
 <p>The <strong>knife user</strong> subcommand is used to manage the list of users and their associated RSA public key-pairs.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This subcommand ONLY works when run against the open source Chef server and will not run against Enterprise Chef (including hosted Enterprise Chef), or Private Chef.</p>
+<p class="last">This subcommand ONLY works when run against the open source Seth server and will not run against Enterprise Chef (including hosted Enterprise Chef), or Private Chef.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -53,10 +53,10 @@
 </div>
 <div class="section" id="create">
 <h2>create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to create a user. This process will generate an RSA key pair for the named user. The public key will be stored on the Chef server and the private key will be displayed on <tt class="docutils literal"><span class="pre">STDOUT</span></tt> or written to a named file.</p>
+<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to create a user. This process will generate an RSA key pair for the named user. The public key will be stored on the Seth server and the private key will be displayed on <tt class="docutils literal"><span class="pre">STDOUT</span></tt> or written to a named file.</p>
 <ul class="simple">
-<li>For the user, the private key should be copied to the system as <tt class="docutils literal"><span class="pre">/etc/chef/client.pem</span></tt>.</li>
-<li>For Knife, the private key is typically copied to <tt class="docutils literal"><span class="pre">~/.chef/client_name.pem</span></tt> and referenced in the knife.rb configuration file.</li>
+<li>For the user, the private key should be copied to the system as <tt class="docutils literal"><span class="pre">/etc/seth/client.pem</span></tt>.</li>
+<li>For Knife, the private key is typically copied to <tt class="docutils literal"><span class="pre">~/.seth/client_name.pem</span></tt> and referenced in the knife.rb configuration file.</li>
 </ul>
 <div class="section" id="syntax">
 <h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
@@ -70,7 +70,7 @@
 <p>This argument has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">-a</span></tt>, <tt class="docutils literal"><span class="pre">--admin</span></tt></dt>
-<dd>Indicates that a client will be created as an admin client. This is required when users of the open source Chef server need to access the Chef Server API as an administrator. This option only works when used with the open source Chef server and will have no effect when used with Enterprise Chef.</dd>
+<dd>Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the Chef Server API as an administrator. This option only works when used with the open source Chef server and will have no effect when used with Enterprise Chef.</dd>
 <dt><tt class="docutils literal"><span class="pre">-f</span> <span class="pre">FILE_NAME</span></tt>, <tt class="docutils literal"><span class="pre">--file</span> <span class="pre">FILE_NAME</span></tt></dt>
 <dd>Use to save a private key to the specified file name.</dd>
 <dt><tt class="docutils literal"><span class="pre">-p</span> <span class="pre">PASSWORD</span></tt>, <tt class="docutils literal"><span class="pre">--password</span> <span class="pre">PASSWORD</span></tt></dt>
@@ -113,7 +113,7 @@
 </div>
 <div class="section" id="edit">
 <h2>edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit the details of a user. When this argument is run, Knife will open $EDITOR. When finished, Knife will update the Chef server with those changes.</p>
+<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit the details of a user. When this argument is run, Knife will open $EDITOR. When finished, Knife will update the Seth server with those changes.</p>
 <div class="section" id="id4">
 <h3>Syntax<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -155,10 +155,10 @@
 </div>
 <div class="section" id="reregister">
 <h2>reregister<a class="headerlink" href="#reregister" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">reregister</span></tt> argument is used to regenerate an RSA key pair for a user. The public key will be stored on the Chef server and the private key will be displayed on <tt class="docutils literal"><span class="pre">STDOUT</span></tt> or written to a named file.</p>
+<p>The <tt class="docutils literal"><span class="pre">reregister</span></tt> argument is used to regenerate an RSA key pair for a user. The public key will be stored on the Seth server and the private key will be displayed on <tt class="docutils literal"><span class="pre">STDOUT</span></tt> or written to a named file.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Running this argument will invalidate the previous RSA key pair, making it unusable during authentication to the Chef server.</p>
+<p class="last">Running this argument will invalidate the previous RSA key pair, making it unusable during authentication to the Seth server.</p>
 </div>
 <div class="section" id="id10">
 <h3>Syntax<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
@@ -211,8 +211,8 @@
 </pre></div>
 </div>
 <p>to return something like:</p>
-<div class="highlight-bash"><div class="highlight"><pre>chef_type:   user
-json_class:  Chef::User
+<div class="highlight-bash"><div class="highlight"><pre>seth_type:   user
+json_class:  Seth::User
 name:        Dennis Teck
 public_key:
 </pre></div>

@@ -19,10 +19,10 @@
 require 'uri'
 require 'tempfile'
 require 'net/ftp'
-require 'chef/provider/remote_file'
-require 'chef/file_content_management/tempfile'
+require 'seth/provider/remote_file'
+require 'seth/file_content_management/tempfile'
 
-class Chef
+class Seth
   class Provider
     class RemoteFile
       class FTP
@@ -138,7 +138,7 @@ class Chef
 
         # Fetches using Net::FTP, returns a Tempfile with the content
         def get
-          tempfile = Chef::FileContentManagement::Tempfile.new(@new_resource).tempfile
+          tempfile = Seth::FileContentManagement::Tempfile.new(@new_resource).tempfile
           if typecode
             ftp.voidcmd("TYPE #{typecode.upcase}")
           end
@@ -147,17 +147,17 @@ class Chef
           tempfile
         end
 
-        #adapted from buildr/lib/buildr/core/transports.rb via chef/rest/rest_client.rb
+        #adapted from buildr/lib/buildr/core/transports.rb via seth/rest/rest_client.rb
         def proxy_uri(uri)
-          proxy = Chef::Config["ftp_proxy"]
+          proxy = Seth::Config["ftp_proxy"]
           proxy = URI.parse(proxy) if String === proxy
-          if Chef::Config["ftp_proxy_user"]
-            proxy.user = Chef::Config["ftp_proxy_user"]
+          if Seth::Config["ftp_proxy_user"]
+            proxy.user = Seth::Config["ftp_proxy_user"]
           end
-          if Chef::Config["ftp_proxy_pass"]
-            proxy.password = Chef::Config["ftp_proxy_pass"]
+          if Seth::Config["ftp_proxy_pass"]
+            proxy.password = Seth::Config["ftp_proxy_pass"]
           end
-          excludes = Chef::Config[:no_proxy].to_s.split(/\s*,\s*/).compact
+          excludes = Seth::Config[:no_proxy].to_s.split(/\s*,\s*/).compact
           excludes = excludes.map { |exclude| exclude =~ /:\d+$/ ? exclude : "#{exclude}:*" }
           return proxy unless excludes.any? { |exclude| File.fnmatch(exclude, "#{host}:#{port}") }
         end

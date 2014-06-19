@@ -19,18 +19,18 @@
 # Shared context used by both Powershell and Batch script provider
 # tests.
 
-shared_context Chef::Resource::WindowsScript do
+shared_context Seth::Resource::WindowsScript do
   before(:all) do
 
     ohai_reader = Ohai::System.new
     ohai_reader.all_plugins("platform")
 
-    new_node = Chef::Node.new
+    new_node = Seth::Node.new
     new_node.consume_external_attrs(ohai_reader.data,{})
 
-    events = Chef::EventDispatch::Dispatcher.new
+    events = Seth::EventDispatch::Dispatcher.new
 
-    @run_context = Chef::RunContext.new(new_node, {}, events)
+    @run_context = Seth::RunContext.new(new_node, {}, events)
   end
 
   let(:script_output_path) do

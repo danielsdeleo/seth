@@ -18,26 +18,26 @@
 
 require 'spec_helper'
 
-describe Chef::FileCache do
+describe Seth::FileCache do
   before do
     @file_cache_path = Dir.mktmpdir
-    Chef::Config[:file_cache_path] = @file_cache_path
+    Seth::Config[:file_cache_path] = @file_cache_path
     @io = StringIO.new
   end
 
   after do
-    FileUtils.rm_rf(Chef::Config[:file_cache_path])
+    FileUtils.rm_rf(Seth::Config[:file_cache_path])
   end
 
   describe "when the relative path to the cache file doesn't exist" do
     it "creates intermediate directories as needed" do
-      Chef::FileCache.store("whiz/bang", "I found a poop")
+      Seth::FileCache.store("whiz/bang", "I found a poop")
       File.should exist(File.join(@file_cache_path, 'whiz'))
     end
 
     it "creates the cached file at the correct relative path" do
       File.should_receive(:open).with(File.join(@file_cache_path, 'whiz', 'bang'), "w",416).and_yield(@io)
-      Chef::FileCache.store("whiz/bang", "borkborkbork")
+      Seth::FileCache.store("whiz/bang", "borkborkbork")
     end
 
   end
@@ -48,7 +48,7 @@ describe Chef::FileCache do
     end
 
     it "should print the contents to the file" do
-      Chef::FileCache.store("whiz/bang", "borkborkbork")
+      Seth::FileCache.store("whiz/bang", "borkborkbork")
       @io.string.should == "borkborkbork"
     end
 
@@ -58,11 +58,11 @@ describe Chef::FileCache do
     it "finds and reads the cached file" do
       FileUtils.mkdir_p(File.join(@file_cache_path, 'whiz'))
       File.open(File.join(@file_cache_path, 'whiz', 'bang'), 'w') { |f| f.print("borkborkbork") }
-      Chef::FileCache.load('whiz/bang').should == 'borkborkbork'
+      Seth::FileCache.load('whiz/bang').should == 'borkborkbork'
     end
 
-    it "should raise a Chef::Exceptions::FileNotFound if the file doesn't exist" do
-      lambda { Chef::FileCache.load('whiz/bang') }.should raise_error(Chef::Exceptions::FileNotFound)
+    it "should raise a Seth::Exceptions::FileNotFound if the file doesn't exist" do
+      lambda { Seth::FileCache.load('whiz/bang') }.should raise_error(Chef::Exceptions::FileNotFound)
     end
   end
 
@@ -73,7 +73,7 @@ describe Chef::FileCache do
     end
 
     it "unlinks the file" do
-      Chef::FileCache.delete("whiz/bang")
+      Seth::FileCache.delete("whiz/bang")
       File.should_not exist(File.join(@file_cache_path, 'whiz', 'bang'))
     end
 
@@ -88,11 +88,11 @@ describe Chef::FileCache do
     end
 
     it "should return the relative paths" do
-      Chef::FileCache.list.sort.should == %w{snappy/patter whiz/bang}
+      Seth::FileCache.list.sort.should == %w{snappy/patter whiz/bang}
     end
 
     it "searches for cached files by globbing" do
-      Chef::FileCache.find('snappy/**/*').should == %w{snappy/patter}
+      Seth::FileCache.find('snappy/**/*').should == %w{snappy/patter}
     end
 
   end
@@ -104,11 +104,11 @@ describe Chef::FileCache do
 
     it "has a key if the corresponding cache file exists" do
       FileUtils.touch(File.join(@file_cache_path, 'whiz', 'bang'))
-      Chef::FileCache.should have_key("whiz/bang")
+      Seth::FileCache.should have_key("whiz/bang")
     end
 
     it "doesn't have a key if the corresponding cache file doesn't exist" do
-      Chef::FileCache.should_not have_key("whiz/bang")
+      Seth::FileCache.should_not have_key("whiz/bang")
     end
   end
 end

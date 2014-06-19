@@ -1,14 +1,14 @@
-# Configuration file for the chef-server-webui service
+# Configuration file for the seth-server-webui service
 
-#CONFIG=/etc/chef/webui.rb
-#PIDFILE=/var/run/chef/server-webui.pid
-#LOCKFILE=/var/lock/subsys/chef-server-webui
-#LOGFILE=/var/log/chef/server-webui.log
+#CONFIG=/etc/seth/webui.rb
+#PIDFILE=/var/run/seth/server-webui.pid
+#LOCKFILE=/var/lock/subsys/seth-server-webui
+#LOGFILE=/var/log/seth/server-webui.log
 #PORT=4040
 #ENVIRONMENT=production
 #ADAPTER=thin
-#CHILDPIDFILES=/var/run/chef/server-webui.%s.pid
-#SERVER_USER=chef
-#SERVER_GROUP=chef
-# Any additional chef-server-webui options.
+#CHILDPIDFILES=/var/run/seth/server-webui.%s.pid
+#SERVER_USER=seth
+#SERVER_GROUP=seth
+# Any additional seth-server-webui options.
 #OPTIONS=

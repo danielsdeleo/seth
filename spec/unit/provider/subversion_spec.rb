@@ -19,19 +19,19 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Subversion do
+describe Seth::Provider::Subversion do
 
   before do
-    @resource = Chef::Resource::Subversion.new("my app")
+    @resource = Seth::Resource::Subversion.new("my app")
     @resource.repository "http://svn.example.org/trunk/"
     @resource.destination "/my/deploy/dir"
     @resource.revision "12345"
     @resource.svn_arguments(false)
     @resource.svn_info_args(false)
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @provider = Chef::Provider::Subversion.new(@resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @provider = Seth::Provider::Subversion.new(@resource, @run_context)
   end
 
   it "converts resource attributes to options for run_command and popen4" do
@@ -213,7 +213,7 @@ describe Chef::Provider::Subversion do
   end
 
   it "raises an error if the svn checkout command would fail because the enclosing directory doesn't exist" do
-    lambda {@provider.run_action(:sync)}.should raise_error(Chef::Exceptions::MissingParentDirectory)
+    lambda {@provider.run_action(:sync)}.should raise_error(Seth::Exceptions::MissingParentDirectory)
   end
 
   it "should not checkout if the destination exists or is a non empty directory" do

@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/provider/service/init'
+require 'seth/provider/service/init'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Invokercd < Chef::Provider::Service::Init
+      class Invokercd < Seth::Provider::Service::Init
 
         def initialize(new_resource, run_context)
           super

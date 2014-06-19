@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Insserv do
+describe Seth::Provider::Service::Insserv do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
     @node.automatic_attrs[:command] = {:ps => "ps -ax"}
 
-    @new_resource = Chef::Resource::Service.new("initgrediant")
-    @current_resource = Chef::Resource::Service.new("initgrediant")
+    @new_resource = Seth::Resource::Service.new("initgrediant")
+    @current_resource = Seth::Resource::Service.new("initgrediant")
 
-    @provider = Chef::Provider::Service::Insserv.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Service::Insserv.new(@new_resource, @run_context)
     @status = double("Process::Status mock", :exitstatus => 0, :stdout => "")
     @provider.stub(:shell_out!).and_return(@status)
   end

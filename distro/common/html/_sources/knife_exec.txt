@@ -30,7 +30,7 @@ The following examples show how to use this |knife| subcommand:
 
 .. include:: ../../step_knife/step_knife_exec_run_ruby_scripts.rst
 
-**Chef Knife status**
+**Seth Knife status**
 
 .. include:: ../../step_knife/step_knife_exec_check_knife_status.rst
 

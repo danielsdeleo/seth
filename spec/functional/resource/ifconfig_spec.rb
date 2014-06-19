@@ -17,16 +17,16 @@
 #
 
 require 'functional/resource/base'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
 # run this test only for following platforms.
 include_flag = !(['ubuntu', 'centos', 'aix'].include?(ohai[:platform]))
 
-describe Chef::Resource::Ifconfig, :requires_root, :external => include_flag do
-  include Chef::Mixin::ShellOut
+describe Seth::Resource::Ifconfig, :requires_root, :external => include_flag do
+  include Seth::Mixin::ShellOut
 
   let(:new_resource) do
-    new_resource = Chef::Resource::Ifconfig.new('10.10.0.1', run_context)
+    new_resource = Seth::Resource::Ifconfig.new('10.10.0.1', run_context)
     new_resource
   end
 

@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::EnvironmentCompare do
+describe Seth::Knife::EnvironmentCompare do
   before(:each) do
-    @knife = Chef::Knife::EnvironmentCompare.new
+    @knife = Seth::Knife::EnvironmentCompare.new
     
     @environments = {
       "cita" => "http://localhost:4000/environments/cita",
@@ -42,7 +42,7 @@ describe Chef::Knife::EnvironmentCompare do
 
     @rest_double = double('rest')
     @knife.stub(:rest).and_return(@rest_double)
-    @cookbook_names = ['apache2', 'mysql', 'foo', 'bar', 'dummy', 'chef_handler']
+    @cookbook_names = ['apache2', 'mysql', 'foo', 'bar', 'dummy', 'seth_handler']
     @base_url = 'https://server.example.com/cookbooks'
     @cookbook_data = {}
     @cookbook_names.each do |item|

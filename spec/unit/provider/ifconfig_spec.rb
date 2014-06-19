@@ -18,29 +18,29 @@
 
 #require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_helper"))
 require 'spec_helper'
-require 'chef/exceptions'
+require 'seth/exceptions'
 
-describe Chef::Provider::Ifconfig do
+describe Seth::Provider::Ifconfig do
   before do
-    @node = Chef::Node.new
-    @cookbook_collection = Chef::CookbookCollection.new([])
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
+    @node = Seth::Node.new
+    @cookbook_collection = Seth::CookbookCollection.new([])
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
     #This new_resource can be called anything --> it is not the same as in ifconfig.rb
-    @new_resource = Chef::Resource::Ifconfig.new("10.0.0.1", @run_context)
+    @new_resource = Seth::Resource::Ifconfig.new("10.0.0.1", @run_context)
     @new_resource.mask "255.255.254.0"
     @new_resource.metric "1"
     @new_resource.mtu "1500"
     @new_resource.device "eth0"
-    @provider = Chef::Provider::Ifconfig.new(@new_resource, @run_context)
-    @current_resource = Chef::Resource::Ifconfig.new("10.0.0.1", @run_context)
+    @provider = Seth::Provider::Ifconfig.new(@new_resource, @run_context)
+    @current_resource = Seth::Resource::Ifconfig.new("10.0.0.1", @run_context)
 
     status = double("Status", :exitstatus => 0)
     @provider.instance_variable_set("@status", status)
     @provider.current_resource = @current_resource
 
  end
-  describe Chef::Provider::Ifconfig, "load_current_resource" do
+  describe Seth::Provider::Ifconfig, "load_current_resource" do
     before do
       status = double("Status", :exitstatus => 1)
       @provider.should_receive(:popen4).and_return status
@@ -51,10 +51,10 @@ describe Chef::Provider::Ifconfig do
     end
     it "should thrown an exception when ifconfig fails" do
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error Chef::Exceptions::Ifconfig
+      lambda { @provider.process_resource_requirements }.should raise_error Seth::Exceptions::Ifconfig
     end
   end
-  describe Chef::Provider::Ifconfig, "action_add" do
+  describe Seth::Provider::Ifconfig, "action_add" do
 
     it "should add an interface if it does not exist" do
       #@provider.stub(:run_command).and_return(true)
@@ -83,7 +83,7 @@ describe Chef::Provider::Ifconfig do
     #end
   end
 
-  describe Chef::Provider::Ifconfig, "action_enable" do
+  describe Seth::Provider::Ifconfig, "action_enable" do
 
     it "should enable interface if does not exist" do
       @provider.stub(:load_current_resource)
@@ -107,7 +107,7 @@ describe Chef::Provider::Ifconfig do
     end
   end
 
-  describe Chef::Provider::Ifconfig, "action_delete" do
+  describe Seth::Provider::Ifconfig, "action_delete" do
 
     it "should delete interface if it exists" do
       @provider.stub(:load_current_resource)
@@ -130,7 +130,7 @@ describe Chef::Provider::Ifconfig do
     end
   end
 
-  describe Chef::Provider::Ifconfig, "action_disable" do
+  describe Seth::Provider::Ifconfig, "action_disable" do
 
     it "should disable interface if it exists" do
       @provider.stub(:load_current_resource)
@@ -153,7 +153,7 @@ describe Chef::Provider::Ifconfig do
     end
   end
 
-  describe Chef::Provider::Ifconfig, "action_delete" do
+  describe Seth::Provider::Ifconfig, "action_delete" do
 
     it "should delete interface of it exists" do
       @provider.stub(:load_current_resource)

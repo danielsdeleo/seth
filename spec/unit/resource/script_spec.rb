@@ -19,9 +19,9 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Script do
+describe Seth::Resource::Script do
   let(:resource_instance_name) { "fakey_fakerton" }
-  let(:script_resource) { Chef::Resource::Script.new(resource_instance_name) }
+  let(:script_resource) { Seth::Resource::Script.new(resource_instance_name) }
   let(:resource_name) { :script }
 
   it "should accept a string for the interpreter" do

@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class DataBagDelete < Knife
 
       deps do
-        require 'chef/data_bag'
+        require 'seth/data_bag'
       end
 
       banner "knife data bag delete BAG [ITEM] (options)"
@@ -31,11 +31,11 @@ class Chef
 
       def run
         if @name_args.length == 2
-          delete_object(Chef::DataBagItem, @name_args[1], "data_bag_item") do
+          delete_object(Seth::DataBagItem, @name_args[1], "data_bag_item") do
             rest.delete_rest("data/#{@name_args[0]}/#{@name_args[1]}")
           end
         elsif @name_args.length == 1
-          delete_object(Chef::DataBag, @name_args[0], "data_bag") do
+          delete_object(Seth::DataBag, @name_args[0], "data_bag") do
             rest.delete_rest("data/#{@name_args[0]}")
           end
         else

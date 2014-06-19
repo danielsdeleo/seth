@@ -19,20 +19,20 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::Mount::Mount do
+describe Seth::Provider::Mount::Mount do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Mount.new("/tmp/foo")
+    @new_resource = Seth::Resource::Mount.new("/tmp/foo")
     @new_resource.device      "/dev/sdz1"
     @new_resource.device_type :device
     @new_resource.fstype      "ext3"
 
     @new_resource.supports :remount => false
 
-    @provider = Chef::Provider::Mount::Mount.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Mount::Mount.new(@new_resource, @run_context)
 
     ::File.stub(:exists?).with("/dev/sdz1").and_return true
     ::File.stub(:exists?).with("/tmp/foo").and_return true
@@ -81,7 +81,7 @@ describe Chef::Provider::Mount::Mount do
 
     it "should raise an error if the mount device does not exist" do
       ::File.stub(:exists?).with("/dev/sdz1").and_return false
-      lambda { @provider.load_current_resource();@provider.mountable? }.should raise_error(Chef::Exceptions::Mount)
+      lambda { @provider.load_current_resource();@provider.mountable? }.should raise_error(Seth::Exceptions::Mount)
     end
 
     it "should not call mountable? with load_current_resource - CHEF-1565" do
@@ -99,12 +99,12 @@ describe Chef::Provider::Mount::Mount do
       stdout_findfs = double("STDOUT", :first => nil)
       @provider.should_receive(:popen4).with("/sbin/findfs UUID=d21afe51-a0fe-4dc6-9152-ac733763ae0a").and_yield(@pid,@stdin,stdout_findfs,@stderr).and_return(status_findfs)
       ::File.should_receive(:exists?).with("").and_return(false)
-      lambda { @provider.load_current_resource();@provider.mountable? }.should raise_error(Chef::Exceptions::Mount)
+      lambda { @provider.load_current_resource();@provider.mountable? }.should raise_error(Seth::Exceptions::Mount)
     end
 
     it "should raise an error if the mount point does not exist" do
       ::File.stub(:exists?).with("/tmp/foo").and_return false
-      lambda { @provider.load_current_resource();@provider.mountable? }.should raise_error(Chef::Exceptions::Mount)
+      lambda { @provider.load_current_resource();@provider.mountable? }.should raise_error(Seth::Exceptions::Mount)
     end
 
     it "does not expect the device to exist for tmpfs" do
@@ -283,7 +283,7 @@ describe Chef::Provider::Mount::Mount do
 
   context "after the mount's state has been discovered" do
     before do
-      @current_resource = Chef::Resource::Mount.new("/tmp/foo")
+      @current_resource = Seth::Resource::Mount.new("/tmp/foo")
       @current_resource.device       "/dev/sdz1"
       @current_resource.device_type  :device
       @current_resource.fstype       "ext3"

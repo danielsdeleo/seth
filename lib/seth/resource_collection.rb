@@ -17,10 +17,10 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
-require 'chef/resource_collection/stepable_iterator'
+require 'seth/resource'
+require 'seth/resource_collection/stepable_iterator'
 
-class Chef
+class Seth
   class ResourceCollection
     include Enumerable
 
@@ -49,14 +49,14 @@ class Chef
     end
 
     def []=(index, arg)
-      is_chef_resource(arg)
+      is_seth_resource(arg)
       @resources[index] = arg
       @resources_by_name[arg.to_s] = index
     end
 
     def <<(*args)
       args.flatten.each do |a|
-        is_chef_resource(a)
+        is_seth_resource(a)
         @resources << a
         @resources_by_name[a.to_s] = @resources.length - 1
       end
@@ -67,7 +67,7 @@ class Chef
     alias_method :push, :<<
 
     def insert(resource)
-      is_chef_resource(resource)
+      is_seth_resource(resource)
       if @insert_after_idx
         # in the middle of executing a run, so any resources inserted now should
         # be placed after the most recent addition done by the currently executing
@@ -111,16 +111,16 @@ class Chef
 
     def lookup(resource)
       lookup_by = nil
-      if resource.kind_of?(Chef::Resource)
+      if resource.kind_of?(Seth::Resource)
         lookup_by = resource.to_s
       elsif resource.kind_of?(String)
         lookup_by = resource
       else
-        raise ArgumentError, "Must pass a Chef::Resource or String to lookup"
+        raise ArgumentError, "Must pass a Seth::Resource or String to lookup"
       end
       res = @resources_by_name[lookup_by]
       unless res
-        raise Chef::Exceptions::ResourceNotFound, "Cannot find a resource matching #{lookup_by} (did you define it first?)"
+        raise Seth::Exceptions::ResourceNotFound, "Cannot find a resource matching #{lookup_by} (did you define it first?)"
       end
       @resources[res]
     end
@@ -147,7 +147,7 @@ class Chef
           results << find_resource_by_string(arg)
         else
           msg = "arguments to #{self.class.name}#find should be of the form :resource => 'name' or resource[name]"
-          raise Chef::Exceptions::InvalidResourceSpecification, msg
+          raise Seth::Exceptions::InvalidResourceSpecification, msg
         end
       end
       flat_results = results.flatten
@@ -164,27 +164,27 @@ class Chef
     # === Arguments
     # * query_object should be a string of the form
     # "resource_type[resource_name]", a single element Hash (e.g., :service =>
-    # "apache2"), or a Chef::Resource (this is the happy path). Other arguments
+    # "apache2"), or a Seth::Resource (this is the happy path). Other arguments
     # will raise an exception.
     # === Returns
     # * true returns true for all valid input.
     # === Raises
-    # * Chef::Exceptions::InvalidResourceSpecification for all invalid input.
+    # * Seth::Exceptions::InvalidResourceSpecification for all invalid input.
     def validate_lookup_spec!(query_object)
       case query_object
-      when Chef::Resource
+      when Seth::Resource
         true
       when SINGLE_RESOURCE_MATCH, MULTIPLE_RESOURCE_MATCH
         true
       when Hash
         true
       when String
-        raise Chef::Exceptions::InvalidResourceSpecification,
+        raise Seth::Exceptions::InvalidResourceSpecification,
           "The string `#{query_object}' is not valid for resource collection lookup. Correct syntax is `resource_type[resource_name]'"
       else
-        raise Chef::Exceptions::InvalidResourceSpecification,
+        raise Seth::Exceptions::InvalidResourceSpecification,
           "The object `#{query_object.inspect}' is not valid for resource collection lookup. " +
-          "Use a String like `resource_type[resource_name]' or a Chef::Resource object"
+          "Use a String like `resource_type[resource_name]' or a Seth::Resource object"
       end
     end
 
@@ -245,9 +245,9 @@ class Chef
         return results
       end
 
-      def is_chef_resource(arg)
-        unless arg.kind_of?(Chef::Resource)
-          raise ArgumentError, "Members must be Chef::Resource's"
+      def is_seth_resource(arg)
+        unless arg.kind_of?(Seth::Resource)
+          raise ArgumentError, "Members must be Seth::Resource's"
         end
         true
       end

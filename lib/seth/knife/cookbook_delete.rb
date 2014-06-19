@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class CookbookDelete < Knife
 
       attr_accessor :cookbook_name, :version
 
       deps do
-        require 'chef/cookbook_version'
+        require 'seth/cookbook_version'
       end
 
       option :all, :short => '-a', :long => '--all', :boolean => true, :description => 'delete all versions'
@@ -51,7 +51,7 @@ class Chef
       end
 
       def delete_explicit_version
-        delete_object(Chef::CookbookVersion, "#{@cookbook_name} version #{@version}", "cookbook") do
+        delete_object(Seth::CookbookVersion, "#{@cookbook_name} version #{@version}", "cookbook") do
           delete_request("cookbooks/#{@cookbook_name}/#{@version}")
         end
       end

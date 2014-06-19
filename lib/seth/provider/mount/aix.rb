@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/provider/mount'
+require 'seth/provider/mount'
 
-class Chef
+class Seth
   class Provider
     class Mount
-      class Aix < Chef::Provider::Mount::Mount
+      class Aix < Seth::Provider::Mount::Mount
 
         # Override for aix specific handling
         def initialize(new_resource, run_context)
@@ -50,18 +50,18 @@ class Chef
               enabled = true
               @current_resource.fstype($1)
               @current_resource.options($5)
-              Chef::Log.debug("Found mount #{device_fstab} to #{@new_resource.mount_point} in /etc/filesystems")
+              Seth::Log.debug("Found mount #{device_fstab} to #{@new_resource.mount_point} in /etc/filesystems")
               next
             when /^#{Regexp.escape(@new_resource.mount_point)}:#{device_fstab_regex}::(\S+):(\S+)?:(\S+)?:(\S+):(\S+):(\S+):(\S+)/
               # mount point entry with hostname or ipv4 address
               enabled = true
               @current_resource.fstype($1)
               @current_resource.options($5)
-              Chef::Log.debug("Found mount #{device_fstab} to #{@new_resource.mount_point} in /etc/filesystems")
+              Seth::Log.debug("Found mount #{device_fstab} to #{@new_resource.mount_point} in /etc/filesystems")
               next
             when /^#{Regexp.escape(@new_resource.mount_point)}/
               enabled=false
-              Chef::Log.debug("Found conflicting mount point #{@new_resource.mount_point} in /etc/filesystems")
+              Seth::Log.debug("Found conflicting mount point #{@new_resource.mount_point} in /etc/filesystems")
             end
           end
           @current_resource.enabled(enabled)
@@ -79,10 +79,10 @@ class Chef
             case line
             when /#{search_device}\s+#{Regexp.escape(@new_resource.mount_point)}/
               mounted = true
-              Chef::Log.debug("Special device #{device_logstring} mounted as #{@new_resource.mount_point}")
+              Seth::Log.debug("Special device #{device_logstring} mounted as #{@new_resource.mount_point}")
             when /^[\/\w]+\s+#{Regexp.escape(@new_resource.mount_point)}\s+/
               mounted = false
-              Chef::Log.debug("Found conflicting mount point #{@new_resource.mount_point} in /etc/fstab")
+              Seth::Log.debug("Found conflicting mount point #{@new_resource.mount_point} in /etc/fstab")
             end
           end
           @current_resource.mounted(mounted)
@@ -107,9 +107,9 @@ class Chef
             end
             command << " #{@new_resource.mount_point}"
             shell_out!(command)
-            Chef::Log.debug("#{@new_resource} is mounted at #{@new_resource.mount_point}")
+            Seth::Log.debug("#{@new_resource} is mounted at #{@new_resource.mount_point}")
           else
-            Chef::Log.debug("#{@new_resource} is already mounted at #{@new_resource.mount_point}")
+            Seth::Log.debug("#{@new_resource} is already mounted at #{@new_resource.mount_point}")
           end
         end
 
@@ -123,7 +123,7 @@ class Chef
 
         def enable_fs
           if @current_resource.enabled && mount_options_unchanged?
-            Chef::Log.debug("#{@new_resource} is already enabled - nothing to do")
+            Seth::Log.debug("#{@new_resource} is already enabled - nothing to do")
             return nil
           end
 
@@ -144,7 +144,7 @@ class Chef
             fstab.puts("\tvfs\t\t= #{@new_resource.fstype}")
             fstab.puts("\tmount\t\t= false")
             fstab.puts "\toptions\t\t= #{@new_resource.options.join(',')}" unless @new_resource.options.nil? || @new_resource.options.empty?
-            Chef::Log.debug("#{@new_resource} is enabled at #{@new_resource.mount_point}")
+            Seth::Log.debug("#{@new_resource} is enabled at #{@new_resource.mount_point}")
           end
         end
 
@@ -169,7 +169,7 @@ class Chef
               contents.each { |line| fstab.puts line}
             end
           else
-            Chef::Log.debug("#{@new_resource} is not enabled - nothing to do")
+            Seth::Log.debug("#{@new_resource} is not enabled - nothing to do")
           end
         end
 

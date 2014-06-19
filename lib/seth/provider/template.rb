@@ -17,27 +17,27 @@
 # limitations under the License.
 #
 
-require 'chef/provider/template_finder'
-require 'chef/provider/file'
-require 'chef/deprecation/provider/template'
-require 'chef/deprecation/warnings'
+require 'seth/provider/template_finder'
+require 'seth/provider/file'
+require 'seth/deprecation/provider/template'
+require 'seth/deprecation/warnings'
 
 
-class Chef
+class Seth
   class Provider
-    class Template < Chef::Provider::File
+    class Template < Seth::Provider::File
 
-      extend Chef::Deprecation::Warnings
-      include Chef::Deprecation::Provider::Template
-      add_deprecation_warnings_for(Chef::Deprecation::Provider::Template.instance_methods)
+      extend Seth::Deprecation::Warnings
+      include Seth::Deprecation::Provider::Template
+      add_deprecation_warnings_for(Seth::Deprecation::Provider::Template.instance_methods)
 
       def initialize(new_resource, run_context)
-        @content_class = Chef::Provider::Template::Content
+        @content_class = Seth::Provider::Template::Content
         super
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::Template.new(@new_resource.name)
+        @current_resource = Seth::Resource::Template.new(@new_resource.name)
         super
       end
 

@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class NodeList < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife node list (options)"
@@ -35,8 +35,8 @@ class Chef
         :description => "Show corresponding URIs"
 
       def run
-        env = Chef::Config[:environment]
-        output(format_list_for_display( env ? Chef::Node.list_by_environment(env) : Chef::Node.list ))
+        env = Seth::Config[:environment]
+        output(format_list_for_display( env ? Seth::Node.list_by_environment(env) : Chef::Node.list ))
       end
 
     end

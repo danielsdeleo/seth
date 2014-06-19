@@ -1,21 +1,21 @@
-class Chef
+class Seth
   class Provider
     class Package
-      class Macports < Chef::Provider::Package
+      class Macports < Seth::Provider::Package
         def load_current_resource
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
 
           @current_resource.version(current_installed_version)
-          Chef::Log.debug("#{@new_resource} current version is #{@current_resource.version}") if @current_resource.version
+          Seth::Log.debug("#{@new_resource} current version is #{@current_resource.version}") if @current_resource.version
 
           @candidate_version = macports_candidate_version
 
           if !@new_resource.version and !@candidate_version
-            raise Chef::Exceptions::Package, "Could not get a candidate version for this package -- #{@new_resource.name} does not seem to be a valid package!"
+            raise Seth::Exceptions::Package, "Could not get a candidate version for this package -- #{@new_resource.name} does not seem to be a valid package!"
           end
 
-          Chef::Log.debug("#{@new_resource} candidate version is #{@candidate_version}") if @candidate_version
+          Seth::Log.debug("#{@new_resource} candidate version is #{@candidate_version}") if @candidate_version
 
           @current_resource
         end
@@ -91,11 +91,11 @@ class Chef
             begin
               output = stdout.read
             rescue Exception
-              raise Chef::Exceptions::Package, "Could not read from STDOUT on command: #{command}"
+              raise Seth::Exceptions::Package, "Could not read from STDOUT on command: #{command}"
             end
           end
           unless status.exitstatus == 0 || status.exitstatus == 1
-            raise Chef::Exceptions::Package, "#{command} failed - #{status.insect}!"
+            raise Seth::Exceptions::Package, "#{command} failed - #{status.insect}!"
           end
           output
         end

@@ -18,24 +18,24 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::EnvironmentEdit do
+describe Seth::Knife::EnvironmentEdit do
   before(:each) do
-    @knife = Chef::Knife::EnvironmentEdit.new
+    @knife = Seth::Knife::EnvironmentEdit.new
     @knife.ui.stub(:msg).and_return true
     @knife.ui.stub(:output).and_return true
     @knife.ui.stub(:show_usage).and_return true
     @knife.name_args = [ "production" ]
 
-    @environment = Chef::Environment.new
+    @environment = Seth::Environment.new
     @environment.name("production")
     @environment.description("Please edit me")
     @environment.stub(:save).and_return true
-    Chef::Environment.stub(:load).and_return @environment
+    Seth::Environment.stub(:load).and_return @environment
     @knife.ui.stub(:edit_data).and_return @environment
   end
 
   it "should load the environment" do
-    Chef::Environment.should_receive(:load).with("production")
+    Seth::Environment.should_receive(:load).with("production")
     @knife.run
   end
 
@@ -45,7 +45,7 @@ describe Chef::Knife::EnvironmentEdit do
   end
 
   it "should save the edited environment data" do
-    pansy = Chef::Environment.new
+    pansy = Seth::Environment.new
 
     @environment.name("new_environment_name")
     @knife.ui.should_receive(:edit_data).with(@environment).and_return(pansy)

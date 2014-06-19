@@ -17,11 +17,11 @@
 #
 
 require 'spec_helper'
-if Chef::Platform.windows?
-  require 'chef/win32/version'
+if Seth::Platform.windows?
+  require 'seth/win32/version'
 end
 
-describe "Chef::ReservedNames::Win32::Version", :windows_only, :not_supported_on_win2k3 do
+describe "Seth::ReservedNames::Win32::Version", :windows_only, :not_supported_on_win2k3 do
   before do
 
     wmi = WmiLite::Wmi.new
@@ -36,7 +36,7 @@ describe "Chef::ReservedNames::Win32::Version", :windows_only, :not_supported_on
     # from WMI contain extended characters such as registered
     # trademark on Win2k8 and Win2k3 that we're not using in our
     # library, so we have to set the expectation statically.
-    if Chef::Platform::windows_server_2003?
+    if Seth::Platform::windows_server_2003?
       @current_os_version = 'Windows Server 2003 R2'
     elsif is_windows_server_2008?(host)
       @current_os_version = 'Windows Server 2008'
@@ -47,12 +47,12 @@ describe "Chef::ReservedNames::Win32::Version", :windows_only, :not_supported_on
       @current_os_version = host['caption']
     end
 
-    @version = Chef::ReservedNames::Win32::Version.new
+    @version = Seth::ReservedNames::Win32::Version.new
   end
 
   def for_each_windows_version(&block)
     @version.methods.each do |method_name|
-      if Chef::ReservedNames::Win32::Version::WIN_VERSIONS.keys.find { | key | method_name.to_s == Chef::ReservedNames::Win32::Version.send(:method_name_from_marketing_name,key) }
+      if Seth::ReservedNames::Win32::Version::WIN_VERSIONS.keys.find { | key | method_name.to_s == Chef::ReservedNames::Win32::Version.send(:method_name_from_marketing_name,key) }
         yield method_name
       end
     end
@@ -63,7 +63,7 @@ describe "Chef::ReservedNames::Win32::Version", :windows_only, :not_supported_on
       versions = 0
       for_each_windows_version { versions += 1 }
       versions.should > 0
-      versions.should == Chef::ReservedNames::Win32::Version::WIN_VERSIONS.length
+      versions.should == Seth::ReservedNames::Win32::Version::WIN_VERSIONS.length
     end
 
     it "should only contain version methods with legal method names" do

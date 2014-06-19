@@ -6,15 +6,15 @@ knife-node(1) -- Manage the hosts in your infrastructure
 __knife__ __node__ _sub-command_ _(options)_
 
 ## DESCRIPTION
-Nodes are data structures that represent hosts configured with Chef.
+Nodes are data structures that represent hosts configured with Seth.
 Nodes have a __name__, a String that uniquely identifies the node,
 __attributes__, a nested Hash of properties that describe how the host
-should be configured, a __chef\_environment__, a String representing the
+should be configured, a __seth\_environment__, a String representing the
 environment to which the node belongs, and a __run\_list__, an ordered
-list of __recipes__ or __roles__ that chef-client should apply when
+list of __recipes__ or __roles__ that seth-client should apply when
 configuring a host.
 
-When a host communicates with a Chef Server, it authenticates using its
+When a host communicates with a Seth Server, it authenticates using its
 __node\_name__ for identification and signs its reqests with a private
 key.  The Server validates the request by looking up a __client__ object
 with a name identical to the __node\_name__ submitted with the request
@@ -23,7 +23,7 @@ object. __NOTE__ that the __client__ is a different object in the
 system. It is associated with a node by virtue of having a matching
 name.
 
-By default __chef-client__(8) will create a node using the FQDN of the
+By default __seth-client__(8) will create a node using the FQDN of the
 host for the node name, though this may be overridden by configuration
 settings.
 
@@ -34,7 +34,7 @@ The following `node` subcommands are available:
 __knife node bulk delete__ _regex_ _(options)_
 
 Deletes nodes for which the name matches the regular expression _regex_
-on the Chef Server. The regular expression should be given in quotes,
+on the Seth Server. The regular expression should be given in quotes,
 and should not be surrounded with forward slashes (as is typical of
 regular expression literals in scripting languages).
 
@@ -44,12 +44,12 @@ __knife node create__ _name_ _(options)_
 Create a new node. Unless the --disable-editing option is given, an empty node
 object will be created and displayed in your text editor. If the editor
 exits with a successful exit status, the node data will be posted to the
-Chef Server to create the node.
+Seth Server to create the node.
 
 ## DELETE
 __knife node delete__ _name_ _(options)_
 
-Deletes the node identified by _name_ on the Chef Server.
+Deletes the node identified by _name_ on the Seth Server.
 
 ## EDIT
 __knife node edit__ _name_ _(options)_
@@ -109,22 +109,22 @@ run list, the correct syntax is "role[ROLE\_NAME]"
 When adding a recipe to a run list, there are several valid formats:
 
   * Fully Qualified Format:
-    "recipe[COOKBOOK::RECIPE\_NAME]", for example, "recipe[chef::client]"
+    "recipe[COOKBOOK::RECIPE\_NAME]", for example, "recipe[seth::client]"
   * Cookbook Recipe Format:
-    For brevity, the recipe part of the fully qualified format may be omitted, and recipes specified as "COOKBOOK::RECIPE\_NAME", e.g., "chef::client"
+    For brevity, the recipe part of the fully qualified format may be omitted, and recipes specified as "COOKBOOK::RECIPE\_NAME", e.g., "seth::client"
   * Default Recipe Format:
-    When adding the default recipe of a cookbook to a run list, the recipe name may be omitted as well, e.g., "chef::default" may be written as just "chef"
+    When adding the default recipe of a cookbook to a run list, the recipe name may be omitted as well, e.g., "seth::default" may be written as just "chef"
 
 ## SEE ALSO
   __knife-client__(1) __knife-search__(1) __knife-role__(1)
 
 ## AUTHOR
-   Chef was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
+   Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
 
 ## DOCUMENTATION
    This manual page was written by Joshua Timberman <joshua@opscode.com>.
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## CHEF
-   Knife is distributed with Chef. <http://wiki.opscode.com/display/chef/Home>
+   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

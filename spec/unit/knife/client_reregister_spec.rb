@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::ClientReregister do
+describe Seth::Knife::ClientReregister do
   before(:each) do
-    @knife = Chef::Knife::ClientReregister.new
+    @knife = Seth::Knife::ClientReregister.new
     @knife.name_args = [ 'adam' ]
     @client_mock = double('client_mock', :private_key => "foo_key")
     @stdout = StringIO.new
@@ -41,7 +41,7 @@ describe Chef::Knife::ClientReregister do
 
   context 'when not configured for file output' do
     it 'reregisters the client and prints the key' do
-      Chef::ApiClient.should_receive(:reregister).with('adam').and_return(@client_mock)
+      Seth::ApiClient.should_receive(:reregister).with('adam').and_return(@client_mock)
       @knife.run
       @stdout.string.should match( /foo_key/ )
     end
@@ -49,7 +49,7 @@ describe Chef::Knife::ClientReregister do
 
   context 'when configured for file output' do
     it 'should write the private key to a file' do
-      Chef::ApiClient.should_receive(:reregister).with('adam').and_return(@client_mock)
+      Seth::ApiClient.should_receive(:reregister).with('adam').and_return(@client_mock)
 
       @knife.config[:file] = '/tmp/monkeypants'
       filehandle = StringIO.new

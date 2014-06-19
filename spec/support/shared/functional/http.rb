@@ -1,6 +1,6 @@
 #
-# Author:: Lamont Granquist (<lamont@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Lamont Granquist (<lamont@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +17,10 @@
 #
 
 #
-# shared code for Chef::REST and Chef::HTTP::Simple and other Chef::HTTP wrappers
+# shared code for Seth::REST and Chef::HTTP::Simple and other Chef::HTTP wrappers
 #
 
-module ChefHTTPShared
+module SethHTTPShared
   def nyan_uncompressed_filename
     File.join(CHEF_SPEC_DATA, 'remote_file', 'nyan_cat.png')
   end

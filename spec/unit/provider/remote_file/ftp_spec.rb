@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::RemoteFile::FTP do
+describe Seth::Provider::RemoteFile::FTP do
   let(:enclosing_directory) {
     canonicalize_path(File.expand_path(File.join(CHEF_SPEC_DATA, "templates")))
   }
@@ -27,14 +27,14 @@ describe Chef::Provider::RemoteFile::FTP do
   }
 
   let(:new_resource) do
-    r = Chef::Resource::RemoteFile.new("remote file ftp backend test (new resource)")
+    r = Seth::Resource::RemoteFile.new("remote file ftp backend test (new resource)")
     r.ftp_active_mode(false)
     r.path(resource_path)
     r
   end
 
   let(:current_resource) do
-    Chef::Resource::RemoteFile.new("remote file ftp backend test (current resource)'")
+    Seth::Resource::RemoteFile.new("remote file ftp backend test (current resource)'")
   end
 
   let(:ftp) do
@@ -68,47 +68,47 @@ describe Chef::Provider::RemoteFile::FTP do
 
     it "throws an argument exception when no path is given" do
       uri.path = ""
-      lambda { Chef::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }.should raise_error(ArgumentError)
+      lambda { Seth::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }.should raise_error(ArgumentError)
     end
 
     it "throws an argument exception when only a / is given" do
       uri.path = "/"
-      lambda { Chef::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }.should raise_error(ArgumentError)
+      lambda { Seth::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }.should raise_error(ArgumentError)
     end
 
     it "throws an argument exception when no filename is given" do
       uri.path = "/the/whole/path/"
-      lambda { Chef::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }.should raise_error(ArgumentError)
+      lambda { Seth::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }.should raise_error(ArgumentError)
     end
 
     it "throws an argument exception when the typecode is invalid" do
       uri.typecode = "d"
-      lambda { Chef::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }.should raise_error(ArgumentError)
+      lambda { Seth::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }.should raise_error(ArgumentError)
     end
 
     it "does not use passive mode when new_resource sets ftp_active_mode to true" do
       new_resource.ftp_active_mode(true)
-      fetcher = Chef::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource)
+      fetcher = Seth::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource)
       fetcher.use_passive_mode?.should be_false
     end
 
     it "uses passive mode when new_resource sets ftp_active_mode to false" do
       new_resource.ftp_active_mode(false)
-      fetcher = Chef::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource)
+      fetcher = Seth::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource)
       fetcher.use_passive_mode?.should be_true
     end
   end
 
   describe "when fetching the object" do
 
-    let(:cache_control_data) { Chef::Provider::RemoteFile::CacheControlData.new(uri) }
+    let(:cache_control_data) { Seth::Provider::RemoteFile::CacheControlData.new(uri) }
     let(:current_resource_checksum) { "e2a8938cc31754f6c067b35aab1d0d4864272e9bf8504536ef3e79ebf8432305" }
 
-    subject(:fetcher) { Chef::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }
+    subject(:fetcher) { Seth::Provider::RemoteFile::FTP.new(uri, new_resource, current_resource) }
 
     before do
       current_resource.checksum(current_resource_checksum)
-      #Chef::Provider::RemoteFile::CacheControlData.should_receive(:load_and_validate).with(uri, current_resource_checksum).and_return(cache_control_data)
+      #Seth::Provider::RemoteFile::CacheControlData.should_receive(:load_and_validate).with(uri, current_resource_checksum).and_return(cache_control_data)
     end
 
     it "should connect to the host from the uri on the default port 21" do
@@ -200,9 +200,9 @@ describe Chef::Provider::RemoteFile::FTP do
 
     context "and proxying is enabled" do
       before do
-        Chef::Config[:ftp_proxy] = "socks5://socks.example.com:5000"
-        Chef::Config[:ftp_proxy_user] = "bill"
-        Chef::Config[:ftp_proxy_pass] = "ted"
+        Seth::Config[:ftp_proxy] = "socks5://socks.example.com:5000"
+        Seth::Config[:ftp_proxy_user] = "bill"
+        Seth::Config[:ftp_proxy_pass] = "ted"
       end
 
       it "fetches the file via the proxy" do

@@ -17,10 +17,10 @@
 #
 
 require 'spec_helper'
-require 'chef/chef_fs/file_system'
-require 'chef/chef_fs/file_pattern'
+require 'seth/chef_fs/file_system'
+require 'seth/chef_fs/file_pattern'
 
-describe Chef::ChefFS::FileSystem do
+describe Seth::ChefFS::FileSystem do
   include FileSystemSupport
 
   context 'with empty filesystem' do
@@ -43,13 +43,13 @@ describe Chef::ChefFS::FileSystem do
 
     context 'resolve_path' do
       it '/' do
-        Chef::ChefFS::FileSystem.resolve_path(fs, '/').path.should == '/'
+        Seth::ChefFS::FileSystem.resolve_path(fs, '/').path.should == '/'
       end
       it 'nonexistent /a' do
-        Chef::ChefFS::FileSystem.resolve_path(fs, '/a').path.should == '/a'
+        Seth::ChefFS::FileSystem.resolve_path(fs, '/a').path.should == '/a'
       end
       it 'nonexistent /a/b' do
-        Chef::ChefFS::FileSystem.resolve_path(fs, '/a/b').path.should == '/a/b'
+        Seth::ChefFS::FileSystem.resolve_path(fs, '/a/b').path.should == '/a/b'
       end
     end
   end
@@ -113,22 +113,22 @@ describe Chef::ChefFS::FileSystem do
         no_blocking_calls_allowed
       end
       it 'resolves /' do
-        Chef::ChefFS::FileSystem.resolve_path(fs, '/').path.should == '/'
+        Seth::ChefFS::FileSystem.resolve_path(fs, '/').path.should == '/'
       end
       it 'resolves /x' do
-        Chef::ChefFS::FileSystem.resolve_path(fs, '/x').path.should == '/x'
+        Seth::ChefFS::FileSystem.resolve_path(fs, '/x').path.should == '/x'
       end
       it 'resolves /a' do
-        Chef::ChefFS::FileSystem.resolve_path(fs, '/a').path.should == '/a'
+        Seth::ChefFS::FileSystem.resolve_path(fs, '/a').path.should == '/a'
       end
       it 'resolves /a/aa' do
-        Chef::ChefFS::FileSystem.resolve_path(fs, '/a/aa').path.should == '/a/aa'
+        Seth::ChefFS::FileSystem.resolve_path(fs, '/a/aa').path.should == '/a/aa'
       end
       it 'resolves /a/aa/zz' do
-        Chef::ChefFS::FileSystem.resolve_path(fs, '/a/aa/zz').path.should == '/a/aa/zz'
+        Seth::ChefFS::FileSystem.resolve_path(fs, '/a/aa/zz').path.should == '/a/aa/zz'
       end
       it 'resolves nonexistent /y/x/w' do
-        Chef::ChefFS::FileSystem.resolve_path(fs, '/y/x/w').path.should == '/y/x/w'
+        Seth::ChefFS::FileSystem.resolve_path(fs, '/y/x/w').path.should == '/y/x/w'
       end
     end
   end

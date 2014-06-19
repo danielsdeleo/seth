@@ -18,16 +18,16 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Package::Macports do
+describe Seth::Provider::Package::Macports do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Package.new("zsh")
-    @current_resource = Chef::Resource::Package.new("zsh")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Package.new("zsh")
+    @current_resource = Seth::Resource::Package.new("zsh")
 
-    @provider = Chef::Provider::Package::Macports.new(@new_resource, @run_context)
-    Chef::Resource::Package.stub(:new).and_return(@current_resource)
+    @provider = Seth::Provider::Package::Macports.new(@new_resource, @run_context)
+    Seth::Resource::Package.stub(:new).and_return(@current_resource)
 
     @status = double("Status", :exitstatus => 0)
     @stdin = StringIO.new

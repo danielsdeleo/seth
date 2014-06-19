@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Package::Windows::MSI, :windows_only do
-  let(:node) { double('Chef::Node') }
-  let(:events) { double('Chef::Events').as_null_object }  # mock all the methods
-  let(:run_context) { double('Chef::RunContext', :node => node, :events => events) }
-  let(:new_resource) { Chef::Resource::WindowsPackage.new("calculator.msi") }
-  let(:provider) { Chef::Provider::Package::Windows::MSI.new(new_resource) }
+describe Seth::Provider::Package::Windows::MSI, :windows_only do
+  let(:node) { double('Seth::Node') }
+  let(:events) { double('Seth::Events').as_null_object }  # mock all the methods
+  let(:run_context) { double('Seth::RunContext', :node => node, :events => events) }
+  let(:new_resource) { Seth::Resource::WindowsPackage.new("calculator.msi") }
+  let(:provider) { Seth::Provider::Package::Windows::MSI.new(new_resource) }
 
   describe "expand_options" do
     it "returns an empty string if passed no options" do

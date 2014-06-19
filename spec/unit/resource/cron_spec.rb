@@ -19,15 +19,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Cron do
+describe Seth::Resource::Cron do
 
   before(:each) do
-    @resource = Chef::Resource::Cron.new("cronify")
+    @resource = Seth::Resource::Cron.new("cronify")
   end
 
-  it "should create a new Chef::Resource::Cron" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Cron)
+  it "should create a new Seth::Resource::Cron" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Cron)
   end
 
   it "should have a name" do

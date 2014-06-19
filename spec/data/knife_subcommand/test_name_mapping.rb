@@ -1,4 +1,4 @@
 module KnifeSpecs
-  class TestNameMapping < Chef::Knife
+  class TestNameMapping < Seth::Knife
   end  
 end

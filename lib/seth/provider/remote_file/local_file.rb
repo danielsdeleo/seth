@@ -18,9 +18,9 @@
 
 require 'uri'
 require 'tempfile'
-require 'chef/provider/remote_file'
+require 'seth/provider/remote_file'
 
-class Chef
+class Seth
   class Provider
     class RemoteFile
       class LocalFile
@@ -40,9 +40,9 @@ class Chef
 
         # Fetches the file at uri, returning a Tempfile-like File handle
         def fetch
-          source_path = Chef::Platform.windows? ? fix_windows_path(uri.path) : uri.path
-          tempfile = Chef::FileContentManagement::Tempfile.new(new_resource).tempfile
-          Chef::Log.debug("#{new_resource} staging #{source_path} to #{tempfile.path}")
+          source_path = Seth::Platform.windows? ? fix_windows_path(uri.path) : uri.path
+          tempfile = Seth::FileContentManagement::Tempfile.new(new_resource).tempfile
+          Seth::Log.debug("#{new_resource} staging #{source_path} to #{tempfile.path}")
           FileUtils.cp(source_path, tempfile.path)
           tempfile.close if tempfile
           tempfile

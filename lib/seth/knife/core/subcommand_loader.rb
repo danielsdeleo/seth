@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/version'
-class Chef
+require 'seth/version'
+class Seth
   class Knife
     class SubcommandLoader
 
-      attr_reader :chef_config_dir
+      attr_reader :seth_config_dir
       attr_reader :env
 
-      def initialize(chef_config_dir, env=ENV)
-        @chef_config_dir, @env = chef_config_dir, env
+      def initialize(seth_config_dir, env=ENV)
+        @seth_config_dir, @env = chef_config_dir, env
         @forced_activate = {}
       end
 
@@ -35,27 +35,27 @@ class Chef
         true
       end
 
-      # Returns an Array of paths to knife commands located in chef_config_dir/plugins/knife/
-      # and ~/.chef/plugins/knife/
+      # Returns an Array of paths to knife commands located in seth_config_dir/plugins/knife/
+      # and ~/.seth/plugins/knife/
       def site_subcommands
         user_specific_files = []
 
-        if chef_config_dir
-          user_specific_files.concat Dir.glob(File.expand_path("plugins/knife/*.rb", chef_config_dir))
+        if seth_config_dir
+          user_specific_files.concat Dir.glob(File.expand_path("plugins/knife/*.rb", seth_config_dir))
         end
 
-        # finally search ~/.chef/plugins/knife/*.rb
-        user_specific_files.concat Dir.glob(File.join(env['HOME'], '.chef', 'plugins', 'knife', '*.rb')) if env['HOME']
+        # finally search ~/.seth/plugins/knife/*.rb
+        user_specific_files.concat Dir.glob(File.join(env['HOME'], '.seth', 'plugins', 'knife', '*.rb')) if env['HOME']
 
         user_specific_files
       end
 
-      # Returns a Hash of paths to knife commands built-in to chef, or installed via gem.
+      # Returns a Hash of paths to knife commands built-in to seth, or installed via gem.
       # If rubygems is not installed, falls back to globbing the knife directory.
       # The Hash is of the form {"relative/path" => "/absolute/path"}
       #--
       # Note: the "right" way to load the plugins is to require the relative path, i.e.,
-      #   require 'chef/knife/command'
+      #   require 'seth/knife/command'
       # but we're getting frustrated by bugs at every turn, and it's slow besides. So
       # subcommand loader has been modified to load the plugins by using Kernel.load
       # with the absolute path.
@@ -63,7 +63,7 @@ class Chef
         if have_plugin_manifest?
           find_subcommands_via_manifest
         else
-          # search all gems for chef/knife/*.rb
+          # search all gems for seth/knife/*.rb
           require 'rubygems'
           find_subcommands_via_rubygems
         end
@@ -75,15 +75,15 @@ class Chef
         @subcommand_files ||= (gem_and_builtin_subcommands.values + site_subcommands).flatten.uniq
       end
 
-      # If the user has created a ~/.chef/plugin_manifest.json file, we'll use
+      # If the user has created a ~/.seth/plugin_manifest.json file, we'll use
       # that instead of inspecting the on-system gems to find the plugins. The
       # file format is expected to look like:
       #
       #   { "plugins": {
       #       "knife-ec2": {
       #         "paths": [
-      #           "/home/alice/.rubymanagerthing/gems/knife-ec2-x.y.z/lib/chef/knife/ec2_server_create.rb",
-      #           "/home/alice/.rubymanagerthing/gems/knife-ec2-x.y.z/lib/chef/knife/ec2_server_delete.rb"
+      #           "/home/alice/.rubymanagerthing/gems/knife-ec2-x.y.z/lib/seth/knife/ec2_server_create.rb",
+      #           "/home/alice/.rubymanagerthing/gems/knife-ec2-x.y.z/lib/seth/knife/ec2_server_delete.rb"
       #         ]
       #       }
       #     }
@@ -106,7 +106,7 @@ class Chef
       end
 
       def find_subcommands_via_dirglob
-        # The "require paths" of the core knife subcommands bundled with chef
+        # The "require paths" of the core knife subcommands bundled with seth
         files = Dir[File.expand_path('../../../knife/*.rb', __FILE__)]
         subcommand_files = {}
         files.each do |knife_file|
@@ -117,10 +117,10 @@ class Chef
       end
 
       def find_subcommands_via_rubygems
-        files = find_files_latest_gems 'chef/knife/*.rb'
+        files = find_files_latest_gems 'seth/knife/*.rb'
         subcommand_files = {}
         files.each do |file|
-          rel_path = file[/(#{Regexp.escape File.join('chef', 'knife', '')}.*)\.rb/, 1]
+          rel_path = file[/(#{Regexp.escape File.join('seth', 'knife', '')}.*)\.rb/, 1]
           subcommand_files[rel_path] = file
         end
 
@@ -132,11 +132,11 @@ class Chef
       end
 
       def plugin_manifest
-        Chef::JSONCompat.from_json(File.read(plugin_manifest_path))
+        Seth::JSONCompat.from_json(File.read(plugin_manifest_path))
       end
 
       def plugin_manifest_path
-        File.join(ENV['HOME'], '.chef', 'plugin_manifest.json')
+        File.join(ENV['HOME'], '.seth', 'plugin_manifest.json')
       end
 
       private

@@ -1,6 +1,6 @@
 #
-# Author:: Lamont Granquist (<lamont@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Lamont Granquist (<lamont@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,11 +20,11 @@ require 'spec_helper'
 require 'tiny_server'
 require 'support/shared/functional/http'
 
-describe Chef::REST do
-  include ChefHTTPShared
+describe Seth::REST do
+  include SethHTTPShared
 
   let(:http_client) { described_class.new(source) }
-  let(:http_client_disable_gzip) { described_class.new(source, Chef::Config[:node_name], Chef::Config[:client_key], { :disable_gzip => true } ) }
+  let(:http_client_disable_gzip) { described_class.new(source, Seth::Config[:node_name], Chef::Config[:client_key], { :disable_gzip => true } ) }
 
   shared_examples_for "downloads requests correctly" do
     it "successfully downloads a streaming request" do
@@ -42,11 +42,11 @@ describe Chef::REST do
 
   shared_examples_for "validates content length and throws an exception" do
     it "fails validation on a streaming download" do
-      expect { http_client.streaming_request(source, {}) }.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+      expect { http_client.streaming_request(source, {}) }.to raise_error(Seth::Exceptions::ContentLengthMismatch)
     end
 
     it "fails validation on a GET request" do
-      expect { http_client.get(source, {}) }.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+      expect { http_client.get(source, {}) }.to raise_error(Seth::Exceptions::ContentLengthMismatch)
     end
   end
 
@@ -78,8 +78,8 @@ describe Chef::REST do
   end
 
   before do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    Chef::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
   end
 
   before(:all) do

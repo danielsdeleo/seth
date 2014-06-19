@@ -1,42 +1,42 @@
-chef-server(8) - Start the Chef Server merb application slice.
+seth-server(8) - Start the Seth Server merb application slice.
 ========================================
 
 ## SYNOPSIS
 
-__chef-server__ _(options)_
+__seth-server__ _(options)_
 
   * `-u`, `--user USER`:
-    This  flag  is  for having chef-server-webui run as a user other than the
+    This  flag  is  for having seth-server-webui run as a user other than the
     one currently logged in. Note: if you set this you must also provide a
     --group option for it to take effect.
   * `-G`, `--group GROUP`:
-    This flag is for having chef-server-webui run as a group other than the
+    This flag is for having seth-server-webui run as a group other than the
     one currently logged in. Note: if you set this you  must also provide a
     --user option for it to take effect.
   * `-d`, `--daemonize`:
-    This will run a single chef-server-webui in the background.
+    This will run a single seth-server-webui in the background.
   * `-N`, `--no-daemonize`:
     This will allow you to run a cluster in console mode.
   * `-c`, `--cluster-nodes NUM_MERBS`:
-    Number of merb daemons to run for chef-server-webui.
+    Number of merb daemons to run for seth-server-webui.
   * `-I`, `--init-file FILE`:
     File to use for initialization on load, defaults to config/init.rb.
   * `-p`, `--port PORTNUM`:
-    Port to run chef-server-webui on, defaults to 4040. Additional nodes (-c)
+    Port to run seth-server-webui on, defaults to 4040. Additional nodes (-c)
     listen on incrementing port numbers.
   * `-o`, `--socket-file FILE`:
-    Socket  file  to  run  chef-server-webui on, defaults to
+    Socket  file  to  run  seth-server-webui on, defaults to
     [Merb.root]/log/merb.sock. This is for web servers, like thin, that use
     sockets. Specify this *only* if you *must*.
   * `-s`, `--socket SOCKNUM`:
-    Socket number to run chef-server-webui on, defaults to 0.
+    Socket number to run seth-server-webui on, defaults to 0.
   * `-n`, `--name NAME`:
     Set the name of the application. This is used in the process title and
     log file names.
   * `-P`, `--pid PIDFILE`:
     PID file, defaults to [Merb.root]/log/merb.main.pid for the master
     process and[Merb.root]/log/merb.[port number].pid for  worker processes.
-    For clusters, use %s to specify where in the file chef-server-webui
+    For clusters, use %s to specify where in the file seth-server-webui
     should place the port number. For instance: -P myapp.%s.pid.
   * `-h`, `--host HOSTNAME`:
     Host to bind to (default is 0.0.0.0).
@@ -44,12 +44,12 @@ __chef-server__ _(options)_
     The path to the Merb.root for the app you want to run
     (default is current working directory).
   * `-a`, `--adapter ADAPTER`:
-    The rack adapter to use to run chef-server-webui (default is mongrel)
+    The rack adapter to use to run seth-server-webui (default is mongrel)
     [mongrel, emongrel, thin, ebb, fastcgi, webrick].
   * `-R`, `--rackup FILE`:
     Load an alternate Rack config file (default is config/rack.rb).
   * `-i`, `--irb-console`:
-    This flag will start chef-server-webui in irb console mode. All your models
+    This flag will start seth-server-webui in irb console mode. All your models
     and other classes will be available for you in an irb session.
   * `-S`, `--sandbox`:
     This flag will enable a sandboxed irb console. If your ORM supports
@@ -65,11 +65,11 @@ __chef-server__ _(options)_
     Environment to run Merb under [development, production, testing]
     (default is development).
   * `-r`, `--script-runner ['RUBY CODE'| FULL_SCRIPT_PATH]`:
-    Command-line option to run scripts and/or code in the chef-server-webui
+    Command-line option to run scripts and/or code in the seth-server-webui
     app.
   * `-K`, `-graceful PORT or all`:
-    Gracefully kill chef-server-webui proceses by port number.
-    Use chef-server -K all to gracefully kill all merbs.
+    Gracefully kill seth-server-webui proceses by port number.
+    Use seth-server -K all to gracefully kill all merbs.
   * `-k`, `--kill PORT`:
     Force kill one merb worker by port number. This will cause the worker
     to be respawned.
@@ -78,7 +78,7 @@ __chef-server__ _(options)_
   * `-X`, `--mutex on/off`:
     This flag is for turning the mutex lock on and off.
   * `-D`, `--debugger`:
-    Run chef-server-webui using rDebug.
+    Run seth-server-webui using rDebug.
   * `-V`, `--verbose`:
     Print extra information.
   * `-C`, `--console-trap`:
@@ -88,30 +88,30 @@ __chef-server__ _(options)_
 
 ## DESCRIPTION
 
-The Chef Server provides a central point for the distribution of Cookbooks,
+The Seth Server provides a central point for the distribution of Cookbooks,
 management and authentication of Nodes, and the use of Search. It provides
 a REST API.
 
 The API service is what clients use to interact with the server to manage
-node configuration in Chef. By default, the service is started on port 4000
+node configuration in Seth. By default, the service is started on port 4000
 as a Merb application slice running with the thin server adapter.
 
 The two methods of interaction with the API for humans are the command-line
-tool Knife and the Management Console. The Chef Client library is used for
+tool Knife and the Management Console. The Seth Client library is used for
 interacting with the API for client nodes.
 
 ## SEE ALSO
 
-__chef-client__(8)
-__chef-server-webui__(8)
+__seth-client__(8)
+__seth-server-webui__(8)
 __knife__(1)
 
-Full documentation for Chef and chef-server is located on the Chef
-wiki, http://wiki.opscode.com/display/chef/Home.
+Full documentation for Seth and seth-server is located on the Chef
+wiki, http://wiki.opscode.com/display/seth/Home.
 
 ## AUTHOR
 
-Chef was written by Adam Jacob <adam@ospcode.com> of Opscode
+Seth was written by Adam Jacob <adam@ospcode.com> of Opscode
 (http://www.opscode.com),  with contributions from the community.  This
 manual page was written by Joshua Timberman  <joshua@opscode.com>  with
 help2man.  Permission  is  granted  to copy, distribute and / or modify

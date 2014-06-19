@@ -19,12 +19,12 @@
 
 require 'spec_helper'
 
-describe Chef::Mixin::Securable do
+describe Seth::Mixin::Securable do
 
   before(:each) do
     @securable = Object.new
-    @securable.send(:extend, Chef::Mixin::Securable)
-    @securable.send(:extend, Chef::Mixin::ParamsValidate)
+    @securable.send(:extend, Seth::Mixin::Securable)
+    @securable.send(:extend, Seth::Mixin::ParamsValidate)
   end
 
   it "should accept a group name or id for group" do
@@ -46,10 +46,10 @@ describe Chef::Mixin::Securable do
   describe "unix-specific behavior" do
     before(:each) do
       platform_mock :unix do
-        load File.join(File.dirname(__FILE__), "..", "..", "..", "lib", "chef", "mixin", "securable.rb")
+        load File.join(File.dirname(__FILE__), "..", "..", "..", "lib", "seth", "mixin", "securable.rb")
         @securable = Object.new
-        @securable.send(:extend, Chef::Mixin::Securable)
-        @securable.send(:extend, Chef::Mixin::ParamsValidate)
+        @securable.send(:extend, Seth::Mixin::Securable)
+        @securable.send(:extend, Seth::Mixin::ParamsValidate)
       end
     end
 
@@ -177,10 +177,10 @@ describe Chef::Mixin::Securable do
   describe "windows-specific behavior" do
     before(:each) do
       platform_mock :windows do
-        load File.join(File.dirname(__FILE__), "..", "..", "..", "lib", "chef", "mixin", "securable.rb")
+        load File.join(File.dirname(__FILE__), "..", "..", "..", "lib", "seth", "mixin", "securable.rb")
         securable_class = Class.new do
-          include Chef::Mixin::Securable
-          include Chef::Mixin::ParamsValidate
+          include Seth::Mixin::Securable
+          include Seth::Mixin::ParamsValidate
         end
         @securable = securable_class.new
       end

@@ -17,19 +17,19 @@
 #
 
 require 'spec_helper'
-require 'chef/exceptions'
+require 'seth/exceptions'
 
-describe Chef::Provider::Ifconfig::Debian do
+describe Seth::Provider::Ifconfig::Debian do
 
   let(:run_context) do
-    node = Chef::Node.new
-    cookbook_collection = Chef::CookbookCollection.new([])
-    events = Chef::EventDispatch::Dispatcher.new
-    Chef::RunContext.new(node, cookbook_collection, events)
+    node = Seth::Node.new
+    cookbook_collection = Seth::CookbookCollection.new([])
+    events = Seth::EventDispatch::Dispatcher.new
+    Seth::RunContext.new(node, cookbook_collection, events)
   end
 
   let(:new_resource) do
-    new_resource = Chef::Resource::Ifconfig.new("10.0.0.1", run_context)
+    new_resource = Seth::Resource::Ifconfig.new("10.0.0.1", run_context)
     new_resource.mask "255.255.254.0"
     new_resource.metric "1"
     new_resource.mtu "1500"
@@ -37,11 +37,11 @@ describe Chef::Provider::Ifconfig::Debian do
     new_resource
   end
 
-  let(:current_resource) {  Chef::Resource::Ifconfig.new("10.0.0.1", run_context) }
+  let(:current_resource) {  Seth::Resource::Ifconfig.new("10.0.0.1", run_context) }
 
   let(:provider) do
     status = double("Status", :exitstatus => 0)
-    provider = Chef::Provider::Ifconfig::Debian.new(new_resource, run_context)
+    provider = Seth::Provider::Ifconfig::Debian.new(new_resource, run_context)
     provider.instance_variable_set("@status", status)
     provider.current_resource = current_resource
     allow(provider).to receive(:load_current_resource)
@@ -58,15 +58,15 @@ describe Chef::Provider::Ifconfig::Debian do
     context "when writing a file" do
       let(:config_file_ifcfg) { StringIO.new }
 
-      let(:tempfile) { Tempfile.new("rspec-chef-ifconfig-debian") }
+      let(:tempfile) { Tempfile.new("rspec-seth-ifconfig-debian") }
 
-      let(:tempdir_path) { Dir.mktmpdir("rspec-chef-ifconfig-debian-dir") }
+      let(:tempdir_path) { Dir.mktmpdir("rspec-seth-ifconfig-debian-dir") }
 
       let(:config_filename_ifcfg) { "#{tempdir_path}/ifcfg-#{new_resource.device}" }
 
       before do
-        stub_const("Chef::Provider::Ifconfig::Debian::INTERFACES_FILE", tempfile.path)
-        stub_const("Chef::Provider::Ifconfig::Debian::INTERFACES_DOT_D_DIR", tempdir_path)
+        stub_const("Seth::Provider::Ifconfig::Debian::INTERFACES_FILE", tempfile.path)
+        stub_const("Seth::Provider::Ifconfig::Debian::INTERFACES_DOT_D_DIR", tempdir_path)
         expect(File).to receive(:new).with(config_filename_ifcfg, "w").and_return(config_file_ifcfg)
       end
 
@@ -108,15 +108,15 @@ describe Chef::Provider::Ifconfig::Debian do
     end
 
     context "when the file is up-to-date" do
-      let(:tempfile) { Tempfile.new("rspec-chef-ifconfig-debian") }
+      let(:tempfile) { Tempfile.new("rspec-seth-ifconfig-debian") }
 
-      let(:tempdir_path) { Dir.mktmpdir("rspec-chef-ifconfig-debian-dir") }
+      let(:tempdir_path) { Dir.mktmpdir("rspec-seth-ifconfig-debian-dir") }
 
       let(:config_filename_ifcfg) { "#{tempdir_path}/ifcfg-#{new_resource.device}" }
 
       before do
-        stub_const("Chef::Provider::Ifconfig::Debian::INTERFACES_FILE", tempfile.path)
-        stub_const("Chef::Provider::Ifconfig::Debian::INTERFACES_DOT_D_DIR", tempdir_path)
+        stub_const("Seth::Provider::Ifconfig::Debian::INTERFACES_FILE", tempfile.path)
+        stub_const("Seth::Provider::Ifconfig::Debian::INTERFACES_DOT_D_DIR", tempdir_path)
         config_file_ifcfg = StringIO.new(<<-EOF
 iface eth0 inet static
   address 10.0.0.1
@@ -182,25 +182,25 @@ EOF
     describe "when running under why run" do
 
       before do
-        Chef::Config[:why_run] = true
+        Seth::Config[:why_run] = true
       end
 
       after do
-        Chef::Config[:why_run] = false
+        Seth::Config[:why_run] = false
       end
 
       context "when writing a file" do
         let(:config_file_ifcfg) { StringIO.new }
 
-        let(:tempfile) { Tempfile.new("rspec-chef-ifconfig-debian") }
+        let(:tempfile) { Tempfile.new("rspec-seth-ifconfig-debian") }
 
-        let(:tempdir_path) { Dir.mktmpdir("rspec-chef-ifconfig-debian-dir") }
+        let(:tempdir_path) { Dir.mktmpdir("rspec-seth-ifconfig-debian-dir") }
 
         let(:config_filename_ifcfg) { "#{tempdir_path}/ifcfg-#{new_resource.device}" }
 
         before do
-          stub_const("Chef::Provider::Ifconfig::Debian::INTERFACES_FILE", tempfile.path)
-          stub_const("Chef::Provider::Ifconfig::Debian::INTERFACES_DOT_D_DIR", tempdir_path)
+          stub_const("Seth::Provider::Ifconfig::Debian::INTERFACES_FILE", tempfile.path)
+          stub_const("Seth::Provider::Ifconfig::Debian::INTERFACES_DOT_D_DIR", tempdir_path)
           expect(File).not_to receive(:new).with(config_filename_ifcfg, "w")
         end
 
@@ -241,15 +241,15 @@ EOF
       end
 
       context "when the file is up-to-date" do
-        let(:tempfile) { Tempfile.new("rspec-chef-ifconfig-debian") }
+        let(:tempfile) { Tempfile.new("rspec-seth-ifconfig-debian") }
 
-        let(:tempdir_path) { Dir.mktmpdir("rspec-chef-ifconfig-debian-dir") }
+        let(:tempdir_path) { Dir.mktmpdir("rspec-seth-ifconfig-debian-dir") }
 
         let(:config_filename_ifcfg) { "#{tempdir_path}/ifcfg-#{new_resource.device}" }
 
         before do
-          stub_const("Chef::Provider::Ifconfig::Debian::INTERFACES_FILE", tempfile.path)
-          stub_const("Chef::Provider::Ifconfig::Debian::INTERFACES_DOT_D_DIR", tempdir_path)
+          stub_const("Seth::Provider::Ifconfig::Debian::INTERFACES_FILE", tempfile.path)
+          stub_const("Seth::Provider::Ifconfig::Debian::INTERFACES_DOT_D_DIR", tempdir_path)
           config_file_ifcfg = StringIO.new(<<-EOF
 iface eth0 inet static
   address 10.0.0.1

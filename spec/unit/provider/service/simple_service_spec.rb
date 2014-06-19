@@ -18,18 +18,18 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Simple, "load_current_resource" do
+describe Seth::Provider::Service::Simple, "load_current_resource" do
   before(:each) do
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.automatic_attrs[:command] = {:ps => "ps -ef"}
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Service.new("chef")
-    @current_resource = Chef::Resource::Service.new("chef")
+    @new_resource = Seth::Resource::Service.new("seth")
+    @current_resource = Seth::Resource::Service.new("seth")
 
-    @provider = Chef::Provider::Service::Simple.new(@new_resource, @run_context)
-    Chef::Resource::Service.stub(:new).and_return(@current_resource)
+    @provider = Seth::Provider::Service::Simple.new(@new_resource, @run_context)
+    Seth::Resource::Service.stub(:new).and_return(@current_resource)
 
     @stdout = StringIO.new(<<-NOMOCKINGSTRINGSPLZ)
 aj        7842  5057  0 21:26 pts/2    00:00:06 vi init.rb
@@ -41,7 +41,7 @@ NOMOCKINGSTRINGSPLZ
   end
 
   it "should create a current resource with the name of the new resource" do
-    Chef::Resource::Service.should_receive(:new).and_return(@current_resource)
+    Seth::Resource::Service.should_receive(:new).and_return(@current_resource)
     @provider.load_current_resource
   end
 
@@ -53,13 +53,13 @@ NOMOCKINGSTRINGSPLZ
   it "should raise error if the node has a nil ps attribute and no other means to get status" do
     @node.automatic_attrs[:command] = {:ps => nil}
     @provider.define_resource_requirements
-    lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+    lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
   end
 
   it "should raise error if the node has an empty ps attribute and no other means to get status" do
     @node.automatic_attrs[:command] = {:ps => ""}
     @provider.define_resource_requirements
-    lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+    lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
   end
 
   describe "when we have a 'ps' attribute" do
@@ -76,7 +76,7 @@ NOMOCKINGSTRINGSPLZ
 
     it "should set running to true if the regex matches the output" do
       @stdout = StringIO.new(<<-NOMOCKINGSTRINGSPLZ)
-aj        7842  5057  0 21:26 pts/2    00:00:06 chef
+aj        7842  5057  0 21:26 pts/2    00:00:06 seth
 aj        7842  5057  0 21:26 pts/2    00:00:06 poos
 NOMOCKINGSTRINGSPLZ
       @status = double("Status", :exitstatus => 0, :stdout => @stdout)
@@ -96,7 +96,7 @@ NOMOCKINGSTRINGSPLZ
       @provider.action = :start
       @provider.load_current_resource
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
   end
 
@@ -116,7 +116,7 @@ NOMOCKINGSTRINGSPLZ
     it "should raise an exception if no start command is specified" do
       @provider.define_resource_requirements
       @provider.action = :start
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
   end
 
@@ -130,11 +130,11 @@ NOMOCKINGSTRINGSPLZ
     it "should raise an exception if no stop command is specified" do
       @provider.define_resource_requirements
       @provider.action = :stop
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
   end
 
-  describe Chef::Provider::Service::Simple, "restart_service" do
+  describe Seth::Provider::Service::Simple, "restart_service" do
     it "should call the restart command if one has been specified" do
       @new_resource.restart_command("/etc/init.d/foo restart")
       @provider.should_receive(:shell_out!).with("/etc/init.d/foo restart")
@@ -144,7 +144,7 @@ NOMOCKINGSTRINGSPLZ
     it "should raise an exception if the resource doesn't support restart, no restart command is provided, and no stop command is provided" do
       @provider.define_resource_requirements
       @provider.action = :restart
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
 
     it "should just call stop, then start when the resource doesn't support restart and no restart_command is specified" do
@@ -155,11 +155,11 @@ NOMOCKINGSTRINGSPLZ
     end
   end
 
-  describe Chef::Provider::Service::Simple, "reload_service" do
+  describe Seth::Provider::Service::Simple, "reload_service" do
     it "should raise an exception if reload is requested but no command is specified" do
       @provider.define_resource_requirements
       @provider.action = :reload
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::UnsupportedAction)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::UnsupportedAction)
     end
 
     it "should should run the user specified reload command if one is specified" do

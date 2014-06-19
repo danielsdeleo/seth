@@ -17,11 +17,11 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
+require 'seth/resource'
 
-class Chef
+class Seth
   class Resource
-    class Cron < Chef::Resource
+    class Cron < Seth::Resource
 
       identity_attr :command
 
@@ -143,7 +143,7 @@ class Chef
         set_or_return(
           :time,
           arg,
-          :equal_to => Chef::Provider::Cron::SPECIAL_TIME_VALUES
+          :equal_to => Seth::Provider::Cron::SPECIAL_TIME_VALUES
         )
       end
 

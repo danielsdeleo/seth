@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
 
     # Convenience class for using the deploy resource with the timestamped
     # deployment strategy (provider)
-    class TimestampedDeploy < Chef::Resource::Deploy
+    class TimestampedDeploy < Seth::Resource::Deploy
       def initialize(*args, &block)
         super(*args, &block)
-        @provider = Chef::Provider::Deploy::Timestamped
+        @provider = Seth::Provider::Deploy::Timestamped
       end
     end
   end

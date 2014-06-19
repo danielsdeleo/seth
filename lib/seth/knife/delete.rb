@@ -1,14 +1,14 @@
-require 'chef/chef_fs/knife'
+require 'seth/chef_fs/knife'
 
-class Chef
+class Seth
   class Knife
-    class Delete < Chef::ChefFS::Knife
+    class Delete < Seth::ChefFS::Knife
       banner "knife delete [PATTERN1 ... PATTERNn]"
 
       category "path-based"
 
       deps do
-        require 'chef/chef_fs/file_system'
+        require 'seth/chef_fs/file_system'
       end
 
       option :recurse,
@@ -39,7 +39,7 @@ class Chef
         error = false
         if config[:local]
           pattern_args.each do |pattern|
-            Chef::ChefFS::FileSystem.list(local_fs, pattern).each do |result|
+            Seth::ChefFS::FileSystem.list(local_fs, pattern).each do |result|
               if delete_result(result)
                 error = true
               end
@@ -47,15 +47,15 @@ class Chef
           end
         elsif config[:both]
           pattern_args.each do |pattern|
-            Chef::ChefFS::FileSystem.list_pairs(pattern, chef_fs, local_fs).each do |chef_result, local_result|
-              if delete_result(chef_result, local_result)
+            Seth::ChefFS::FileSystem.list_pairs(pattern, seth_fs, local_fs).each do |chef_result, local_result|
+              if delete_result(seth_result, local_result)
                 error = true
               end
             end
           end
         else # Remote only
           pattern_args.each do |pattern|
-            Chef::ChefFS::FileSystem.list(chef_fs, pattern).each do |result|
+            Seth::ChefFS::FileSystem.list(seth_fs, pattern).each do |result|
               if delete_result(result)
                 error = true
               end
@@ -69,7 +69,7 @@ class Chef
       end
 
       def format_path_with_root(entry)
-        root = entry.root == chef_fs ? " (remote)" : " (local)"
+        root = entry.root == seth_fs ? " (remote)" : " (local)"
         "#{format_path(entry)}#{root}"
       end
 
@@ -82,13 +82,13 @@ class Chef
             result.delete(config[:recurse])
             deleted_any = true
             found_any = true
-          rescue Chef::ChefFS::FileSystem::NotFoundError
+          rescue Seth::ChefFS::FileSystem::NotFoundError
             # This is not an error unless *all* of them were not found
-          rescue Chef::ChefFS::FileSystem::MustDeleteRecursivelyError => e
+          rescue Seth::ChefFS::FileSystem::MustDeleteRecursivelyError => e
             ui.error "#{format_path_with_root(e.entry)} must be deleted recursively!  Pass -r to knife delete."
             found_any = true
             error = true
-          rescue Chef::ChefFS::FileSystem::OperationNotAllowedError => e
+          rescue Seth::ChefFS::FileSystem::OperationNotAllowedError => e
             ui.error "#{format_path_with_root(e.entry)} #{e.reason}."
             found_any = true
             error = true

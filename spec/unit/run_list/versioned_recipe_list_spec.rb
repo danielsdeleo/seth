@@ -17,18 +17,18 @@
 
 require 'spec_helper'
 
-describe Chef::RunList::VersionedRecipeList do
+describe Seth::RunList::VersionedRecipeList do
 
   describe "initialize" do
     it "should create an empty array" do
-      l = Chef::RunList::VersionedRecipeList.new
+      l = Seth::RunList::VersionedRecipeList.new
       l.should == []
     end
   end
 
   describe "add_recipe" do
     before(:each) do
-      @list = Chef::RunList::VersionedRecipeList.new
+      @list = Seth::RunList::VersionedRecipeList.new
       @list << "apt"
       @list << "god"
       @list << "apache2"
@@ -70,7 +70,7 @@ describe Chef::RunList::VersionedRecipeList do
 
     it "should not allow multiple versions of the same recipe" do
       @list.add_recipe "rails", "1.0.0"
-      lambda {@list.add_recipe "rails", "0.1.0"}.should raise_error Chef::Exceptions::CookbookVersionConflict
+      lambda {@list.add_recipe "rails", "0.1.0"}.should raise_error Seth::Exceptions::CookbookVersionConflict
     end
   end
 
@@ -81,7 +81,7 @@ describe Chef::RunList::VersionedRecipeList do
         {:name => "god", :version => nil},
         {:name => "apache2", :version => "0.0.1"}
       ]
-      @list = Chef::RunList::VersionedRecipeList.new
+      @list = Seth::RunList::VersionedRecipeList.new
       @recipes.each {|i| @list.add_recipe i[:name], i[:version]}
     end
 
@@ -104,11 +104,11 @@ describe Chef::RunList::VersionedRecipeList do
                   {:name => "god", :version => nil},
                   {:name => "apache2", :version => "0.0.1"}
                  ]
-      @list = Chef::RunList::VersionedRecipeList.new
+      @list = Seth::RunList::VersionedRecipeList.new
       @recipes.each {|i| @list.add_recipe i[:name], i[:version]}
       @constraints = @recipes.map do |x|
         { :name => x[:name],
-          :version_constraint => Chef::VersionConstraint.new(x[:version])
+          :version_constraint => Seth::VersionConstraint.new(x[:version])
         }
       end
     end

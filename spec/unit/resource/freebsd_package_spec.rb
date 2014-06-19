@@ -21,18 +21,18 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Resource::FreebsdPackage do
+describe Seth::Resource::FreebsdPackage do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @resource = Chef::Resource::FreebsdPackage.new("foo", @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @resource = Seth::Resource::FreebsdPackage.new("foo", @run_context)
   end
 
 
   describe "Initialization" do
-    it "should return a Chef::Resource::FreebsdPackage" do
-      @resource.should be_a_kind_of(Chef::Resource::FreebsdPackage)
+    it "should return a Seth::Resource::FreebsdPackage" do
+      @resource.should be_a_kind_of(Seth::Resource::FreebsdPackage)
     end
 
     it "should set the resource_name to :freebsd_package" do
@@ -50,7 +50,7 @@ describe Chef::Resource::FreebsdPackage do
       it "should be Freebsd::Port" do
         @resource.source('ports')
         @resource.after_created
-        @resource.provider.should == Chef::Provider::Package::Freebsd::Port
+        @resource.provider.should == Seth::Provider::Package::Freebsd::Port
       end
     end
 
@@ -59,7 +59,7 @@ describe Chef::Resource::FreebsdPackage do
         [1000017, 1000018, 1000500, 1001001, 1100000].each do |__freebsd_version|
           @node.normal[:os_version] = __freebsd_version
           @resource.after_created
-          @resource.provider.should == Chef::Provider::Package::Freebsd::Pkgng
+          @resource.provider.should == Seth::Provider::Package::Freebsd::Pkgng
         end
       end
     end
@@ -69,7 +69,7 @@ describe Chef::Resource::FreebsdPackage do
         pkg_enabled = OpenStruct.new(:stdout => "yes\n")
         @resource.stub(:shell_out!).with("make -V WITH_PKGNG", :env => nil).and_return(pkg_enabled)
         @resource.after_created
-        @resource.provider.should == Chef::Provider::Package::Freebsd::Pkgng
+        @resource.provider.should == Seth::Provider::Package::Freebsd::Pkgng
       end
     end
 
@@ -82,7 +82,7 @@ describe Chef::Resource::FreebsdPackage do
           @node[:os_version] == __freebsd_version
           @node.normal[:os_version] = __freebsd_version
           @resource.after_created
-          @resource.provider.should == Chef::Provider::Package::Freebsd::Pkg
+          @resource.provider.should == Seth::Provider::Package::Freebsd::Pkg
         end
       end
     end

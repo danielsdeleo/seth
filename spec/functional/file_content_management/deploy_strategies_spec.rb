@@ -68,12 +68,12 @@ shared_examples_for "a content deploy strategy" do
     let(:parent_dir) { File.dirname(target_file_path) }
 
     let(:parent_security_descriptor) do
-      security_obj = Chef::ReservedNames::Win32::Security::SecurableObject.new(parent_dir)
+      security_obj = Seth::ReservedNames::Win32::Security::SecurableObject.new(parent_dir)
       security_obj.security_descriptor(true)
     end
 
     let(:masks) do
-      Chef::ReservedNames::Win32::API::Security
+      Seth::ReservedNames::Win32::API::Security
     end
 
     def ace_inherits?(ace)
@@ -99,7 +99,7 @@ shared_examples_for "a content deploy strategy" do
       file_info.should be_file
 
       parent_aces = parent_inheritable_aces
-      security_obj = Chef::ReservedNames::Win32::Security::SecurableObject.new(target_file_path)
+      security_obj = Seth::ReservedNames::Win32::Security::SecurableObject.new(target_file_path)
 
       security_descriptor = security_obj.security_descriptor(true)
       security_descriptor.dacl.each_with_index do |ace, index|
@@ -150,9 +150,9 @@ shared_examples_for "a content deploy strategy" do
     end
 
     it "maintains invariant properties on Windows", :windows_only do
-      original_info = Chef::ReservedNames::Win32::Security::SecurableObject.new(target_file_path)
+      original_info = Seth::ReservedNames::Win32::Security::SecurableObject.new(target_file_path)
       content_deployer.deploy(staging_file_path, target_file_path)
-      updated_info = Chef::ReservedNames::Win32::Security::SecurableObject.new(target_file_path)
+      updated_info = Seth::ReservedNames::Win32::Security::SecurableObject.new(target_file_path)
 
       win_invariant_properties(original_info).should == win_invariant_properties(updated_info)
     end
@@ -181,7 +181,7 @@ shared_examples_for "a content deploy strategy" do
   end
 end
 
-describe Chef::FileContentManagement::Deploy::Cp do
+describe Seth::FileContentManagement::Deploy::Cp do
 
   let(:unix_invariants) do
     [
@@ -204,7 +204,7 @@ describe Chef::FileContentManagement::Deploy::Cp do
 
 end
 
-describe Chef::FileContentManagement::Deploy::MvUnix, :unix_only do
+describe Seth::FileContentManagement::Deploy::MvUnix, :unix_only do
 
   let(:unix_invariants) do
     [
@@ -218,9 +218,9 @@ describe Chef::FileContentManagement::Deploy::MvUnix, :unix_only do
 end
 
 # On Unix we won't have loaded the file, avoid undefined constant errors:
-class Chef::FileContentManagement::Deploy::MvWindows ; end
+class Seth::FileContentManagement::Deploy::MvWindows ; end
 
-describe Chef::FileContentManagement::Deploy::MvWindows, :windows_only do
+describe Seth::FileContentManagement::Deploy::MvWindows, :windows_only do
 
   context "when a file has no sacl" do
 

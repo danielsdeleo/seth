@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-require 'chef/provider/ifconfig'
-require 'chef/util/file_edit'
+require 'seth/provider/ifconfig'
+require 'seth/util/file_edit'
 
-class Chef
+class Seth
   class Provider
     class Ifconfig
-      class Debian < Chef::Provider::Ifconfig
+      class Debian < Seth::Provider::Ifconfig
 
         INTERFACES_FILE = "/etc/network/interfaces"
         INTERFACES_DOT_D_DIR = "/etc/network/interfaces.d"
@@ -61,7 +61,7 @@ iface <%= @new_resource.device %> inet static
 
         def enforce_interfaces_dot_d_sanity
           # create /etc/network/interfaces.d via dir resource (to get reporting, etc)
-          dir = Chef::Resource::Directory.new(INTERFACES_DOT_D_DIR, run_context)
+          dir = Seth::Resource::Directory.new(INTERFACES_DOT_D_DIR, run_context)
           dir.run_action(:create)
           new_resource.updated_by_last_action(true) if dir.updated_by_last_action?
           # roll our own file_edit resource, this will not get reported until we have a file_edit resource
@@ -69,7 +69,7 @@ iface <%= @new_resource.device %> inet static
           regexp = %r{^\s*source\s+#{interfaces_dot_d_for_regexp}/\*\s*$}
           unless ::File.exists?(INTERFACES_FILE) && regexp.match(IO.read(INTERFACES_FILE))
             converge_by("modifying #{INTERFACES_FILE} to source #{INTERFACES_DOT_D_DIR}") do
-              conf = Chef::Util::FileEdit.new(INTERFACES_FILE)
+              conf = Seth::Util::FileEdit.new(INTERFACES_FILE)
               conf.insert_line_if_no_match(regexp, "source #{INTERFACES_DOT_D_DIR}/*")
               conf.write_file
             end

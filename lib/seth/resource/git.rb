@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require "chef/resource/scm"
+require "seth/resource/scm"
 
-class Chef
+class Seth
   class Resource
-    class Git < Chef::Resource::Scm
+    class Git < Seth::Resource::Scm
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :git
-        @provider = Chef::Provider::Git
+        @provider = Seth::Provider::Git
         @additional_remotes = Hash[]
       end
 

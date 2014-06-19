@@ -21,31 +21,31 @@
 #
 
 require 'tempfile'
-require 'chef/http'
-class Chef
+require 'seth/http'
+class Seth
   class HTTP; end
   class REST < HTTP; end
 end
 
-require 'chef/http/authenticator'
-require 'chef/http/decompressor'
-require 'chef/http/json_input'
-require 'chef/http/json_to_model_output'
-require 'chef/http/cookie_manager'
-require 'chef/http/validate_content_length'
-require 'chef/config'
-require 'chef/exceptions'
-require 'chef/platform/query_helpers'
-require 'chef/http/remote_request_id'
+require 'seth/http/authenticator'
+require 'seth/http/decompressor'
+require 'seth/http/json_input'
+require 'seth/http/json_to_model_output'
+require 'seth/http/cookie_manager'
+require 'seth/http/validate_content_length'
+require 'seth/config'
+require 'seth/exceptions'
+require 'seth/platform/query_helpers'
+require 'seth/http/remote_request_id'
 
-class Chef
-  # == Chef::REST
-  # Chef's custom REST client with built-in JSON support and RSA signed header
+class Seth
+  # == Seth::REST
+  # Seth's custom REST client with built-in JSON support and RSA signed header
   # authentication.
   class REST < HTTP
 
     # Backwards compatibility for things that use
-    # Chef::REST::RESTRequest or its constants
+    # Seth::REST::RESTRequest or its constants
     RESTRequest = HTTP::HTTPRequest
 
     attr_accessor :url, :cookies, :sign_on_redirect, :redirect_limit
@@ -56,7 +56,7 @@ class Chef
     # all subsequent requests. For example, when initialized with a base url
     # http://localhost:4000, a call to +get_rest+ with 'nodes' will make an
     # HTTP GET request to http://localhost:4000/nodes
-    def initialize(url, client_name=Chef::Config[:node_name], signing_key_filename=Chef::Config[:client_key], options={})
+    def initialize(url, client_name=Seth::Config[:node_name], signing_key_filename=Chef::Config[:client_key], options={})
       options = options.dup
       options[:client_name] = client_name
       options[:signing_key_filename] = signing_key_filename
@@ -136,7 +136,7 @@ class Chef
     alias :api_request :request
 
     # Do a HTTP request where no middleware is loaded (e.g. JSON input/output
-    # conversion) but the standard Chef Authentication headers are added to the
+    # conversion) but the standard Seth Authentication headers are added to the
     # request.
     def raw_http_request(method, path, headers, data)
       url = create_url(path)
@@ -148,8 +148,8 @@ class Chef
     rescue Exception => exception
       log_failed_request(response, return_value) unless response.nil?
 
-      if exception.respond_to?(:chef_rest_request=)
-        exception.chef_rest_request = rest_request
+      if exception.respond_to?(:seth_rest_request=)
+        exception.seth_rest_request = rest_request
       end
       raise
     end
@@ -159,9 +159,9 @@ class Chef
     # now responsible for making individual requests, while
     # #retrying_http_errors handles error/retry logic.
     def retriable_http_request(method, url, req_body, headers)
-      rest_request = Chef::HTTP::HTTPRequest.new(method, url, req_body, headers)
+      rest_request = Seth::HTTP::HTTPRequest.new(method, url, req_body, headers)
 
-      Chef::Log.debug("Sending HTTP Request via #{method} to #{url.host}:#{url.port}#{rest_request.path}")
+      Seth::Log.debug("Sending HTTP Request via #{method} to #{url.host}:#{url.port}#{rest_request.path}")
 
       retrying_http_errors(url) do
         yield rest_request
@@ -190,7 +190,7 @@ class Chef
 
     def http_client(base_url=nil)
       base_url ||= url
-      BasicClient.new(base_url, :ssl_policy => Chef::HTTP::APISSLPolicy)
+      BasicClient.new(base_url, :ssl_policy => Seth::HTTP::APISSLPolicy)
     end
 
     ############################################################################

@@ -18,21 +18,21 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_helper"))
 
-describe Chef::Resource::SmartosPackage, "initialize" do
+describe Seth::Resource::SmartosPackage, "initialize" do
 
   before(:each) do
-    @resource = Chef::Resource::SmartosPackage.new("foo")
+    @resource = Seth::Resource::SmartosPackage.new("foo")
   end
 
-  it "should return a Chef::Resource::SmartosPackage" do
-    @resource.should be_a_kind_of(Chef::Resource::SmartosPackage)
+  it "should return a Seth::Resource::SmartosPackage" do
+    @resource.should be_a_kind_of(Seth::Resource::SmartosPackage)
   end
 
   it "should set the resource_name to :smartos_package" do
     @resource.resource_name.should eql(:smartos_package)
   end
 
-  it "should set the provider to Chef::Provider::Package::SmartOS" do
-    @resource.provider.should eql(Chef::Provider::Package::SmartOS)
+  it "should set the provider to Seth::Provider::Package::SmartOS" do
+    @resource.provider.should eql(Seth::Provider::Package::SmartOS)
   end
 end

@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Mixin
 
 
@@ -24,14 +24,14 @@ class Chef
         @deprecated_constants ||= {}
       end
 
-      # Add a deprecated constant to the Chef::Mixin namespace.
+      # Add a deprecated constant to the Seth::Mixin namespace.
       # === Arguments
       # * name: the constant name, as a relative symbol.
       # * replacement: the constant to return instead.
       # * message: A message telling the user what to do instead.
       # === Example:
-      #   deprecate_constant(:RecipeDefinitionDSLCore, Chef::DSL::Recipe, <<-EOM)
-      #     Chef::Mixin::RecipeDefinitionDSLCore is deprecated, use Chef::DSL::Recipe instead.
+      #   deprecate_constant(:RecipeDefinitionDSLCore, Seth::DSL::Recipe, <<-EOM)
+      #     Seth::Mixin::RecipeDefinitionDSLCore is deprecated, use Chef::DSL::Recipe instead.
       #   EOM
       def self.deprecate_constant(name, replacement, message)
         deprecated_constants[name] = {:replacement => replacement, :message => message}
@@ -44,8 +44,8 @@ class Chef
       # deprecated_constants collection.
       def self.const_missing(name)
         if new_const = deprecated_constants[name]
-          Chef::Log.warn(new_const[:message])
-          Chef::Log.warn("Called from: \n#{caller[0...3].map {|l| "\t#{l}"}.join("\n")}")
+          Seth::Log.warn(new_const[:message])
+          Seth::Log.warn("Called from: \n#{caller[0...3].map {|l| "\t#{l}"}.join("\n")}")
           new_const[:replacement]
         else
           super
@@ -85,8 +85,8 @@ class Chef
 
         def log(msg)
           # WTF: I don't get the log prefix (i.e., "[timestamp] LEVEL:") if I
-          # send to Chef::Log. No one but me should use method_missing, ever.
-          Chef::Log.logger.send(@level, msg)
+          # send to Seth::Log. No one but me should use method_missing, ever.
+          Seth::Log.logger.send(@level, msg)
         end
 
       end

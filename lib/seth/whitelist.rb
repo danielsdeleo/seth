@@ -1,7 +1,7 @@
 
-require 'chef/exceptions'
+require 'seth/exceptions'
 
-class Chef
+class Seth
   class Whitelist
 
     # filter takes two arguments - the data you want to filter, and a whitelisted array
@@ -48,7 +48,7 @@ class Chef
       filtered_data = new_data
       parts[0..-2].each do |part|
         unless all_data[part]
-          Chef::Log.warn("Could not find whitelist attribute #{item}.")
+          Seth::Log.warn("Could not find whitelist attribute #{item}.")
           return nil
         end
 
@@ -58,7 +58,7 @@ class Chef
       end
 
       unless all_data[parts[-1]]
-        Chef::Log.warn("Could not find whitelist attribute #{item}.")
+        Seth::Log.warn("Could not find whitelist attribute #{item}.")
         return nil
       end
 

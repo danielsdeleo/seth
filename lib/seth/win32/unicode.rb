@@ -17,13 +17,13 @@
 # limitations under the License.
 #
 
-require 'chef/win32/api/unicode'
+require 'seth/win32/api/unicode'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     class Unicode
-      include Chef::ReservedNames::Win32::API::Unicode
-      extend Chef::ReservedNames::Win32::API::Unicode
+      include Seth::ReservedNames::Win32::API::Unicode
+      extend Seth::ReservedNames::Win32::API::Unicode
     end
   end
 end
@@ -31,13 +31,13 @@ end
 module FFI
   class Pointer
     def read_wstring(num_wchars)
-      Chef::ReservedNames::Win32::Unicode.wide_to_utf8(self.get_bytes(0, num_wchars*2))
+      Seth::ReservedNames::Win32::Unicode.wide_to_utf8(self.get_bytes(0, num_wchars*2))
     end
   end
 end
 
 class String
   def to_wstring
-    Chef::ReservedNames::Win32::Unicode.utf8_to_wide(self)
+    Seth::ReservedNames::Win32::Unicode.utf8_to_wide(self)
   end
 end

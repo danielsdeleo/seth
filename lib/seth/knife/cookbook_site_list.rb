@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class CookbookSiteList < Knife
 

@@ -18,10 +18,10 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::File do
+describe Seth::Resource::File do
 
   before(:each) do
-    @resource = Chef::Resource::File.new("fakey_fakerton")
+    @resource = Seth::Resource::File.new("fakey_fakerton")
   end
 
   it "should have a name" do

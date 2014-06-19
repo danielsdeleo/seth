@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::NodeDelete do
+describe Seth::Knife::NodeDelete do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::NodeDelete.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::NodeDelete.new
     @knife.config = {
       :print_after => nil
     }
     @knife.name_args = [ "adam" ]
     @knife.stub(:output).and_return(true)
     @knife.stub(:confirm).and_return(true)
-    @node = Chef::Node.new()
+    @node = Seth::Node.new()
     @node.stub(:destroy).and_return(true)
-    Chef::Node.stub(:load).and_return(@node)
+    Seth::Node.stub(:load).and_return(@node)
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
   end
@@ -42,7 +42,7 @@ describe Chef::Knife::NodeDelete do
     end
 
     it "should load the node" do
-      Chef::Node.should_receive(:load).with("adam").and_return(@node)
+      Seth::Node.should_receive(:load).with("adam").and_return(@node)
       @knife.run
     end
 

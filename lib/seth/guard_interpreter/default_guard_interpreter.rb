@@ -1,6 +1,6 @@
 #
-# Author:: Adam Edwards (<adamed@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Adam Edwards (<adamed@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class GuardInterpreter
     class DefaultGuardInterpreter
-      include Chef::Mixin::ShellOut
+      include Seth::Mixin::ShellOut
 
       protected
 
@@ -32,8 +32,8 @@ class Chef
 
       def evaluate
         shell_out(@command, @command_opts).status.success?
-      rescue Chef::Exceptions::CommandTimeout
-        Chef::Log.warn "Command '#{@command}' timed out"
+      rescue Seth::Exceptions::CommandTimeout
+        Seth::Log.warn "Command '#{@command}' timed out"
         false
       end
     end

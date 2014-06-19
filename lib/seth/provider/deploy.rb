@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require "chef/mixin/command"
-require "chef/mixin/from_file"
-require "chef/monkey_patches/fileutils"
-require "chef/provider/git"
-require "chef/provider/subversion"
-require 'chef/dsl/recipe'
+require "seth/mixin/command"
+require "seth/mixin/from_file"
+require "seth/monkey_patches/fileutils"
+require "seth/provider/git"
+require "seth/provider/subversion"
+require 'seth/dsl/recipe'
 
-class Chef
+class Seth
   class Provider
-    class Deploy < Chef::Provider
+    class Deploy < Seth::Provider
 
-      include Chef::DSL::Recipe
-      include Chef::Mixin::FromFile
-      include Chef::Mixin::Command
+      include Seth::DSL::Recipe
+      include Seth::Mixin::FromFile
+      include Seth::Mixin::Command
 
       attr_reader :scm_provider, :release_path, :previous_release_path
 
@@ -41,7 +41,7 @@ class Chef
         @scm_provider = new_resource.scm_provider.new(new_resource, run_context)
 
         # @configuration is not used by Deploy, it is only for backwards compat with
-        # chef-deploy or capistrano hooks that might use it to get environment information
+        # seth-deploy or capistrano hooks that might use it to get environment information
         @configuration = @new_resource.to_hash
         @configuration[:environment] = @configuration[:environment] && @configuration[:environment]["RAILS_ENV"]
       end
@@ -74,7 +74,7 @@ class Chef
         requirements.assert(:rollback) do |a|
           a.assertion { all_releases[-2] }
           a.failure_message(RuntimeError, "There is no release to rollback to!")
-          #There is no reason to assume 2 deployments in a single chef run, hence fails in whyrun.
+          #There is no reason to assume 2 deployments in a single seth run, hence fails in whyrun.
         end
 
         [ @new_resource.before_migrate, @new_resource.before_symlink,
@@ -99,7 +99,7 @@ class Chef
         save_release_state
         if deployed?(release_path )
           if current_release?(release_path )
-            Chef::Log.debug("#{@new_resource} is the latest version")
+            Seth::Log.debug("#{@new_resource} is the latest version")
           else
             rollback_to release_path
           end
@@ -114,9 +114,9 @@ class Chef
       def action_force_deploy
         if deployed?(release_path)
           converge_by("delete deployed app at #{release_path} prior to force-deploy") do
-            Chef::Log.info("Already deployed app at #{release_path}, forcing.")
+            Seth::Log.info("Already deployed app at #{release_path}, forcing.")
             FileUtils.rm_rf(release_path)
-            Chef::Log.info("#{@new_resource} forcing deploy of already deployed app at #{release_path}")
+            Seth::Log.info("#{@new_resource} forcing deploy of already deployed app at #{release_path}")
           end
         end
 
@@ -142,7 +142,7 @@ class Chef
 
         releases_to_nuke.each do |i|
           converge_by("roll back by removing release #{i}") do
-            Chef::Log.info "#{@new_resource} removing release: #{i}"
+            Seth::Log.info "#{@new_resource} removing release: #{i}"
             FileUtils.rm_rf i
           end
           release_deleted(i)
@@ -164,22 +164,22 @@ class Chef
         restart
         callback(:after_restart, @new_resource.after_restart)
         cleanup!
-        Chef::Log.info "#{@new_resource} deployed to #{@new_resource.deploy_to}"
+        Seth::Log.info "#{@new_resource} deployed to #{@new_resource.deploy_to}"
       end
 
       def rollback
-        Chef::Log.info "#{@new_resource} rolling back to previous release #{release_path}"
+        Seth::Log.info "#{@new_resource} rolling back to previous release #{release_path}"
         symlink
-        Chef::Log.info "#{@new_resource} restarting with previous release"
+        Seth::Log.info "#{@new_resource} restarting with previous release"
         restart
       end
 
 
       def callback(what, callback_code=nil)
-        @collection = Chef::ResourceCollection.new
+        @collection = Seth::ResourceCollection.new
         case callback_code
         when Proc
-          Chef::Log.info "#{@new_resource} running callback #{what}"
+          Seth::Log.info "#{@new_resource} running callback #{what}"
           recipe_eval(&callback_code)
         when String
           run_callback_from_file("#{release_path}/#{callback_code}")
@@ -200,7 +200,7 @@ class Chef
           end.join(" ")
 
           converge_by("execute migration command #{@new_resource.migration_command}") do
-            Chef::Log.info "#{@new_resource} migrating #{@new_resource.user} with environment #{env_info}"
+            Seth::Log.info "#{@new_resource} migrating #{@new_resource.user} with environment #{env_info}"
             run_command(run_options(:command => @new_resource.migration_command, :cwd=>release_path, :log_level => :info))
           end
         end
@@ -210,17 +210,17 @@ class Chef
         purge_tempfiles_from_current_release
         link_tempfiles_to_current_release
         link_current_release_to_production
-        Chef::Log.info "#{@new_resource} updated symlinks"
+        Seth::Log.info "#{@new_resource} updated symlinks"
       end
 
       def restart
         if restart_cmd = @new_resource.restart_command
           if restart_cmd.kind_of?(Proc)
-            Chef::Log.info("#{@new_resource} restarting app with embedded recipe")
+            Seth::Log.info("#{@new_resource} restarting app with embedded recipe")
             recipe_eval(&restart_cmd)
           else
             converge_by("restart app using command #{@new_resource.restart_command}") do
-              Chef::Log.info("#{@new_resource} restarting app")
+              Seth::Log.info("#{@new_resource} restarting app")
               run_command(run_options(:command => @new_resource.restart_command, :cwd => @new_resource.current_path))
             end
           end
@@ -235,7 +235,7 @@ class Chef
         chop = -1 - @new_resource.keep_releases
         all_releases[0..chop].each do |old_release|
           converge_by("remove old release #{old_release}") do
-            Chef::Log.info "#{@new_resource} removing old release #{old_release}"
+            Seth::Log.info "#{@new_resource} removing old release #{old_release}"
             FileUtils.rm_rf(old_release)
           end
           release_deleted(old_release)
@@ -260,7 +260,7 @@ class Chef
       end
 
       def svn_force_export
-        Chef::Log.info "#{@new_resource} exporting source repository"
+        Seth::Log.info "#{@new_resource} exporting source repository"
         @scm_provider.run_action(:force_export)
       end
 
@@ -270,15 +270,15 @@ class Chef
           FileUtils.rm_rf(release_path) if ::File.exist?(release_path)
           FileUtils.mkdir_p(target_dir_path)
           FileUtils.cp_r(::File.join(@new_resource.destination, "."), release_path, :preserve => true)
-          Chef::Log.info "#{@new_resource} copied the cached checkout to #{release_path}"
+          Seth::Log.info "#{@new_resource} copied the cached checkout to #{release_path}"
         end
       end
 
       def enforce_ownership
         converge_by("force ownership of #{@new_resource.deploy_to} to #{@new_resource.group}:#{@new_resource.user}") do
           FileUtils.chown_R(@new_resource.user, @new_resource.group, @new_resource.deploy_to)
-          Chef::Log.info("#{@new_resource} set user to #{@new_resource.user}") if @new_resource.user
-          Chef::Log.info("#{@new_resource} set group to #{@new_resource.group}") if @new_resource.group
+          Seth::Log.info("#{@new_resource} set user to #{@new_resource.user}") if @new_resource.user
+          Seth::Log.info("#{@new_resource} set group to #{@new_resource.group}") if @new_resource.group
         end
       end
 
@@ -294,9 +294,9 @@ class Chef
           begin
             FileUtils.ln_sf(release_path, @new_resource.current_path)
           rescue => e
-            raise Chef::Exceptions::FileNotFound.new("Cannot symlink current release to production: #{e.message}")
+            raise Seth::Exceptions::FileNotFound.new("Cannot symlink current release to production: #{e.message}")
           end
-          Chef::Log.info "#{@new_resource} linked release #{release_path} into production at #{@new_resource.current_path}"
+          Seth::Log.info "#{@new_resource} linked release #{release_path} into production at #{@new_resource.current_path}"
         end
         enforce_ownership
       end
@@ -308,10 +308,10 @@ class Chef
             begin
               FileUtils.ln_sf(@new_resource.shared_path + "/#{src}", release_path + "/#{dest}")
             rescue => e
-              raise Chef::Exceptions::FileNotFound.new("Cannot symlink #{@new_resource.shared_path}/#{src} to #{release_path}/#{dest} before migrate: #{e.message}")
+              raise Seth::Exceptions::FileNotFound.new("Cannot symlink #{@new_resource.shared_path}/#{src} to #{release_path}/#{dest} before migrate: #{e.message}")
             end
           end
-          Chef::Log.info "#{@new_resource} made pre-migration symlinks"
+          Seth::Log.info "#{@new_resource} made pre-migration symlinks"
         end
       end
 
@@ -320,7 +320,7 @@ class Chef
         @new_resource.create_dirs_before_symlink.each do |dir|
           create_dir_unless_exists(release_path + "/#{dir}")
         end
-        Chef::Log.info("#{@new_resource} created directories before symlinking: #{dirs_info}")
+        Seth::Log.info("#{@new_resource} created directories before symlinking: #{dirs_info}")
 
         links_info = @new_resource.symlinks.map { |src, dst| "#{src} => #{dst}" }.join(", ")
         converge_by("link shared paths into current release:  #{links_info}") do
@@ -328,10 +328,10 @@ class Chef
             begin
               FileUtils.ln_sf(::File.join(@new_resource.shared_path, src), ::File.join(release_path, dest))
             rescue => e
-              raise Chef::Exceptions::FileNotFound.new("Cannot symlink shared data #{::File.join(@new_resource.shared_path, src)} to #{::File.join(release_path, dest)}: #{e.message}")
+              raise Seth::Exceptions::FileNotFound.new("Cannot symlink shared data #{::File.join(@new_resource.shared_path, src)} to #{::File.join(release_path, dest)}: #{e.message}")
             end
           end
-          Chef::Log.info("#{@new_resource} linked shared paths into current release: #{links_info}")
+          Seth::Log.info("#{@new_resource} linked shared paths into current release: #{links_info}")
         end
         run_symlinks_before_migrate
         enforce_ownership
@@ -344,7 +344,7 @@ class Chef
         log_info = @new_resource.purge_before_symlink.join(", ")
         converge_by("purge directories in checkout #{log_info}") do
           @new_resource.purge_before_symlink.each { |dir| FileUtils.rm_rf(release_path + "/#{dir}") }
-          Chef::Log.info("#{@new_resource} purged directories in checkout #{log_info}")
+          Seth::Log.info("#{@new_resource} purged directories in checkout #{log_info}")
         end
       end
 
@@ -365,7 +365,7 @@ class Chef
       end
 
       def release_slug
-        raise Chef::Exceptions::Override, "You must override release_slug in #{self.to_s}"
+        raise Seth::Exceptions::Override, "You must override release_slug in #{self.to_s}"
       end
 
       def install_gems
@@ -373,11 +373,11 @@ class Chef
       end
 
       def gem_resource_collection_runner
-        gems_collection = Chef::ResourceCollection.new
+        gems_collection = Seth::ResourceCollection.new
         gem_packages.each { |rbgem| gems_collection << rbgem }
         gems_run_context = run_context.dup
         gems_run_context.resource_collection = gems_collection
-        Chef::Runner.new(gems_run_context)
+        Seth::Runner.new(gems_run_context)
       end
 
       def gem_packages
@@ -385,7 +385,7 @@ class Chef
         gems = YAML.load(IO.read("#{release_path}/gems.yml"))
 
         gems.map do |g|
-          r = Chef::Resource::GemPackage.new(g[:name], run_context)
+          r = Seth::Resource::GemPackage.new(g[:name], run_context)
           r.version g[:version]
           r.action :install
           r.source "http://gems.github.com"
@@ -400,7 +400,7 @@ class Chef
         run_opts[:log_tag] = @new_resource.to_s
         run_opts[:log_level] ||= :debug
         if run_opts[:log_level] == :info
-          if STDOUT.tty? && !Chef::Config[:daemon] && Chef::Log.info?
+          if STDOUT.tty? && !Seth::Config[:daemon] && Chef::Log.info?
             run_opts[:live_stream] = STDOUT
           end
         end
@@ -408,7 +408,7 @@ class Chef
       end
 
       def run_callback_from_file(callback_file)
-        Chef::Log.info "#{@new_resource} queueing checkdeploy hook #{callback_file}"
+        Seth::Log.info "#{@new_resource} queueing checkdeploy hook #{callback_file}"
         recipe_eval do
           Dir.chdir(release_path) do
             from_file(callback_file) if ::File.exist?(callback_file)
@@ -418,23 +418,23 @@ class Chef
 
       def create_dir_unless_exists(dir)
         if ::File.directory?(dir)
-          Chef::Log.debug "#{@new_resource} not creating #{dir} because it already exists"
+          Seth::Log.debug "#{@new_resource} not creating #{dir} because it already exists"
           return false
         end
         converge_by("create new directory #{dir}") do
           begin
             FileUtils.mkdir_p(dir)
-            Chef::Log.debug "#{@new_resource} created directory #{dir}"
+            Seth::Log.debug "#{@new_resource} created directory #{dir}"
             if @new_resource.user
               FileUtils.chown(@new_resource.user, nil, dir)
-              Chef::Log.debug("#{@new_resource} set user to #{@new_resource.user} for #{dir}")
+              Seth::Log.debug("#{@new_resource} set user to #{@new_resource.user} for #{dir}")
             end
             if @new_resource.group
               FileUtils.chown(nil, @new_resource.group, dir)
-              Chef::Log.debug("#{@new_resource} set group to #{@new_resource.group} for #{dir}")
+              Seth::Log.debug("#{@new_resource} set group to #{@new_resource.group} for #{dir}")
             end
           rescue => e
-            raise Chef::Exceptions::FileNotFound.new("Cannot create directory #{dir}: #{e.message}")
+            raise Seth::Exceptions::FileNotFound.new("Cannot create directory #{dir}: #{e.message}")
           end
         end
       end
@@ -443,7 +443,7 @@ class Chef
         yield
       rescue ::Exception => e
         if @new_resource.rollback_on_error
-          Chef::Log.warn "Error on deploying #{release_path}: #{e.message}"
+          Seth::Log.warn "Error on deploying #{release_path}: #{e.message}"
           failed_release = release_path
 
           if previous_release_path
@@ -451,7 +451,7 @@ class Chef
             rollback
           end
           converge_by("remove failed deploy #{failed_release}") do
-            Chef::Log.info "Removing failed deploy #{failed_release}"
+            Seth::Log.info "Removing failed deploy #{failed_release}"
             FileUtils.rm_rf failed_release
           end
           release_deleted(failed_release)

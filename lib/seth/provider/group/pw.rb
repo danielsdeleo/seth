@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Provider
     class Group
-      class Pw < Chef::Provider::Group
+      class Pw < Seth::Provider::Group
 
         def load_current_resource
           super
@@ -30,7 +30,7 @@ class Chef
 
           requirements.assert(:all_actions) do |a|
             a.assertion { ::File.exists?("/usr/sbin/pw") }
-            a.failure_message Chef::Exceptions::Group, "Could not find binary /usr/sbin/pw for #{@new_resource}"
+            a.failure_message Seth::Exceptions::Group, "Could not find binary /usr/sbin/pw for #{@new_resource}"
             # No whyrun alternative: this component should be available in the base install of any given system that uses it
           end
         end
@@ -75,7 +75,7 @@ class Chef
         def set_options
           opts = " #{@new_resource.group_name}"
           if @new_resource.gid && (@current_resource.gid != @new_resource.gid)
-            Chef::Log.debug("#{@new_resource}: current gid (#{@current_resource.gid}) doesnt match target gid (#{@new_resource.gid}), changing it")
+            Seth::Log.debug("#{@new_resource}: current gid (#{@current_resource.gid}) doesnt match target gid (#{@new_resource.gid}), changing it")
             opts << " -g '#{@new_resource.gid}'"
           end
           opts
@@ -118,12 +118,12 @@ class Chef
           end
 
           unless members_to_be_added.empty?
-            Chef::Log.debug("#{@new_resource} adding group members: #{members_to_be_added.join(',')}")
+            Seth::Log.debug("#{@new_resource} adding group members: #{members_to_be_added.join(',')}")
             opts << " -m #{members_to_be_added.join(',')}"
           end
 
           unless members_to_be_removed.empty?
-            Chef::Log.debug("#{@new_resource} removing group members: #{members_to_be_removed.join(',')}")
+            Seth::Log.debug("#{@new_resource} removing group members: #{members_to_be_removed.join(',')}")
             opts << " -d #{members_to_be_removed.join(',')}"
           end
 

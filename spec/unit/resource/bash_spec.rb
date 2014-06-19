@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Bash do
+describe Seth::Resource::Bash do
 
   before(:each) do
-    @resource = Chef::Resource::Bash.new("fakey_fakerton")
+    @resource = Seth::Resource::Bash.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::Bash" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Bash)
+  it "should create a new Seth::Resource::Bash" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Bash)
   end
 
   it "should have a resource name of :bash" do

@@ -17,29 +17,29 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/params_validate'
-require 'chef/dsl/platform_introspection'
-require 'chef/dsl/data_query'
-require 'chef/dsl/registry_helper'
-require 'chef/dsl/reboot_pending'
-require 'chef/mixin/convert_to_class_name'
-require 'chef//guard_interpreter/resource_guard_interpreter'
-require 'chef/resource/conditional'
-require 'chef/resource/conditional_action_not_nothing'
-require 'chef/resource_collection'
-require 'chef/resource_platform_map'
-require 'chef/node'
-require 'chef/platform'
+require 'seth/mixin/params_validate'
+require 'seth/dsl/platform_introspection'
+require 'seth/dsl/data_query'
+require 'seth/dsl/registry_helper'
+require 'seth/dsl/reboot_pending'
+require 'seth/mixin/convert_to_class_name'
+require 'seth//guard_interpreter/resource_guard_interpreter'
+require 'seth/resource/conditional'
+require 'seth/resource/conditional_action_not_nothing'
+require 'seth/resource_collection'
+require 'seth/resource_platform_map'
+require 'seth/node'
+require 'seth/platform'
 
-require 'chef/mixin/deprecation'
+require 'seth/mixin/deprecation'
 
-class Chef
+class Seth
   class Resource
     class Notification < Struct.new(:resource, :action, :notifying_resource)
 
       def duplicates?(other_notification)
         unless other_notification.respond_to?(:resource) && other_notification.respond_to?(:action)
-          msg = "only duck-types of Chef::Resource::Notification can be checked for duplication "\
+          msg = "only duck-types of Seth::Resource::Notification can be checked for duplication "\
                 "you gave #{other_notification.inspect}"
           raise ArgumentError, msg
         end
@@ -49,13 +49,13 @@ class Chef
       # If resource and/or notifying_resource is not a resource object, this will look them up in the resource collection
       # and fix the references from strings to actual Resource objects.
       def resolve_resource_reference(resource_collection)
-        return resource if resource.kind_of?(Chef::Resource) && notifying_resource.kind_of?(Chef::Resource)
+        return resource if resource.kind_of?(Seth::Resource) && notifying_resource.kind_of?(Chef::Resource)
 
-        if not(resource.kind_of?(Chef::Resource))
+        if not(resource.kind_of?(Seth::Resource))
           fix_resource_reference(resource_collection)
         end
 
-        if not(notifying_resource.kind_of?(Chef::Resource))
+        if not(notifying_resource.kind_of?(Seth::Resource))
           fix_notifier_reference(resource_collection)
         end
       end
@@ -67,20 +67,20 @@ class Chef
         if Array(matching_resource).size > 1
           msg = "Notification #{self} from #{notifying_resource} was created with a reference to multiple resources, "\
           "but can only notify one resource. Notifying resource was defined on #{notifying_resource.source_line}"
-          raise Chef::Exceptions::InvalidResourceReference, msg
+          raise Seth::Exceptions::InvalidResourceReference, msg
         end
         self.resource = matching_resource
 
-      rescue Chef::Exceptions::ResourceNotFound => e
-        err = Chef::Exceptions::ResourceNotFound.new(<<-FAIL)
+      rescue Seth::Exceptions::ResourceNotFound => e
+        err = Seth::Exceptions::ResourceNotFound.new(<<-FAIL)
 resource #{notifying_resource} is configured to notify resource #{resource} with action #{action}, \
 but #{resource} cannot be found in the resource collection. #{notifying_resource} is defined in \
 #{notifying_resource.source_line}
 FAIL
         err.set_backtrace(e.backtrace)
         raise err
-      rescue Chef::Exceptions::InvalidResourceSpecification => e
-          err = Chef::Exceptions::InvalidResourceSpecification.new(<<-F)
+      rescue Seth::Exceptions::InvalidResourceSpecification => e
+          err = Seth::Exceptions::InvalidResourceSpecification.new(<<-F)
 Resource #{notifying_resource} is configured to notify resource #{resource} with action #{action}, \
 but #{resource.inspect} is not valid syntax to look up a resource in the resource collection. Notification \
 is defined near #{notifying_resource.source_line}
@@ -97,20 +97,20 @@ F
           msg = "Notification #{self} from #{notifying_resource} was created with a reference to multiple notifying "\
           "resources, but can only originate from one resource.  Destination resource was defined "\
           "on #{resource.source_line}"
-          raise Chef::Exceptions::InvalidResourceReference, msg
+          raise Seth::Exceptions::InvalidResourceReference, msg
         end
         self.notifying_resource = matching_notifier
 
-      rescue Chef::Exceptions::ResourceNotFound => e
-        err = Chef::Exceptions::ResourceNotFound.new(<<-FAIL)
+      rescue Seth::Exceptions::ResourceNotFound => e
+        err = Seth::Exceptions::ResourceNotFound.new(<<-FAIL)
 Resource #{resource} is configured to receive notifications from #{notifying_resource} with action #{action}, \
 but #{notifying_resource} cannot be found in the resource collection. #{resource} is defined in \
 #{resource.source_line}
 FAIL
         err.set_backtrace(e.backtrace)
         raise err
-      rescue Chef::Exceptions::InvalidResourceSpecification => e
-          err = Chef::Exceptions::InvalidResourceSpecification.new(<<-F)
+      rescue Seth::Exceptions::InvalidResourceSpecification => e
+          err = Seth::Exceptions::InvalidResourceSpecification.new(<<-F)
 Resource #{resource} is configured to receive notifications from  #{notifying_resource} with action #{action}, \
 but #{notifying_resource.inspect} is not valid syntax to look up a resource in the resource collection. Notification \
 is defined near #{resource.source_line}
@@ -124,15 +124,15 @@ F
     FORBIDDEN_IVARS = [:@run_context, :@node, :@not_if, :@only_if, :@enclosing_provider]
     HIDDEN_IVARS = [:@allowed_actions, :@resource_name, :@source_line, :@run_context, :@name, :@node, :@not_if, :@only_if, :@elapsed_time, :@enclosing_provider]
 
-    include Chef::DSL::DataQuery
-    include Chef::Mixin::ParamsValidate
-    include Chef::DSL::PlatformIntrospection
-    include Chef::DSL::RegistryHelper
-    include Chef::DSL::RebootPending
-    include Chef::Mixin::ConvertToClassName
-    include Chef::Mixin::Deprecation
+    include Seth::DSL::DataQuery
+    include Seth::Mixin::ParamsValidate
+    include Seth::DSL::PlatformIntrospection
+    include Seth::DSL::RegistryHelper
+    include Seth::DSL::RebootPending
+    include Seth::Mixin::ConvertToClassName
+    include Seth::Mixin::Deprecation
 
-    extend Chef::Mixin::ConvertToClassName
+    extend Seth::Mixin::ConvertToClassName
 
 
     if Module.method(:const_defined?).arity == 1
@@ -171,11 +171,11 @@ F
     # attributes are attributes that could be populated by examining the state
     # of the system (e.g., File.stat can tell you the permissions on an
     # existing file). Contrarily, attributes that are not "state attributes"
-    # usually modify the way Chef itself behaves, for example by providing
+    # usually modify the way Seth itself behaves, for example by providing
     # additional options for a package manager to use when installing a
     # package.
     #
-    # This list is used by the Chef client auditing system to extract
+    # This list is used by the Seth client auditing system to extract
     # information from resources to describe changes made to the system.
     def self.state_attrs(*attr_names)
       @state_attrs ||= []
@@ -192,9 +192,9 @@ F
     # Set or return the "identity attribute" for this resource class. This is
     # generally going to be the "name attribute" for this resource. In other
     # words, the resource type plus this attribute uniquely identify a given
-    # bit of state that chef manages. For a File resource, this would be the
+    # bit of state that seth manages. For a File resource, this would be the
     # path, for a package resource, it will be the package name. This will show
-    # up in chef-client's audit records as a searchable field.
+    # up in seth-client's audit records as a searchable field.
     def self.identity_attr(attr_name=nil)
       @identity_attr ||= nil
       @identity_attr = attr_name if attr_name
@@ -208,7 +208,7 @@ F
     end
 
     def self.dsl_name
-      convert_to_snake_case(name, 'Chef::Resource')
+      convert_to_snake_case(name, 'Seth::Resource')
     end
 
     attr_accessor :params
@@ -279,9 +279,9 @@ F
 
 
     def updated=(true_or_false)
-      Chef::Log.warn("Chef::Resource#updated=(true|false) is deprecated. Please call #updated_by_last_action(true|false) instead.")
-      Chef::Log.warn("Called from:")
-      caller[0..3].each {|line| Chef::Log.warn(line)}
+      Seth::Log.warn("Chef::Resource#updated=(true|false) is deprecated. Please call #updated_by_last_action(true|false) instead.")
+      Seth::Log.warn("Called from:")
+      caller[0..3].each {|line| Seth::Log.warn(line)}
       updated_by_last_action(true_or_false)
       @updated = true_or_false
     end
@@ -306,16 +306,16 @@ F
         prior_resource = run_context.resource_collection.lookup(self.to_s)
         # if we get here, there is a prior resource (otherwise we'd have jumped
         # to the rescue clause).
-        Chef::Log.warn("Cloning resource attributes for #{self.to_s} from prior resource (CHEF-3694)")
-        Chef::Log.warn("Previous #{prior_resource}: #{prior_resource.source_line}") if prior_resource.source_line
-        Chef::Log.warn("Current  #{self}: #{self.source_line}") if self.source_line
+        Seth::Log.warn("Cloning resource attributes for #{self.to_s} from prior resource (CHEF-3694)")
+        Seth::Log.warn("Previous #{prior_resource}: #{prior_resource.source_line}") if prior_resource.source_line
+        Seth::Log.warn("Current  #{self}: #{self.source_line}") if self.source_line
         prior_resource.instance_variables.each do |iv|
           unless iv.to_sym == :@source_line || iv.to_sym == :@action || iv.to_sym == :@not_if || iv.to_sym == :@only_if
             self.instance_variable_set(iv, prior_resource.instance_variable_get(iv))
           end
         end
         true
-      rescue Chef::Exceptions::ResourceNotFound
+      rescue Seth::Exceptions::ResourceNotFound
         true
       end
     end
@@ -476,7 +476,7 @@ F
       resources = [resources].flatten
       resources.each do |resource|
         if resource.is_a?(String)
-          resource = Chef::Resource.new(resource, run_context)
+          resource = Seth::Resource.new(resource, run_context)
         end
         if resource.run_context.nil?
           resource.run_context = run_context
@@ -634,9 +634,9 @@ F
       resolve_notification_references
       validate_action(action)
 
-      if Chef::Config[:verbose_logging] || Chef::Log.level == :debug
+      if Seth::Config[:verbose_logging] || Chef::Log.level == :debug
         # This can be noisy
-        Chef::Log.info("Processing #{self} action #{action} (#{defined_at})")
+        Seth::Log.info("Processing #{self} action #{action} (#{defined_at})")
       end
 
       # ensure that we don't leave @updated_by_last_action set to true
@@ -648,12 +648,12 @@ F
         provider_for_action(action).run_action
       rescue Exception => e
         if ignore_failure
-          Chef::Log.error("#{custom_exception_message(e)}; ignore_failure is set, continuing")
+          Seth::Log.error("#{custom_exception_message(e)}; ignore_failure is set, continuing")
           events.resource_failed(self, action, e)
         elsif retries > 0
           events.resource_failed_retriable(self, action, retries, e)
           @retries -= 1
-          Chef::Log.info("Retrying execution of #{self}, #{retries} attempt(s) left")
+          Seth::Log.info("Retrying execution of #{self}, #{retries} attempt(s) left")
           sleep retry_delay
           retry
         else
@@ -679,7 +679,7 @@ F
         provider.action = action
         provider
       else # fall back to old provider resolution
-        Chef::Platform.provider_for_resource(self, action)
+        Seth::Platform.provider_for_resource(self, action)
       end
     end
 
@@ -711,7 +711,7 @@ F
           false
         else
           events.resource_skipped(self, action, conditional)
-          Chef::Log.debug("Skipping #{self} due to #{conditional.description}")
+          Seth::Log.debug("Skipping #{self} due to #{conditional.description}")
           true
         end
       end
@@ -744,15 +744,15 @@ F
     end
 
     # Resources that want providers namespaced somewhere other than
-    # Chef::Provider can set the namespace with +provider_base+
+    # Seth::Provider can set the namespace with +provider_base+
     # Ex:
-    #   class MyResource < Chef::Resource
-    #     provider_base Chef::Provider::Deploy
+    #   class MyResource < Seth::Resource
+    #     provider_base Seth::Provider::Deploy
     #     # ...other stuff
     #   end
     def self.provider_base(arg=nil)
       @provider_base ||= arg
-      @provider_base ||= Chef::Provider
+      @provider_base ||= Seth::Provider
     end
 
     def self.platform_map
@@ -760,11 +760,11 @@ F
     end
 
     # Maps a short_name (and optionally a platform  and version) to a
-    # Chef::Resource.  This allows finer grained per platform resource
+    # Seth::Resource.  This allows finer grained per platform resource
     # attributes and the end of overloaded resource definitions
-    # (I'm looking at you Chef::Resource::Package)
+    # (I'm looking at you Seth::Resource::Package)
     # Ex:
-    #   class WindowsFile < Chef::Resource
+    #   class WindowsFile < Seth::Resource
     #     provides :file, :on_platforms => ["windows"]
     #     # ...other stuff
     #   end
@@ -804,7 +804,7 @@ F
     # version<String>:: platform version
     #
     # === Returns
-    # <Chef::Resource>:: returns the proper Chef::Resource class
+    # <Seth::Resource>:: returns the proper Chef::Resource class
     def self.resource_for_platform(short_name, platform=nil, version=nil)
       platform_map.get(short_name, platform, version)
     end
@@ -814,13 +814,13 @@ F
     #
     # ==== Parameters
     # short_name<Symbol>:: short_name of the resource (ie :directory)
-    # node<Chef::Node>:: Node object to look up platform and version in
+    # node<Seth::Node>:: Node object to look up platform and version in
     #
     # === Returns
-    # <Chef::Resource>:: returns the proper Chef::Resource class
+    # <Seth::Resource>:: returns the proper Chef::Resource class
     def self.resource_for_node(short_name, node)
       begin
-        platform, version = Chef::Platform.find_platform_and_version(node)
+        platform, version = Seth::Platform.find_platform_and_version(node)
       rescue ArgumentError
       end
       resource = resource_for_platform(short_name, platform, version)

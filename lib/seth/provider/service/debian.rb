@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/provider/service/init'
+require 'seth/provider/service/init'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Debian < Chef::Provider::Service::Init
+      class Debian < Seth::Provider::Service::Init
         UPDATE_RC_D_ENABLED_MATCHES = /\/rc[\dS].d\/S|not installed/i
         UPDATE_RC_D_PRIORITIES = /\/rc([\dS]).d\/([SK])(\d\d)/i
 
@@ -40,14 +40,14 @@ class Chef
           requirements.assert(:all_actions) do |a|
             update_rcd = "/usr/sbin/update-rc.d"
             a.assertion { ::File.exists? update_rcd }
-            a.failure_message Chef::Exceptions::Service, "#{update_rcd} does not exist!"
+            a.failure_message Seth::Exceptions::Service, "#{update_rcd} does not exist!"
             # no whyrun recovery - this is a base system component of debian
             # distros and must be present
           end
 
           requirements.assert(:all_actions) do |a|
             a.assertion { @priority_success }
-            a.failure_message  Chef::Exceptions::Service, "/usr/sbin/update-rc.d -n -f #{@current_resource.service_name} failed - #{@rcd_status.inspect}"
+            a.failure_message  Seth::Exceptions::Service, "/usr/sbin/update-rc.d -n -f #{@current_resource.service_name} failed - #{@rcd_status.inspect}"
             # This can happen if the service is not yet installed,so we'll fake it.
             a.whyrun ["Unable to determine priority of service, assuming service would have been correctly installed earlier in the run.",
                       "Assigning temporary priorities to continue.",
@@ -99,7 +99,7 @@ class Chef
         def service_currently_enabled?(priority)
           enabled = false
           priority.each { |runlevel, arguments|
-            Chef::Log.debug("#{@new_resource} runlevel #{runlevel}, action #{arguments[0]}, priority #{arguments[1]}")
+            Seth::Log.debug("#{@new_resource} runlevel #{runlevel}, action #{arguments[0]}, priority #{arguments[1]}")
             # if we are in a update-rc.d default startup runlevel && we start in this runlevel
             if %w[ 1 2 3 4 5 S ].include?(runlevel) && arguments[0] == :start
               enabled = true
@@ -117,11 +117,11 @@ class Chef
             priority_ok = @current_resource.priority == @new_resource.priority
           end
           if @current_resource.enabled and priority_ok
-            Chef::Log.debug("#{@new_resource} already enabled - nothing to do")
+            Seth::Log.debug("#{@new_resource} already enabled - nothing to do")
           else
             converge_by("enable service #{@new_resource}") do
               enable_service
-              Chef::Log.info("#{@new_resource} enabled")
+              Seth::Log.info("#{@new_resource} enabled")
             end
           end
           load_new_resource_state

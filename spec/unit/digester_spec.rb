@@ -20,16 +20,16 @@
 
 require 'spec_helper'
 
-describe Chef::Digester do
+describe Seth::Digester do
   before(:each) do
-    @cache = Chef::Digester.instance
+    @cache = Seth::Digester.instance
   end
 
   describe "when computing checksums of cookbook files and templates" do
 
     it "proxies the class method checksum_for_file to the instance" do
       @cache.should_receive(:checksum_for_file).with("a_file_or_a_fail")
-      Chef::Digester.checksum_for_file("a_file_or_a_fail")
+      Seth::Digester.checksum_for_file("a_file_or_a_fail")
     end
 
     it "computes a checksum of a file" do
@@ -39,7 +39,7 @@ describe Chef::Digester do
     end
 
     it "generates a checksum from a non-file IO object" do
-      io = StringIO.new("riseofthemachines\nriseofthechefs\n")
+      io = StringIO.new("riseofthemachines\nriseoftheseths\n")
       expected_md5 = '0e157ac1e2dd73191b76067fb6b4bceb'
       @cache.generate_md5_checksum(io).should == expected_md5
     end

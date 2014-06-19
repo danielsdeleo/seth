@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/formatters/error_inspectors/api_error_formatting'
+require 'seth/formatters/error_inspectors/api_error_formatting'
 
-class Chef
+class Seth
   module Formatters
     module ErrorInspectors
       class CookbookResolveErrorInspector
@@ -153,7 +153,7 @@ EOM
         private
 
         def attempt_json_parse(maybe_json_string)
-          Chef::JSONCompat.from_json(maybe_json_string)
+          Seth::JSONCompat.from_json(maybe_json_string)
         rescue Exception
           maybe_json_string
         end

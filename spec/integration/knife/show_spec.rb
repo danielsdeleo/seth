@@ -17,7 +17,7 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'chef/knife/show'
+require 'seth/knife/show'
 
 describe 'knife show' do
   extend IntegrationSupport
@@ -25,7 +25,7 @@ describe 'knife show' do
 
   include_context "default config options"
 
-  when_the_chef_server "has one of each thing" do
+  when_the_seth_server "has one of each thing" do
     client 'x', '{}'
     cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"' }
     data_bag 'x', { 'y' => '{}' }
@@ -121,7 +121,7 @@ EOM
     end
   end
 
-  when_the_chef_server 'has a hash with multiple keys' do
+  when_the_seth_server 'has a hash with multiple keys' do
     environment 'x', {
       'default_attributes' => { 'foo' => 'bar' },
       'cookbook_versions' => { 'blah' => '= 1.0.0'},

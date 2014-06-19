@@ -18,28 +18,28 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::YumPackage, "initialize" do
+describe Seth::Resource::YumPackage, "initialize" do
 
   before(:each) do
-    @resource = Chef::Resource::YumPackage.new("foo")
+    @resource = Seth::Resource::YumPackage.new("foo")
   end
 
-  it "should return a Chef::Resource::YumPackage" do
-    @resource.should be_a_kind_of(Chef::Resource::YumPackage)
+  it "should return a Seth::Resource::YumPackage" do
+    @resource.should be_a_kind_of(Seth::Resource::YumPackage)
   end
 
   it "should set the resource_name to :yum_package" do
     @resource.resource_name.should eql(:yum_package)
   end
 
-  it "should set the provider to Chef::Provider::Package::Yum" do
-    @resource.provider.should eql(Chef::Provider::Package::Yum)
+  it "should set the provider to Seth::Provider::Package::Yum" do
+    @resource.provider.should eql(Seth::Provider::Package::Yum)
   end
 end
 
-describe Chef::Resource::YumPackage, "arch" do
+describe Seth::Resource::YumPackage, "arch" do
   before(:each) do
-    @resource = Chef::Resource::YumPackage.new("foo")
+    @resource = Seth::Resource::YumPackage.new("foo")
   end
 
   it "should set the arch variable to whatever is passed in" do
@@ -48,9 +48,9 @@ describe Chef::Resource::YumPackage, "arch" do
   end
 end
 
-describe Chef::Resource::YumPackage, "flush_cache" do
+describe Seth::Resource::YumPackage, "flush_cache" do
   before(:each) do
-    @resource = Chef::Resource::YumPackage.new("foo")
+    @resource = Seth::Resource::YumPackage.new("foo")
   end
 
   it "should default the flush timing to false" do
@@ -72,9 +72,9 @@ describe Chef::Resource::YumPackage, "flush_cache" do
   end
 end
 
-describe Chef::Resource::YumPackage, "allow_downgrade" do
+describe Seth::Resource::YumPackage, "allow_downgrade" do
   before(:each) do
-    @resource = Chef::Resource::YumPackage.new("foo")
+    @resource = Seth::Resource::YumPackage.new("foo")
   end
 
   it "should allow you to specify whether allow_downgrade is true or false" do

@@ -18,26 +18,26 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Systemd do
+describe Seth::Provider::Service::Systemd do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Service.new('rsyslog.service')
-    @provider = Chef::Provider::Service::Systemd.new(@new_resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Service.new('rsyslog.service')
+    @provider = Seth::Provider::Service::Systemd.new(@new_resource, @run_context)
   end
 
   describe "load_current_resource" do
     before(:each) do
-      @current_resource = Chef::Resource::Service.new('rsyslog.service')
-      Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      @current_resource = Seth::Resource::Service.new('rsyslog.service')
+      Seth::Resource::Service.stub(:new).and_return(@current_resource)
 
       @provider.stub(:is_active?).and_return(false)
       @provider.stub(:is_enabled?).and_return(false)
     end
 
     it "should create a current resource with the name of the new resource" do
-      Chef::Resource::Service.should_receive(:new).and_return(@current_resource)
+      Seth::Resource::Service.should_receive(:new).and_return(@current_resource)
       @provider.load_current_resource
     end
 
@@ -65,29 +65,29 @@ describe Chef::Provider::Service::Systemd do
 
     describe "when a status command has been specified" do
       before do
-        @new_resource.stub(:status_command).and_return("/bin/chefhasmonkeypants status")
+        @new_resource.stub(:status_command).and_return("/bin/sethhasmonkeypants status")
       end
 
       it "should run the services status command if one has been specified" do
-        @provider.stub(:run_command_with_systems_locale).with({:command => "/bin/chefhasmonkeypants status"}).and_return(0)
+        @provider.stub(:run_command_with_systems_locale).with({:command => "/bin/sethhasmonkeypants status"}).and_return(0)
         @current_resource.should_receive(:running).with(true)
         @provider.load_current_resource
       end
 
       it "should run the services status command if one has been specified and properly set status check state" do
-        @provider.stub(:run_command_with_systems_locale).with({:command => "/bin/chefhasmonkeypants status"}).and_return(0)
+        @provider.stub(:run_command_with_systems_locale).with({:command => "/bin/sethhasmonkeypants status"}).and_return(0)
         @provider.load_current_resource
         @provider.instance_variable_get("@status_check_success").should be_true
       end
 
-      it "should set running to false if it catches a Chef::Exceptions::Exec when using a status command" do
-        @provider.stub(:run_command_with_systems_locale).and_raise(Chef::Exceptions::Exec)
+      it "should set running to false if it catches a Seth::Exceptions::Exec when using a status command" do
+        @provider.stub(:run_command_with_systems_locale).and_raise(Seth::Exceptions::Exec)
         @current_resource.should_receive(:running).with(false)
         @provider.load_current_resource
       end
 
       it "should update state to indicate status check failed when an exception is thrown using a status command" do
-        @provider.stub(:run_command_with_systems_locale).and_raise(Chef::Exceptions::Exec)
+        @provider.stub(:run_command_with_systems_locale).and_raise(Seth::Exceptions::Exec)
         @provider.load_current_resource
         @provider.instance_variable_get("@status_check_success").should be_false
       end
@@ -117,8 +117,8 @@ describe Chef::Provider::Service::Systemd do
 
   describe "start and stop service" do
     before(:each) do
-      @current_resource = Chef::Resource::Service.new('rsyslog.service')
-      Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      @current_resource = Seth::Resource::Service.new('rsyslog.service')
+      Seth::Resource::Service.stub(:new).and_return(@current_resource)
       @provider.current_resource = @current_resource
     end
 
@@ -187,8 +187,8 @@ describe Chef::Provider::Service::Systemd do
 
   describe "enable and disable service" do
     before(:each) do
-      @current_resource = Chef::Resource::Service.new('rsyslog.service')
-      Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      @current_resource = Seth::Resource::Service.new('rsyslog.service')
+      Seth::Resource::Service.stub(:new).and_return(@current_resource)
       @provider.current_resource = @current_resource
     end
 
@@ -205,8 +205,8 @@ describe Chef::Provider::Service::Systemd do
 
   describe "is_active?" do
     before(:each) do
-      @current_resource = Chef::Resource::Service.new('rsyslog.service')
-      Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      @current_resource = Seth::Resource::Service.new('rsyslog.service')
+      Seth::Resource::Service.stub(:new).and_return(@current_resource)
     end
 
     it "should return true if '/bin/systemctl is-active service_name' returns 0" do
@@ -222,8 +222,8 @@ describe Chef::Provider::Service::Systemd do
 
   describe "is_enabled?" do
     before(:each) do
-      @current_resource = Chef::Resource::Service.new('rsyslog.service')
-      Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      @current_resource = Seth::Resource::Service.new('rsyslog.service')
+      Seth::Resource::Service.stub(:new).and_return(@current_resource)
     end
 
     it "should return true if '/bin/systemctl is-enabled service_name' returns 0" do

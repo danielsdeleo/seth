@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/win32/security'
+require 'seth/win32/security'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     class Security
       class SID
@@ -30,22 +30,22 @@ class Chef
         end
 
         def self.from_account(name)
-          domain, sid, use = Chef::ReservedNames::Win32::Security.lookup_account_name(name)
+          domain, sid, use = Seth::ReservedNames::Win32::Security.lookup_account_name(name)
           sid
         end
 
         def self.from_string_sid(string_sid)
-          Chef::ReservedNames::Win32::Security::convert_string_sid_to_sid(string_sid)
+          Seth::ReservedNames::Win32::Security::convert_string_sid_to_sid(string_sid)
         end
 
         def ==(other)
-          other != nil && Chef::ReservedNames::Win32::Security.equal_sid(self, other)
+          other != nil && Seth::ReservedNames::Win32::Security.equal_sid(self, other)
         end
 
         attr_reader :pointer
 
         def account
-          Chef::ReservedNames::Win32::Security.lookup_account_sid(self)
+          Seth::ReservedNames::Win32::Security.lookup_account_sid(self)
         end
 
         def account_name
@@ -54,15 +54,15 @@ class Chef
         end
 
         def size
-          Chef::ReservedNames::Win32::Security.get_length_sid(self)
+          Seth::ReservedNames::Win32::Security.get_length_sid(self)
         end
 
         def to_s
-          Chef::ReservedNames::Win32::Security.convert_sid_to_string_sid(self)
+          Seth::ReservedNames::Win32::Security.convert_sid_to_string_sid(self)
         end
 
         def valid?
-          Chef::ReservedNames::Win32::Security.is_valid_sid(self)
+          Seth::ReservedNames::Win32::Security.is_valid_sid(self)
         end
 
         # Well-known SIDs

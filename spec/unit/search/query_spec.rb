@@ -17,13 +17,13 @@
 #
 
 require 'spec_helper'
-require 'chef/search/query'
+require 'seth/search/query'
 
-describe Chef::Search::Query do
+describe Seth::Search::Query do
   before(:each) do
-    @rest = double("Chef::REST")
-    Chef::REST.stub(:new).and_return(@rest)
-    @query = Chef::Search::Query.new
+    @rest = double("Seth::REST")
+    Seth::REST.stub(:new).and_return(@rest)
+    @query = Seth::Search::Query.new
   end
 
   describe "search" do
@@ -49,31 +49,31 @@ describe Chef::Search::Query do
 
     it "should query for every object of a type by default" do
       @rest.should_receive(:get_rest).with("search/foo?q=*:*&sort=X_CHEF_id_CHEF_X%20asc&start=0&rows=1000").and_return(@response)
-      @query = Chef::Search::Query.new
+      @query = Seth::Search::Query.new
       @query.search(:foo)
     end
 
     it "should allow a custom query" do
       @rest.should_receive(:get_rest).with("search/foo?q=gorilla:dundee&sort=X_CHEF_id_CHEF_X%20asc&start=0&rows=1000").and_return(@response)
-      @query = Chef::Search::Query.new
+      @query = Seth::Search::Query.new
       @query.search(:foo, "gorilla:dundee")
     end
 
     it "should let you set a sort order" do
       @rest.should_receive(:get_rest).with("search/foo?q=gorilla:dundee&sort=id%20desc&start=0&rows=1000").and_return(@response)
-      @query = Chef::Search::Query.new
+      @query = Seth::Search::Query.new
       @query.search(:foo, "gorilla:dundee", "id desc")
     end
 
     it "should let you set a starting object" do
       @rest.should_receive(:get_rest).with("search/foo?q=gorilla:dundee&sort=id%20desc&start=2&rows=1000").and_return(@response)
-      @query = Chef::Search::Query.new
+      @query = Seth::Search::Query.new
       @query.search(:foo, "gorilla:dundee", "id desc", 2)
     end
 
     it "should let you set how many rows to return" do
       @rest.should_receive(:get_rest).with("search/foo?q=gorilla:dundee&sort=id%20desc&start=2&rows=40").and_return(@response)
-      @query = Chef::Search::Query.new
+      @query = Seth::Search::Query.new
       @query.search(:foo, "gorilla:dundee", "id desc", 2, 40)
     end
 

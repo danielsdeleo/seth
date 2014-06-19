@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class UserCreate < Knife
 
       deps do
-        require 'chef/user'
-        require 'chef/json_compat'
+        require 'seth/user'
+        require 'seth/json_compat'
       end
 
       option :file,
@@ -65,7 +65,7 @@ class Chef
           exit 1
         end
 
-        user = Chef::User.new
+        user = Seth::User.new
         user.name(@user_name)
         user.admin(config[:admin])
         user.password config[:user_password]
@@ -75,7 +75,7 @@ class Chef
         end
 
         output = edit_data(user)
-        user = Chef::User.from_hash(output).create
+        user = Seth::User.from_hash(output).create
 
         ui.info("Created #{user}")
         if user.private_key

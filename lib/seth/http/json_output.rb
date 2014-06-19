@@ -17,10 +17,10 @@
 # limitations under the License.
 #
 
-require 'chef/json_compat'
-require 'chef/log'
+require 'seth/json_compat'
+require 'seth/log'
 
-class Chef
+class Seth
   class HTTP
 
     # Middleware that takes an HTTP response, parses it as JSON if possible.
@@ -33,7 +33,7 @@ class Chef
 
       def handle_request(method, url, headers={}, data=false)
         # Ideally this should always set Accept to application/json, but
-        # Chef::REST is sometimes used to make non-JSON requests, so it sets
+        # Seth::REST is sometimes used to make non-JSON requests, so it sets
         # Accept to the desired value before middlewares get called.
         headers['Accept'] ||= 'application/json'
         [method, url, headers, data]
@@ -48,14 +48,14 @@ class Chef
             return_value = http_response.body.to_s
           else
             if @inflate_json_class
-              return_value = Chef::JSONCompat.from_json(http_response.body.chomp)
+              return_value = Seth::JSONCompat.from_json(http_response.body.chomp)
             else
-              return_value = Chef::JSONCompat.from_json(http_response.body.chomp, :create_additions => false)
+              return_value = Seth::JSONCompat.from_json(http_response.body.chomp, :create_additions => false)
             end
           end
           [http_response, rest_request, return_value]
         else
-          Chef::Log.debug("Expected JSON response, but got content-type '#{http_response['content-type']}'")
+          Seth::Log.debug("Expected JSON response, but got content-type '#{http_response['content-type']}'")
           return [http_response, rest_request, http_response.body.to_s]
         end
       end

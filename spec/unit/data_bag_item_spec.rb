@@ -17,16 +17,16 @@
 #
 
 require 'spec_helper'
-require 'chef/data_bag_item'
+require 'seth/data_bag_item'
 
-describe Chef::DataBagItem do
+describe Seth::DataBagItem do
   before(:each) do
-    @data_bag_item = Chef::DataBagItem.new
+    @data_bag_item = Seth::DataBagItem.new
   end
 
   describe "initialize" do
-    it "should be a Chef::DataBagItem" do
-      @data_bag_item.should be_a_kind_of(Chef::DataBagItem)
+    it "should be a Seth::DataBagItem" do
+      @data_bag_item.should be_a_kind_of(Seth::DataBagItem)
     end
   end
 
@@ -105,7 +105,7 @@ describe Chef::DataBagItem do
 
   describe "class method object_name" do
     it "should return an object name based based on the bag name and an id" do
-      Chef::DataBagItem.object_name("zen", "master").should == "data_bag_item_zen_master"
+      Seth::DataBagItem.object_name("zen", "master").should == "data_bag_item_zen_master"
     end
   end
 
@@ -153,8 +153,8 @@ describe Chef::DataBagItem do
       @to_hash["i_know"].should == "kung_fu"
     end
 
-    it "should have the chef_type of data_bag_item" do
-      @to_hash["chef_type"].should == "data_bag_item"
+    it "should have the seth_type of data_bag_item" do
+      @to_hash["seth_type"].should == "data_bag_item"
     end
 
     it "should have the data_bag set" do
@@ -166,11 +166,11 @@ describe Chef::DataBagItem do
     before(:each) do
       @data_bag_item.data_bag('mars_volta')
       @data_bag_item.raw_data = { "id" => "octahedron", "snooze" => { "finally" => :world_will }}
-      @deserial = Chef::JSONCompat.from_json(@data_bag_item.to_json)
+      @deserial = Seth::JSONCompat.from_json(@data_bag_item.to_json)
     end
 
-    it "should deserialize to a Chef::DataBagItem object" do
-      @deserial.should be_a_kind_of(Chef::DataBagItem)
+    it "should deserialize to a Seth::DataBagItem object" do
+      @deserial.should be_a_kind_of(Seth::DataBagItem)
     end
 
     it "should have a matching 'data_bag' value" do
@@ -203,8 +203,8 @@ describe Chef::DataBagItem do
 
   describe "save" do
     before do
-      @rest = double("Chef::REST")
-      Chef::REST.stub(:new).and_return(@rest)
+      @rest = double("Seth::REST")
+      Seth::REST.stub(:new).and_return(@rest)
       @data_bag_item['id'] = "heart of darkness"
       raw_data = {"id" => "heart_of_darkness", "author" => "Conrad"}
       @data_bag_item.raw_data = raw_data
@@ -223,10 +223,10 @@ describe Chef::DataBagItem do
     end
     describe "when whyrun mode is enabled" do
       before do
-        Chef::Config[:why_run] = true
+        Seth::Config[:why_run] = true
       end
       after do
-        Chef::Config[:why_run] = false
+        Seth::Config[:why_run] = false
       end
       it "should not save" do
         @rest.should_not_receive(:put_rest)
@@ -247,38 +247,38 @@ describe Chef::DataBagItem do
 
     describe "from an API call" do
       before do
-        @http_client = double("Chef::REST")
-        Chef::REST.stub(:new).and_return(@http_client)
+        @http_client = double("Seth::REST")
+        Seth::REST.stub(:new).and_return(@http_client)
       end
 
       it "converts raw data to a data bag item" do
         @http_client.should_receive(:get_rest).with("data/users/charlie").and_return(@data_bag_item.to_hash)
-        item = Chef::DataBagItem.load(:users, "charlie")
-        item.should be_a_kind_of(Chef::DataBagItem)
+        item = Seth::DataBagItem.load(:users, "charlie")
+        item.should be_a_kind_of(Seth::DataBagItem)
         item.should == @data_bag_item
       end
 
       it "does not convert when a DataBagItem is returned from the API call" do
         @http_client.should_receive(:get_rest).with("data/users/charlie").and_return(@data_bag_item)
-        item = Chef::DataBagItem.load(:users, "charlie")
-        item.should be_a_kind_of(Chef::DataBagItem)
+        item = Seth::DataBagItem.load(:users, "charlie")
+        item.should be_a_kind_of(Seth::DataBagItem)
         item.should equal(@data_bag_item)
       end
     end
 
     describe "in solo mode" do
       before do
-        Chef::Config[:solo] = true
+        Seth::Config[:solo] = true
       end
 
       after do
-        Chef::Config[:solo] = false
+        Seth::Config[:solo] = false
       end
 
       it "converts the raw data to a data bag item" do
-        Chef::DataBag.should_receive(:load).with('users').and_return({'charlie' => @data_bag_item.to_hash})
-        item = Chef::DataBagItem.load('users', 'charlie')
-        item.should be_a_kind_of(Chef::DataBagItem)
+        Seth::DataBag.should_receive(:load).with('users').and_return({'charlie' => @data_bag_item.to_hash})
+        item = Seth::DataBagItem.load('users', 'charlie')
+        item.should be_a_kind_of(Seth::DataBagItem)
         item.should == @data_bag_item
       end
     end

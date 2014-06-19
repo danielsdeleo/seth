@@ -19,15 +19,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Env do
+describe Seth::Resource::Env do
 
   before(:each) do
-    @resource = Chef::Resource::Env.new("FOO")
+    @resource = Seth::Resource::Env.new("FOO")
   end
 
-  it "should create a new Chef::Resource::Env" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Env)
+  it "should create a new Seth::Resource::Env" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Env)
   end
 
   it "should have a name" do

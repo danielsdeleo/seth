@@ -1,6 +1,6 @@
 #
-# Author:: Lamont Granquist (<lamont@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Lamont Granquist (<lamont@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,8 @@ require 'spec_helper'
 require 'tiny_server'
 require 'support/shared/functional/http'
 
-describe Chef::HTTP::Simple do
-  include ChefHTTPShared
+describe Seth::HTTP::Simple do
+  include SethHTTPShared
 
   let(:http_client) { described_class.new(source) }
   let(:http_client_disable_gzip) { described_class.new(source, { :disable_gzip => true } ) }
@@ -47,10 +47,10 @@ describe Chef::HTTP::Simple do
 
   shared_examples_for "validates content length and throws an exception" do
     it "successfully downloads a streaming request" do
-      expect { http_client.streaming_request(source) }.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+      expect { http_client.streaming_request(source) }.to raise_error(Seth::Exceptions::ContentLengthMismatch)
     end
     it "successfully does a non-streaming GET request" do
-      expect { http_client.get(source) }.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+      expect { http_client.get(source) }.to raise_error(Seth::Exceptions::ContentLengthMismatch)
     end
   end
 

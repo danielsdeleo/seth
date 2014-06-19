@@ -22,8 +22,8 @@
 
 require 'spec_helper'
 
-describe Chef::Mixin::ShellOut do
-  include Chef::Mixin::ShellOut
+describe Seth::Mixin::ShellOut do
+  include Seth::Mixin::ShellOut
 
   describe '#run_command_compatible_options' do
     subject { run_command_compatible_options(command_args) }
@@ -31,8 +31,8 @@ describe Chef::Mixin::ShellOut do
     let(:cmd) { "echo '#{rand(1000)}'" }
 
     let(:output) { StringIO.new }
-    let!(:capture_log_output) { Chef::Log.logger = Logger.new(output)  }
-    let(:assume_deprecation_log_level) { Chef::Log.stub(:level).and_return(:warn) }
+    let!(:capture_log_output) { Seth::Log.logger = Logger.new(output)  }
+    let(:assume_deprecation_log_level) { Seth::Log.stub(:level).and_return(:warn) }
 
     context 'without options' do
       let(:command_args) { [ cmd ] }

@@ -1,15 +1,15 @@
-require 'chef/chef_fs/knife'
+require 'seth/chef_fs/knife'
 
-class Chef
+class Seth
   class Knife
-    class Xargs < Chef::ChefFS::Knife
+    class Xargs < Seth::ChefFS::Knife
       banner "knife xargs [COMMAND]"
 
       category "path-based"
 
       deps do
-        require 'chef/chef_fs/file_system'
-        require 'chef/chef_fs/file_system/not_found_error'
+        require 'seth/chef_fs/file_system'
+        require 'seth/chef_fs/file_system/not_found_error'
       end
 
       # TODO modify to remote-only / local-only pattern (more like delete)
@@ -75,7 +75,7 @@ class Chef
         # Get the matches (recursively)
         files = []
         pattern_args_from(get_patterns).each do |pattern|
-          Chef::ChefFS::FileSystem.list(config[:local] ? local_fs : chef_fs, pattern).each do |result|
+          Seth::ChefFS::FileSystem.list(config[:local] ? local_fs : seth_fs, pattern).each do |result|
             if result.dir?
               # TODO option to include directories
               ui.warn "#{format_path(result)}: is a directory.  Will not run #{command} on it."
@@ -194,13 +194,13 @@ class Chef
             tempfile.open
             tempfile.write(value)
             tempfile.close
-          rescue Chef::ChefFS::FileSystem::OperationNotAllowedError => e
+          rescue Seth::ChefFS::FileSystem::OperationNotAllowedError => e
             ui.error "#{format_path(e.entry)}: #{e.reason}."
             error = true
             tempfile.close!
             tempfiles.delete(tempfile)
             next
-          rescue Chef::ChefFS::FileSystem::NotFoundError => e
+          rescue Seth::ChefFS::FileSystem::NotFoundError => e
             ui.error "#{format_path(e.entry)}: No such file or directory"
             error = true
             tempfile.close!
@@ -212,7 +212,7 @@ class Chef
         return error if error && tempfiles.size == 0
 
         # Run the command
-        if config[:verbose_commands] || Chef::Config[:verbosity] && Chef::Config[:verbosity] >= 1
+        if config[:verbose_commands] || Seth::Config[:verbosity] && Chef::Config[:verbosity] >= 1
           output sub_filenames(command, tempfiles)
         end
         command_output = `#{command}`

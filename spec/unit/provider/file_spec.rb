@@ -19,22 +19,22 @@
 
 require 'support/shared/unit/provider/file'
 
-describe Chef::Provider::File do
+describe Seth::Provider::File do
 
   let(:resource) do
     # need to check for/against mutating state within the new_resource, so don't mock
-    resource = Chef::Resource::File.new("seattle")
+    resource = Seth::Resource::File.new("seattle")
     resource.path(resource_path)
     resource
   end
 
   let(:content) do
-    content = double('Chef::Provider::File::Content')
+    content = double('Seth::Provider::File::Content')
   end
 
-  let(:node) { double('Chef::Node') }
-  let(:events) { double('Chef::Events').as_null_object }  # mock all the methods
-  let(:run_context) { double('Chef::RunContext', :node => node, :events => events) }
+  let(:node) { double('Seth::Node') }
+  let(:events) { double('Seth::Events').as_null_object }  # mock all the methods
+  let(:run_context) { double('Seth::RunContext', :node => node, :events => events) }
   let(:enclosing_directory) {
     canonicalize_path(File.expand_path(File.join(CHEF_SPEC_DATA, "templates")))
   }
@@ -50,7 +50,7 @@ describe Chef::Provider::File do
     provider
   end
 
-  it_behaves_like Chef::Provider::File
+  it_behaves_like Seth::Provider::File
 
   it_behaves_like "a file provider with content field"
 end

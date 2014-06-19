@@ -18,13 +18,13 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::WindowsScript::Batch, :windows_only do
-  include_context Chef::Resource::WindowsScript
+describe Seth::Resource::WindowsScript::Batch, :windows_only do
+  include_context Seth::Resource::WindowsScript
 
   let(:script_content) { "whoami" }
 
   let!(:resource) do
-    Chef::Resource::WindowsScript::Batch.new("Batch resource functional test", @run_context)
+    Seth::Resource::WindowsScript::Batch.new("Batch resource functional test", @run_context)
   end
 
   describe "when the run action is invoked on Windows" do

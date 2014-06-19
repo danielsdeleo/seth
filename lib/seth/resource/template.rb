@@ -18,14 +18,14 @@
 # limitations under the License.
 #
 
-require 'chef/resource/file'
-require 'chef/provider/template'
-require 'chef/mixin/securable'
+require 'seth/resource/file'
+require 'seth/provider/template'
+require 'seth/mixin/securable'
 
-class Chef
+class Seth
   class Resource
-    class Template < Chef::Resource::File
-      include Chef::Mixin::Securable
+    class Template < Seth::Resource::File
+      include Seth::Mixin::Securable
 
       provides :template, :on_platforms => :all
 
@@ -40,7 +40,7 @@ class Chef
         @cookbook = nil
         @local = false
         @variables = Hash.new
-        @provider = Chef::Provider::Template
+        @provider = Seth::Provider::Template
         @inline_helper_blocks = {}
         @inline_helper_modules = []
         @helper_modules = []

@@ -18,12 +18,12 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::CookbookBulkDelete do
+describe Seth::Knife::CookbookBulkDelete do
   before(:each) do
-    Chef::Log.logger = Logger.new(StringIO.new)
+    Seth::Log.logger = Logger.new(StringIO.new)
 
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::CookbookBulkDelete.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::CookbookBulkDelete.new
     @knife.config = {:print_after => nil}
     @knife.name_args = ["."]
     @stdout = StringIO.new
@@ -33,14 +33,14 @@ describe Chef::Knife::CookbookBulkDelete do
     @knife.ui.stub(:confirm).and_return(true)
     @cookbooks = Hash.new
     %w{cheezburger pizza lasagna}.each do |cookbook_name|
-      cookbook = Chef::CookbookVersion.new(cookbook_name)
+      cookbook = Seth::CookbookVersion.new(cookbook_name)
       @cookbooks[cookbook_name] = cookbook
     end
-    @rest = double("Chef::REST")
+    @rest = double("Seth::REST")
     @rest.stub(:get_rest).and_return(@cookbooks)
     @rest.stub(:delete_rest).and_return(true)
     @knife.stub(:rest).and_return(@rest)
-    Chef::CookbookVersion.stub(:list).and_return(@cookbooks)
+    Seth::CookbookVersion.stub(:list).and_return(@cookbooks)
 
   end
 

@@ -17,20 +17,20 @@
 # limitations under the License.
 #
 
-require 'chef/log'
+require 'seth/log'
 
-class Chef
+class Seth
 
-  # == Chef::FileAccessControl
+  # == Seth::FileAccessControl
   # FileAccessControl objects set the owner, group and mode of +file+ to
-  # the values specified by a value object, usually a Chef::Resource.
+  # the values specified by a value object, usually a Seth::Resource.
   class FileAccessControl
 
     if RUBY_PLATFORM =~ /mswin|mingw|windows/
-      require 'chef/file_access_control/windows'
+      require 'seth/file_access_control/windows'
       include FileAccessControl::Windows
     else
-      require 'chef/file_access_control/unix'
+      require 'seth/file_access_control/unix'
       include FileAccessControl::Unix
     end
 
@@ -44,7 +44,7 @@ class Chef
     # of any file or path attribute on +resource+, so it is possible to set
     # access control settings on a tempfile (for example).
     # === Arguments:
-    # resource:   probably a Chef::Resource::File object (or subclass), but
+    # resource:   probably a Seth::Resource::File object (or subclass), but
     #             this is not required. Must respond to +owner+, +group+,
     #             and +mode+
     # file:       The file whose access control settings you wish to modify,

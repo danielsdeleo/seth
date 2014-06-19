@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Git do
+describe Seth::Resource::Git do
 
   before(:each) do
-    @git = Chef::Resource::Git.new("my awesome webapp")
+    @git = Seth::Resource::Git.new("my awesome webapp")
   end
 
   it "is a kind of Scm Resource" do
-    @git.should be_a_kind_of(Chef::Resource::Scm)
-    @git.should be_an_instance_of(Chef::Resource::Git)
+    @git.should be_a_kind_of(Seth::Resource::Scm)
+    @git.should be_an_instance_of(Seth::Resource::Git)
   end
 
   it "uses the git provider" do
-    @git.provider.should eql(Chef::Provider::Git)
+    @git.provider.should eql(Seth::Provider::Git)
   end
 
   it "uses aliases revision as branch" do

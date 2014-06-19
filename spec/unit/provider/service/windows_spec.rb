@@ -19,13 +19,13 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Windows, "load_current_resource" do
+describe Seth::Provider::Service::Windows, "load_current_resource" do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Service.new("chef")
-    @provider = Chef::Provider::Service::Windows.new(@new_resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Service.new("seth")
+    @provider = Seth::Provider::Service::Windows.new(@new_resource, @run_context)
     Object.send(:remove_const, 'Win32') if defined?(Win32)
     Win32 = Module.new
     Win32::Service = Class.new
@@ -40,7 +40,7 @@ describe Chef::Provider::Service::Windows, "load_current_resource" do
 
   it "should set the current resources service name to the new resources service name" do
     @provider.load_current_resource
-    @provider.current_resource.service_name.should == 'chef'
+    @provider.current_resource.service_name.should == 'seth'
   end
 
   it "should return the current resource" do
@@ -57,7 +57,7 @@ describe Chef::Provider::Service::Windows, "load_current_resource" do
     @provider.current_resource.enabled.should be_true
   end
 
-  describe Chef::Provider::Service::Windows, "start_service" do
+  describe Seth::Provider::Service::Windows, "start_service" do
     before(:each) do
       Win32::Service.stub(:status).with(@new_resource.service_name).and_return(
         double("StatusStruct", :current_state => "stopped"),
@@ -65,7 +65,7 @@ describe Chef::Provider::Service::Windows, "load_current_resource" do
     end
 
     it "should call the start command if one is specified" do
-      @new_resource.start_command "sc start chef"
+      @new_resource.start_command "sc start seth"
       @provider.should_receive(:shell_out!).with("#{@new_resource.start_command}").and_return("Starting custom service")
       @provider.start_service
       @new_resource.updated_by_last_action?.should be_true
@@ -94,7 +94,7 @@ describe Chef::Provider::Service::Windows, "load_current_resource" do
     end
   end
 
-  describe Chef::Provider::Service::Windows, "stop_service" do
+  describe Seth::Provider::Service::Windows, "stop_service" do
 
     before(:each) do
       Win32::Service.stub(:status).with(@new_resource.service_name).and_return(
@@ -103,7 +103,7 @@ describe Chef::Provider::Service::Windows, "load_current_resource" do
     end
 
     it "should call the stop command if one is specified" do
-      @new_resource.stop_command "sc stop chef"
+      @new_resource.stop_command "sc stop seth"
       @provider.should_receive(:shell_out!).with("#{@new_resource.stop_command}").and_return("Stopping custom service")
       @provider.stop_service
       @new_resource.updated_by_last_action?.should be_true
@@ -132,7 +132,7 @@ describe Chef::Provider::Service::Windows, "load_current_resource" do
     end
   end
 
-  describe Chef::Provider::Service::Windows, "restart_service" do
+  describe Seth::Provider::Service::Windows, "restart_service" do
 
     it "should call the restart command if one is specified" do
       @new_resource.restart_command "sc restart"
@@ -173,7 +173,7 @@ describe Chef::Provider::Service::Windows, "load_current_resource" do
 
   end
 
-  describe Chef::Provider::Service::Windows, "enable_service" do
+  describe Seth::Provider::Service::Windows, "enable_service" do
 
     before(:each) do
       Win32::Service.stub(:config_info).with(@new_resource.service_name).and_return(
@@ -202,7 +202,7 @@ describe Chef::Provider::Service::Windows, "load_current_resource" do
     end
   end
 
-  describe Chef::Provider::Service::Windows, "disable_service" do
+  describe Seth::Provider::Service::Windows, "disable_service" do
 
     before(:each) do
       Win32::Service.stub(:config_info).with(@new_resource.service_name).and_return(

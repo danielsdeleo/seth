@@ -18,22 +18,22 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Batch do
+describe Seth::Resource::Batch do
 
   before(:each) do
-    node = Chef::Node.new
+    node = Seth::Node.new
 
     node.default["kernel"] = Hash.new
     node.default["kernel"][:machine] = :x86_64.to_s
 
-    run_context = Chef::RunContext.new(node, nil, nil)
+    run_context = Seth::RunContext.new(node, nil, nil)
 
-    @resource = Chef::Resource::Batch.new("batch_unit_test", run_context)
+    @resource = Seth::Resource::Batch.new("batch_unit_test", run_context)
 
   end
 
-  it "should create a new Chef::Resource::Batch" do
-    @resource.should be_a_kind_of(Chef::Resource::Batch)
+  it "should create a new Seth::Resource::Batch" do
+    @resource.should be_a_kind_of(Seth::Resource::Batch)
   end
 
   context "windows script" do

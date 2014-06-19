@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
-require 'chef/provider/service/simple'
-require 'chef/mixin/command'
+require 'seth/mixin/shell_out'
+require 'seth/provider/service/simple'
+require 'seth/mixin/command'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Init < Chef::Provider::Service::Simple
+      class Init < Seth::Provider::Service::Simple
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         def initialize(new_resource, run_context)
           super
@@ -39,7 +39,7 @@ class Chef
             a.assertion do
               custom_command_for_action?(action) || ::File.exist?(default_init_command)
             end
-            a.failure_message(Chef::Exceptions::Service, "#{default_init_command} does not exist!")
+            a.failure_message(Seth::Exceptions::Service, "#{default_init_command} does not exist!")
             a.whyrun("Init script '#{default_init_command}' doesn't exist, assuming a prior action would have created it.") do
               # blindly assume that the service exists but is stopped in why run mode:
               @status_load_success = false

@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/log'
-require 'chef/mixin/command'
-require 'chef/provider'
-require 'chef/exceptions'
+require 'seth/log'
+require 'seth/mixin/command'
+require 'seth/provider'
+require 'seth/exceptions'
 require 'erb'
 
 #  Recipe example:
@@ -34,10 +34,10 @@ require 'erb'
 #      mtu     int['mtu']
 #    end
 
-class Chef
+class Seth
   class Provider
-    class Ifconfig < Chef::Provider
-      include Chef::Mixin::Command
+    class Ifconfig < Seth::Provider
+      include Seth::Mixin::Command
 
       attr_accessor :config_template
       attr_accessor :config_path
@@ -53,7 +53,7 @@ class Chef
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::Ifconfig.new(@new_resource.name)
+        @current_resource = Seth::Resource::Ifconfig.new(@new_resource.name)
 
         @ifconfig_success = true
         @interfaces = {}
@@ -92,10 +92,10 @@ class Chef
       def define_resource_requirements
         requirements.assert(:all_actions) do |a|
           a.assertion { @status.exitstatus == 0 }
-          a.failure_message Chef::Exceptions::Ifconfig, "ifconfig failed - #{@status.inspect}!"
+          a.failure_message Seth::Exceptions::Ifconfig, "ifconfig failed - #{@status.inspect}!"
           # no whyrun - if the base ifconfig used in load_current_resource fails
           # there's no reasonable action that could have been taken in the course of
-          # a chef run to fix it.
+          # a seth run to fix it.
         end
       end
 
@@ -108,7 +108,7 @@ class Chef
               run_command(
                 :command => command
               )
-              Chef::Log.info("#{@new_resource} added")
+              Seth::Log.info("#{@new_resource} added")
               # Write out the config files
               generate_config
             end
@@ -126,7 +126,7 @@ class Chef
               run_command(
                 :command => command
               )
-              Chef::Log.info("#{@new_resource} enabled")
+              Seth::Log.info("#{@new_resource} enabled")
             end
           end
         end
@@ -141,10 +141,10 @@ class Chef
               :command => command
             )
             delete_config
-            Chef::Log.info("#{@new_resource} deleted")
+            Seth::Log.info("#{@new_resource} deleted")
           end
         else
-          Chef::Log.debug("#{@new_resource} does not exist - nothing to do")
+          Seth::Log.debug("#{@new_resource} does not exist - nothing to do")
         end
       end
 
@@ -157,10 +157,10 @@ class Chef
             run_command(
               :command => command
             )
-            Chef::Log.info("#{@new_resource} disabled")
+            Seth::Log.info("#{@new_resource} disabled")
           end
         else
-          Chef::Log.debug("#{@new_resource} does not exist - nothing to do")
+          Seth::Log.debug("#{@new_resource} does not exist - nothing to do")
         end
       end
 
@@ -177,7 +177,7 @@ class Chef
           network_file.puts(template.result(b))
           network_file.close
         end
-        Chef::Log.info("#{@new_resource} created configuration file")
+        Seth::Log.info("#{@new_resource} created configuration file")
       end
 
       def delete_config
@@ -188,7 +188,7 @@ class Chef
             FileUtils.rm_f(@config_path, :verbose => false)
           end
         end
-        Chef::Log.info("#{@new_resource} deleted configuration file")
+        Seth::Log.info("#{@new_resource} deleted configuration file")
       end
 
       private

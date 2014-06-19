@@ -22,6 +22,6 @@ require 'spec_helper'
 #require 'support/shared/unit/api_error_inspector_spec'
 
 
-describe Chef::Formatters::ErrorInspectors::NodeLoadErrorInspector do
+describe Seth::Formatters::ErrorInspectors::NodeLoadErrorInspector do
   it_behaves_like "an api error inspector"
 end

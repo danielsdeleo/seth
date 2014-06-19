@@ -52,20 +52,20 @@ YSlLxQKBgQD16Gw9kajpKlzsPa6XoQeGmZALT6aKWJQlrKtUQIrsIWM0Z6eFtX12
 Y6S6MeZ69Rp89ma4ttMZ+kwi1+XyHqC/dlcVRW42Zl5Dc7BALRlJjQ==
 -----END RSA PRIVATE KEY-----"
 
-describe Chef::REST do
-  let(:base_url) { "http://chef.example.com:4000" }
+describe Seth::REST do
+  let(:base_url) { "http://seth.example.com:4000" }
 
-  let(:monkey_uri) { URI.parse("http://chef.example.com:4000/monkey") }
+  let(:monkey_uri) { URI.parse("http://seth.example.com:4000/monkey") }
 
   let(:log_stringio) { StringIO.new }
 
   let(:request_id) {"1234"}
 
   let(:rest) do
-    Chef::REST::CookieJar.stub(:instance).and_return({})
-    Chef::RequestID.instance.stub(:request_id).and_return(request_id)
-    rest = Chef::REST.new(base_url, nil, nil)
-    Chef::REST::CookieJar.instance.clear
+    Seth::REST::CookieJar.stub(:instance).and_return({})
+    Seth::RequestID.instance.stub(:request_id).and_return(request_id)
+    rest = Seth::REST.new(base_url, nil, nil)
+    Seth::REST::CookieJar.instance.clear
     rest
   end
 
@@ -73,13 +73,13 @@ describe Chef::REST do
   let(:standard_write_headers) {{"Accept"=>"application/json", "Content-Type"=>"application/json", "Accept"=>"application/json", "Accept-Encoding"=>"gzip;q=1.0,deflate;q=0.6,identity;q=0.3", "X-REMOTE-REQUEST-ID"=>request_id}}
 
   before(:each) do
-    Chef::Log.init(log_stringio)
+    Seth::Log.init(log_stringio)
   end
 
   it "should have content length validation middleware after compressor middleware" do
     middlewares = rest.instance_variable_get(:@middlewares)
-    content_length = middlewares.find_index { |e| e.is_a? Chef::HTTP::ValidateContentLength }
-    decompressor = middlewares.find_index { |e| e.is_a? Chef::HTTP::Decompressor }
+    content_length = middlewares.find_index { |e| e.is_a? Seth::HTTP::ValidateContentLength }
+    decompressor = middlewares.find_index { |e| e.is_a? Seth::HTTP::Decompressor }
 
     content_length.should_not be_nil
     decompressor.should_not be_nil
@@ -89,7 +89,7 @@ describe Chef::REST do
   it "should allow the options hash to be frozen" do
     options = {}.freeze
     # should not raise any exception
-    Chef::REST.new(base_url, nil, nil, options)
+    Seth::REST.new(base_url, nil, nil, options)
   end
 
   describe "calling an HTTP verb on a path or absolute URL" do
@@ -98,7 +98,7 @@ describe Chef::REST do
     end
 
     it "replaces the base URL when given an absolute URL" do
-      expect(rest.create_url("http://chef-rulez.example.com:9000")).to eq(URI.parse("http://chef-rulez.example.com:9000"))
+      expect(rest.create_url("http://seth-rulez.example.com:9000")).to eq(URI.parse("http://chef-rulez.example.com:9000"))
     end
 
     it "makes a :GET request with the composed url object" do
@@ -145,12 +145,12 @@ describe Chef::REST do
 
   describe "legacy API" do
     let(:rest) do
-      Chef::REST.new(base_url)
+      Seth::REST.new(base_url)
     end
 
     before(:each) do
-      Chef::Config[:node_name]  = "webmonkey.example.com"
-      Chef::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+      Seth::Config[:node_name]  = "webmonkey.example.com"
+      Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
     end
 
     it 'responds to raw_http_request as a public method' do
@@ -185,16 +185,16 @@ describe Chef::REST do
   end
 
 
-  describe "when configured to authenticate to the Chef server" do
-    let(:base_url) { URI.parse("http://chef.example.com:4000") }
+  describe "when configured to authenticate to the Seth server" do
+    let(:base_url) { URI.parse("http://seth.example.com:4000") }
 
     let(:rest) do
-      Chef::REST.new(base_url)
+      Seth::REST.new(base_url)
     end
 
     before do
-      Chef::Config[:node_name]  = "webmonkey.example.com"
-      Chef::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+      Seth::Config[:node_name]  = "webmonkey.example.com"
+      Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
     end
 
     it "configures itself to use the node_name and client_key in the config by default" do
@@ -207,31 +207,31 @@ describe Chef::REST do
     end
 
     it "does not error out when initialized without credentials" do
-      rest = Chef::REST.new(base_url, nil, nil) #should_not raise_error hides the bt from you, so screw it.
+      rest = Seth::REST.new(base_url, nil, nil) #should_not raise_error hides the bt from you, so screw it.
       expect(rest.client_name).to be_nil
       expect(rest.signing_key).to be_nil
     end
 
     it "indicates that requests should not be signed when it has no credentials" do
-      rest = Chef::REST.new(base_url, nil, nil)
+      rest = Seth::REST.new(base_url, nil, nil)
       expect(rest.sign_requests?).to be_false
     end
 
     it "raises PrivateKeyMissing when the key file doesn't exist" do
-      expect {Chef::REST.new(base_url, "client-name", "/dev/null/nothing_here")}.to raise_error(Chef::Exceptions::PrivateKeyMissing)
+      expect {Seth::REST.new(base_url, "client-name", "/dev/null/nothing_here")}.to raise_error(Chef::Exceptions::PrivateKeyMissing)
     end
 
     it "raises InvalidPrivateKey when the key file doesnt' look like a key" do
       invalid_key_file = CHEF_SPEC_DATA + "/bad-config.rb"
-      expect {Chef::REST.new(base_url, "client-name", invalid_key_file)}.to raise_error(Chef::Exceptions::InvalidPrivateKey)
+      expect {Seth::REST.new(base_url, "client-name", invalid_key_file)}.to raise_error(Chef::Exceptions::InvalidPrivateKey)
     end
 
     it "can take private key as a sting :raw_key in options during initializaton" do
-      expect(Chef::REST.new(base_url, "client-name", nil, :raw_key => SIGNING_KEY_DOT_PEM).signing_key).to eq(SIGNING_KEY_DOT_PEM)
+      expect(Seth::REST.new(base_url, "client-name", nil, :raw_key => SIGNING_KEY_DOT_PEM).signing_key).to eq(SIGNING_KEY_DOT_PEM)
     end
 
     it "raises InvalidPrivateKey when the key passed as string :raw_key in options doesnt' look like a key" do
-      expect {Chef::REST.new(base_url, "client-name", nil, :raw_key => "bad key string")}.to raise_error(Chef::Exceptions::InvalidPrivateKey)
+      expect {Seth::REST.new(base_url, "client-name", nil, :raw_key => "bad key string")}.to raise_error(Chef::Exceptions::InvalidPrivateKey)
     end
 
   end
@@ -251,7 +251,7 @@ describe Chef::REST do
 
     let(:url) { URI.parse("http://one:80/?foo=bar") }
 
-    let(:base_url) { "http://chef.example.com:4000" }
+    let(:base_url) { "http://seth.example.com:4000" }
 
     let!(:http_client) do
       http_client = Net::HTTP.new(url.host, url.port)
@@ -261,18 +261,18 @@ describe Chef::REST do
 
     let(:rest) do
       Net::HTTP.stub(:new).and_return(http_client)
-      Chef::REST::CookieJar.stub(:instance).and_return({})
-      Chef::RequestID.instance.stub(:request_id).and_return(request_id)
-      rest = Chef::REST.new(base_url, nil, nil)
-      Chef::REST::CookieJar.instance.clear
+      Seth::REST::CookieJar.stub(:instance).and_return({})
+      Seth::RequestID.instance.stub(:request_id).and_return(request_id)
+      rest = Seth::REST.new(base_url, nil, nil)
+      Seth::REST::CookieJar.instance.clear
       rest
     end
 
     let(:base_headers) do
       {
         'Accept' => 'application/json',
-        'X-Chef-Version' => Chef::VERSION,
-        'Accept-Encoding' => Chef::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
+        'X-Seth-Version' => Chef::VERSION,
+        'Accept-Encoding' => Seth::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
         'X-REMOTE-REQUEST-ID' => request_id
       }
     end
@@ -282,8 +282,8 @@ describe Chef::REST do
     end
 
     before(:each) do
-      Chef::Config[:ssl_client_cert] = nil
-      Chef::Config[:ssl_client_key]  = nil
+      Seth::Config[:ssl_client_cert] = nil
+      Seth::Config[:ssl_client_key]  = nil
     end
 
     describe "as JSON API requests" do
@@ -292,8 +292,8 @@ describe Chef::REST do
       let(:base_headers) do  #FIXME: huh?
         {
           'Accept' => 'application/json',
-          'X-Chef-Version' => Chef::VERSION,
-          'Accept-Encoding' => Chef::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
+          'X-Seth-Version' => Chef::VERSION,
+          'Accept-Encoding' => Seth::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
           'Host' => host_header,
           'X-REMOTE-REQUEST-ID' => request_id
         }
@@ -303,7 +303,7 @@ describe Chef::REST do
         Net::HTTP::Get.stub(:new).and_return(request_mock)
       end
 
-      it "should always include the X-Chef-Version header" do
+      it "should always include the X-Seth-Version header" do
         Net::HTTP::Get.should_receive(:new).with("/?foo=bar", base_headers).and_return(request_mock)
         rest.request(:GET, url, {})
       end
@@ -313,18 +313,18 @@ describe Chef::REST do
         rest.request(:GET, url, {})
       end
 
-      it "sets the user agent to chef-client" do
+      it "sets the user agent to seth-client" do
         # XXX: must reset to default b/c knife changes the UA
-        Chef::REST::RESTRequest.user_agent = Chef::REST::RESTRequest::DEFAULT_UA
+        Seth::REST::RESTRequest.user_agent = Chef::REST::RESTRequest::DEFAULT_UA
         rest.request(:GET, url, {})
-        expect(request_mock['User-Agent']).to match(/^Chef Client\/#{Chef::VERSION}/)
+        expect(request_mock['User-Agent']).to match(/^Seth Client\/#{Chef::VERSION}/)
       end
 
       # CHEF-3140
       context "when configured to disable compression" do
         let(:rest) do
           Net::HTTP.stub(:new).and_return(http_client)
-          Chef::REST.new(base_url, nil, nil,  :disable_gzip => true)
+          Seth::REST.new(base_url, nil, nil,  :disable_gzip => true)
         end
 
         it "does not accept encoding gzip" do
@@ -343,17 +343,17 @@ describe Chef::REST do
       context "when configured with custom http headers" do
         let(:custom_headers) do
           {
-            'X-Custom-ChefSecret' => 'sharpknives',
+            'X-Custom-SethSecret' => 'sharpknives',
             'X-Custom-RequestPriority' => 'extremely low'
           }
         end
 
         before(:each) do
-          Chef::Config[:custom_http_headers] = custom_headers
+          Seth::Config[:custom_http_headers] = custom_headers
         end
 
         after(:each) do
-          Chef::Config[:custom_http_headers] = nil
+          Seth::Config[:custom_http_headers] = nil
         end
 
         it "should set them on the http request" do
@@ -367,9 +367,9 @@ describe Chef::REST do
       context "when setting cookies" do
         let(:rest) do
           Net::HTTP.stub(:new).and_return(http_client)
-          Chef::REST::CookieJar.instance["#{url.host}:#{url.port}"] = "cookie monster"
-          Chef::RequestID.instance.stub(:request_id).and_return(request_id)
-          rest = Chef::REST.new(base_url, nil, nil)
+          Seth::REST::CookieJar.instance["#{url.host}:#{url.port}"] = "cookie monster"
+          Seth::RequestID.instance.stub(:request_id).and_return(request_id)
+          rest = Seth::REST.new(base_url, nil, nil)
           rest
         end
 
@@ -416,7 +416,7 @@ describe Chef::REST do
 
       it "should fail if the response is truncated" do
         http_response["Content-Length"] = (body.bytesize + 99).to_s
-        expect { rest.request(:GET, url) }.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+        expect { rest.request(:GET, url) }.to raise_error(Seth::Exceptions::ContentLengthMismatch)
       end
 
       context "when JSON is returned" do
@@ -429,7 +429,7 @@ describe Chef::REST do
         it "should fail if the response is truncated" do
           http_response.add_field('content-type', "application/json")
           http_response["Content-Length"] = (body.bytesize + 99).to_s
-          expect { rest.request(:GET, url, {}) }.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+          expect { rest.request(:GET, url, {}) }.to raise_error(Seth::Exceptions::ContentLengthMismatch)
         end
       end
 
@@ -445,10 +445,10 @@ describe Chef::REST do
           end
           it "should call request again" do
 
-            expect { rest.request(:GET, url) }.to raise_error(Chef::Exceptions::RedirectLimitExceeded)
+            expect { rest.request(:GET, url) }.to raise_error(Seth::Exceptions::RedirectLimitExceeded)
 
             [:PUT, :POST, :DELETE].each do |method|
-              expect { rest.request(method, url) }.to raise_error(Chef::Exceptions::InvalidRedirect)
+              expect { rest.request(method, url) }.to raise_error(Seth::Exceptions::InvalidRedirect)
             end
           end
         end
@@ -468,12 +468,12 @@ describe Chef::REST do
 
       describe "when the request fails" do
         before do
-          @original_log_level = Chef::Log.level
-          Chef::Log.level = :info
+          @original_log_level = Seth::Log.level
+          Seth::Log.level = :info
         end
 
         after do
-          Chef::Log.level = @original_log_level
+          Seth::Log.level = @original_log_level
         end
 
         context "on an unsuccessful response with a JSON error" do
@@ -515,7 +515,7 @@ describe Chef::REST do
           end
           it "fails when the compressed body is truncated" do
             http_response["Content-Length"] = (body.bytesize + 99).to_s
-            expect {rest.request(:GET, url)}.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+            expect {rest.request(:GET, url)}.to raise_error(Seth::Exceptions::ContentLengthMismatch)
           end
         end
 
@@ -535,7 +535,7 @@ describe Chef::REST do
     end
 
     context "when streaming downloads to a tempfile" do
-      let!(:tempfile) {  Tempfile.open("chef-rspec-rest_spec-line-@{__LINE__}--") }
+      let!(:tempfile) {  Tempfile.open("seth-rspec-rest_spec-line-@{__LINE__}--") }
 
       let(:request_mock) { {} }
 
@@ -557,7 +557,7 @@ describe Chef::REST do
       end
 
       before do
-        Tempfile.stub(:new).with("chef-rest").and_return(tempfile)
+        Tempfile.stub(:new).with("seth-rest").and_return(tempfile)
         Net::HTTP::Get.stub(:new).and_return(request_mock)
       end
 
@@ -567,8 +567,8 @@ describe Chef::REST do
 
       it " build a new HTTP GET request without the application/json accept header" do
         expected_headers = {'Accept' => "*/*",
-                            'X-Chef-Version' => Chef::VERSION,
-                            'Accept-Encoding' => Chef::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
+                            'X-Seth-Version' => Chef::VERSION,
+                            'Accept-Encoding' => Seth::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
                             'Host' => host_header,
                             'X-REMOTE-REQUEST-ID'=> request_id
                             }
@@ -578,8 +578,8 @@ describe Chef::REST do
 
       it "build a new HTTP GET request with the X-Remote-Request-Id header" do
         expected_headers = {'Accept' => "*/*",
-                            'X-Chef-Version' => Chef::VERSION,
-                            'Accept-Encoding' => Chef::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
+                            'X-Seth-Version' => Chef::VERSION,
+                            'Accept-Encoding' => Seth::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
                             'Host' => host_header,
                             'X-REMOTE-REQUEST-ID'=> request_id
                             }
@@ -618,19 +618,19 @@ describe Chef::REST do
       it "does not raise a divide by zero exception if the content's actual size is 0" do
         http_response['Content-Length'] = "5"
         http_response.stub(:read_body).and_yield('')
-        expect { rest.streaming_request(url, {}) }.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+        expect { rest.streaming_request(url, {}) }.to raise_error(Seth::Exceptions::ContentLengthMismatch)
       end
 
       it "does not raise a divide by zero exception when the Content-Length is 0" do
         http_response['Content-Length'] = "0"
         http_response.stub(:read_body).and_yield("ninja")
-        expect { rest.streaming_request(url, {}) }.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+        expect { rest.streaming_request(url, {}) }.to raise_error(Seth::Exceptions::ContentLengthMismatch)
       end
 
       it "it raises an exception when the download is truncated" do
         http_response["Content-Length"] = (body.bytesize + 99).to_s
         http_response.stub(:read_body).and_yield("ninja")
-        expect { rest.streaming_request(url, {}) }.to raise_error(Chef::Exceptions::ContentLengthMismatch)
+        expect { rest.streaming_request(url, {}) }.to raise_error(Seth::Exceptions::ContentLengthMismatch)
       end
 
       it "fetches a file and yields the tempfile it is streamed to" do
@@ -655,7 +655,7 @@ describe Chef::REST do
       it "closes and unlinks the tempfile when the response is a redirect" do
         tempfile = double("A tempfile", :path => "/tmp/ragefist", :close => true, :binmode => true)
         tempfile.should_receive(:close!).at_least(1).times
-        Tempfile.stub(:new).with("chef-rest").and_return(tempfile)
+        Tempfile.stub(:new).with("seth-rest").and_return(tempfile)
 
         redirect = Net::HTTPFound.new("1.1", "302", "bob is taking care of that one for me today")
         redirect.add_field("location", url.path)
@@ -683,17 +683,17 @@ describe Chef::REST do
 
   context "when following redirects" do
     let(:rest) do
-      Chef::REST.new(base_url)
+      Seth::REST.new(base_url)
     end
 
     before do
-      Chef::Config[:node_name]  = "webmonkey.example.com"
-      Chef::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+      Seth::Config[:node_name]  = "webmonkey.example.com"
+      Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
     end
 
     it "raises a RedirectLimitExceeded when redirected more than 10 times" do
       redirected = lambda {rest.follow_redirect { redirected.call }}
-      expect {redirected.call}.to raise_error(Chef::Exceptions::RedirectLimitExceeded)
+      expect {redirected.call}.to raise_error(Seth::Exceptions::RedirectLimitExceeded)
     end
 
     it "does not count redirects from previous calls against the redirect limit" do
@@ -734,7 +734,7 @@ describe Chef::REST do
 
       total_redirects = 0
       rest.redirect_limit = 3
-      expect {redirected.call}.to raise_error(Chef::Exceptions::RedirectLimitExceeded)
+      expect {redirected.call}.to raise_error(Seth::Exceptions::RedirectLimitExceeded)
     end
 
   end

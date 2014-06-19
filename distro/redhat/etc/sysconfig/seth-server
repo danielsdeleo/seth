@@ -1,14 +1,14 @@
-# Configuration file for the chef-server service
+# Configuration file for the seth-server service
 
-#CONFIG=/etc/chef/server.rb
-#PIDFILE=/var/run/chef/server.pid
-#LOCKFILE=/var/lock/subsys/chef-server
-#LOGFILE=/var/log/chef/server.log
+#CONFIG=/etc/seth/server.rb
+#PIDFILE=/var/run/seth/server.pid
+#LOCKFILE=/var/lock/subsys/seth-server
+#LOGFILE=/var/log/seth/server.log
 #PORT=4000
 #ENVIRONMENT=production
 #ADAPTER=thin
-#CHILDPIDFILES=/var/run/chef/server.%s.pid
-#SERVER_USER=chef
-#SERVER_GROUP=chef
-# Any additional chef-server options.
+#CHILDPIDFILES=/var/run/seth/server.%s.pid
+#SERVER_USER=seth
+#SERVER_GROUP=seth
+# Any additional seth-server options.
 #OPTIONS=

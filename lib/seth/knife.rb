@@ -18,24 +18,24 @@
 #
 
 require 'forwardable'
-require 'chef/version'
+require 'seth/version'
 require 'mixlib/cli'
-require 'chef/config_fetcher'
-require 'chef/mixin/convert_to_class_name'
-require 'chef/mixin/path_sanity'
-require 'chef/knife/core/subcommand_loader'
-require 'chef/knife/core/ui'
-require 'chef/rest'
+require 'seth/config_fetcher'
+require 'seth/mixin/convert_to_class_name'
+require 'seth/mixin/path_sanity'
+require 'seth/knife/core/subcommand_loader'
+require 'seth/knife/core/ui'
+require 'seth/rest'
 require 'pp'
 
-class Chef
+class Seth
   class Knife
 
-    Chef::REST::RESTRequest.user_agent = "Chef Knife#{Chef::REST::RESTRequest::UA_COMMON}"
+    Seth::REST::RESTRequest.user_agent = "Chef Knife#{Chef::REST::RESTRequest::UA_COMMON}"
 
     include Mixlib::CLI
-    include Chef::Mixin::PathSanity
-    extend Chef::Mixin::ConvertToClassName
+    include Seth::Mixin::PathSanity
+    extend Seth::Mixin::ConvertToClassName
     extend Forwardable
 
     # Backwards Compat:
@@ -64,7 +64,7 @@ class Chef
     end
 
     def self.ui
-      @ui ||= Chef::Knife::UI.new(STDOUT, STDERR, STDIN, {})
+      @ui ||= Seth::Knife::UI.new(STDOUT, STDERR, STDIN, {})
     end
 
     def self.msg(msg="")
@@ -113,7 +113,7 @@ class Chef
     end
 
     def self.subcommand_loader
-      @subcommand_loader ||= Knife::SubcommandLoader.new(chef_config_dir)
+      @subcommand_loader ||= Knife::SubcommandLoader.new(seth_config_dir)
     end
 
     def self.load_commands
@@ -170,7 +170,7 @@ class Chef
       subcommand_class.options = options.merge!(subcommand_class.options)
       subcommand_class.load_deps
       instance = subcommand_class.new(args)
-      instance.configure_chef
+      instance.configure_seth
       instance.run_with_pretty_exceptions
     end
 
@@ -229,7 +229,7 @@ class Chef
       if category_commands = guess_category(args)
         list_commands(category_commands)
       elsif missing_plugin = ( OFFICIAL_PLUGINS.find {|plugin| plugin == args[0]} )
-        ui.info("The #{missing_plugin} commands were moved to plugins in Chef 0.10")
+        ui.info("The #{missing_plugin} commands were moved to plugins in Seth 0.10")
         ui.info("You can install the plugin with `(sudo) gem install knife-#{missing_plugin}")
       else
         list_commands
@@ -239,7 +239,7 @@ class Chef
     end
 
     def self.working_directory
-      a = if Chef::Platform.windows?
+      a = if Seth::Platform.windows?
             ENV['CD']
           else
             ENV['PWD']
@@ -249,26 +249,26 @@ class Chef
     end
 
     def self.reset_config_path!
-      @@chef_config_dir = nil
+      @@seth_config_dir = nil
     end
 
     reset_config_path!
 
 
-    # search upward from current_dir until .chef directory is found
-    def self.chef_config_dir
-      if @@chef_config_dir.nil? # share this with subclasses
-        @@chef_config_dir = false
+    # search upward from current_dir until .seth directory is found
+    def self.seth_config_dir
+      if @@seth_config_dir.nil? # share this with subclasses
+        @@seth_config_dir = false
         full_path = working_directory.split(File::SEPARATOR)
         (full_path.length - 1).downto(0) do |i|
-          candidate_directory = File.join(full_path[0..i] + [".chef" ])
+          candidate_directory = File.join(full_path[0..i] + [".seth" ])
           if File.exist?(candidate_directory) && File.directory?(candidate_directory)
-            @@chef_config_dir = candidate_directory
+            @@seth_config_dir = candidate_directory
             break
           end
         end
       end
-      @@chef_config_dir
+      @@seth_config_dir
     end
 
 
@@ -278,7 +278,7 @@ class Chef
     # arguments and options
     def initialize(argv=[])
       super() # having to call super in initialize is the most annoying anti-pattern :(
-      @ui = Chef::Knife::UI.new(STDOUT, STDERR, STDIN, config)
+      @ui = Seth::Knife::UI.new(STDOUT, STDERR, STDIN, config)
 
       command_name_words = self.class.snake_case_name.split('_')
 
@@ -299,7 +299,7 @@ class Chef
 
       # copy Mixlib::CLI over so that it cab be configured in knife.rb
       # config file
-      Chef::Config[:verbosity] = config[:verbosity]
+      Seth::Config[:verbosity] = config[:verbosity]
     end
 
     def parse_options(args)
@@ -310,19 +310,19 @@ class Chef
       exit(1)
     end
 
-    # Returns a subset of the Chef::Config[:knife] Hash that is relevant to the
-    # currently executing knife command. This is used by #configure_chef to
+    # Returns a subset of the Seth::Config[:knife] Hash that is relevant to the
+    # currently executing knife command. This is used by #configure_seth to
     # apply settings from knife.rb to the +config+ hash.
     def config_file_settings
       config_file_settings = {}
       self.class.options.keys.each do |key|
-        config_file_settings[key] = Chef::Config[:knife][key] if Chef::Config[:knife].has_key?(key)
+        config_file_settings[key] = Seth::Config[:knife][key] if Chef::Config[:knife].has_key?(key)
       end
       config_file_settings
     end
 
     def self.config_fetcher(candidate_config)
-      Chef::ConfigFetcher.new(candidate_config, Chef::Config.config_file_jail)
+      Seth::ConfigFetcher.new(candidate_config, Chef::Config.config_file_jail)
     end
 
     def self.locate_config_file
@@ -336,13 +336,13 @@ class Chef
       if Dir.pwd
         candidate_configs << File.join(Dir.pwd, 'knife.rb')
       end
-      # Look for $UPWARD/.chef/knife.rb
-      if chef_config_dir
-        candidate_configs << File.join(chef_config_dir, 'knife.rb')
+      # Look for $UPWARD/.seth/knife.rb
+      if seth_config_dir
+        candidate_configs << File.join(seth_config_dir, 'knife.rb')
       end
-      # Look for $HOME/.chef/knife.rb
+      # Look for $HOME/.seth/knife.rb
       if ENV['HOME']
-        candidate_configs << File.join(ENV['HOME'], '.chef', 'knife.rb')
+        candidate_configs << File.join(ENV['HOME'], '.seth', 'knife.rb')
       end
 
       candidate_configs.each do | candidate_config |
@@ -356,7 +356,7 @@ class Chef
 
     # Apply Config in this order:
     # defaults from mixlib-cli
-    # settings from config file, via Chef::Config[:knife]
+    # settings from config file, via Seth::Config[:knife]
     # config from command line
     def merge_configs
       # Apply config file settings on top of mixlib-cli defaults
@@ -374,47 +374,47 @@ class Chef
     # components, such as expanding file paths and converting verbosity level
     # into log level.
     def apply_computed_config
-      Chef::Config[:color] = config[:color]
+      Seth::Config[:color] = config[:color]
 
-      case Chef::Config[:verbosity]
+      case Seth::Config[:verbosity]
       when 0, nil
-        Chef::Config[:log_level] = :error
+        Seth::Config[:log_level] = :error
       when 1
-        Chef::Config[:log_level] = :info
+        Seth::Config[:log_level] = :info
       else
-        Chef::Config[:log_level] = :debug
+        Seth::Config[:log_level] = :debug
       end
 
-      Chef::Config[:node_name]         = config[:node_name]       if config[:node_name]
-      Chef::Config[:client_key]        = config[:client_key]      if config[:client_key]
-      Chef::Config[:chef_server_url]   = config[:chef_server_url] if config[:chef_server_url]
-      Chef::Config[:environment]       = config[:environment]     if config[:environment]
+      Seth::Config[:node_name]         = config[:node_name]       if config[:node_name]
+      Seth::Config[:client_key]        = config[:client_key]      if config[:client_key]
+      Seth::Config[:seth_server_url]   = config[:chef_server_url] if config[:chef_server_url]
+      Seth::Config[:environment]       = config[:environment]     if config[:environment]
 
-      Chef::Config.local_mode = config[:local_mode] if config.has_key?(:local_mode)
-      if Chef::Config.local_mode && !Chef::Config.has_key?(:cookbook_path) && !Chef::Config.has_key?(:chef_repo_path)
-        Chef::Config.chef_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
+      Seth::Config.local_mode = config[:local_mode] if config.has_key?(:local_mode)
+      if Seth::Config.local_mode && !Chef::Config.has_key?(:cookbook_path) && !Chef::Config.has_key?(:seth_repo_path)
+        Seth::Config.seth_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
       end
-      Chef::Config.chef_zero.host = config[:chef_zero_host] if config[:chef_zero_host]
-      Chef::Config.chef_zero.port = config[:chef_zero_port] if config[:chef_zero_port]
+      Seth::Config.seth_zero.host = config[:chef_zero_host] if config[:chef_zero_host]
+      Seth::Config.seth_zero.port = config[:chef_zero_port] if config[:chef_zero_port]
 
       # Expand a relative path from the config directory. Config from command
       # line should already be expanded, and absolute paths will be unchanged.
-      if Chef::Config[:client_key] && config[:config_file]
-        Chef::Config[:client_key] = File.expand_path(Chef::Config[:client_key], File.dirname(config[:config_file]))
+      if Seth::Config[:client_key] && config[:config_file]
+        Seth::Config[:client_key] = File.expand_path(Chef::Config[:client_key], File.dirname(config[:config_file]))
       end
 
       Mixlib::Log::Formatter.show_time = false
-      Chef::Log.init(Chef::Config[:log_location])
-      Chef::Log.level(Chef::Config[:log_level] || :error)
+      Seth::Log.init(Chef::Config[:log_location])
+      Seth::Log.level(Chef::Config[:log_level] || :error)
 
-      if Chef::Config[:node_name] && Chef::Config[:node_name].bytesize > 90
+      if Seth::Config[:node_name] && Chef::Config[:node_name].bytesize > 90
         # node names > 90 bytes only work with authentication protocol >= 1.1
         # see discussion in config.rb.
-        Chef::Config[:authentication_protocol_version] = "1.1"
+        Seth::Config[:authentication_protocol_version] = "1.1"
       end
     end
 
-    def configure_chef
+    def configure_seth
       if !config[:config_file]
         located_config_file = self.class.locate_config_file
         config[:config_file] = located_config_file if located_config_file
@@ -422,17 +422,17 @@ class Chef
 
       # Don't try to load a knife.rb if it wasn't specified.
       if config[:config_file]
-        Chef::Config.config_file = config[:config_file]
-        fetcher = Chef::ConfigFetcher.new(config[:config_file], Chef::Config.config_file_jail)
+        Seth::Config.config_file = config[:config_file]
+        fetcher = Seth::ConfigFetcher.new(config[:config_file], Chef::Config.config_file_jail)
         if fetcher.config_missing?
-          ui.error("Specified config file #{config[:config_file]} does not exist#{Chef::Config.config_file_jail ? " or is not under config file jail #{Chef::Config.config_file_jail}" : ""}!")
+          ui.error("Specified config file #{config[:config_file]} does not exist#{Seth::Config.config_file_jail ? " or is not under config file jail #{Chef::Config.config_file_jail}" : ""}!")
           exit 1
         end
-        Chef::Log.debug("Using configuration from #{config[:config_file]}")
+        Seth::Log.debug("Using configuration from #{config[:config_file]}")
         read_config(fetcher.read_config, config[:config_file])
       else
         # ...but do log a message if no config was found.
-        Chef::Config[:color] = config[:color]
+        Seth::Config[:color] = config[:color]
         ui.warn("No knife configuration file found")
       end
 
@@ -441,7 +441,7 @@ class Chef
     end
 
     def read_config(config_content, config_file_path)
-      Chef::Config.from_string(config_content, config_file_path)
+      Seth::Config.from_string(config_content, config_file_path)
     rescue SyntaxError => e
       ui.error "You have invalid ruby syntax in your config file #{config_file_path}"
       ui.info(ui.color(e.message, :red))
@@ -488,14 +488,14 @@ class Chef
         ui.error "You need to add a #run method to your knife command before you can use it"
       end
       enforce_path_sanity
-      Chef::Application.setup_server_connectivity
+      Seth::Application.setup_server_connectivity
       begin
         run
       ensure
-        Chef::Application.destroy_server_connectivity
+        Seth::Application.destroy_server_connectivity
       end
     rescue Exception => e
-      raise if raise_exception || Chef::Config[:verbosity] == 2
+      raise if raise_exception || Seth::Config[:verbosity] == 2
       humanize_exception(e)
       exit 100
     end
@@ -514,10 +514,10 @@ class Chef
         ui.info  "This may be a bug in the '#{self.class.common_name}' knife command or plugin"
         ui.info  "Please collect the output of this command with the `-VV` option before filing a bug report."
         ui.info  "Exception: #{e.class.name}: #{e.message}"
-      when Chef::Exceptions::PrivateKeyMissing
+      when Seth::Exceptions::PrivateKeyMissing
         ui.error "Your private key could not be loaded from #{api_key}"
         ui.info  "Check your configuration file and ensure that your private key is readable"
-      when Chef::Exceptions::InvalidRedirect
+      when Seth::Exceptions::InvalidRedirect
         ui.error "Invalid Redirect: #{e.message}"
         ui.info  "Change your server location in knife.rb to the server's FQDN to avoid unwanted redirections."
       else
@@ -556,19 +556,19 @@ class Chef
     end
 
     def username
-      Chef::Config[:node_name]
+      Seth::Config[:node_name]
     end
 
     def api_key
-      Chef::Config[:client_key]
+      Seth::Config[:client_key]
     end
 
-    # Parses JSON from the error response sent by Chef Server and returns the
+    # Parses JSON from the error response sent by Seth Server and returns the
     # error message
     #--
-    # TODO: this code belongs in Chef::REST
+    # TODO: this code belongs in Seth::REST
     def format_rest_error(response)
-      Array(Chef::JSONCompat.from_json(response.body)["error"]).join('; ')
+      Array(Seth::JSONCompat.from_json(response.body)["error"]).join('; ')
     rescue Exception
       response.body
     end
@@ -607,20 +607,20 @@ class Chef
 
     def rest
       @rest ||= begin
-        require 'chef/rest'
-        Chef::REST.new(Chef::Config[:chef_server_url])
+        require 'seth/rest'
+        Seth::REST.new(Chef::Config[:seth_server_url])
       end
     end
 
     def noauth_rest
       @rest ||= begin
-        require 'chef/rest'
-        Chef::REST.new(Chef::Config[:chef_server_url], false, false)
+        require 'seth/rest'
+        Seth::REST.new(Chef::Config[:seth_server_url], false, false)
       end
     end
 
     def server_url
-      Chef::Config[:chef_server_url]
+      Seth::Config[:seth_server_url]
     end
 
   end

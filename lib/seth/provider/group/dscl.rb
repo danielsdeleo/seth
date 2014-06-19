@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Provider
     class Group
-      class Dscl < Chef::Provider::Group
+      class Dscl < Seth::Provider::Group
 
         def dscl(*args)
           host = "."
@@ -34,8 +34,8 @@ class Chef
         def safe_dscl(*args)
           result = dscl(*args)
           return "" if ( args.first =~ /^delete/ ) && ( result[1].exitstatus != 0 )
-          raise(Chef::Exceptions::Group,"dscl error: #{result.inspect}") unless result[1].exitstatus == 0
-          raise(Chef::Exceptions::Group,"dscl error: #{result.inspect}") if result[2] =~ /No such key: /
+          raise(Seth::Exceptions::Group,"dscl error: #{result.inspect}") unless result[1].exitstatus == 0
+          raise(Seth::Exceptions::Group,"dscl error: #{result.inspect}") if result[2] =~ /No such key: /
           return result[2]
         end
 
@@ -68,14 +68,14 @@ class Chef
 
         def set_gid
           @new_resource.gid(get_free_gid) if [nil,""].include? @new_resource.gid
-          raise(Chef::Exceptions::Group,"gid is already in use") if gid_used?(@new_resource.gid)
+          raise(Seth::Exceptions::Group,"gid is already in use") if gid_used?(@new_resource.gid)
           safe_dscl("create /Groups/#{@new_resource.group_name} PrimaryGroupID #{@new_resource.gid}")
         end
 
         def set_members
           # First reset the memberships if the append is not set
           unless @new_resource.append
-            Chef::Log.debug("#{@new_resource} removing group members #{@current_resource.members.join(' ')}") unless @current_resource.members.empty?
+            Seth::Log.debug("#{@new_resource} removing group members #{@current_resource.members.join(' ')}") unless @current_resource.members.empty?
             safe_dscl("create /Groups/#{@new_resource.group_name} GroupMembers ''") # clear guid list
             safe_dscl("create /Groups/#{@new_resource.group_name} GroupMembership ''") # clear user list
             @current_resource.members([ ])
@@ -88,7 +88,7 @@ class Chef
               members_to_be_added << member if !@current_resource.members.include?(member)
             end
             unless members_to_be_added.empty?
-              Chef::Log.debug("#{@new_resource} setting group members #{members_to_be_added.join(', ')}")
+              Seth::Log.debug("#{@new_resource} setting group members #{members_to_be_added.join(', ')}")
               safe_dscl("append /Groups/#{@new_resource.group_name} GroupMembership #{members_to_be_added.join(' ')}")
             end
           end
@@ -100,7 +100,7 @@ class Chef
               members_to_be_removed << member if @current_resource.members.include?(member)
             end
             unless members_to_be_removed.empty?
-              Chef::Log.debug("#{@new_resource} removing group members #{members_to_be_removed.join(', ')}")
+              Seth::Log.debug("#{@new_resource} removing group members #{members_to_be_removed.join(', ')}")
               safe_dscl("delete /Groups/#{@new_resource.group_name} GroupMembership #{members_to_be_removed.join(' ')}")
             end
           end
@@ -110,7 +110,7 @@ class Chef
           super
           requirements.assert(:all_actions) do |a|
             a.assertion { ::File.exists?("/usr/bin/dscl") }
-            a.failure_message Chef::Exceptions::Group, "Could not find binary /usr/bin/dscl for #{@new_resource.name}"
+            a.failure_message Seth::Exceptions::Group, "Could not find binary /usr/bin/dscl for #{@new_resource.name}"
             # No whyrun alternative: this component should be available in the base install of any given system that uses it
           end
         end

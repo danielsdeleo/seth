@@ -17,8 +17,8 @@
 #
 
 require 'spec_helper'
-if Chef::Platform.windows?
-  require 'chef/application/windows_service_manager'
+if Seth::Platform.windows?
+  require 'seth/application/windows_service_manager'
 end
 
 #
@@ -33,7 +33,7 @@ end
 # directories.
 #
 
-describe "Chef::Application::WindowsServiceManager", :windows_only, :system_windows_service_gem_only do
+describe "Seth::Application::WindowsServiceManager", :windows_only, :system_windows_service_gem_only do
 
   # Some helper methods.
 
@@ -46,7 +46,7 @@ describe "Chef::Application::WindowsServiceManager", :windows_only, :system_wind
   end
 
   def service_manager
-    Chef::Application::WindowsServiceManager.new(test_service)
+    Seth::Application::WindowsServiceManager.new(test_service)
   end
 
   def cleanup
@@ -78,7 +78,7 @@ describe "Chef::Application::WindowsServiceManager", :windows_only, :system_wind
     {
       :service_name => "spec-service",
       :service_display_name => "Spec Test Service",
-      :service_description => "Service for testing Chef::Application::WindowsServiceManager.",
+      :service_description => "Service for testing Seth::Application::WindowsServiceManager.",
       :service_file_path => File.expand_path(File.join(File.dirname(__FILE__), '../../support/platforms/win32/spec_service.rb'))
     }
   }
@@ -93,7 +93,7 @@ describe "Chef::Application::WindowsServiceManager", :windows_only, :system_wind
 
   context "with invalid service definition" do
     it "throws an error when initialized with no service definition" do
-      lambda { Chef::Application::WindowsServiceManager.new(nil) }.should raise_error(ArgumentError)
+      lambda { Seth::Application::WindowsServiceManager.new(nil) }.should raise_error(ArgumentError)
     end
 
     it "throws an error with required missing options" do
@@ -101,7 +101,7 @@ describe "Chef::Application::WindowsServiceManager", :windows_only, :system_wind
         service_def = test_service.dup
         service_def.delete(key)
 
-        lambda { Chef::Application::WindowsServiceManager.new(service_def) }.should raise_error(ArgumentError)
+        lambda { Seth::Application::WindowsServiceManager.new(service_def) }.should raise_error(ArgumentError)
       end
     end
   end

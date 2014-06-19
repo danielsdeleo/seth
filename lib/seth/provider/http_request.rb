@@ -17,11 +17,11 @@
 #
 
 require 'tempfile'
-require 'chef/http/simple'
+require 'seth/http/simple'
 
-class Chef
+class Seth
   class Provider
-    class HttpRequest < Chef::Provider
+    class HttpRequest < Seth::Provider
 
       attr_accessor :http
 
@@ -30,20 +30,20 @@ class Chef
       end
 
       def load_current_resource
-        @http = Chef::HTTP::Simple.new(@new_resource.url)
+        @http = Seth::HTTP::Simple.new(@new_resource.url)
       end
 
       # Send a HEAD request to @new_resource.url, with ?message=@new_resource.message
       def action_head
         message = check_message(@new_resource.message)
-        # CHEF-4762: we expect a nil return value from Chef::HTTP for a "200 Success" response
+        # CHEF-4762: we expect a nil return value from Seth::HTTP for a "200 Success" response
         # and false for a "304 Not Modified" response
         modified = @http.head(
           "#{@new_resource.url}?message=#{message}",
           @new_resource.headers
         )
-        Chef::Log.info("#{@new_resource} HEAD to #{@new_resource.url} successful")
-        Chef::Log.debug("#{@new_resource} HEAD request response: #{modified}")
+        Seth::Log.info("#{@new_resource} HEAD to #{@new_resource.url} successful")
+        Seth::Log.debug("#{@new_resource} HEAD request response: #{modified}")
         # :head is usually used to trigger notifications, which converge_by now does
         if modified != false
           converge_by("#{@new_resource} HEAD to #{@new_resource.url} returned modified, trigger notifications") {}
@@ -59,8 +59,8 @@ class Chef
             "#{@new_resource.url}?message=#{message}",
             @new_resource.headers
           )
-          Chef::Log.info("#{@new_resource} GET to #{@new_resource.url} successful")
-          Chef::Log.debug("#{@new_resource} GET request response: #{body}")
+          Seth::Log.info("#{@new_resource} GET to #{@new_resource.url} successful")
+          Seth::Log.debug("#{@new_resource} GET request response: #{body}")
         end
       end
 
@@ -73,8 +73,8 @@ class Chef
             message,
             @new_resource.headers
           )
-          Chef::Log.info("#{@new_resource} PUT to #{@new_resource.url} successful")
-          Chef::Log.debug("#{@new_resource} PUT request response: #{body}")
+          Seth::Log.info("#{@new_resource} PUT to #{@new_resource.url} successful")
+          Seth::Log.debug("#{@new_resource} PUT request response: #{body}")
         end
       end
 
@@ -87,8 +87,8 @@ class Chef
             message,
             @new_resource.headers
           )
-          Chef::Log.info("#{@new_resource} POST to #{@new_resource.url} message: #{message.inspect} successful")
-          Chef::Log.debug("#{@new_resource} POST request response: #{body}")
+          Seth::Log.info("#{@new_resource} POST to #{@new_resource.url} message: #{message.inspect} successful")
+          Seth::Log.debug("#{@new_resource} POST request response: #{body}")
         end
       end
 
@@ -100,8 +100,8 @@ class Chef
             @new_resource.headers
           )
           @new_resource.updated_by_last_action(true)
-          Chef::Log.info("#{@new_resource} DELETE to #{@new_resource.url} successful")
-          Chef::Log.debug("#{@new_resource} DELETE request response: #{body}")
+          Seth::Log.info("#{@new_resource} DELETE to #{@new_resource.url} successful")
+          Seth::Log.debug("#{@new_resource} DELETE request response: #{body}")
         end
       end
 

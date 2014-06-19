@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/provider/windows_script'
+require 'seth/provider/windows_script'
 
-class Chef
+class Seth
   class Provider
-    class Batch < Chef::Provider::WindowsScript
+    class Batch < Seth::Provider::WindowsScript
 
       def initialize (new_resource, run_context)
         super(new_resource, run_context, '.bat')

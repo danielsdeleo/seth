@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
-require 'chef/knife/core/node_presenter'
+require 'seth/knife'
+require 'seth/knife/core/node_presenter'
 
-class Chef
+class Seth
   class Knife
     class NodeShow < Knife
 
@@ -27,8 +27,8 @@ class Chef
       include Knife::Core::MultiAttributeReturnOption
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife node show NODE (options)"
@@ -41,7 +41,7 @@ class Chef
       option :environment,
         :short        => "-E",
         :long         => "--environment",
-        :description  => "Show only the Chef environment"
+        :description  => "Show only the Seth environment"
 
       def run
         ui.use_presenter Knife::Core::NodePresenter
@@ -53,7 +53,7 @@ class Chef
           exit 1
         end
 
-        node = Chef::Node.load(@node_name)
+        node = Seth::Node.load(@node_name)
         output(format_for_display(node))
         self.class.attrs_to_show = []
       end

@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Provider
     class Deploy
-      class Timestamped < Chef::Provider::Deploy
+      class Timestamped < Seth::Provider::Deploy
 
         protected
 

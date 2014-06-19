@@ -18,7 +18,7 @@
 
 require "tempfile"
 
-class Chef
+class Seth
   class FileContentManagement
     class Tempfile
 
@@ -49,12 +49,12 @@ class Chef
       #
       def tempfile_basename
         basename = ::File.basename(@new_resource.name)
-        basename.insert 0, "." unless Chef::Platform.windows?  # dotfile if we're not on windows
+        basename.insert 0, "." unless Seth::Platform.windows?  # dotfile if we're not on windows
         basename
       end
 
       def tempfile_dirname
-        Chef::Config[:file_staging_uses_destdir] ? ::File.dirname(@new_resource.path) : Dir::tmpdir
+        Seth::Config[:file_staging_uses_destdir] ? ::File.dirname(@new_resource.path) : Dir::tmpdir
       end
     end
   end

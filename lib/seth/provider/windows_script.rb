@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/provider/script'
-require 'chef/mixin/windows_architecture_helper'
+require 'seth/provider/script'
+require 'seth/mixin/windows_architecture_helper'
 
-class Chef
+class Seth
   class Provider
-    class WindowsScript < Chef::Provider::Script
+    class WindowsScript < Seth::Provider::Script
 
       protected
 
-      include Chef::Mixin::WindowsArchitectureHelper
+      include Seth::Mixin::WindowsArchitectureHelper
 
       def initialize( new_resource, run_context, script_extension='')
         super( new_resource, run_context )
@@ -37,7 +37,7 @@ class Chef
         @is_wow64 = wow64_architecture_override_required?(run_context.node, target_architecture)
 
         if ( target_architecture == :i386 ) && ! is_i386_windows_process?
-          raise Chef::Exceptions::Win32ArchitectureIncorrect,
+          raise Seth::Exceptions::Win32ArchitectureIncorrect,
           "Support for the i386 architecture from a 64-bit Ruby runtime is not yet implemented"
         end
       end
@@ -63,7 +63,7 @@ class Chef
       end
 
       def script_file
-        base_script_name = "chef-script"
+        base_script_name = "seth-script"
         temp_file_arguments = [ base_script_name, @script_extension ]
 
         @script_file ||= Tempfile.open(temp_file_arguments)

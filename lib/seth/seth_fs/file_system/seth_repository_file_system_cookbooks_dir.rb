@@ -16,25 +16,25 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/chef_repository_file_system_entry'
-require 'chef/chef_fs/file_system/chef_repository_file_system_cookbook_dir'
-require 'chef/cookbook/chefignore'
+require 'seth/chef_fs/file_system/chef_repository_file_system_entry'
+require 'seth/chef_fs/file_system/chef_repository_file_system_cookbook_dir'
+require 'seth/cookbook/chefignore'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
-      class ChefRepositoryFileSystemCookbooksDir < ChefRepositoryFileSystemEntry
+      class SethRepositoryFileSystemCookbooksDir < ChefRepositoryFileSystemEntry
         def initialize(name, parent, file_path)
           super(name, parent, file_path)
           begin
-            @chefignore = Chef::Cookbook::Chefignore.new(self.file_path)
+            @sethignore = Seth::Cookbook::Chefignore.new(self.file_path)
           rescue Errno::EISDIR
           rescue Errno::EACCES
-            # Work around a bug in Chefignore when chefignore is a directory
+            # Work around a bug in Sethignore when sethignore is a directory
           end
         end
 
-        attr_reader :chefignore
+        attr_reader :sethignore
 
         def children
           begin
@@ -44,14 +44,14 @@ class Chef
                 select do |entry|
                   # empty cookbooks and cookbook directories are ignored
                   if !entry.can_upload?
-                    Chef::Log.warn("Cookbook '#{entry.name}' is empty or entirely chefignored at #{entry.path_for_printing}")
+                    Seth::Log.warn("Cookbook '#{entry.name}' is empty or entirely sethignored at #{entry.path_for_printing}")
                     false
                   else
                     true
                   end
                 end
           rescue Errno::ENOENT
-            raise Chef::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 
@@ -64,15 +64,15 @@ class Chef
           child = make_child(cookbook_name)
 
           # Use the copy/diff algorithm to copy it down so we don't destroy
-          # chefignored data.  This is terribly un-thread-safe.
-          Chef::ChefFS::FileSystem.copy_to(Chef::ChefFS::FilePattern.new("/#{cookbook_path}"), from_fs, child, nil, {:purge => true})
+          # sethignored data.  This is terribly un-thread-safe.
+          Seth::ChefFS::FileSystem.copy_to(Chef::ChefFS::FilePattern.new("/#{cookbook_path}"), from_fs, child, nil, {:purge => true})
 
           # Write out .uploaded-cookbook-version.json
           cookbook_file_path = File.join(file_path, cookbook_name)
           if !File.exists?(cookbook_file_path)
             FileUtils.mkdir_p(cookbook_file_path)
           end
-          uploaded_cookbook_version_path = File.join(cookbook_file_path, Chef::Cookbook::CookbookVersionLoader::UPLOADED_COOKBOOK_VERSION_FILE)
+          uploaded_cookbook_version_path = File.join(cookbook_file_path, Seth::Cookbook::CookbookVersionLoader::UPLOADED_COOKBOOK_VERSION_FILE)
           File.open(uploaded_cookbook_version_path, 'w') do |file|
             file.write(cookbook_version_json)
           end
@@ -81,7 +81,7 @@ class Chef
         protected
 
         def make_child(child_name)
-          ChefRepositoryFileSystemCookbookDir.new(child_name, self)
+          SethRepositoryFileSystemCookbookDir.new(child_name, self)
         end
       end
     end

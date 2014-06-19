@@ -1,4 +1,4 @@
-knife-exec(1) -- Run user scripts using the Chef API DSL
+knife-exec(1) -- Run user scripts using the Seth API DSL
 ========================================
 
 ## SYNOPSIS
@@ -11,7 +11,7 @@ __knife__ __exec__ _(options)_
 ## DESCRIPTION
 
 `knife exec` runs arbitrary ruby scripts in a context similar to that
-of the chef-shell(1) DSL. See the chef-shell documentation for a
+of the seth-shell(1) DSL. See the chef-shell documentation for a
 description of the commands available.
 
 ## EXAMPLES
@@ -26,11 +26,11 @@ description of the commands available.
 
 ## SEE ALSO
 
-   __chef-shell(1)__
+   __seth-shell(1)__
 
 ## AUTHOR
 
-   Chef was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
+   Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
 
 ## DOCUMENTATION
 
@@ -39,4 +39,4 @@ description of the commands available.
 
 ## CHEF
 
-   Knife is distributed with Chef. <http://wiki.opscode.com/display/chef/Home>
+   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>

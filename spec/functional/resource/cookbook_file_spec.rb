@@ -18,8 +18,8 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::CookbookFile do
-  include_context Chef::Resource::File
+describe Seth::Resource::CookbookFile do
+  include_context Seth::Resource::File
 
   let(:file_base) { 'cookbook_file_spec' }
   let(:source) { 'java.response' }
@@ -40,15 +40,15 @@ describe Chef::Resource::CookbookFile do
     # set up cookbook collection for this run to use, based on our
     # spec data.
     cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, 'cookbooks'))
-    Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
-    loader = Chef::CookbookLoader.new(cookbook_repo)
+    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
+    loader = Seth::CookbookLoader.new(cookbook_repo)
     loader.load_cookbooks
-    cookbook_collection = Chef::CookbookCollection.new(loader)
+    cookbook_collection = Seth::CookbookCollection.new(loader)
 
-    node = Chef::Node.new
-    events = Chef::EventDispatch::Dispatcher.new
-    run_context = Chef::RunContext.new(node, cookbook_collection, events)
-    resource = Chef::Resource::CookbookFile.new(path, run_context)
+    node = Seth::Node.new
+    events = Seth::EventDispatch::Dispatcher.new
+    run_context = Seth::RunContext.new(node, cookbook_collection, events)
+    resource = Seth::Resource::CookbookFile.new(path, run_context)
     resource.cookbook(cookbook_name)
     resource.source(source)
 
@@ -70,11 +70,11 @@ describe Chef::Resource::CookbookFile do
     let(:path) { File.join(windows_non_temp_dir, make_tmpname(file_base)) }
 
     before do
-      FileUtils::mkdir_p(windows_non_temp_dir) if Chef::Platform.windows?
+      FileUtils::mkdir_p(windows_non_temp_dir) if Seth::Platform.windows?
     end
 
     after do
-      FileUtils.rm_r(windows_non_temp_dir) if Chef::Platform.windows? && File.exists?(windows_non_temp_dir)
+      FileUtils.rm_r(windows_non_temp_dir) if Seth::Platform.windows? && File.exists?(windows_non_temp_dir)
     end
 
   end

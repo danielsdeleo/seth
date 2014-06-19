@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class UserDelete < Knife
 
       deps do
-        require 'chef/user'
-        require 'chef/json_compat'
+        require 'seth/user'
+        require 'seth/json_compat'
       end
 
       banner "knife user delete USER (options)"
@@ -38,7 +38,7 @@ class Chef
           exit 1
         end
 
-        delete_object(Chef::User, @user_name)
+        delete_object(Seth::User, @user_name)
       end
 
     end

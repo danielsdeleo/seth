@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Cookbook
-    class Chefignore
+    class Sethignore
 
       COMMENTS_AND_WHITESPACE = /^\s*(?:#.*)?$/
 
@@ -26,7 +26,7 @@ class Chef
 
       def initialize(ignore_file_or_repo)
         # Check the 'ignore_file_or_repo' path first and then look in the parent directory
-        # to handle both the chef repo cookbook layout and a standalone cookbook
+        # to handle both the seth repo cookbook layout and a standalone cookbook
         @ignore_file = find_ignore_file(ignore_file_or_repo)
         @ignore_file = find_ignore_file(File.dirname(ignore_file_or_repo)) unless readable_file_or_symlink?(@ignore_file)
 
@@ -52,16 +52,16 @@ class Chef
             ignore_globs << line.strip unless line =~ COMMENTS_AND_WHITESPACE
           end
         else
-          Chef::Log.debug("No chefignore file found at #@ignore_file no files will be ignored")
+          Seth::Log.debug("No sethignore file found at #@ignore_file no files will be ignored")
         end
         ignore_globs
       end
 
       def find_ignore_file(path)
-        if File.basename(path) =~ /chefignore/
+        if File.basename(path) =~ /sethignore/
           path
         else
-          File.join(path, 'chefignore')
+          File.join(path, 'sethignore')
         end
       end
 

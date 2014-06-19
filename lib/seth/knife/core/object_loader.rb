@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Knife
     module Core
       class ObjectLoader
@@ -85,8 +85,8 @@ class Chef
           when /\.(js|json)$/
             r = Yajl::Parser.parse(IO.read(filename))
 
-            # Chef::DataBagItem doesn't work well with the json_create method
-            if @klass == Chef::DataBagItem
+            # Seth::DataBagItem doesn't work well with the json_create method
+            if @klass == Seth::DataBagItem
               r
             else
               @klass.json_create(r)

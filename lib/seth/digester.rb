@@ -20,7 +20,7 @@
 
 require 'digest'
 
-class Chef
+class Seth
   class Digester
 
     def self.instance

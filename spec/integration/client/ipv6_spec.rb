@@ -16,13 +16,13 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
-describe "chef-client" do
+describe "seth-client" do
   extend IntegrationSupport
-  include Chef::Mixin::ShellOut
+  include Seth::Mixin::ShellOut
 
-  let(:chef_zero_opts) { {:host => "::1"} }
+  let(:seth_zero_opts) { {:host => "::1"} }
 
   let(:validation_pem) do
     <<-END_VALIDATION_PEM
@@ -62,7 +62,7 @@ END_VALIDATION_PEM
 
   let(:basic_config_file) do
     <<-END_CLIENT_RB
-chef_server_url "http://[::1]:8900"
+seth_server_url "http://[::1]:8900"
 validation_key '#{path_to('config/validator.pem')}'
 cache_path '#{cache_path}'
 client_key '#{cache_path}/client.pem'
@@ -74,9 +74,9 @@ END_CLIENT_RB
   end
 
 
-  let(:chef_dir) { File.join(File.dirname(__FILE__), "..", "..", "..", "bin") }
+  let(:seth_dir) { File.join(File.dirname(__FILE__), "..", "..", "..", "bin") }
 
-  let(:chef_client_cmd) { %Q[chef-client -c "#{path_to('config/client.rb')}" -lwarn] }
+  let(:seth_client_cmd) { %Q[chef-client -c "#{path_to('config/client.rb')}" -lwarn] }
 
   after do
     FileUtils.rm_rf(cache_path)
@@ -84,7 +84,7 @@ END_CLIENT_RB
 
   # Some Solaris test platforms are too old for IPv6. These tests should not
   # otherwise be platform dependent, so exclude solaris
-  when_the_chef_server "is running on IPv6", :not_supported_on_solaris do
+  when_the_seth_server "is running on IPv6", :not_supported_on_solaris do
 
     when_the_repository "has a cookbook with a no-op recipe" do
       cookbook 'noop', '1.0.0', { 'metadata.rb' => 'version "1.0.0"' }, "recipes" => {"default.rb" => "#raise 'foo'"}
@@ -94,7 +94,7 @@ END_CLIENT_RB
       end
 
       it "should complete with success" do
-        result = shell_out("#{chef_client_cmd} -o 'noop::default'", :cwd => chef_dir)
+        result = shell_out("#{seth_client_cmd} -o 'noop::default'", :cwd => chef_dir)
         result.error!
       end
 
@@ -105,11 +105,11 @@ END_CLIENT_RB
       recipe=<<-END_RECIPE
         actual_item = data_bag_item("expect_bag", "expect_item")
         if actual_item.key?("expect_key") and actual_item["expect_key"] == "expect_value"
-          Chef::Log.info "lookin good"
+          Seth::Log.info "lookin good"
         else
-          Chef::Log.error("!" * 80)
+          Seth::Log.error("!" * 80)
           raise "unexpected data bag item content \#{actual_item.inspect}"
-          Chef::Log.error("!" * 80)
+          Seth::Log.error("!" * 80)
         end
 
       END_RECIPE
@@ -124,7 +124,7 @@ END_CLIENT_RB
       end
 
       it "should complete with success" do
-        result = shell_out("#{chef_client_cmd} -o 'api-smoke-test::default'", :cwd => chef_dir)
+        result = shell_out("#{seth_client_cmd} -o 'api-smoke-test::default'", :cwd => chef_dir)
         result.error!
       end
 

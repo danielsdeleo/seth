@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe Chef::Knife::TagCreate do
+describe Seth::Knife::TagCreate do
   before(:each) do
-    Chef::Config[:node_name] = "webmonkey.example.com"
-    @knife = Chef::Knife::TagCreate.new
-    @knife.name_args = [ Chef::Config[:node_name], "happytag" ]
+    Seth::Config[:node_name] = "webmonkey.example.com"
+    @knife = Seth::Knife::TagCreate.new
+    @knife.name_args = [ Seth::Config[:node_name], "happytag" ]
 
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.stub :save
-    Chef::Node.stub(:load).and_return @node
+    Seth::Node.stub(:load).and_return @node
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
   end

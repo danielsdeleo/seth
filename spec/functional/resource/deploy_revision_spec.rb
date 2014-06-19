@@ -20,7 +20,7 @@ require 'spec_helper'
 require 'tmpdir'
 
 # Deploy relies heavily on symlinks, so it doesn't work on windows.
-describe Chef::Resource::DeployRevision, :unix_only => true do
+describe Seth::Resource::DeployRevision, :unix_only => true do
 
   let(:file_cache_path) { Dir.mktmpdir }
   let(:deploy_directory) { Dir.mktmpdir }
@@ -30,13 +30,13 @@ describe Chef::Resource::DeployRevision, :unix_only => true do
   let(:observe_order_file) { Tempfile.new("deploy-resource-observe-operations") }
 
   before do
-    Chef::Log.level = :info
-    @old_file_cache_path = Chef::Config[:file_cache_path]
-    Chef::Config[:file_cache_path] = file_cache_path
+    Seth::Log.level = :info
+    @old_file_cache_path = Seth::Config[:file_cache_path]
+    Seth::Config[:file_cache_path] = file_cache_path
   end
 
   after do
-    Chef::Config[:file_cache_path] = @old_file_cache_path
+    Seth::Config[:file_cache_path] = @old_file_cache_path
     FileUtils.remove_entry_secure deploy_directory if File.exist?(deploy_directory)
     FileUtils.remove_entry_secure file_cache_path
     observe_order_file.close
@@ -50,14 +50,14 @@ describe Chef::Resource::DeployRevision, :unix_only => true do
 
   let(:node) do
 
-    Chef::Node.new.tap do |n|
+    Seth::Node.new.tap do |n|
       n.name "rspec-test"
       n.consume_external_attrs(@ohai.data, {})
     end
   end
 
-  let(:event_dispatch) { Chef::EventDispatch::Dispatcher.new }
-  let(:run_context) { Chef::RunContext.new(node, {}, event_dispatch) }
+  let(:event_dispatch) { Seth::EventDispatch::Dispatcher.new }
+  let(:run_context) { Seth::RunContext.new(node, {}, event_dispatch) }
 
 
   # These tests use git's bundle feature, which is a way to export an entire
@@ -102,7 +102,7 @@ describe Chef::Resource::DeployRevision, :unix_only => true do
   end
 
   let(:basic_deploy_resource) do
-    Chef::Resource::DeployRevision.new(deploy_directory, run_context).tap do |r|
+    Seth::Resource::DeployRevision.new(deploy_directory, run_context).tap do |r|
       r.name "deploy-revision-unit-test"
       r.repo git_bundle_repo
       r.symlink_before_migrate({})
@@ -607,7 +607,7 @@ describe Chef::Resource::DeployRevision, :unix_only => true do
       callback_order.should == [:before_migrate, :before_symlink, :before_restart, :after_restart]
     end
 
-    it "runs chef resources in the callbacks" do
+    it "runs seth resources in the callbacks" do
       File.should exist(rel_path("current/before_migrate.txt"))
       File.should exist(rel_path("current/before_symlink.txt"))
       File.should exist(rel_path("current/tmp/before_restart.txt"))
@@ -629,7 +629,7 @@ describe Chef::Resource::DeployRevision, :unix_only => true do
 
     the_app_is_deployed_at_revision(:rev_with_in_repo_callbacks)
 
-    it "runs chef resources in the callbacks" do
+    it "runs seth resources in the callbacks" do
       File.should exist(rel_path("current/before_migrate.txt"))
       File.should exist(rel_path("current/before_symlink.txt"))
       File.should exist(rel_path("current/tmp/before_restart.txt"))
@@ -822,7 +822,7 @@ describe Chef::Resource::DeployRevision, :unix_only => true do
       end
 
       before do
-        lambda { deploy_that_fails.run_action(:deploy) }.should raise_error(Chef::Exceptions::Exec)
+        lambda { deploy_that_fails.run_action(:deploy) }.should raise_error(Seth::Exceptions::Exec)
         deploy_to_latest_with_callback_tracking.run_action(:deploy)
       end
 

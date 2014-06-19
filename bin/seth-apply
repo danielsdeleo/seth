@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# ./chef-apply - Run a single chef recipe
+# ./seth-apply - Run a single seth recipe
 #
 # Author:: Bryan W. Berry (<bryan.berry@gmail.com>)
 # Copyright:: Copyright (c) 2012 Bryan W. Berry
@@ -20,6 +20,6 @@
 
 require 'rubygems'
 $:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
-require 'chef/application/apply'
+require 'seth/application/apply'
 
-Chef::Application::Apply.new.run
+Seth::Application::Apply.new.run

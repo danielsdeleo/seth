@@ -19,9 +19,9 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package/freebsd/base'
+require 'seth/provider/package/freebsd/base'
 
-class Chef
+class Seth
   class Provider
     class Package
       module Freebsd
@@ -37,11 +37,11 @@ class Chef
                 else
                   shell_out!("pkg_add -r #{package_name}", :env => { "PACKAGEROOT" => @new_resource.source, 'LC_ALL' => nil }).status
                 end
-                Chef::Log.debug("#{@new_resource} installed from: #{@new_resource.source}")
+                Seth::Log.debug("#{@new_resource} installed from: #{@new_resource.source}")
 
               when /^\//
                 shell_out!("pkg_add #{file_candidate_version_path}", :env => { "PKG_PATH" => @new_resource.source , 'LC_ALL'=>nil}).status
-                Chef::Log.debug("#{@new_resource} installed from: #{@new_resource.source}")
+                Seth::Log.debug("#{@new_resource} installed from: #{@new_resource.source}")
 
               else
                 shell_out!("pkg_add -r #{latest_link_name}", :env => nil).status
@@ -59,7 +59,7 @@ class Chef
               if makefile_variable_value("PKGNAME", port_path) =~ /^(.+)-[^-]+$/
                 $1
               else
-                raise Chef::Exceptions::Package, "Unexpected form for PKGNAME variable in #{port_path}/Makefile"
+                raise Seth::Exceptions::Package, "Unexpected form for PKGNAME variable in #{port_path}/Makefile"
               end
             else
               @new_resource.package_name

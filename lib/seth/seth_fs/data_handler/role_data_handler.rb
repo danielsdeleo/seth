@@ -1,16 +1,16 @@
-require 'chef/chef_fs/data_handler/data_handler_base'
-require 'chef/role'
+require 'seth/chef_fs/data_handler/data_handler_base'
+require 'seth/role'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module DataHandler
       class RoleDataHandler < DataHandlerBase
         def normalize(role, entry)
           result = normalize_hash(role, {
             'name' => remove_dot_json(entry.name),
             'description' => '',
-            'json_class' => 'Chef::Role',
-            'chef_type' => 'role',
+            'json_class' => 'Seth::Role',
+            'seth_type' => 'role',
             'default_attributes' => {},
             'override_attributes' => {},
             'run_list' => [],
@@ -27,8 +27,8 @@ class Chef
           return key == 'name'
         end
 
-        def chef_class
-          Chef::Role
+        def seth_class
+          Seth::Role
         end
 
         def to_ruby(object)

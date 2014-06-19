@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/params_validate'
-require 'chef/mixin/convert_to_class_name'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/convert_to_class_name'
 
-class Chef
+class Seth
   class Resource
     class PlatformMap
 
-      include Chef::Mixin::ParamsValidate
-      include Chef::Mixin::ConvertToClassName
+      include Seth::Mixin::ParamsValidate
+      include Seth::Mixin::ConvertToClassName
 
       attr_reader :map
 
@@ -132,7 +132,7 @@ class Chef
 
       def platform_resource(short_name, platform, version)
         pmap = filter(platform, version)
-        rtkey = short_name.kind_of?(Chef::Resource) ? short_name.resource_name.to_sym : short_name
+        rtkey = short_name.kind_of?(Seth::Resource) ? short_name.resource_name.to_sym : short_name
 
         pmap.has_key?(rtkey) ? pmap[rtkey] : nil
       end
@@ -140,7 +140,7 @@ class Chef
       def resource_matching_short_name(short_name)
         begin
           rname = convert_to_class_name(short_name.to_s)
-          Chef::Resource.const_get(rname)
+          Seth::Resource.const_get(rname)
         rescue NameError
           nil
         end

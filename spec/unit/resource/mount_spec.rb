@@ -19,14 +19,14 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Mount do
+describe Seth::Resource::Mount do
   before(:each) do
-    @resource = Chef::Resource::Mount.new("filesystem")
+    @resource = Seth::Resource::Mount.new("filesystem")
   end
 
-  it "should create a new Chef::Resource::Mount" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Mount)
+  it "should create a new Seth::Resource::Mount" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Mount)
   end
 
   it "should have a name" do
@@ -83,12 +83,12 @@ describe Chef::Resource::Mount do
   end
 
   it "should allow options to be sent as a delayed evaluator" do
-    @resource.options Chef::DelayedEvaluator.new {["rw", "noexec"]}
+    @resource.options Seth::DelayedEvaluator.new {["rw", "noexec"]}
     @resource.options.should eql(["rw", "noexec"])
   end
 
   it "should allow options to be sent as a delayed evaluator, and convert to array" do
-    @resource.options Chef::DelayedEvaluator.new {"rw,noexec"}
+    @resource.options Seth::DelayedEvaluator.new {"rw,noexec"}
     @resource.options.should be_a_kind_of(Array)
     @resource.options.should eql(["rw", "noexec"])
   end

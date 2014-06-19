@@ -18,10 +18,10 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::RoleBulkDelete do
+describe Seth::Knife::RoleBulkDelete do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::RoleBulkDelete.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::RoleBulkDelete.new
     @knife.config = {
       :print_after => nil
     }
@@ -31,18 +31,18 @@ describe Chef::Knife::RoleBulkDelete do
     @knife.ui.stub(:confirm).and_return(true)
     @roles = Hash.new
     %w{dev staging production}.each do |role_name|
-      role = Chef::Role.new()
+      role = Seth::Role.new()
       role.name(role_name)
       role.stub(:destroy).and_return(true)
       @roles[role_name] = role
     end
-    Chef::Role.stub(:list).and_return(@roles)
+    Seth::Role.stub(:list).and_return(@roles)
   end
 
   describe "run" do
 
     it "should get the list of the roles" do
-      Chef::Role.should_receive(:list).and_return(@roles)
+      Seth::Role.should_receive(:list).and_return(@roles)
       @knife.run
     end
 

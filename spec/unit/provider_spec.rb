@@ -19,7 +19,7 @@
 require 'spec_helper'
 
 
-class NoWhyrunDemonstrator < Chef::Provider
+class NoWhyrunDemonstrator < Seth::Provider
   attr_reader :system_state_altered
   def whyrun_supported?
     false
@@ -32,7 +32,7 @@ class NoWhyrunDemonstrator < Chef::Provider
   end
 end
 
-class ConvergeActionDemonstrator < Chef::Provider
+class ConvergeActionDemonstrator < Seth::Provider
   attr_reader :system_state_altered
 
   def whyrun_supported?
@@ -49,16 +49,16 @@ class ConvergeActionDemonstrator < Chef::Provider
   end
 end
 
-describe Chef::Provider do
+describe Seth::Provider do
   before(:each) do
-    @cookbook_collection = Chef::CookbookCollection.new([])
-    @node = Chef::Node.new
+    @cookbook_collection = Seth::CookbookCollection.new([])
+    @node = Seth::Node.new
     @node.name "latte"
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
-    @resource = Chef::Resource.new("funk", @run_context)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
+    @resource = Seth::Resource.new("funk", @run_context)
     @resource.cookbook_name = "a_delicious_pie"
-    @provider = Chef::Provider.new(@resource, @run_context)
+    @provider = Seth::Provider.new(@resource, @run_context)
   end
 
   it "should store the resource passed to new as new_resource" do
@@ -86,14 +86,14 @@ describe Chef::Provider do
     temporary_collection = nil
     snitch = Proc.new {temporary_collection = @run_context.resource_collection}
     @provider.send(:recipe_eval, &snitch)
-    temporary_collection.should be_an_instance_of(Chef::ResourceCollection)
+    temporary_collection.should be_an_instance_of(Seth::ResourceCollection)
     @provider.run_context.instance_variable_get(:@resource_collection).should == "doesn't matter what this is"
   end
 
   it "does not re-load recipes when creating the temporary run context" do
     # we actually want to test that RunContext#load is never called, but we
     # can't stub all instances of an object with rspec's mocks. :/
-    Chef::RunContext.stub(:new).and_raise("not supposed to happen")
+    Seth::RunContext.stub(:new).and_raise("not supposed to happen")
     snitch = Proc.new {temporary_collection = @run_context.resource_collection}
     @provider.send(:recipe_eval, &snitch)
   end
@@ -139,12 +139,12 @@ describe Chef::Provider do
 
     describe "and provider does not support whyrun mode" do
       before do
-        Chef::Config[:why_run] = true
+        Seth::Config[:why_run] = true
         @provider = NoWhyrunDemonstrator.new(@resource, @run_context)
       end
 
       after do
-        Chef::Config[:why_run] = false
+        Seth::Config[:why_run] = false
       end
 
       it "should tell us that it doesn't support whyrun" do

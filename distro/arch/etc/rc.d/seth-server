@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-daemon_bin="/usr/bin/chef-server"
+daemon_bin="/usr/bin/seth-server"
 daemon_name=$(basename $daemon_bin)
 PIDF="/var/run/$daemon_name.pid"
 

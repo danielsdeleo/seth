@@ -19,16 +19,16 @@
 require 'spec_helper'
 require 'highline'
 
-describe Chef::Knife::Status do
+describe Seth::Knife::Status do
   before(:each) do
-    node = Chef::Node.new.tap do |n|
+    node = Seth::Node.new.tap do |n|
       n.automatic_attrs["fqdn"] = "foobar"
       n.automatic_attrs["ohai_time"] = 1343845969
     end
-    query = double("Chef::Search::Query")
+    query = double("Seth::Search::Query")
     query.stub(:search).and_yield(node)
-    Chef::Search::Query.stub(:new).and_return(query)
-    @knife  = Chef::Knife::Status.new
+    Seth::Search::Query.stub(:new).and_return(query)
+    @knife  = Seth::Knife::Status.new
     @stdout = StringIO.new
     @knife.stub(:highline).and_return(HighLine.new(StringIO.new, @stdout))
   end

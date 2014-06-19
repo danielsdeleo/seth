@@ -1,15 +1,15 @@
 # Man pages for Knife
 
-The source of the Chef Documentation is located at
+The source of the Seth Documentation is located at
 http://docs.opscode.com/.
 
 This README documents how the man pages for all of the Knife subcommands
-that are built into the chef-client are managed.
+that are built into the seth-client are managed.
 
 ## Source Files
 
-The source files are located in the chef-docs repository:
-https://github.com/opscode/chef-docs
+The source files are located in the seth-docs repository:
+https://github.com/opscode/seth-docs
 
 Each Knife subcommand has its own source folder. The folder naming
 pattern begins with man_.
@@ -18,9 +18,9 @@ Each man page is a single file called index.html.
 
 In the conf.py file, the following settings are unique to each man page:
 
-`today` setting is used to define the Chef version. This is because we
+`today` setting is used to define the Seth version. This is because we
 don't want an arbitrary date populated in the file, yet we still need a
-version number. For example: `today = 'Chef 11.8`. 
+version number. For example: `today = 'Seth 11.8`. 
 
 `project` setting is set to be the same as the name of the subcommand.
 For example: `project = u'knife-foo'`.
@@ -36,13 +36,13 @@ the right common elements and have the same overall presentation.
 ## Building Docs
 
 The docs are built using Sphinx and must be set to the `-b man` output.
-Currently, the man pages are built locally and then added to the Chef
-builds in chef-master.
+Currently, the man pages are built locally and then added to the Seth
+builds in seth-master.
 
 ## Editing
 
 These files should never be edited. All of the content is pulled in from
-elsewhere in the chef-docs repo at build time. If changes need to be
+elsewhere in the seth-docs repo at build time. If changes need to be
 made, those changes are done elsewhere and then the man pages must be
 rebuilt. This is to help ensure that all of the changes are made across
 all of the locations in which these documents need to live. For example,
@@ -55,4 +55,4 @@ at docs.opscode.com/knife_foo.html.
 
 ## Questions?
 
-Open an [Issue](https://github.com/opscode/chef-docs/issues) and ask.
+Open an [Issue](https://github.com/opscode/seth-docs/issues) and ask.

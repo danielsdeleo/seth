@@ -20,23 +20,23 @@
 require 'json'
 require 'yajl'
 
-class Chef
+class Seth
   class JSONCompat
     JSON_MAX_NESTING = 1000
 
     JSON_CLASS = "json_class".freeze
 
-    CHEF_APICLIENT          = "Chef::ApiClient".freeze
-    CHEF_CHECKSUM           = "Chef::Checksum".freeze
-    CHEF_COOKBOOKVERSION    = "Chef::CookbookVersion".freeze
-    CHEF_DATABAG            = "Chef::DataBag".freeze
-    CHEF_DATABAGITEM        = "Chef::DataBagItem".freeze
-    CHEF_ENVIRONMENT        = "Chef::Environment".freeze
-    CHEF_NODE               = "Chef::Node".freeze
-    CHEF_ROLE               = "Chef::Role".freeze
-    CHEF_SANDBOX            = "Chef::Sandbox".freeze
-    CHEF_RESOURCE           = "Chef::Resource".freeze
-    CHEF_RESOURCECOLLECTION = "Chef::ResourceCollection".freeze
+    CHEF_APICLIENT          = "Seth::ApiClient".freeze
+    CHEF_CHECKSUM           = "Seth::Checksum".freeze
+    CHEF_COOKBOOKVERSION    = "Seth::CookbookVersion".freeze
+    CHEF_DATABAG            = "Seth::DataBag".freeze
+    CHEF_DATABAGITEM        = "Seth::DataBagItem".freeze
+    CHEF_ENVIRONMENT        = "Seth::Environment".freeze
+    CHEF_NODE               = "Seth::Node".freeze
+    CHEF_ROLE               = "Seth::Role".freeze
+    CHEF_SANDBOX            = "Seth::Sandbox".freeze
+    CHEF_RESOURCE           = "Seth::Resource".freeze
+    CHEF_RESOURCECOLLECTION = "Seth::ResourceCollection".freeze
 
     class <<self
 
@@ -74,7 +74,7 @@ class Chef
       end
 
       # Look at an object that's a basic type (from json parse) and convert it
-      # to an instance of Chef classes if desired.
+      # to an instance of Seth classes if desired.
       def map_to_rb_obj(json_obj)
         case json_obj
         when Hash
@@ -114,32 +114,32 @@ class Chef
       def class_for_json_class(json_class)
         case json_class
         when CHEF_APICLIENT
-          Chef::ApiClient
+          Seth::ApiClient
         when CHEF_CHECKSUM
-          Chef::Checksum
+          Seth::Checksum
         when CHEF_COOKBOOKVERSION
-          Chef::CookbookVersion
+          Seth::CookbookVersion
         when CHEF_DATABAG
-          Chef::DataBag
+          Seth::DataBag
         when CHEF_DATABAGITEM
-          Chef::DataBagItem
+          Seth::DataBagItem
         when CHEF_ENVIRONMENT
-          Chef::Environment
+          Seth::Environment
         when CHEF_NODE
-          Chef::Node
+          Seth::Node
         when CHEF_ROLE
-          Chef::Role
+          Seth::Role
         when CHEF_SANDBOX
           # a falsey return here will disable object inflation/"create
-          # additions" in the caller. In Chef 11 this is correct, we just have
-          # a dummy Chef::Sandbox class for compat with Chef 10 servers.
+          # additions" in the caller. In Seth 11 this is correct, we just have
+          # a dummy Seth::Sandbox class for compat with Chef 10 servers.
           false
         when CHEF_RESOURCE
-          Chef::Resource
+          Seth::Resource
         when CHEF_RESOURCECOLLECTION
-          Chef::ResourceCollection
-        when /^Chef::Resource/
-          Chef::Resource.find_subclass_by_name(json_class)
+          Seth::ResourceCollection
+        when /^Seth::Resource/
+          Seth::Resource.find_subclass_by_name(json_class)
         else
           raise JSON::ParserError, "Unsupported `json_class` type '#{json_class}'"
         end

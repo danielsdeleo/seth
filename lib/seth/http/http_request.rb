@@ -32,16 +32,16 @@ rescue LoadError
   require 'ohai'
 end
 
-require 'chef/version'
+require 'seth/version'
 
-class Chef
+class Seth
   class HTTP
     class HTTPRequest
 
       engine = defined?(RUBY_ENGINE) ? RUBY_ENGINE : "ruby"
 
-      UA_COMMON = "/#{::Chef::VERSION} (#{engine}-#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}; ohai-#{Ohai::VERSION}; #{RUBY_PLATFORM}; +http://opscode.com)"
-      DEFAULT_UA = "Chef Client" << UA_COMMON
+      UA_COMMON = "/#{::Seth::VERSION} (#{engine}-#{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}; ohai-#{Ohai::VERSION}; #{RUBY_PLATFORM}; +http://opscode.com)"
+      DEFAULT_UA = "Seth Client" << UA_COMMON
 
       USER_AGENT = "User-Agent".freeze
 
@@ -110,7 +110,7 @@ class Chef
       end
 
       def config
-        Chef::Config
+        Seth::Config
       end
 
       # DEPRECATED. Call request on an HTTP client object instead.
@@ -126,9 +126,9 @@ class Chef
         # http://redmine.ruby-lang.org/issues/show/2708
         # http://redmine.ruby-lang.org/issues/show/2758
         if e.to_s =~ /#{Regexp.escape(%q|undefined method `closed?' for nil:NilClass|)}/
-          Chef::Log.debug("Rescued error in http connect, re-raising as Errno::ECONNREFUSED to hide bug in net/http")
-          Chef::Log.debug("#{e.class.name}: #{e.to_s}")
-          Chef::Log.debug(e.backtrace.join("\n"))
+          Seth::Log.debug("Rescued error in http connect, re-raising as Errno::ECONNREFUSED to hide bug in net/http")
+          Seth::Log.debug("#{e.class.name}: #{e.to_s}")
+          Seth::Log.debug(e.backtrace.join("\n"))
           raise Errno::ECONNREFUSED, "Connection refused attempting to contact #{url.scheme}://#{host}:#{port}"
         else
           raise
@@ -139,7 +139,7 @@ class Chef
         @headers = headers.dup
         # No response compression unless we asked for it explicitly:
         @headers[HTTPRequest::ACCEPT_ENCODING] ||= "identity"
-        @headers['X-Chef-Version'] = ::Chef::VERSION
+        @headers['X-Seth-Version'] = ::Chef::VERSION
 
         # Only include port in Host header when it is not the default port
         # for the url scheme (80;443) - Fixes CHEF-5355

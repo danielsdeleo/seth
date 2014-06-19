@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/provider'
-require 'chef/mixin/command'
-require 'chef/resource/env'
+require 'seth/provider'
+require 'seth/mixin/command'
+require 'seth/resource/env'
 
-class Chef
+class Seth
   class Provider
-    class Env < Chef::Provider
-      include Chef::Mixin::Command
+    class Env < Seth::Provider
+      include Seth::Mixin::Command
       attr_accessor :key_exists
 
       def initialize(new_resource, run_context)
@@ -32,21 +32,21 @@ class Chef
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::Env.new(@new_resource.name)
+        @current_resource = Seth::Resource::Env.new(@new_resource.name)
         @current_resource.key_name(@new_resource.key_name)
 
         if env_key_exists(@new_resource.key_name)
           @current_resource.value(env_value(@new_resource.key_name))
         else
           @key_exists = false
-          Chef::Log.debug("#{@new_resource} key does not exist")
+          Seth::Log.debug("#{@new_resource} key does not exist")
         end
 
         @current_resource
       end
 
       def env_value(key_name)
-        raise Chef::Exceptions::Env, "#{self.to_s} provider does not implement env_value!"
+        raise Seth::Exceptions::Env, "#{self.to_s} provider does not implement env_value!"
       end
 
       def env_key_exists(key_name)
@@ -73,12 +73,12 @@ class Chef
         if @key_exists
           if compare_value
             modify_env
-            Chef::Log.info("#{@new_resource} altered")
+            Seth::Log.info("#{@new_resource} altered")
             @new_resource.updated_by_last_action(true)
           end
         else
           create_env
-          Chef::Log.info("#{@new_resource} created")
+          Seth::Log.info("#{@new_resource} created")
           @new_resource.updated_by_last_action(true)
         end
       end
@@ -92,7 +92,7 @@ class Chef
       def delete_element
         return false unless @new_resource.delim #no delim: delete the key
         if compare_value
-          Chef::Log.debug("#{@new_resource} element '#{@new_resource.value}' does not exist")
+          Seth::Log.debug("#{@new_resource} element '#{@new_resource.value}' does not exist")
           return true #do not delete the key
         else
           new_value =
@@ -105,7 +105,7 @@ class Chef
           else
             old_value = @new_resource.value(new_value)
             create_env
-            Chef::Log.debug("#{@new_resource} deleted #{old_value} element")
+            Seth::Log.debug("#{@new_resource} deleted #{old_value} element")
             @new_resource.updated_by_last_action(true)
             return true #we removed the element and updated; do not delete the key
           end
@@ -115,7 +115,7 @@ class Chef
       def action_delete
         if @key_exists && !delete_element
           delete_env
-          Chef::Log.info("#{@new_resource} deleted")
+          Seth::Log.info("#{@new_resource} deleted")
           @new_resource.updated_by_last_action(true)
         end
       end
@@ -124,20 +124,20 @@ class Chef
         if @key_exists
           if compare_value
             modify_env
-            Chef::Log.info("#{@new_resource} modified")
+            Seth::Log.info("#{@new_resource} modified")
             @new_resource.updated_by_last_action(true)
           end
         else
-          raise Chef::Exceptions::Env, "Cannot modify #{@new_resource} - key does not exist!"
+          raise Seth::Exceptions::Env, "Cannot modify #{@new_resource} - key does not exist!"
         end
       end
 
       def create_env
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :#{@new_resource.action}"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :#{@new_resource.action}"
       end
 
       def delete_env
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :delete"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :delete"
       end
 
       def modify_env

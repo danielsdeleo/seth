@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Node
 
     # == AttrArray
     # AttrArray is identical to Array, except that it keeps a reference to the
-    # "root" (Chef::Node::Attribute) object, and will trigger a cache
+    # "root" (Seth::Node::Attribute) object, and will trigger a cache
     # invalidation on that object when mutated.
     class AttrArray < Array
 
@@ -91,7 +91,7 @@ class Chef
 
     # == VividMash
     # VividMash is identical to a Mash, with a few exceptions:
-    # * It has a reference to the root Chef::Node::Attribute to which it
+    # * It has a reference to the root Seth::Node::Attribute to which it
     #   belongs, and will trigger cache invalidation on that object when
     #   mutated.
     # * It auto-vivifies, that is a reference to a missing element will result

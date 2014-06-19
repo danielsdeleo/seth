@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-SSH" "1" "Chef 11.12.0" "" "knife ssh"
+.TH "KNIFE-SSH" "1" "Seth 11.12.0" "" "knife ssh"
 .SH NAME
 knife-ssh \- The man page for the knife ssh subcommand.
 .
@@ -64,8 +64,8 @@ The configuration file to use.
 .B \fB\-C NUM\fP, \fB\-\-concurrency NUM\fP
 The number of allowed concurrent connections.
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -95,7 +95,7 @@ Shows help for the command.
 The SSH identity file used for authentication. Key\-based authentication is recommended.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-m\fP, \fB\-\-manual\-list\fP
 Indicates that a search query is a space\-separated list of servers. If there is more than one item in the list, put quotes around the entire list. For example: \fB\-\-manual\-list "server01 server 02 server 03"\fP
@@ -116,7 +116,7 @@ The SSH password. This can be used to pass the password directly on the command 
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fBSEARCH_QUERY\fP
 The search query used to return a list of servers to be accessed using SSH and the specified \fBSSH_COMMAND\fP\&. This option uses the same syntax as the search sub\-command.
@@ -125,10 +125,10 @@ The search query used to return a list of servers to be accessed using SSH and t
 The command that will be run against the results of a search query.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -140,7 +140,7 @@ The SSH user name.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -177,19 +177,19 @@ ec2\-184\-73\-60\-141.compute\-1.amazonaws.com    13:50:48 up 1 day, 23:30,  1 u
 .sp
 .nf
 .ft C
-$ knife ssh \(aqname:*\(aq \(aqsudo chef\-client\(aq
+$ knife ssh \(aqname:*\(aq \(aqsudo seth\-client\(aq
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .sp
-To force a chef\-client run on all of the web servers running Ubuntu on the Amazon EC2 platform, enter:
+To force a seth\-client run on all of the web servers running Ubuntu on the Amazon EC2 platform, enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
-$ knife ssh "role:web" "sudo chef\-client" \-x ubuntu \-a ec2.public_hostname
+$ knife ssh "role:web" "sudo seth\-client" \-x ubuntu \-a ec2.public_hostname
 .ft P
 .fi
 .UNINDENT
@@ -201,28 +201,28 @@ to return something like:
 .sp
 .nf
 .ft C
-ec2\-67\-202\-63\-102.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:37 +0000] INFO: Starting Chef Run (Version 0.9.10)
-ec2\-174\-129\-127\-206.compute\-1.amazonaws.com [Fri, 22 Oct 2010 14:18:37 +0000] INFO: Starting Chef Run (Version 0.9.10)
-ec2\-184\-73\-9\-250.compute\-1.amazonaws.com    [Fri, 22 Oct 2010 14:18:38 +0000] INFO: Starting Chef Run (Version 0.9.10)
-ec2\-75\-101\-240\-230.compute\-1.amazonaws.com  [Fri, 22 Oct 2010 14:18:38 +0000] INFO: Starting Chef Run (Version 0.9.10)
-ec2\-184\-73\-60\-141.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:38 +0000] INFO: Starting Chef Run (Version 0.9.10)
-ec2\-174\-129\-127\-206.compute\-1.amazonaws.com [Fri, 22 Oct 2010 14:18:39 +0000] INFO: Chef Run complete in 1.419243 seconds
+ec2\-67\-202\-63\-102.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:37 +0000] INFO: Starting Seth Run (Version 0.9.10)
+ec2\-174\-129\-127\-206.compute\-1.amazonaws.com [Fri, 22 Oct 2010 14:18:37 +0000] INFO: Starting Seth Run (Version 0.9.10)
+ec2\-184\-73\-9\-250.compute\-1.amazonaws.com    [Fri, 22 Oct 2010 14:18:38 +0000] INFO: Starting Seth Run (Version 0.9.10)
+ec2\-75\-101\-240\-230.compute\-1.amazonaws.com  [Fri, 22 Oct 2010 14:18:38 +0000] INFO: Starting Seth Run (Version 0.9.10)
+ec2\-184\-73\-60\-141.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:38 +0000] INFO: Starting Seth Run (Version 0.9.10)
+ec2\-174\-129\-127\-206.compute\-1.amazonaws.com [Fri, 22 Oct 2010 14:18:39 +0000] INFO: Seth Run complete in 1.419243 seconds
 ec2\-174\-129\-127\-206.compute\-1.amazonaws.com [Fri, 22 Oct 2010 14:18:39 +0000] INFO: cleaning the checksum cache
 ec2\-174\-129\-127\-206.compute\-1.amazonaws.com [Fri, 22 Oct 2010 14:18:39 +0000] INFO: Running report handlers
 ec2\-174\-129\-127\-206.compute\-1.amazonaws.com [Fri, 22 Oct 2010 14:18:39 +0000] INFO: Report handlers complete
-ec2\-67\-202\-63\-102.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:39 +0000] INFO: Chef Run complete in 1.578265 seconds
+ec2\-67\-202\-63\-102.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:39 +0000] INFO: Seth Run complete in 1.578265 seconds
 ec2\-67\-202\-63\-102.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:39 +0000] INFO: cleaning the checksum cache
 ec2\-67\-202\-63\-102.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:39 +0000] INFO: Running report handlers
 ec2\-67\-202\-63\-102.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:39 +0000] INFO: Report handlers complete
-ec2\-184\-73\-9\-250.compute\-1.amazonaws.com    [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Chef Run complete in 1.638884 seconds
+ec2\-184\-73\-9\-250.compute\-1.amazonaws.com    [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Seth Run complete in 1.638884 seconds
 ec2\-184\-73\-9\-250.compute\-1.amazonaws.com    [Fri, 22 Oct 2010 14:18:40 +0000] INFO: cleaning the checksum cache
 ec2\-184\-73\-9\-250.compute\-1.amazonaws.com    [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Running report handlers
 ec2\-184\-73\-9\-250.compute\-1.amazonaws.com    [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Report handlers complete
-ec2\-75\-101\-240\-230.compute\-1.amazonaws.com  [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Chef Run complete in 1.540257 seconds
+ec2\-75\-101\-240\-230.compute\-1.amazonaws.com  [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Seth Run complete in 1.540257 seconds
 ec2\-75\-101\-240\-230.compute\-1.amazonaws.com  [Fri, 22 Oct 2010 14:18:40 +0000] INFO: cleaning the checksum cache
 ec2\-75\-101\-240\-230.compute\-1.amazonaws.com  [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Running report handlers
 ec2\-75\-101\-240\-230.compute\-1.amazonaws.com  [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Report handlers complete
-ec2\-184\-73\-60\-141.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Chef Run complete in 1.502489 seconds
+ec2\-184\-73\-60\-141.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Seth Run complete in 1.502489 seconds
 ec2\-184\-73\-60\-141.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:40 +0000] INFO: cleaning the checksum cache
 ec2\-184\-73\-60\-141.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Running report handlers
 ec2\-184\-73\-60\-141.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:40 +0000] INFO: Report handlers complete
@@ -231,13 +231,13 @@ ec2\-184\-73\-60\-141.compute\-1.amazonaws.com   [Fri, 22 Oct 2010 14:18:40 +000
 .UNINDENT
 .UNINDENT
 .sp
-To query for all nodes that have the "webserver" role and then use SSH to run the command "sudo chef\-client", enter:
+To query for all nodes that have the "webserver" role and then use SSH to run the command "sudo seth\-client", enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
-$ knife ssh "role:webserver" "sudo chef\-client"
+$ knife ssh "role:webserver" "sudo seth\-client"
 .ft P
 .fi
 .UNINDENT
@@ -279,6 +279,6 @@ ERROR: LoadError: cannot load such file \-\- appscript
 .UNINDENT
 .UNINDENT
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

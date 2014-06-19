@@ -15,9 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Chef
+class Seth
   CHEF_ROOT = File.dirname(File.expand_path(File.dirname(__FILE__)))
   VERSION = '11.14.0.alpha.5'
 end
 
-# NOTE: the Chef::Version class is defined in version_class.rb
+# NOTE: the Seth::Version class is defined in version_class.rb

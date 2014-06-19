@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-require 'chef/log'
-require 'chef/exceptions'
+require 'seth/log'
+require 'seth/exceptions'
 require 'tmpdir'
 require 'fcntl'
 require 'etc'
 
-class Chef
+class Seth
   module Mixin
 
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -47,16 +47,16 @@ class Chef
     module Command
       extend self
 
-      # NOTE: run_command is deprecated in favor of using Chef::Shellout which now comes from the mixlib-shellout gem. NOTE #
+      # NOTE: run_command is deprecated in favor of using Seth::Shellout which now comes from the mixlib-shellout gem. NOTE #
 
       if RUBY_PLATFORM =~ /mswin|mingw32|windows/
-        require 'chef/mixin/command/windows'
-        include ::Chef::Mixin::Command::Windows
-        extend  ::Chef::Mixin::Command::Windows
+        require 'seth/mixin/command/windows'
+        include ::Seth::Mixin::Command::Windows
+        extend  ::Seth::Mixin::Command::Windows
       else
-        require 'chef/mixin/command/unix'
-        include ::Chef::Mixin::Command::Unix
-        extend  ::Chef::Mixin::Command::Unix
+        require 'seth/mixin/command/unix'
+        include ::Seth::Mixin::Command::Unix
+        extend  ::Seth::Mixin::Command::Unix
       end
 
       # === Parameters
@@ -93,7 +93,7 @@ class Chef
         # TODO: This is the wrong place for this responsibility.
         if args.has_key?(:creates)
           if File.exists?(args[:creates])
-            Chef::Log.debug("Skipping #{args[:command]} - creates #{args[:creates]} exists.")
+            Seth::Log.debug("Skipping #{args[:command]} - creates #{args[:creates]} exists.")
             return false
           end
         end
@@ -107,7 +107,7 @@ class Chef
       end
 
       def output_of_command(command, args)
-        Chef::Log.debug("Executing #{command}")
+        Seth::Log.debug("Executing #{command}")
         stderr_string, stdout_string, status = "", "", nil
 
         exec_processing_block = lambda do |pid, stdin, stdout, stderr|
@@ -116,7 +116,7 @@ class Chef
 
         args[:cwd] ||= Dir.tmpdir
         unless ::File.directory?(args[:cwd])
-          raise Chef::Exceptions::Exec, "#{args[:cwd]} does not exist or is not a directory"
+          raise Seth::Exceptions::Exec, "#{args[:cwd]} does not exist or is not a directory"
         end
 
         Dir.chdir(args[:cwd]) do
@@ -126,18 +126,18 @@ class Chef
                 status = popen4(command, args, &exec_processing_block)
               end
             rescue Timeout::Error => e
-              Chef::Log.error("#{command} exceeded timeout #{args[:timeout]}")
+              Seth::Log.error("#{command} exceeded timeout #{args[:timeout]}")
               raise(e)
             end
           else
             status = popen4(command, args, &exec_processing_block)
           end
 
-          Chef::Log.debug("---- Begin output of #{command} ----")
-          Chef::Log.debug("STDOUT: #{stdout_string}")
-          Chef::Log.debug("STDERR: #{stderr_string}")
-          Chef::Log.debug("---- End output of #{command} ----")
-          Chef::Log.debug("Ran #{command} returned #{status.exitstatus}")
+          Seth::Log.debug("---- Begin output of #{command} ----")
+          Seth::Log.debug("STDOUT: #{stdout_string}")
+          Seth::Log.debug("STDERR: #{stderr_string}")
+          Seth::Log.debug("---- End output of #{command} ----")
+          Seth::Log.debug("Ran #{command} returned #{status.exitstatus}")
         end
 
         return status, stdout_string, stderr_string
@@ -150,12 +150,12 @@ class Chef
 
         # if the log level is not debug, through output of command when we fail
         output = ""
-        if Chef::Log.level == :debug || opts[:output_on_failure]
+        if Seth::Log.level == :debug || opts[:output_on_failure]
           output << "\n---- Begin output of #{opts[:command]} ----\n"
           output << command_output.to_s
           output << "\n---- End output of #{opts[:command]} ----\n"
         end
-        raise Chef::Exceptions::Exec, "#{opts[:command]} returned #{status.exitstatus}, expected #{opts[:returns]}#{output}"
+        raise Seth::Exceptions::Exec, "#{opts[:command]} returned #{status.exitstatus}, expected #{opts[:returns]}#{output}"
       end
 
       # Call #run_command but set LC_ALL to the system's current environment so it doesn't get changed to C.
@@ -180,7 +180,7 @@ class Chef
       def chdir_or_tmpdir(dir, &block)
         dir ||= Dir.tmpdir
         unless File.directory?(dir)
-          raise Chef::Exceptions::Exec, "#{dir} does not exist or is not a directory"
+          raise Seth::Exceptions::Exec, "#{dir} does not exist or is not a directory"
         end
         Dir.chdir(dir) do
           block.call

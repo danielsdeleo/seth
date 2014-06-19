@@ -1,6 +1,6 @@
 #
 # Author:: Serdar Sutay (<serdar@opscode.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
 
 require 'spec_helper'
 
-describe Chef::HTTP::Simple do
+describe Seth::HTTP::Simple do
   it "should have content length validation middleware after compressor middleware" do
-    client = Chef::HTTP::Simple.new("dummy.com")
+    client = Seth::HTTP::Simple.new("dummy.com")
     middlewares = client.instance_variable_get(:@middlewares)
-    content_length = middlewares.find_index { |e| e.is_a? Chef::HTTP::ValidateContentLength }
-    decompressor = middlewares.find_index { |e| e.is_a? Chef::HTTP::Decompressor }
+    content_length = middlewares.find_index { |e| e.is_a? Seth::HTTP::ValidateContentLength }
+    decompressor = middlewares.find_index { |e| e.is_a? Seth::HTTP::Decompressor }
 
     content_length.should_not be_nil
     decompressor.should_not be_nil

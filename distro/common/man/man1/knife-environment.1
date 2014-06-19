@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-ENVIRONMENT" "1" "Chef 11.12.0" "" "knife environment"
+.TH "KNIFE-ENVIRONMENT" "1" "Seth 11.12.0" "" "knife environment"
 .SH NAME
 knife-environment \- The man page for the knife environment subcommand.
 .
@@ -31,16 +31,16 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-An environment is a way to map an organization\(aqs real\-life workflow to what can be configured and managed when using Chef server\&. Every organization begins with a single environment called the \fB_default\fP environment, which cannot be modified (or deleted). Additional environments can be created to reflect each organization\(aqs patterns and workflow. For example, creating \fBproduction\fP, \fBstaging\fP, \fBtesting\fP, and \fBdevelopment\fP environments. Generally, an environment is also associated with one (or more) cookbook versions.
+An environment is a way to map an organization\(aqs real\-life workflow to what can be configured and managed when using Seth server\&. Every organization begins with a single environment called the \fB_default\fP environment, which cannot be modified (or deleted). Additional environments can be created to reflect each organization\(aqs patterns and workflow. For example, creating \fBproduction\fP, \fBstaging\fP, \fBtesting\fP, and \fBdevelopment\fP environments. Generally, an environment is also associated with one (or more) cookbook versions.
 .sp
-The \fBknife environment\fP subcommand is used to manage environments within a single organization on the Chef server\&.
+The \fBknife environment\fP subcommand is used to manage environments within a single organization on the Seth server\&.
 .SH COMMON OPTIONS
 .sp
 The following options may be used with any of the arguments available to the \fBknife environment\fP subcommand:
 .INDENT 0.0
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
@@ -64,7 +64,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -73,22 +73,22 @@ Indicates whether colored output will be used.
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .SH COMPARE
 .sp
@@ -219,7 +219,7 @@ yum                latest   latest
 xfs                latest   latest
 apt                latest   latest
 dmg                latest   latest
-chef_handler       latest   latest
+seth_handler       latest   latest
 windows            1.0.0    4.1.2
 .ft P
 .fi
@@ -227,7 +227,7 @@ windows            1.0.0    4.1.2
 .UNINDENT
 .SH CREATE
 .sp
-The \fBcreate\fP argument is used to add an environment object to the Chef server\&. When this argument is run, Knife will open $EDITOR to enable editing of the \fBENVIRONMENT\fP description field (unless a description is specified as part of the command). When finished, Knife will add the environment to the Chef server\&.
+The \fBcreate\fP argument is used to add an environment object to the Seth server\&. When this argument is run, Knife will open $EDITOR to enable editing of the \fBENVIRONMENT\fP description field (unless a description is specified as part of the command). When finished, Knife will add the environment to the Chef server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -249,7 +249,7 @@ This argument has the following options:
 .INDENT 0.0
 .TP
 .B \fB\-d DESCRIPTION\fP, \fB\-\-description DESCRIPTION\fP
-The description of the environment. This value will populate the description field for the environment on the Chef server\&.
+The description of the environment. This value will populate the description field for the environment on the Seth server\&.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -267,7 +267,7 @@ $ knife environment create dev \-d "The development environment."
 .UNINDENT
 .SH DELETE
 .sp
-The \fBdelete\fP argument is used to delete an environment from a Chef server\&.
+The \fBdelete\fP argument is used to delete an environment from a Seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -304,7 +304,7 @@ $ knife environment delete dev
 Type \fBY\fP to confirm a deletion.
 .SH EDIT
 .sp
-The \fBedit\fP argument is used to edit the attributes of an environment. When this argument is run, Knife will open $EDITOR to enable editing of \fBENVIRONMENT\fP attributes. When finished, Knife will update the Chef server with those changes.
+The \fBedit\fP argument is used to edit the attributes of an environment. When this argument is run, Knife will open $EDITOR to enable editing of \fBENVIRONMENT\fP attributes. When finished, Knife will update the Seth server with those changes.
 .sp
 \fBSyntax\fP
 .sp
@@ -391,7 +391,7 @@ $ knife environment edit devops from file "path to JSON file"
 .UNINDENT
 .SH LIST
 .sp
-The \fBlist\fP argument is used to list all of the environments that are currently available on the Chef server\&.
+The \fBlist\fP argument is used to list all of the environments that are currently available on the Seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -472,11 +472,11 @@ to return:
 .nf
 .ft C
 % knife environment show dev
-chef_type:            environment
+seth_type:            environment
 cookbook_versions:
 default_attributes:
 description:
-json_class:           Chef::Environment
+json_class:           Seth::Environment
 name:                 dev
 override_attributes:
 
@@ -503,6 +503,6 @@ $ knife role show devops \-F json
 .sp
 Other formats available include \fBtext\fP, \fByaml\fP, and \fBpp\fP\&.
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

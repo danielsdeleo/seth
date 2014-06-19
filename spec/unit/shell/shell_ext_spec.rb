@@ -32,7 +32,7 @@ describe Shell::Extensions do
     end
 
     it "finds a subsession in irb for an object" do
-      target_context_obj = Chef::Node.new
+      target_context_obj = Seth::Node.new
 
       irb_context = double("context", :main => target_context_obj)
       irb_session = double("irb session", :context => irb_context)
@@ -119,11 +119,11 @@ describe Shell::Extensions do
     it "gives access to the stepable iterator" do
       Shell::StandAloneSession.instance.stub(:reset!)
       Shell.session.stub(:rebuild_context)
-      events = Chef::EventDispatch::Dispatcher.new
-      run_context = Chef::RunContext.new(Chef::Node.new, {}, events)
+      events = Seth::EventDispatch::Dispatcher.new
+      run_context = Seth::RunContext.new(Chef::Node.new, {}, events)
       run_context.resource_collection.instance_variable_set(:@iterator, :the_iterator)
       Shell.session.run_context = run_context
-      @root_context.chef_run.should == :the_iterator
+      @root_context.seth_run.should == :the_iterator
     end
 
     it "lists directory contents" do
@@ -137,9 +137,9 @@ describe Shell::Extensions do
   describe "extending the recipe object" do
 
     before do
-      @events = Chef::EventDispatch::Dispatcher.new
-      @run_context = Chef::RunContext.new(Chef::Node.new, {}, @events)
-      @recipe_object = Chef::Recipe.new(nil, nil, @run_context)
+      @events = Seth::EventDispatch::Dispatcher.new
+      @run_context = Seth::RunContext.new(Chef::Node.new, {}, @events)
+      @recipe_object = Seth::Recipe.new(nil, nil, @run_context)
       Shell::Extensions.extend_context_recipe(@recipe_object)
     end
 

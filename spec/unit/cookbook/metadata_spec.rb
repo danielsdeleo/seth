@@ -18,12 +18,12 @@
 #
 
 require 'spec_helper'
-require 'chef/cookbook/metadata'
+require 'seth/cookbook/metadata'
 
-describe Chef::Cookbook::Metadata do
+describe Seth::Cookbook::Metadata do
   before(:each) do
-    @cookbook = Chef::CookbookVersion.new('test_cookbook')
-    @meta = Chef::Cookbook::Metadata.new(@cookbook)
+    @cookbook = Seth::CookbookVersion.new('test_cookbook')
+    @meta = Seth::Cookbook::Metadata.new(@cookbook)
   end
 
   describe "when comparing for equality" do
@@ -83,38 +83,38 @@ describe Chef::Cookbook::Metadata do
   end
 
   describe "when first created" do
-    it "should return a Chef::Cookbook::Metadata object" do
-      @meta.should be_a_kind_of(Chef::Cookbook::Metadata)
+    it "should return a Seth::Cookbook::Metadata object" do
+      @meta.should be_a_kind_of(Seth::Cookbook::Metadata)
     end
 
     it "should allow a cookbook as the first argument" do
-      lambda { Chef::Cookbook::Metadata.new(@cookbook) }.should_not raise_error
+      lambda { Seth::Cookbook::Metadata.new(@cookbook) }.should_not raise_error
     end
 
     it "should allow an maintainer name for the second argument" do
-      lambda { Chef::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown') }.should_not raise_error
+      lambda { Seth::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown') }.should_not raise_error
     end
 
     it "should set the maintainer name from the second argument" do
-      md = Chef::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown')
+      md = Seth::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown')
       md.maintainer.should == 'Bobo T. Clown'
     end
 
     it "should allow an maintainer email for the third argument" do
-      lambda { Chef::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown', 'bobo@clown.co') }.should_not raise_error
+      lambda { Seth::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown', 'bobo@clown.co') }.should_not raise_error
     end
 
     it "should set the maintainer email from the third argument" do
-      md = Chef::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown', 'bobo@clown.co')
+      md = Seth::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown', 'bobo@clown.co')
       md.maintainer_email.should == 'bobo@clown.co'
     end
 
     it "should allow a license for the fourth argument" do
-      lambda { Chef::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown', 'bobo@clown.co', 'Clown License v1') }.should_not raise_error
+      lambda { Seth::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown', 'bobo@clown.co', 'Clown License v1') }.should_not raise_error
     end
 
     it "should set the license from the fourth argument" do
-      md = Chef::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown', 'bobo@clown.co', 'Clown License v1')
+      md = Seth::Cookbook::Metadata.new(@cookbook, 'Bobo T. Clown', 'bobo@clown.co', 'Clown License v1')
       md.license.should == 'Clown License v1'
     end
   end
@@ -235,7 +235,7 @@ describe Chef::Cookbook::Metadata do
 
       dep_types.each do |dep, dep_args|
         it "for #{dep} raises an informative error instead of vomiting on your shoes" do
-          lambda {@meta.send(dep, *dep_args)}.should raise_error(Chef::Exceptions::ObsoleteDependencySyntax)
+          lambda {@meta.send(dep, *dep_args)}.should raise_error(Seth::Exceptions::ObsoleteDependencySyntax)
         end
       end
     end
@@ -253,7 +253,7 @@ describe Chef::Cookbook::Metadata do
 
       dep_types.each do |dep, dep_args|
         it "for #{dep} raises an informative error instead of vomiting on your shoes" do
-          lambda {@meta.send(dep, *dep_args)}.should raise_error(Chef::Exceptions::InvalidVersionConstraint)
+          lambda {@meta.send(dep, *dep_args)}.should raise_error(Seth::Exceptions::InvalidVersionConstraint)
         end
       end
     end
@@ -539,7 +539,7 @@ describe Chef::Cookbook::Metadata do
   describe "recipes" do
     before(:each) do
       @cookbook.recipe_files = [ "default.rb", "enlighten.rb" ]
-      @meta = Chef::Cookbook::Metadata.new(@cookbook)
+      @meta = Seth::Cookbook::Metadata.new(@cookbook)
     end
 
     it "should have the names of the recipes" do
@@ -562,7 +562,7 @@ describe Chef::Cookbook::Metadata do
   describe "json" do
     before(:each) do
       @cookbook.recipe_files = [ "default.rb", "enlighten.rb" ]
-      @meta = Chef::Cookbook::Metadata.new(@cookbook)
+      @meta = Seth::Cookbook::Metadata.new(@cookbook)
       @meta.version "1.0"
       @meta.maintainer "Bobo T. Clown"
       @meta.maintainer_email "bobo@example.com"
@@ -584,11 +584,11 @@ describe Chef::Cookbook::Metadata do
 
     describe "serialize" do
       before(:each) do
-        @serial = Chef::JSONCompat.from_json(@meta.to_json)
+        @serial = Seth::JSONCompat.from_json(@meta.to_json)
       end
 
       it "should serialize to a json hash" do
-        Chef::JSONCompat.from_json(@meta.to_json).should be_a_kind_of(Hash)
+        Seth::JSONCompat.from_json(@meta.to_json).should be_a_kind_of(Hash)
       end
 
       %w{
@@ -617,11 +617,11 @@ describe Chef::Cookbook::Metadata do
 
     describe "deserialize" do
       before(:each) do
-        @deserial = Chef::Cookbook::Metadata.from_json(@meta.to_json)
+        @deserial = Seth::Cookbook::Metadata.from_json(@meta.to_json)
       end
 
-      it "should deserialize to a Chef::Cookbook::Metadata object" do
-        @deserial.should be_a_kind_of(Chef::Cookbook::Metadata)
+      it "should deserialize to a Seth::Cookbook::Metadata object" do
+        @deserial.should be_a_kind_of(Seth::Cookbook::Metadata)
       end
 
       %w{
@@ -660,31 +660,31 @@ describe Chef::Cookbook::Metadata do
        :replacing].each do |to_check|
         it "should transform deprecated greater than syntax for :#{to_check.to_s}" do
           @hash[to_check.to_s]["foo::bar"] = ">> 0.2"
-          deserial = Chef::Cookbook::Metadata.from_hash(@hash)
+          deserial = Seth::Cookbook::Metadata.from_hash(@hash)
           deserial.send(to_check)["foo::bar"].should == '> 0.2'
         end
 
         it "should transform deprecated less than syntax for :#{to_check.to_s}" do
           @hash[to_check.to_s]["foo::bar"] = "<< 0.2"
-          deserial = Chef::Cookbook::Metadata.from_hash(@hash)
+          deserial = Seth::Cookbook::Metadata.from_hash(@hash)
           deserial.send(to_check)["foo::bar"].should == '< 0.2'
         end
 
         it "should ignore multiple dependency constraints for :#{to_check.to_s}" do
           @hash[to_check.to_s]["foo::bar"] = [ ">= 1.0", "<= 5.2" ]
-          deserial = Chef::Cookbook::Metadata.from_hash(@hash)
+          deserial = Seth::Cookbook::Metadata.from_hash(@hash)
           deserial.send(to_check)["foo::bar"].should == []
         end
 
         it "should accept an empty array of dependency constraints for :#{to_check.to_s}" do
           @hash[to_check.to_s]["foo::bar"] = []
-          deserial = Chef::Cookbook::Metadata.from_hash(@hash)
+          deserial = Seth::Cookbook::Metadata.from_hash(@hash)
           deserial.send(to_check)["foo::bar"].should == []
         end
 
         it "should accept single-element arrays of dependency constraints for :#{to_check.to_s}" do
           @hash[to_check.to_s]["foo::bar"] = [ ">= 2.0" ]
-          deserial = Chef::Cookbook::Metadata.from_hash(@hash)
+          deserial = Seth::Cookbook::Metadata.from_hash(@hash)
           deserial.send(to_check)["foo::bar"].should == ">= 2.0"
         end
       end

@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class CookbookSiteShare < Knife
 
       deps do
-        require 'chef/cookbook_loader'
-        require 'chef/cookbook_uploader'
-        require 'chef/cookbook_site_streaming_uploader'
+        require 'seth/cookbook_loader'
+        require 'seth/cookbook_uploader'
+        require 'seth/cookbook_site_streaming_uploader'
       end
 
       banner "knife cookbook site share COOKBOOK CATEGORY (options)"
@@ -35,7 +35,7 @@ class Chef
         :short => "-o PATH:PATH",
         :long => "--cookbook-path PATH:PATH",
         :description => "A colon-separated path to look for cookbooks in",
-        :proc => lambda { |o| Chef::Config.cookbook_path = o.split(":") }
+        :proc => lambda { |o| Seth::Config.cookbook_path = o.split(":") }
 
       def run
         if @name_args.length < 2
@@ -44,33 +44,33 @@ class Chef
           exit 1
         end
 
-        config[:cookbook_path] ||= Chef::Config[:cookbook_path]
+        config[:cookbook_path] ||= Seth::Config[:cookbook_path]
 
         cookbook_name = @name_args[0]
         category = @name_args[1]
-        cl = Chef::CookbookLoader.new(config[:cookbook_path])
+        cl = Seth::CookbookLoader.new(config[:cookbook_path])
         if cl.cookbook_exists?(cookbook_name)
           cookbook = cl[cookbook_name]
-          Chef::CookbookUploader.new(cookbook,config[:cookbook_path]).validate_cookbooks
-          tmp_cookbook_dir = Chef::CookbookSiteStreamingUploader.create_build_dir(cookbook)
+          Seth::CookbookUploader.new(cookbook,config[:cookbook_path]).validate_cookbooks
+          tmp_cookbook_dir = Seth::CookbookSiteStreamingUploader.create_build_dir(cookbook)
           begin
-            Chef::Log.debug("Temp cookbook directory is #{tmp_cookbook_dir.inspect}")
+            Seth::Log.debug("Temp cookbook directory is #{tmp_cookbook_dir.inspect}")
             ui.info("Making tarball #{cookbook_name}.tgz")
-            Chef::Mixin::Command.run_command(:command => "tar -czf #{cookbook_name}.tgz #{cookbook_name}", :cwd => tmp_cookbook_dir)
+            Seth::Mixin::Command.run_command(:command => "tar -czf #{cookbook_name}.tgz #{cookbook_name}", :cwd => tmp_cookbook_dir)
           rescue => e
             ui.error("Error making tarball #{cookbook_name}.tgz: #{e.message}. Increase log verbosity (-VV) for more information.")
-            Chef::Log.debug("\n#{e.backtrace.join("\n")}")
+            Seth::Log.debug("\n#{e.backtrace.join("\n")}")
             exit(1)
           end
 
           begin
-            do_upload("#{tmp_cookbook_dir}/#{cookbook_name}.tgz", category, Chef::Config[:node_name], Chef::Config[:client_key])
+            do_upload("#{tmp_cookbook_dir}/#{cookbook_name}.tgz", category, Seth::Config[:node_name], Chef::Config[:client_key])
             ui.info("Upload complete!")
-            Chef::Log.debug("Removing local staging directory at #{tmp_cookbook_dir}")
+            Seth::Log.debug("Removing local staging directory at #{tmp_cookbook_dir}")
             FileUtils.rm_rf tmp_cookbook_dir
           rescue => e
             ui.error("Error uploading cookbook #{cookbook_name} to the Opscode Cookbook Site: #{e.message}. Increase log verbosity (-VV) for more information.")
-            Chef::Log.debug("\n#{e.backtrace.join("\n")}")
+            Seth::Log.debug("\n#{e.backtrace.join("\n")}")
             exit(1)
           end
 
@@ -86,12 +86,12 @@ class Chef
 
          category_string = { 'category'=>cookbook_category }.to_json
 
-         http_resp = Chef::CookbookSiteStreamingUploader.post(uri, user_id, user_secret_filename, {
+         http_resp = Seth::CookbookSiteStreamingUploader.post(uri, user_id, user_secret_filename, {
            :tarball => File.open(cookbook_filename),
            :cookbook => category_string
          })
 
-         res = Chef::JSONCompat.from_json(http_resp.body)
+         res = Seth::JSONCompat.from_json(http_resp.body)
          if http_resp.code.to_i != 201
            if res['error_messages']
              if res['error_messages'][0] =~ /Version already exists/

@@ -19,7 +19,7 @@
 require 'tempfile'
 require 'erubis'
 
-class Chef
+class Seth
   module Mixin
     module Template
 
@@ -35,24 +35,24 @@ class Chef
         end
       end
 
-      # == ChefContext
-      # ChefContext was previously used to mix behavior into Erubis::Context so
+      # == SethContext
+      # SethContext was previously used to mix behavior into Erubis::Context so
       # that it would be available to templates. This behavior has now moved to
       # TemplateContext, but this module is still mixed in to the
-      # TemplateContext class so that any user code that modified ChefContext
+      # TemplateContext class so that any user code that modified SethContext
       # will continue to work correctly.
-      module ChefContext
+      module SethContext
       end
 
       # == TemplateContext
-      # TemplateContext is the base context class for all templates in Chef. It
+      # TemplateContext is the base context class for all templates in Seth. It
       # defines user-facing extensions to the base Erubis::Context to provide
       # enhanced features. Individual instances of TemplateContext can be
       # extended to add logic to a specific template.
       #
       class TemplateContext < Erubis::Context
 
-        include ChefContext
+        include SethContext
 
         attr_reader :_extension_modules
 
@@ -130,7 +130,7 @@ class Chef
 
           # CHEF-4399
           # Erubis always emits unix line endings during template
-          # rendering. Chef used to convert line endings to the
+          # rendering. Seth used to convert line endings to the
           # original line endings in the template. However this
           # created problems in cases when cookbook developer is
           # coding the cookbook on windows but using it on non-windows
@@ -140,7 +140,7 @@ class Chef
           # potential issues for the applications that will consume
           # this template.
 
-          if Chef::Platform.windows?
+          if Seth::Platform.windows?
             output = output.gsub(/\r?\n/,"\r\n")
           end
 
@@ -152,7 +152,7 @@ class Chef
             context_methods = [:node, :render, :render_template, :render_template_from_string]
             context_methods.each do |core_method|
               if mod.method_defined?(core_method) or mod.private_method_defined?(core_method)
-                Chef::Log.warn("Core template method `#{core_method}' overridden by extension module #{mod}")
+                Seth::Log.warn("Core template method `#{core_method}' overridden by extension module #{mod}")
               end
             end
             extend(mod)

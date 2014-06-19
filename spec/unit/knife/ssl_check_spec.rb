@@ -1,6 +1,6 @@
 #
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 require "spec_helper"
 require 'stringio'
 
-describe Chef::Knife::SslCheck do
+describe Seth::Knife::SslCheck do
 
   let(:name_args) { [] }
   let(:stdout_io) { StringIO.new }
@@ -34,7 +34,7 @@ describe Chef::Knife::SslCheck do
   end
 
   subject(:ssl_check) do
-    s = Chef::Knife::SslCheck.new
+    s = Seth::Knife::SslCheck.new
     s.ui.stub(:stdout).and_return(stdout_io)
     s.ui.stub(:stderr).and_return(stderr_io)
     s.name_args = name_args
@@ -42,11 +42,11 @@ describe Chef::Knife::SslCheck do
   end
 
   before do
-    Chef::Config.chef_server_url = "https://example.com:8443/chef-server"
+    Seth::Config.seth_server_url = "https://example.com:8443/chef-server"
   end
 
   context "when no arguments are given" do
-    it "uses the chef_server_url as the host to check" do
+    it "uses the seth_server_url as the host to check" do
       expect(ssl_check.host).to eq("example.com")
       expect(ssl_check.port).to eq(8443)
     end

@@ -18,16 +18,16 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Script, "action_run" do
+describe Seth::Provider::Script, "action_run" do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Script.new('run some perl code')
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Script.new('run some perl code')
     @new_resource.code "$| = 1; print 'i like beans'"
     @new_resource.interpreter 'perl'
 
-    @provider = Chef::Provider::Script.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Script.new(@new_resource, @run_context)
 
     @script_file = StringIO.new
     @script_file.stub(:path).and_return('/tmp/the_script_file')

@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-class Chef
+class Seth
   class Util
     class Windows
       class NetUse
@@ -32,22 +32,22 @@ end
 GUID = "\\\\?\\Volume{578e72b5-6e70-11df-b5c5-000c29d4a7d9}\\"
 REMOTE = "\\\\server-name\\path"
 
-describe Chef::Provider::Mount::Windows do
+describe Seth::Provider::Mount::Windows do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Mount.new("X:")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Mount.new("X:")
     @new_resource.device GUID
-    @current_resource = Chef::Resource::Mount.new("X:")
-    Chef::Resource::Mount.stub(:new).and_return(@current_resource)
+    @current_resource = Seth::Resource::Mount.new("X:")
+    Seth::Resource::Mount.stub(:new).and_return(@current_resource)
 
-    @net_use = double("Chef::Util::Windows::NetUse")
-    Chef::Util::Windows::NetUse.stub(:new).and_return(@net_use)
-    @vol = double("Chef::Util::Windows::Volume")
-    Chef::Util::Windows::Volume.stub(:new).and_return(@vol)
+    @net_use = double("Seth::Util::Windows::NetUse")
+    Seth::Util::Windows::NetUse.stub(:new).and_return(@net_use)
+    @vol = double("Seth::Util::Windows::Volume")
+    Seth::Util::Windows::Volume.stub(:new).and_return(@vol)
 
-    @provider = Chef::Provider::Mount::Windows.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Mount::Windows.new(@new_resource, @run_context)
     @provider.current_resource = @current_resource
   end
 

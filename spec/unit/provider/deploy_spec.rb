@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Deploy do
+describe Seth::Provider::Deploy do
 
   before do
     @release_time = Time.utc( 2004, 8, 15, 16, 23, 42)
     Time.stub(:now).and_return(@release_time)
     @expected_release_dir = "/my/deploy/dir/releases/20040815162342"
-    @resource = Chef::Resource::Deploy.new("/my/deploy/dir")
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @provider = Chef::Provider::Deploy.new(@resource, @run_context)
+    @resource = Seth::Resource::Deploy.new("/my/deploy/dir")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @provider = Seth::Provider::Deploy.new(@resource, @run_context)
     @provider.stub(:release_slug)
     @provider.stub(:release_path).and_return(@expected_release_dir)
   end
@@ -266,7 +266,7 @@ describe Chef::Provider::Deploy do
 
   it "runs the new resource collection in the runner during a callback" do
     @runner = double("Runner")
-    Chef::Runner.stub(:new).and_return(@runner)
+    Seth::Runner.stub(:new).and_return(@runner)
     @runner.should_receive(:converge)
     callback_code = Proc.new { :noop }
     @provider.callback(:whatevs, callback_code)
@@ -326,7 +326,7 @@ describe Chef::Provider::Deploy do
   end
 
   it "gets a SCM provider as specified by its resource" do
-    @provider.scm_provider.should be_an_instance_of(Chef::Provider::Git)
+    @provider.scm_provider.should be_an_instance_of(Seth::Provider::Git)
     @provider.scm_provider.new_resource.destination.should eql("/my/deploy/dir/shared/cached-copy")
   end
 
@@ -372,7 +372,7 @@ describe Chef::Provider::Deploy do
     @provider.should_receive(:enforce_ownership)
 
     STDOUT.stub(:tty?).and_return(true)
-    Chef::Log.stub(:info?).and_return(true)
+    Seth::Log.stub(:info?).and_return(true)
     @provider.should_receive(:run_command).with(:command => "migration_foo", :cwd => @expected_release_dir,
                                                 :user => "deployNinja", :group => "deployNinjas",
                                                 :log_level => :info, :live_stream => STDOUT,
@@ -495,9 +495,9 @@ describe Chef::Provider::Deploy do
   end
 
   it "sets @configuration[:environment] to the value of RAILS_ENV for backwards compat reasons" do
-    resource = Chef::Resource::Deploy.new("/my/deploy/dir")
+    resource = Seth::Resource::Deploy.new("/my/deploy/dir")
     resource.environment "production"
-    provider = Chef::Provider::Deploy.new(resource, @run_context)
+    provider = Seth::Provider::Deploy.new(resource, @run_context)
     provider.instance_variable_get(:@configuration)[:environment].should eql("production")
   end
 
@@ -520,10 +520,10 @@ describe Chef::Provider::Deploy do
     end
 
     it "loads a recipe file from the specified path and from_file evals it" do
-      ::File.should_receive(:exist?).with(@expected_release_dir + "/chefz/foobar_callback.rb").once.and_return(true)
+      ::File.should_receive(:exist?).with(@expected_release_dir + "/sethz/foobar_callback.rb").once.and_return(true)
       ::Dir.should_receive(:chdir).with(@expected_release_dir).and_yield
-      @provider.should_receive(:from_file).with(@expected_release_dir + "/chefz/foobar_callback.rb")
-      @provider.callback(:whateverz, "chefz/foobar_callback.rb")
+      @provider.should_receive(:from_file).with(@expected_release_dir + "/sethz/foobar_callback.rb")
+      @provider.callback(:whateverz, "sethz/foobar_callback.rb")
     end
 
     it "instance_evals a block/proc for restart command" do
@@ -584,7 +584,7 @@ describe Chef::Provider::Deploy do
 
     it "converts sudo and run to exec resources in hooks" do
       runner = double("tehRunner")
-      Chef::Runner.stub(:new).and_return(runner)
+      Seth::Runner.stub(:new).and_return(runner)
 
       snitch = nil
       @resource.user("tehCat")
@@ -599,7 +599,7 @@ describe Chef::Provider::Deploy do
       runner.should_receive(:converge)
       #
       @provider.callback(:phony, callback_code)
-      snitch.should be_an_instance_of(Chef::Resource::Execute)
+      snitch.should be_an_instance_of(Seth::Resource::Execute)
       snitch.user.should == "tehCat"
     end
   end

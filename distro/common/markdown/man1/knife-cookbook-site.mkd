@@ -105,19 +105,19 @@ configuration file.
 ## EXAMPLES
 Uploading cookbooks to the Opscode cookbooks site:
 
-    knife cookbook site share example Other -k ~/.chef/USERNAME.pem -u USERNAME
+    knife cookbook site share example Other -k ~/.seth/USERNAME.pem -u USERNAME
 
 ## SEE ALSO
    __knife-cookbook(1)__
    <http://community.opscode.com/cookbooks>
 
 ## AUTHOR
-   Chef was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
+   Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
 
 ## DOCUMENTATION
    This manual page was written by Joshua Timberman <joshua@opscode.com>.
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## CHEF
-   Knife is distributed with Chef. <http://wiki.opscode.com/display/chef/Home>
+   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/provider/user'
+require 'seth/provider/user'
 
-class Chef
+class Seth
   class Provider
     class User
-      class Pw < Chef::Provider::User
+      class Pw < Seth::Provider::User
 
         def load_current_resource
           super
-          raise Chef::Exceptions::User, "Could not find binary /usr/sbin/pw for #{@new_resource}" unless ::File.exists?("/usr/sbin/pw")
+          raise Seth::Exceptions::User, "Could not find binary /usr/sbin/pw for #{@new_resource}" unless ::File.exists?("/usr/sbin/pw")
         end
 
         def create_user
@@ -80,13 +80,13 @@ class Chef
             field_symbol = field.to_sym
             if @current_resource.send(field_symbol) != @new_resource.send(field_symbol)
               if @new_resource.send(field_symbol)
-                Chef::Log.debug("#{@new_resource} setting #{field} to #{@new_resource.send(field_symbol)}")
+                Seth::Log.debug("#{@new_resource} setting #{field} to #{@new_resource.send(field_symbol)}")
                 opts << " #{option} '#{@new_resource.send(field_symbol)}'"
               end
             end
           end
           if @new_resource.supports[:manage_home]
-            Chef::Log.debug("#{@new_resource} is managing the users home directory")
+            Seth::Log.debug("#{@new_resource} is managing the users home directory")
             opts << " -m"
           end
           opts
@@ -94,17 +94,17 @@ class Chef
 
         def modify_password
           if (not @new_resource.password.nil?) && (@current_resource.password != @new_resource.password)
-            Chef::Log.debug("#{new_resource} updating password")
+            Seth::Log.debug("#{new_resource} updating password")
             command = "pw usermod #{@new_resource.username} -H 0"
             status = popen4(command, :waitlast => true) do |pid, stdin, stdout, stderr|
               stdin.puts "#{@new_resource.password}"
             end
 
             unless status.exitstatus == 0
-              raise Chef::Exceptions::User, "pw failed - #{status.inspect}!"
+              raise Seth::Exceptions::User, "pw failed - #{status.inspect}!"
             end
           else
-            Chef::Log.debug("#{new_resource} no change needed to password")
+            Seth::Log.debug("#{new_resource} no change needed to password")
           end
         end
       end

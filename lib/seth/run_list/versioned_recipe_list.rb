@@ -15,12 +15,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-require 'chef/version_class'
-require 'chef/version_constraint'
+require 'seth/version_class'
+require 'seth/version_constraint'
 
 # Why does this class exist?
 # Why did we not just modify RunList/RunListItem?
-class Chef
+class Seth
   class RunList
     class VersionedRecipeList < Array
 
@@ -31,8 +31,8 @@ class Chef
 
       def add_recipe(name, version=nil)
         if version && @versions.has_key?(name)
-          unless Chef::Version.new(@versions[name]) == Chef::Version.new(version)
-            raise Chef::Exceptions::CookbookVersionConflict, "Run list requires #{name} at versions #{@versions[name]} and #{version}"
+          unless Seth::Version.new(@versions[name]) == Chef::Version.new(version)
+            raise Seth::Exceptions::CookbookVersionConflict, "Run list requires #{name} at versions #{@versions[name]} and #{version}"
           end
         end
         @versions[name] = version if version
@@ -44,10 +44,10 @@ class Chef
       end
 
       # Return an Array of Hashes, each of the form:
-      #  {:name => RECIPE_NAME, :version_constraint => Chef::VersionConstraint }
+      #  {:name => RECIPE_NAME, :version_constraint => Seth::VersionConstraint }
       def with_version_constraints
         self.map do |recipe_name|
-          constraint = Chef::VersionConstraint.new(@versions[recipe_name])
+          constraint = Seth::VersionConstraint.new(@versions[recipe_name])
           { :name => recipe_name, :version_constraint => constraint }
         end
       end

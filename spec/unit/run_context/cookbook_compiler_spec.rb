@@ -26,29 +26,29 @@ require 'support/lib/library_load_order'
 #
 # Side effects used to verify the behavior are implemented as code in the various file types.
 #
-describe Chef::RunContext::CookbookCompiler do
+describe Seth::RunContext::CookbookCompiler do
 
-  let(:node) { Chef::Node.new }
+  let(:node) { Seth::Node.new }
 
-  let(:events) { Chef::EventDispatch::Dispatcher.new }
+  let(:events) { Seth::EventDispatch::Dispatcher.new }
 
   let(:cookbook_loader) do
-    cl = Chef::CookbookLoader.new(chef_repo_path)
+    cl = Seth::CookbookLoader.new(seth_repo_path)
     cl.load_cookbooks
     cl
   end
 
-  let(:run_context) { Chef::RunContext.new(node, cookbook_collection, events) }
+  let(:run_context) { Seth::RunContext.new(node, cookbook_collection, events) }
 
-  let(:chef_repo_path) { File.expand_path(File.join(CHEF_SPEC_DATA, "run_context", "cookbooks")) }
+  let(:seth_repo_path) { File.expand_path(File.join(CHEF_SPEC_DATA, "run_context", "cookbooks")) }
 
-  let(:cookbook_collection) { Chef::CookbookCollection.new(cookbook_loader) }
+  let(:cookbook_collection) { Seth::CookbookCollection.new(cookbook_loader) }
 
   # Lazy evaluation of `expansion` here is used to mutate the run list before expanding it
   let(:run_list_expansion) { node.run_list.expand('_default') }
 
   let(:compiler) do
-    Chef::RunContext::CookbookCompiler.new(run_context, run_list_expansion, events)
+    Seth::RunContext::CookbookCompiler.new(run_context, run_list_expansion, events)
   end
 
 

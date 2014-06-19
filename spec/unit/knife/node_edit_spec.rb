@@ -17,29 +17,29 @@
 #
 
 require 'spec_helper'
-Chef::Knife::NodeEdit.load_deps
+Seth::Knife::NodeEdit.load_deps
 
-describe Chef::Knife::NodeEdit do
+describe Seth::Knife::NodeEdit do
 
-  # helper to convert the view from Chef objects into Ruby objects representing JSON
+  # helper to convert the view from Seth objects into Ruby objects representing JSON
   def deserialized_json_view
-    actual = Chef::JSONCompat.from_json(Chef::JSONCompat.to_json_pretty(@knife.node_editor.send(:view)))
+    actual = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json_pretty(@knife.node_editor.send(:view)))
   end
 
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::NodeEdit.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::NodeEdit.new
     @knife.config = {
       :editor => 'cat',
       :attribute => nil,
       :print_after => nil
     }
     @knife.name_args = [ "adam" ]
-    @node = Chef::Node.new()
+    @node = Seth::Node.new()
   end
 
   it "should load the node" do
-    Chef::Node.should_receive(:load).with("adam").and_return(@node)
+    Seth::Node.should_receive(:load).with("adam").and_return(@node)
     @knife.node
   end
 
@@ -50,7 +50,7 @@ describe Chef::Knife::NodeEdit do
       @node.default_attrs = {:hide => :me}
       @node.override_attrs = {:dont => :show}
       @node.normal_attrs = {:do_show => :these}
-      @node.chef_environment("prod")
+      @node.seth_environment("prod")
       @node.run_list("recipe[foo]")
     end
 
@@ -61,7 +61,7 @@ describe Chef::Knife::NodeEdit do
       actual.should_not have_key("default")
       actual["normal"].should == {"do_show" => "these"}
       actual["run_list"].should == ["recipe[foo]"]
-      actual["chef_environment"].should == "prod"
+      actual["seth_environment"].should == "prod"
     end
 
     it "shows the extra attributes when given the --all option" do
@@ -73,7 +73,7 @@ describe Chef::Knife::NodeEdit do
       actual["default"].should == {"hide" => "me"}
       actual["normal"].should == {"do_show" => "these"}
       actual["run_list"].should == ["recipe[foo]"]
-      actual["chef_environment"].should == "prod"
+      actual["seth_environment"].should == "prod"
     end
 
     it "does not consider unedited data updated" do

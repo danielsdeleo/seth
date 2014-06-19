@@ -17,29 +17,29 @@
 #
 
 require File.expand_path('../../spec_helper', __FILE__)
-require 'chef/json_compat'
+require 'seth/json_compat'
 
-describe Chef::JSONCompat do
+describe Seth::JSONCompat do
 
   describe "with JSON containing an existing class" do
-    let(:json){'{"json_class": "Chef::Role"}'}
+    let(:json){'{"json_class": "Seth::Role"}'}
     it "returns an instance of the class instead of a Hash" do
-      Chef::JSONCompat.from_json(json).class.should eq Chef::Role
+      Seth::JSONCompat.from_json(json).class.should eq Chef::Role
     end
   end
 
-  describe 'with JSON containing "Chef::Sandbox" as a json_class value' do
-    require 'chef/sandbox' # Only needed for this test
-    let(:json){'{"json_class": "Chef::Sandbox", "arbitrary": "data"}'}
-    it "returns a Hash, because Chef::Sandbox is a dummy class" do
-      Chef::JSONCompat.from_json(json).should eq({"json_class" => "Chef::Sandbox", "arbitrary" => "data"})
+  describe 'with JSON containing "Seth::Sandbox" as a json_class value' do
+    require 'seth/sandbox' # Only needed for this test
+    let(:json){'{"json_class": "Seth::Sandbox", "arbitrary": "data"}'}
+    it "returns a Hash, because Seth::Sandbox is a dummy class" do
+      Seth::JSONCompat.from_json(json).should eq({"json_class" => "Chef::Sandbox", "arbitrary" => "data"})
     end
   end
 
   describe "with a file with 300 or less nested entries" do
     before(:all) do
       @json = IO.read(File.join(CHEF_SPEC_DATA, 'big_json.json'))
-      @hash = Chef::JSONCompat.from_json(@json)
+      @hash = Seth::JSONCompat.from_json(@json)
     end
 
     describe "when a big json file is loaded" do
@@ -54,7 +54,7 @@ describe Chef::JSONCompat do
   describe "with a file with more than 300 nested entries" do
     before(:all) do
       @json = IO.read(File.join(CHEF_SPEC_DATA, 'big_json_plus_one.json'))
-      @hash = Chef::JSONCompat.from_json(@json, {:max_nesting => 301})
+      @hash = Seth::JSONCompat.from_json(@json, {:max_nesting => 301})
     end
 
     describe "when a big json file is loaded" do

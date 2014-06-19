@@ -16,24 +16,24 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/base_fs_dir'
-require 'chef/chef_fs/file_system/chef_repository_file_system_entry'
-require 'chef/chef_fs/file_system/chef_repository_file_system_acls_dir'
-require 'chef/chef_fs/file_system/chef_repository_file_system_cookbooks_dir'
-require 'chef/chef_fs/file_system/chef_repository_file_system_data_bags_dir'
-require 'chef/chef_fs/file_system/multiplexed_dir'
-require 'chef/chef_fs/data_handler/client_data_handler'
-require 'chef/chef_fs/data_handler/environment_data_handler'
-require 'chef/chef_fs/data_handler/node_data_handler'
-require 'chef/chef_fs/data_handler/role_data_handler'
-require 'chef/chef_fs/data_handler/user_data_handler'
-require 'chef/chef_fs/data_handler/group_data_handler'
-require 'chef/chef_fs/data_handler/container_data_handler'
+require 'seth/chef_fs/file_system/base_fs_dir'
+require 'seth/chef_fs/file_system/chef_repository_file_system_entry'
+require 'seth/chef_fs/file_system/chef_repository_file_system_acls_dir'
+require 'seth/chef_fs/file_system/chef_repository_file_system_cookbooks_dir'
+require 'seth/chef_fs/file_system/chef_repository_file_system_data_bags_dir'
+require 'seth/chef_fs/file_system/multiplexed_dir'
+require 'seth/chef_fs/data_handler/client_data_handler'
+require 'seth/chef_fs/data_handler/environment_data_handler'
+require 'seth/chef_fs/data_handler/node_data_handler'
+require 'seth/chef_fs/data_handler/role_data_handler'
+require 'seth/chef_fs/data_handler/user_data_handler'
+require 'seth/chef_fs/data_handler/group_data_handler'
+require 'seth/chef_fs/data_handler/container_data_handler'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
-      class ChefRepositoryFileSystemRootDir < BaseFSDir
+      class SethRepositoryFileSystemRootDir < BaseFSDir
         def initialize(child_paths)
           super("", nil)
           @child_paths = child_paths
@@ -71,7 +71,7 @@ class Chef
         def fs_description
           repo_path = File.dirname(child_paths['cookbooks'][0])
           result = "repository at #{repo_path}\n"
-          if Chef::Config[:versioned_cookbooks]
+          if Seth::Config[:versioned_cookbooks]
             result << "  Multiple versions per cookbook\n"
           else
             result << "  One version per cookbook\n"
@@ -94,31 +94,31 @@ class Chef
             return nil
           end
           if name == 'cookbooks'
-            dirs = paths.map { |path| ChefRepositoryFileSystemCookbooksDir.new(name, self, path) }
+            dirs = paths.map { |path| SethRepositoryFileSystemCookbooksDir.new(name, self, path) }
           elsif name == 'data_bags'
-            dirs = paths.map { |path| ChefRepositoryFileSystemDataBagsDir.new(name, self, path) }
+            dirs = paths.map { |path| SethRepositoryFileSystemDataBagsDir.new(name, self, path) }
           elsif name == 'acls'
-            dirs = paths.map { |path| ChefRepositoryFileSystemAclsDir.new(name, self, path) }
+            dirs = paths.map { |path| SethRepositoryFileSystemAclsDir.new(name, self, path) }
           else
             data_handler = case name
               when 'clients'
-                Chef::ChefFS::DataHandler::ClientDataHandler.new
+                Seth::ChefFS::DataHandler::ClientDataHandler.new
               when 'environments'
-                Chef::ChefFS::DataHandler::EnvironmentDataHandler.new
+                Seth::ChefFS::DataHandler::EnvironmentDataHandler.new
               when 'nodes'
-                Chef::ChefFS::DataHandler::NodeDataHandler.new
+                Seth::ChefFS::DataHandler::NodeDataHandler.new
               when 'roles'
-                Chef::ChefFS::DataHandler::RoleDataHandler.new
+                Seth::ChefFS::DataHandler::RoleDataHandler.new
               when 'users'
-                Chef::ChefFS::DataHandler::UserDataHandler.new
+                Seth::ChefFS::DataHandler::UserDataHandler.new
               when 'groups'
-                Chef::ChefFS::DataHandler::GroupDataHandler.new
+                Seth::ChefFS::DataHandler::GroupDataHandler.new
               when 'containers'
-                Chef::ChefFS::DataHandler::ContainerDataHandler.new
+                Seth::ChefFS::DataHandler::ContainerDataHandler.new
               else
                 raise "Unknown top level path #{name}"
               end
-            dirs = paths.map { |path| ChefRepositoryFileSystemEntry.new(name, self, path, data_handler) }
+            dirs = paths.map { |path| SethRepositoryFileSystemEntry.new(name, self, path, data_handler) }
           end
           MultiplexedDir.new(dirs)
         end

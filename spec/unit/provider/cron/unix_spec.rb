@@ -20,21 +20,21 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Cron::Unix do
+describe Seth::Provider::Cron::Unix do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Cron.new("cronhole some stuff")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Cron.new("cronhole some stuff")
     @new_resource.user "root"
     @new_resource.minute "30"
     @new_resource.command "/bin/true"
 
-    @provider = Chef::Provider::Cron::Unix.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Cron::Unix.new(@new_resource, @run_context)
   end
 
-  it "should inherit from Chef::Provider:Cron" do
-    @provider.should be_a(Chef::Provider::Cron)
+  it "should inherit from Seth::Provider:Cron" do
+    @provider.should be_a(Seth::Provider::Cron)
   end
 
   describe "read_crontab" do
@@ -43,7 +43,7 @@ describe Chef::Provider::Cron::Unix do
       @stdout = StringIO.new(<<-CRONTAB)
 0 2 * * * /some/other/command
 
-# Chef Name: something else
+# Seth Name: something else
 * 5 * * * /bin/true
 
 # Another comment
@@ -61,7 +61,7 @@ describe Chef::Provider::Cron::Unix do
       crontab.should == <<-CRONTAB
 0 2 * * * /some/other/command
 
-# Chef Name: something else
+# Seth Name: something else
 * 5 * * * /bin/true
 
 # Another comment
@@ -79,7 +79,7 @@ CRONTAB
       @provider.stub(:popen4).and_return(status)
       lambda do
         @provider.send(:read_crontab)
-      end.should raise_error(Chef::Exceptions::Cron, "Error determining state of #{@new_resource.name}, exit: 2")
+      end.should raise_error(Seth::Exceptions::Cron, "Error determining state of #{@new_resource.name}, exit: 2")
     end
   end
 
@@ -115,7 +115,7 @@ CRONTAB
       @status.stub(:exitstatus).and_return(1)
       lambda do
         @provider.send(:write_crontab, "Foo")
-      end.should raise_error(Chef::Exceptions::Cron, /Error updating state of #{@new_resource.name}, exit: 1/)
+      end.should raise_error(Seth::Exceptions::Cron, /Error updating state of #{@new_resource.name}, exit: 1/)
     end
   end
 end

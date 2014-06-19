@@ -20,7 +20,7 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::User::Solaris do
+describe Seth::Provider::User::Solaris do
 
   subject(:provider) do
     p = described_class.new(@new_resource, @run_context)
@@ -42,12 +42,12 @@ describe Chef::Provider::User::Solaris do
 
   describe "when we want to set a password" do
     before(:each) do
-      @node = Chef::Node.new
-      @events = Chef::EventDispatch::Dispatcher.new
-      @run_context = Chef::RunContext.new(@node, {}, @events)
+      @node = Seth::Node.new
+      @events = Seth::EventDispatch::Dispatcher.new
+      @run_context = Seth::RunContext.new(@node, {}, @events)
 
-      @new_resource = Chef::Resource::User.new("adam", @run_context)
-      @current_resource = Chef::Resource::User.new("adam", @run_context)
+      @new_resource = Seth::Resource::User.new("adam", @run_context)
+      @current_resource = Seth::Resource::User.new("adam", @run_context)
 
       @new_resource.password "hocus-pocus"
 

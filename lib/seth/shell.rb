@@ -20,23 +20,23 @@ require 'pp'
 require 'etc'
 require 'mixlib/cli'
 
-require 'chef'
-require 'chef/version'
-require 'chef/client'
-require 'chef/config'
-require 'chef/config_fetcher'
+require 'seth'
+require 'seth/version'
+require 'seth/client'
+require 'seth/config'
+require 'seth/config_fetcher'
 
-require 'chef/shell/shell_session'
-require 'chef/shell/ext'
-require 'chef/json_compat'
+require 'seth/shell/shell_session'
+require 'seth/shell/ext'
+require 'seth/json_compat'
 
 # = Shell
-# Shell is Chef in an IRB session. Shell can interact with a Chef server via the
+# Shell is Seth in an IRB session. Shell can interact with a Chef server via the
 # REST API, and run and debug recipes interactively.
 module Shell
   LEADERS = Hash.new("")
-  LEADERS[Chef::Recipe] = ":recipe"
-  LEADERS[Chef::Node]   = ":attributes"
+  LEADERS[Seth::Recipe] = ":recipe"
+  LEADERS[Seth::Node]   = ":attributes"
 
   class << self
     attr_accessor :client_type
@@ -45,7 +45,7 @@ module Shell
     attr_writer   :editor
   end
 
-  # Start the irb REPL with chef-shell's customizations
+  # Start the irb REPL with seth-shell's customizations
   def self.start
     setup_logger
     # FUGLY HACK: irb gives us no other choice.
@@ -53,7 +53,7 @@ module Shell
     IRB::ExtendCommandBundle.instance_variable_get(:@ALIASES).delete(irb_help)
 
     parse_opts
-    Chef::Config[:shell_config] = options.config
+    Seth::Config[:shell_config] = options.config
 
     # HACK: this duplicates the functions of IRB.start, but we have to do it
     # to get access to the main object before irb starts.
@@ -77,12 +77,12 @@ module Shell
   end
 
   def self.setup_logger
-    Chef::Config[:log_level] ||= :warn
+    Seth::Config[:log_level] ||= :warn
     # If log_level is auto, change it to warn
-    Chef::Config[:log_level] = :warn if Chef::Config[:log_level] == :auto
-    Chef::Log.init(STDERR)
-    Mixlib::Authentication::Log.logger = Ohai::Log.logger = Chef::Log.logger
-    Chef::Log.level = Chef::Config[:log_level] || :warn
+    Seth::Config[:log_level] = :warn if Chef::Config[:log_level] == :auto
+    Seth::Log.init(STDERR)
+    Mixlib::Authentication::Log.logger = Ohai::Log.logger = Seth::Log.logger
+    Seth::Log.level = Chef::Config[:log_level] || :warn
   end
 
   # Shell assumes it's running whenever it is defined
@@ -101,17 +101,17 @@ module Shell
   end
 
   def self.configure_irb
-    irb_conf[:HISTORY_FILE] = "~/.chef/chef_shell_history"
+    irb_conf[:HISTORY_FILE] = "~/.seth/chef_shell_history"
     irb_conf[:SAVE_HISTORY] = 1000
 
     irb_conf[:IRB_RC] = lambda do |conf|
       m = conf.main
 
-      conf.prompt_c       = "chef#{leader(m)} > "
+      conf.prompt_c       = "seth#{leader(m)} > "
       conf.return_format  = " => %s \n"
-      conf.prompt_i       = "chef#{leader(m)} > "
-      conf.prompt_n       = "chef#{leader(m)} ?> "
-      conf.prompt_s       = "chef#{leader(m)}%l> "
+      conf.prompt_i       = "seth#{leader(m)} > "
+      conf.prompt_n       = "seth#{leader(m)} ?> "
+      conf.prompt_s       = "seth#{leader(m)}%l> "
       conf.use_tracer     = false
     end
   end
@@ -154,22 +154,22 @@ module Shell
   end
 
   def self.parse_json
-    if Chef::Config[:json_attribs]
-      config_fetcher = Chef::ConfigFetcher.new(Chef::Config[:json_attribs])
+    if Seth::Config[:json_attribs]
+      config_fetcher = Seth::ConfigFetcher.new(Chef::Config[:json_attribs])
       @json_attribs = config_fetcher.fetch_json
     end
   end
 
   def self.fatal!(message, exit_status)
-    Chef::Log.fatal(message)
+    Seth::Log.fatal(message)
     exit exit_status
   end
 
   def self.client_type
     type = Shell::StandAloneSession
-    type = Shell::SoloSession   if Chef::Config[:shell_solo]
-    type = Shell::ClientSession if Chef::Config[:client]
-    type = Shell::DoppelGangerSession if Chef::Config[:doppelganger]
+    type = Shell::SoloSession   if Seth::Config[:shell_solo]
+    type = Shell::ClientSession if Seth::Config[:client]
+    type = Shell::DoppelGangerSession if Seth::Config[:doppelganger]
     type
   end
 
@@ -179,7 +179,7 @@ module Shell
   end
 
   def self.editor
-    @editor || Chef::Config[:editor] || ENV['EDITOR']
+    @editor || Seth::Config[:editor] || ENV['EDITOR']
   end
 
   class Options
@@ -190,14 +190,14 @@ module Shell
       @footer
     end
 
-    banner("chef-shell #{Chef::VERSION}\n\nUsage: chef-shell [NAMED_CONF] (OPTIONS)")
+    banner("seth-shell #{Seth::VERSION}\n\nUsage: chef-shell [NAMED_CONF] (OPTIONS)")
 
     footer(<<-FOOTER)
-When no CONFIG is specified, chef-shell attempts to load a default configuration file:
-* If a NAMED_CONF is given, chef-shell will load ~/.chef/NAMED_CONF/chef_shell.rb
-* If no NAMED_CONF is given chef-shell will load ~/.chef/chef_shell.rb if it exists
-* chef-shell falls back to loading /etc/chef/client.rb or /etc/chef/solo.rb if -z or
-  -s options are given and no chef_shell.rb can be found.
+When no CONFIG is specified, seth-shell attempts to load a default configuration file:
+* If a NAMED_CONF is given, seth-shell will load ~/.chef/NAMED_CONF/chef_shell.rb
+* If no NAMED_CONF is given seth-shell will load ~/.chef/chef_shell.rb if it exists
+* seth-shell falls back to loading /etc/chef/client.rb or /etc/chef/solo.rb if -z or
+  -s options are given and no seth_shell.rb can be found.
 FOOTER
 
     option :config_file,
@@ -217,7 +217,7 @@ FOOTER
       :short  => "-l LOG_LEVEL",
       :long   => '--log-level LOG_LEVEL',
       :description => "Set the logging level",
-      :proc         => proc { |level| Chef::Config.log_level = level.to_sym; Shell.setup_logger }
+      :proc         => proc { |level| Seth::Config.log_level = level.to_sym; Shell.setup_logger }
 
     option :standalone,
       :short        => "-a",
@@ -229,14 +229,14 @@ FOOTER
     option :shell_solo,
       :short        => "-s",
       :long         => "--solo",
-      :description  => "chef-solo session",
+      :description  => "seth-solo session",
       :boolean      => true,
-      :proc         => proc {Chef::Config[:solo] = true}
+      :proc         => proc {Seth::Config[:solo] = true}
 
     option :client,
       :short        => "-z",
       :long         => "--client",
-      :description  => "chef-client session",
+      :description  => "seth-client session",
       :boolean      => true
 
     option :json_attribs,
@@ -245,25 +245,25 @@ FOOTER
       :description => "Load attributes from a JSON file or URL",
       :proc => nil
 
-    option :chef_server_url,
+    option :seth_server_url,
       :short => "-S CHEFSERVERURL",
       :long => "--server CHEFSERVERURL",
-      :description => "The chef server URL",
+      :description => "The seth server URL",
       :proc => nil
 
     option :version,
       :short        => "-v",
       :long         => "--version",
-      :description  => "Show chef version",
+      :description  => "Show seth version",
       :boolean      => true,
-      :proc         => lambda {|v| puts "Chef: #{::Chef::VERSION}"},
+      :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
       :exit         => 0
 
     option :override_runlist,
       :short        => "-o RunlistItem,RunlistItem...",
       :long         => "--override-runlist RunlistItem,RunlistItem...",
       :description  => "Replace current run list with specified items",
-      :proc         => lambda { |items| items.split(',').map { |item| Chef::RunList::RunListItem.new(item) }}
+      :proc         => lambda { |items| items.split(',').map { |item| Seth::RunList::RunListItem.new(item) }}
 
     def self.print_help
       instance = new
@@ -288,8 +288,8 @@ FOOTER
       config[:config_file] = config_file_for_shell_mode(environment)
       config_msg = config[:config_file] || "none (standalone session)"
       puts "loading configuration: #{config_msg}"
-      Chef::Config.from_file(config[:config_file]) if !config[:config_file].nil? && File.exists?(config[:config_file]) && File.readable?(config[:config_file])
-      Chef::Config.merge!(config)
+      Seth::Config.from_file(config[:config_file]) if !config[:config_file].nil? && File.exists?(config[:config_file]) && File.readable?(config[:config_file])
+      Seth::Config.merge!(config)
     end
 
     private
@@ -299,18 +299,18 @@ FOOTER
         config[:config_file]
       elsif environment && ENV['HOME']
         Shell.env = environment
-        config_file_to_try = ::File.join(ENV['HOME'], '.chef', environment, 'chef_shell.rb')
+        config_file_to_try = ::File.join(ENV['HOME'], '.seth', environment, 'chef_shell.rb')
         unless ::File.exist?(config_file_to_try)
-          puts "could not find chef-shell config for environment #{environment} at #{config_file_to_try}"
+          puts "could not find seth-shell config for environment #{environment} at #{config_file_to_try}"
           exit 1
         end
         config_file_to_try
-      elsif ENV['HOME'] && ::File.exist?(File.join(ENV['HOME'], '.chef', 'chef_shell.rb'))
-        File.join(ENV['HOME'], '.chef', 'chef_shell.rb')
+      elsif ENV['HOME'] && ::File.exist?(File.join(ENV['HOME'], '.seth', 'chef_shell.rb'))
+        File.join(ENV['HOME'], '.seth', 'chef_shell.rb')
       elsif config[:solo]
-        "/etc/chef/solo.rb"
+        "/etc/seth/solo.rb"
       elsif config[:client]
-        "/etc/chef/client.rb"
+        "/etc/seth/client.rb"
       else
         nil
       end

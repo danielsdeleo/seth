@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/provider/package/aix'
+require 'seth/resource/package'
+require 'seth/provider/package/aix'
 
-class Chef
+class Seth
   class Resource
-    class BffPackage < Chef::Resource::Package
+    class BffPackage < Seth::Resource::Package
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :bff_package
-        @provider = Chef::Provider::Package::Aix
+        @provider = Seth::Provider::Package::Aix
       end
 
     end

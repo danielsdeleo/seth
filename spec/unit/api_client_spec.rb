@@ -18,12 +18,12 @@
 
 require 'spec_helper'
 
-require 'chef/api_client'
+require 'seth/api_client'
 require 'tempfile'
 
-describe Chef::ApiClient do
+describe Seth::ApiClient do
   before(:each) do
-    @client = Chef::ApiClient.new
+    @client = Seth::ApiClient.new
   end
 
   it "has a name attribute" do
@@ -133,13 +133,13 @@ describe Chef::ApiClient do
       "private_key" => "monkeypants",
       "admin" => true,
       "validator" => true,
-      "json_class" => "Chef::ApiClient"
+      "json_class" => "Seth::ApiClient"
       }
-      @client = Chef::JSONCompat.from_json(client.to_json)
+      @client = Seth::JSONCompat.from_json(client.to_json)
     end
 
-    it "should deserialize to a Chef::ApiClient object" do
-      @client.should be_a_kind_of(Chef::ApiClient)
+    it "should deserialize to a Seth::ApiClient object" do
+      @client.should be_a_kind_of(Seth::ApiClient)
     end
 
     it "preserves the name" do
@@ -176,16 +176,16 @@ describe Chef::ApiClient do
       "private_key" => "monkeypants",
       "admin" => true,
       "validator" => true,
-      "json_class" => "Chef::ApiClient"
+      "json_class" => "Seth::ApiClient"
       }
-      @http_client = double("Chef::REST mock")
-      Chef::REST.stub(:new).and_return(@http_client)
+      @http_client = double("Seth::REST mock")
+      Seth::REST.stub(:new).and_return(@http_client)
       @http_client.should_receive(:get).with("clients/black").and_return(client)
-      @client = Chef::ApiClient.load(client['name'])
+      @client = Seth::ApiClient.load(client['name'])
     end
 
-    it "should deserialize to a Chef::ApiClient object" do
-      @client.should be_a_kind_of(Chef::ApiClient)
+    it "should deserialize to a Seth::ApiClient object" do
+      @client.should be_a_kind_of(Seth::ApiClient)
     end
 
     it "preserves the name" do
@@ -212,21 +212,21 @@ describe Chef::ApiClient do
 
   describe "with correctly configured API credentials" do
     before do
-      Chef::Config[:node_name] = "silent-bob"
-      Chef::Config[:client_key] = File.expand_path('ssl/private_key.pem', CHEF_SPEC_DATA)
+      Seth::Config[:node_name] = "silent-bob"
+      Seth::Config[:client_key] = File.expand_path('ssl/private_key.pem', CHEF_SPEC_DATA)
     end
 
     after do
-      Chef::Config[:node_name] = nil
-      Chef::Config[:client_key] = nil
+      Seth::Config[:node_name] = nil
+      Seth::Config[:client_key] = nil
     end
 
     let :private_key_data do
-      File.open(Chef::Config[:client_key], "r") {|f| f.read.chomp }
+      File.open(Seth::Config[:client_key], "r") {|f| f.read.chomp }
     end
 
     it "has an HTTP client configured with default credentials" do
-      @client.http_api.should be_a_kind_of(Chef::REST)
+      @client.http_api.should be_a_kind_of(Seth::REST)
       @client.http_api.client_name.should == "silent-bob"
       @client.http_api.signing_key.to_s.should == private_key_data
     end
@@ -235,8 +235,8 @@ describe Chef::ApiClient do
 
   describe "when requesting a new key" do
     before do
-      @http_client = double("Chef::REST mock")
-      Chef::REST.stub(:new).and_return(@http_client)
+      @http_client = double("Seth::REST mock")
+      Seth::REST.stub(:new).and_return(@http_client)
     end
 
     context "and the client does not exist on the server" do
@@ -248,21 +248,21 @@ describe Chef::ApiClient do
       end
 
       it "raises a 404 error" do
-        lambda { Chef::ApiClient.reregister("lost-my-key") }.should raise_error(Net::HTTPServerException)
+        lambda { Seth::ApiClient.reregister("lost-my-key") }.should raise_error(Net::HTTPServerException)
       end
     end
 
     context "and the client exists" do
       before do
-        @api_client_without_key = Chef::ApiClient.new
+        @api_client_without_key = Seth::ApiClient.new
         @api_client_without_key.name("lost-my-key")
         @http_client.should_receive(:get).with("clients/lost-my-key").and_return(@api_client_without_key)
       end
 
 
-      context "and the client exists on a Chef 11-like server" do
+      context "and the client exists on a Seth 11-like server" do
         before do
-          @api_client_with_key = Chef::ApiClient.new
+          @api_client_with_key = Seth::ApiClient.new
           @api_client_with_key.name("lost-my-key")
           @api_client_with_key.private_key("the new private key")
           @http_client.should_receive(:put).
@@ -271,7 +271,7 @@ describe Chef::ApiClient do
         end
 
         it "returns an ApiClient with a private key" do
-          response = Chef::ApiClient.reregister("lost-my-key")
+          response = Seth::ApiClient.reregister("lost-my-key")
           # no sane == method for ApiClient :'(
           response.should == @api_client_without_key
           response.private_key.should == "the new private key"
@@ -280,7 +280,7 @@ describe Chef::ApiClient do
         end
       end
 
-      context "and the client exists on a Chef 10-like server" do
+      context "and the client exists on a Seth 10-like server" do
         before do
           @api_client_with_key = {"name" => "lost-my-key", "private_key" => "the new private key"}
           @http_client.should_receive(:put).
@@ -289,7 +289,7 @@ describe Chef::ApiClient do
         end
 
         it "returns an ApiClient with a private key" do
-          response = Chef::ApiClient.reregister("lost-my-key")
+          response = Seth::ApiClient.reregister("lost-my-key")
           # no sane == method for ApiClient :'(
           response.should == @api_client_without_key
           response.private_key.should == "the new private key"

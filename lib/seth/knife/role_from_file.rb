@@ -16,22 +16,22 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class RoleFromFile < Knife
 
       deps do
-        require 'chef/role'
-        require 'chef/knife/core/object_loader'
-        require 'chef/json_compat'
+        require 'seth/role'
+        require 'seth/knife/core/object_loader'
+        require 'seth/json_compat'
       end
 
       banner "knife role from file FILE [FILE..] (options)"
 
       def loader
-        @loader ||= Knife::Core::ObjectLoader.new(Chef::Role, ui)
+        @loader ||= Knife::Core::ObjectLoader.new(Seth::Role, ui)
       end
 
       def run

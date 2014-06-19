@@ -1,4 +1,4 @@
-class Chef
+class Seth
   module EventDispatch
     class EventsOutputStream
       # This is a fake stream that connects to events.

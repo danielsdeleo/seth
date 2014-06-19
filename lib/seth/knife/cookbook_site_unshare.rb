@@ -17,14 +17,14 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class CookbookSiteUnshare < Knife
 
       deps do
-        require 'chef/json_compat'
+        require 'seth/json_compat'
       end
 
       banner "knife cookbook site unshare COOKBOOK"

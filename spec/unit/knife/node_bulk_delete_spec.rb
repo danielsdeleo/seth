@@ -18,12 +18,12 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::NodeBulkDelete do
+describe Seth::Knife::NodeBulkDelete do
   before(:each) do
-    Chef::Log.logger = Logger.new(StringIO.new)
+    Seth::Log.logger = Logger.new(StringIO.new)
 
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::NodeBulkDelete.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::NodeBulkDelete.new
     @knife.name_args = ["."]
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
@@ -37,10 +37,10 @@ describe Chef::Knife::NodeBulkDelete do
   describe "when creating the list of nodes" do
     it "fetches the node list" do
       expected = @nodes.inject({}) do |inflatedish, (name, uri)|
-        inflatedish[name] = Chef::Node.new.tap {|n| n.name(name)}
+        inflatedish[name] = Seth::Node.new.tap {|n| n.name(name)}
         inflatedish
       end
-      Chef::Node.should_receive(:list).and_return(@nodes)
+      Seth::Node.should_receive(:list).and_return(@nodes)
       # I hate not having == defined for anything :(
       actual = @knife.all_nodes
       actual.keys.should =~ expected.keys
@@ -51,7 +51,7 @@ describe Chef::Knife::NodeBulkDelete do
   describe "run" do
     before do
       @inflatedish_list = @nodes.keys.inject({}) do |nodes_by_name, name|
-        node = Chef::Node.new()
+        node = Seth::Node.new()
         node.name(name)
         node.stub(:destroy).and_return(true)
         nodes_by_name[name] = node

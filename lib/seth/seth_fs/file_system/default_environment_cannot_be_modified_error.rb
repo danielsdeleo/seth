@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/operation_not_allowed_error'
+require 'seth/chef_fs/file_system/operation_not_allowed_error'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class DefaultEnvironmentCannotBeModifiedError < OperationNotAllowedError
         def initialize(operation, entry, cause = nil)

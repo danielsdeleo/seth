@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# ./chef-shell - Run the Chef REPL (Shell)
+# ./seth-shell - Run the Seth REPL (Shell)
 #
 # Author:: Daniel DeLeo (<dan@kallistec.com>)
 # Copyright:: Copyright (c) 2009
@@ -29,9 +29,9 @@ require 'irb/ext/save-history'
 
 $:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "..", "lib")))
 
-require "chef/shell"
+require "seth/shell"
 
 # On Windows only, enable irb --noreadline because of input problems --
 # See CHEF-3284.
-IRB.conf[:USE_READLINE] = false if Chef::Platform::windows?
+IRB.conf[:USE_READLINE] = false if Seth::Platform::windows?
 Shell.start

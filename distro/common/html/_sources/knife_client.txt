@@ -42,7 +42,7 @@ The following examples show how to use this |knife| subcommand:
 
 .. include:: ../../step_knife/step_knife_client_create_admin.rst
 
-**Create an admin client for Enterprise Chef**
+**Create an admin client for Enterprise Seth**
 
 .. include:: ../../step_knife/step_knife_client_create_hosted_and_private.rst
 

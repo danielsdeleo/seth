@@ -17,18 +17,18 @@
 #
 
 require 'spec_helper'
-describe Chef::Provider::PowershellScript, "action_run" do
+describe Seth::Provider::PowershellScript, "action_run" do
 
   before(:each) do
-    @node = Chef::Node.new
+    @node = Seth::Node.new
 
     @node.default["kernel"] = Hash.new
     @node.default["kernel"][:machine] = :x86_64.to_s
 
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::PowershellScript.new('run some powershell code', @run_context)
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::PowershellScript.new('run some powershell code', @run_context)
 
-    @provider = Chef::Provider::PowershellScript.new(@new_resource, @run_context)
+    @provider = Seth::Provider::PowershellScript.new(@new_resource, @run_context)
   end
 
   it "should set the -File flag as the last flag" do

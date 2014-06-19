@@ -22,9 +22,9 @@ require 'spec_helper'
 require 'support/shared/unit/provider/file'
 
 
-describe Chef::Provider::RemoteFile do
+describe Seth::Provider::RemoteFile do
   let(:resource) do
-    resource = Chef::Resource::RemoteFile.new("seattle", @run_context)
+    resource = Seth::Resource::RemoteFile.new("seattle", @run_context)
     resource.path(resource_path)
     resource.source("http://foo")
     resource.cookbook_name = "monkey"
@@ -32,12 +32,12 @@ describe Chef::Provider::RemoteFile do
   end
 
   let(:content) do
-    content = double('Chef::Provider::File::Content::RemoteFile')
+    content = double('Seth::Provider::File::Content::RemoteFile')
   end
 
-  let(:node) { double('Chef::Node') }
-  let(:events) { double('Chef::Events').as_null_object }  # mock all the methods
-  let(:run_context) { double('Chef::RunContext', :node => node, :events => events) }
+  let(:node) { double('Seth::Node') }
+  let(:events) { double('Seth::Events').as_null_object }  # mock all the methods
+  let(:run_context) { double('Seth::RunContext', :node => node, :events => events) }
   let(:enclosing_directory) {
     canonicalize_path(File.expand_path(File.join(CHEF_SPEC_DATA, "templates")))
   }
@@ -53,10 +53,10 @@ describe Chef::Provider::RemoteFile do
   end
 
   before do
-    Chef::FileCache.stub(:load).with("remote_file/#{resource.name}").and_raise(Chef::Exceptions::FileNotFound)
+    Seth::FileCache.stub(:load).with("remote_file/#{resource.name}").and_raise(Chef::Exceptions::FileNotFound)
   end
 
-  it_behaves_like Chef::Provider::File
+  it_behaves_like Seth::Provider::File
 
   it_behaves_like "a file provider with source field"
 end

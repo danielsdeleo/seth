@@ -18,13 +18,13 @@
 
 require 'spec_helper'
 
-describe Chef::Handler do
+describe Seth::Handler do
   before(:each) do
-    @handler = Chef::Handler.new
+    @handler = Seth::Handler.new
 
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_status = Chef::RunStatus.new(@node, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_status = Seth::RunStatus.new(@node, @events)
 
     @handler.instance_variable_set(:@run_status, @run_status)
   end
@@ -35,8 +35,8 @@ describe Chef::Handler do
       @exception = Exception.new("epic_fail")
       @exception.set_backtrace(@backtrace)
       @run_status.exception = @exception
-      @run_context = Chef::RunContext.new(@node, {}, @events)
-      @all_resources = [Chef::Resource::Cat.new('lolz'), Chef::Resource::ZenMaster.new('tzu')]
+      @run_context = Seth::RunContext.new(@node, {}, @events)
+      @all_resources = [Seth::Resource::Cat.new('lolz'), Chef::Resource::ZenMaster.new('tzu')]
       @all_resources.first.updated = true
       @run_context.resource_collection.all_resources.replace(@all_resources)
       @run_status.run_context = @run_context
@@ -116,8 +116,8 @@ describe Chef::Handler do
   # Hmm, no tests for report handlers, looks like
   describe "when running a report handler" do
     before do
-      @run_context = Chef::RunContext.new(@node, {}, @events)
-      @all_resources = [Chef::Resource::Cat.new('foo'), Chef::Resource::ZenMaster.new('moo')]
+      @run_context = Seth::RunContext.new(@node, {}, @events)
+      @all_resources = [Seth::Resource::Cat.new('foo'), Chef::Resource::ZenMaster.new('moo')]
       @all_resources.first.updated = true
       @run_context.resource_collection.all_resources.replace(@all_resources)
       @run_status.run_context = @run_context

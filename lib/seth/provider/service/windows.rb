@@ -18,15 +18,15 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
-require 'chef/provider/service/simple'
+require 'seth/mixin/shell_out'
+require 'seth/provider/service/simple'
 if RUBY_PLATFORM =~ /mswin|mingw32|windows/
   require 'win32/service'
 end
 
-class Chef::Provider::Service::Windows < Chef::Provider::Service
+class Seth::Provider::Service::Windows < Chef::Provider::Service
 
-  include Chef::Mixin::ShellOut
+  include Seth::Mixin::ShellOut
 
   RUNNING = 'running'
   STOPPED = 'stopped'
@@ -38,22 +38,22 @@ class Chef::Provider::Service::Windows < Chef::Provider::Service
   end
 
   def load_current_resource
-    @current_resource = Chef::Resource::Service.new(@new_resource.name)
+    @current_resource = Seth::Resource::Service.new(@new_resource.name)
     @current_resource.service_name(@new_resource.service_name)
     @current_resource.running(current_state == RUNNING)
-    Chef::Log.debug "#{@new_resource} running: #{@current_resource.running}"
+    Seth::Log.debug "#{@new_resource} running: #{@current_resource.running}"
     @current_resource.enabled(start_type == AUTO_START)
-    Chef::Log.debug "#{@new_resource} enabled: #{@current_resource.enabled}"
+    Seth::Log.debug "#{@new_resource} enabled: #{@current_resource.enabled}"
     @current_resource
   end
 
   def start_service
     if Win32::Service.exists?(@new_resource.service_name)
       if current_state == RUNNING
-        Chef::Log.debug "#{@new_resource} already started - nothing to do"
+        Seth::Log.debug "#{@new_resource} already started - nothing to do"
       else
         if @new_resource.start_command
-          Chef::Log.debug "#{@new_resource} starting service using the given start_command"
+          Seth::Log.debug "#{@new_resource} starting service using the given start_command"
           shell_out!(@new_resource.start_command)
         else
           spawn_command_thread do
@@ -64,7 +64,7 @@ class Chef::Provider::Service::Windows < Chef::Provider::Service
         @new_resource.updated_by_last_action(true)
       end
     else
-        Chef::Log.debug "#{@new_resource} does not exist - nothing to do"
+        Seth::Log.debug "#{@new_resource} does not exist - nothing to do"
     end
   end
 
@@ -72,7 +72,7 @@ class Chef::Provider::Service::Windows < Chef::Provider::Service
     if Win32::Service.exists?(@new_resource.service_name)
       if current_state == RUNNING
         if @new_resource.stop_command
-          Chef::Log.debug "#{@new_resource} stopping service using the given stop_command"
+          Seth::Log.debug "#{@new_resource} stopping service using the given stop_command"
           shell_out!(@new_resource.stop_command)
         else
           spawn_command_thread do
@@ -82,17 +82,17 @@ class Chef::Provider::Service::Windows < Chef::Provider::Service
         end
         @new_resource.updated_by_last_action(true)
       else
-        Chef::Log.debug "#{@new_resource} already stopped - nothing to do"
+        Seth::Log.debug "#{@new_resource} already stopped - nothing to do"
       end
     else
-      Chef::Log.debug "#{@new_resource} does not exist - nothing to do"
+      Seth::Log.debug "#{@new_resource} does not exist - nothing to do"
     end
   end
 
   def restart_service
     if Win32::Service.exists?(@new_resource.service_name)
       if @new_resource.restart_command
-        Chef::Log.debug "#{@new_resource} restarting service using the given restart_command"
+        Seth::Log.debug "#{@new_resource} restarting service using the given restart_command"
         shell_out!(@new_resource.restart_command)
       else
         stop_service
@@ -100,14 +100,14 @@ class Chef::Provider::Service::Windows < Chef::Provider::Service
       end
       @new_resource.updated_by_last_action(true)
     else
-      Chef::Log.debug "#{@new_resource} does not exist - nothing to do"
+      Seth::Log.debug "#{@new_resource} does not exist - nothing to do"
     end
   end
 
   def enable_service
     if Win32::Service.exists?(@new_resource.service_name)
       if start_type == AUTO_START
-        Chef::Log.debug "#{@new_resource} already enabled - nothing to do"
+        Seth::Log.debug "#{@new_resource} already enabled - nothing to do"
       else
         Win32::Service.configure(
           :service_name => @new_resource.service_name,
@@ -116,7 +116,7 @@ class Chef::Provider::Service::Windows < Chef::Provider::Service
         @new_resource.updated_by_last_action(true)
       end
     else
-      Chef::Log.debug "#{@new_resource} does not exist - nothing to do"
+      Seth::Log.debug "#{@new_resource} does not exist - nothing to do"
     end
   end
 
@@ -129,10 +129,10 @@ class Chef::Provider::Service::Windows < Chef::Provider::Service
         )
         @new_resource.updated_by_last_action(true)
       else
-        Chef::Log.debug "#{@new_resource} already disabled - nothing to do"
+        Seth::Log.debug "#{@new_resource} already disabled - nothing to do"
       end
     else
-      Chef::Log.debug "#{@new_resource} does not exist - nothing to do"
+      Seth::Log.debug "#{@new_resource} does not exist - nothing to do"
     end
   end
 

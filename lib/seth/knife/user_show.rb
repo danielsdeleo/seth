@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class UserShow < Knife
 
       include Knife::Core::MultiAttributeReturnOption
 
       deps do
-        require 'chef/user'
-        require 'chef/json_compat'
+        require 'seth/user'
+        require 'seth/json_compat'
       end
 
       banner "knife user show USER (options)"
@@ -40,7 +40,7 @@ class Chef
           exit 1
         end
 
-        user = Chef::User.load(@user_name)
+        user = Seth::User.load(@user_name)
         output(format_for_display(user))
       end
 

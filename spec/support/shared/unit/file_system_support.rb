@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system'
-require 'chef/chef_fs/file_system/memory_root'
-require 'chef/chef_fs/file_system/memory_dir'
-require 'chef/chef_fs/file_system/memory_file'
+require 'seth/chef_fs/file_system'
+require 'seth/chef_fs/file_system/memory_root'
+require 'seth/chef_fs/file_system/memory_dir'
+require 'seth/chef_fs/file_system/memory_file'
 
 module FileSystemSupport
   def memory_fs(pretty_name, value, cannot_be_in_regex = nil)
     if !value.is_a?(Hash)
       raise "memory_fs() must take a Hash"
     end
-    dir = Chef::ChefFS::FileSystem::MemoryRoot.new(pretty_name, cannot_be_in_regex)
+    dir = Seth::ChefFS::FileSystem::MemoryRoot.new(pretty_name, cannot_be_in_regex)
     value.each do |key, child|
       dir.add_child(memory_fs_value(child, key.to_s, dir))
     end
@@ -35,18 +35,18 @@ module FileSystemSupport
 
   def memory_fs_value(value, name = '', parent = nil)
     if value.is_a?(Hash)
-      dir = Chef::ChefFS::FileSystem::MemoryDir.new(name, parent)
+      dir = Seth::ChefFS::FileSystem::MemoryDir.new(name, parent)
       value.each do |key, child|
         dir.add_child(memory_fs_value(child, key.to_s, dir))
       end
       dir
     else
-      Chef::ChefFS::FileSystem::MemoryFile.new(name, parent, value || "#{name}\n")
+      Seth::ChefFS::FileSystem::MemoryFile.new(name, parent, value || "#{name}\n")
     end
   end
 
   def pattern(p)
-    Chef::ChefFS::FilePattern.new(p)
+    Seth::ChefFS::FilePattern.new(p)
   end
 
   def return_paths(*expected)
@@ -54,7 +54,7 @@ module FileSystemSupport
   end
 
   def no_blocking_calls_allowed
-    [ Chef::ChefFS::FileSystem::MemoryFile, Chef::ChefFS::FileSystem::MemoryDir ].each do |c|
+    [ Seth::ChefFS::FileSystem::MemoryFile, Chef::ChefFS::FileSystem::MemoryDir ].each do |c|
       [ :children, :exists?, :read ].each do |m|
         c.any_instance.stub(m).and_raise("#{m.to_s} should not be called")
       end
@@ -63,7 +63,7 @@ module FileSystemSupport
 
   def list_should_yield_paths(fs, pattern_str, *expected_paths)
     result_paths = []
-    Chef::ChefFS::FileSystem.list(fs, pattern(pattern_str)).each { |result| result_paths << result.path }
+    Seth::ChefFS::FileSystem.list(fs, pattern(pattern_str)).each { |result| result_paths << result.path }
     result_paths.should =~ expected_paths
   end
 end

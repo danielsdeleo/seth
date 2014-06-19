@@ -18,22 +18,22 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Group::Groupadd, "set_options" do
+describe Seth::Provider::Group::Groupadd, "set_options" do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Group.new("aj")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Group.new("aj")
     @new_resource.gid(50)
     @new_resource.members(["root", "aj"])
     @new_resource.system false
     @new_resource.non_unique false
-    @current_resource = Chef::Resource::Group.new("aj")
+    @current_resource = Seth::Resource::Group.new("aj")
     @current_resource.gid(50)
     @current_resource.members(["root", "aj"])
     @current_resource.system false
     @current_resource.non_unique false
-    @provider = Chef::Provider::Group::Groupadd.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Group::Groupadd.new(@new_resource, @run_context)
     @provider.current_resource = @current_resource
   end
 
@@ -88,11 +88,11 @@ describe Chef::Provider::Group::Groupadd, "set_options" do
   end
 end
 
-describe Chef::Provider::Group::Groupadd, "create_group" do
+describe Seth::Provider::Group::Groupadd, "create_group" do
   before do
-    @node = Chef::Node.new
-    @new_resource = Chef::Resource::Group.new("aj")
-    @provider = Chef::Provider::Group::Groupadd.new(@node, @new_resource)
+    @node = Seth::Node.new
+    @new_resource = Seth::Resource::Group.new("aj")
+    @provider = Seth::Provider::Group::Groupadd.new(@node, @new_resource)
     @provider.stub(:run_command).and_return(true)
     @provider.stub(:set_options).and_return(" monkey")
     @provider.stub(:groupadd_options).and_return("")
@@ -110,13 +110,13 @@ describe Chef::Provider::Group::Groupadd, "create_group" do
   end
 end
 
-describe Chef::Provider::Group::Groupadd do
+describe Seth::Provider::Group::Groupadd do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Group.new("aj")
-    @provider = Chef::Provider::Group::Groupadd.new(@new_resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Group.new("aj")
+    @provider = Seth::Provider::Group::Groupadd.new(@new_resource, @run_context)
     @provider.stub(:run_command).and_return(true)
     @provider.stub(:set_options).and_return(" monkey")
   end
@@ -145,7 +145,7 @@ describe Chef::Provider::Group::Groupadd do
 
   [:add_member, :remove_member, :set_members].each do |m|
     it "should raise an error when calling #{m}" do
-      lambda { @provider.send(m, [ ]) }.should raise_error(Chef::Exceptions::Group, "you must override #{m} in #{@provider.to_s}")
+      lambda { @provider.send(m, [ ]) }.should raise_error(Seth::Exceptions::Group, "you must override #{m} in #{@provider.to_s}")
     end
   end
 
@@ -156,18 +156,18 @@ describe Chef::Provider::Group::Groupadd do
     end
     it "should raise an error if the required binary /usr/sbin/groupadd doesn't exist" do
       File.should_receive(:exists?).with("/usr/sbin/groupadd").and_return(false)
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Group)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Group)
     end
     it "should raise an error if the required binary /usr/sbin/groupmod doesn't exist" do
       File.should_receive(:exists?).with("/usr/sbin/groupadd").and_return(true)
       File.should_receive(:exists?).with("/usr/sbin/groupmod").and_return(false)
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Group)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Group)
     end
     it "should raise an error if the required binary /usr/sbin/groupdel doesn't exist" do
       File.should_receive(:exists?).with("/usr/sbin/groupadd").and_return(true)
       File.should_receive(:exists?).with("/usr/sbin/groupmod").and_return(true)
       File.should_receive(:exists?).with("/usr/sbin/groupdel").and_return(false)
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Group)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Group)
     end
 
   end

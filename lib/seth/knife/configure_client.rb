@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class ConfigureClient < Knife
       banner "knife configure client DIRECTORY"
@@ -36,12 +36,12 @@ class Chef
         File.open(File.join(@config_dir, "client.rb"), "w") do |file|
           file.puts('log_level        :info')
           file.puts('log_location     STDOUT')
-          file.puts("chef_server_url  '#{Chef::Config[:chef_server_url]}'")
-          file.puts("validation_client_name '#{Chef::Config[:validation_client_name]}'")
+          file.puts("seth_server_url  '#{Seth::Config[:chef_server_url]}'")
+          file.puts("validation_client_name '#{Seth::Config[:validation_client_name]}'")
         end
         ui.info("Writing validation.pem")
         File.open(File.join(@config_dir, 'validation.pem'), "w") do |validation|
-          validation.puts(IO.read(Chef::Config[:validation_key]))
+          validation.puts(IO.read(Seth::Config[:validation_key]))
         end
       end
 

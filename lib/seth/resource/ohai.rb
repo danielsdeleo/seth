@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
-    class Ohai < Chef::Resource
+    class Ohai < Seth::Resource
 
       identity_attr :name
 

@@ -20,16 +20,16 @@
 #
 
 require 'spec_helper'
-require 'chef/environment'
+require 'seth/environment'
 
-describe Chef::Environment do
+describe Seth::Environment do
   before(:each) do
-    @environment = Chef::Environment.new
+    @environment = Seth::Environment.new
   end
 
   describe "initialize" do
-    it "should be a Chef::Environment" do
-      @environment.should be_a_kind_of(Chef::Environment)
+    it "should be a Seth::Environment" do
+      @environment.should be_a_kind_of(Seth::Environment)
     end
   end
 
@@ -126,7 +126,7 @@ describe Chef::Environment do
     end
 
     it "should validate the hash" do
-      Chef::Environment.should_receive(:validate_cookbook_versions).with(@cookbook_versions).and_return true
+      Seth::Environment.should_receive(:validate_cookbook_versions).with(@cookbook_versions).and_return true
       @environment.cookbook_versions(@cookbook_versions)
     end
   end
@@ -138,7 +138,7 @@ describe Chef::Environment do
     end
 
     it "should validate the cookbook version it is passed" do
-      Chef::Environment.should_receive(:validate_cookbook_version).with(">= 1.2.3").and_return true
+      Seth::Environment.should_receive(:validate_cookbook_version).with(">= 1.2.3").and_return true
       @environment.cookbook("apt", ">= 1.2.3")
     end
   end
@@ -149,7 +149,7 @@ describe Chef::Environment do
       @environment.description("this is prod")
       @environment.cookbook_versions({ "apt" => "= 1.2.3" })
 
-      @example = Chef::Environment.new
+      @example = Seth::Environment.new
       @example.name("notevenprod")
       @example.description("this is pre-prod")
       @example.cookbook_versions({ "apt" => "= 2.3.4" })
@@ -178,11 +178,11 @@ describe Chef::Environment do
     end
 
     it "should include 'json_class'" do
-      @hash["json_class"].should == "Chef::Environment"
+      @hash["json_class"].should == "Seth::Environment"
     end
 
-    it "should include 'chef_type'" do
-      @hash["chef_type"].should == "environment"
+    it "should include 'seth_type'" do
+      @hash["seth_type"].should == "environment"
     end
   end
 
@@ -201,11 +201,11 @@ describe Chef::Environment do
     end
 
     it "should include 'json_class'" do
-      @json.should =~ /"json_class":"Chef::Environment"/
+      @json.should =~ /"json_class":"Seth::Environment"/
     end
 
-    it "should include 'chef_type'" do
-      @json.should =~ /"chef_type":"environment"/
+    it "should include 'seth_type'" do
+      @json.should =~ /"seth_type":"environment"/
     end
   end
 
@@ -219,14 +219,14 @@ describe Chef::Environment do
           "god" => ">= 4.2.0",
           "apache2" => "= 2.0.0"
         },
-        "json_class" => "Chef::Environment",
-        "chef_type" => "environment"
+        "json_class" => "Seth::Environment",
+        "seth_type" => "environment"
       }
-      @environment = Chef::JSONCompat.from_json(@data.to_json)
+      @environment = Seth::JSONCompat.from_json(@data.to_json)
     end
 
-    it "should return a Chef::Environment" do
-      @environment.should be_a_kind_of(Chef::Environment)
+    it "should return a Seth::Environment" do
+      @environment.should be_a_kind_of(Seth::Environment)
     end
 
     %w{name description cookbook_versions}.each do |t|
@@ -247,55 +247,55 @@ describe Chef::Environment do
 
     it "should validate the version string of each cookbook" do
       @cookbook_versions.each do |cookbook, version|
-        Chef::Environment.should_receive(:validate_cookbook_version).with(version).and_return true
+        Seth::Environment.should_receive(:validate_cookbook_version).with(version).and_return true
       end
-      Chef::Environment.validate_cookbook_versions(@cookbook_versions)
+      Seth::Environment.validate_cookbook_versions(@cookbook_versions)
     end
 
     it "should return false if anything other than a hash is passed as the argument" do
-      Chef::Environment.validate_cookbook_versions(Array.new).should == false
-      Chef::Environment.validate_cookbook_versions(42).should == false
-      Chef::Environment.validate_cookbook_versions(Chef::CookbookVersion.new("meta")).should == false
-      Chef::Environment.validate_cookbook_versions("cookbook => 1.2.3").should == false
+      Seth::Environment.validate_cookbook_versions(Array.new).should == false
+      Seth::Environment.validate_cookbook_versions(42).should == false
+      Seth::Environment.validate_cookbook_versions(Chef::CookbookVersion.new("meta")).should == false
+      Seth::Environment.validate_cookbook_versions("cookbook => 1.2.3").should == false
     end
   end
 
   describe "self.validate_cookbook_version" do
     it "should validate correct version numbers" do
-      Chef::Environment.validate_cookbook_version("= 1.2.3").should == true
-      Chef::Environment.validate_cookbook_version("=1.2.3").should == true
-      Chef::Environment.validate_cookbook_version(">= 0.0.3").should == true
-      Chef::Environment.validate_cookbook_version(">=0.0.3").should == true
+      Seth::Environment.validate_cookbook_version("= 1.2.3").should == true
+      Seth::Environment.validate_cookbook_version("=1.2.3").should == true
+      Seth::Environment.validate_cookbook_version(">= 0.0.3").should == true
+      Seth::Environment.validate_cookbook_version(">=0.0.3").should == true
       # A lone version is allowed, interpreted as implicit '='
-      Chef::Environment.validate_cookbook_version("1.2.3").should == true
+      Seth::Environment.validate_cookbook_version("1.2.3").should == true
     end
 
     it "should return false when an invalid version is given" do
-      Chef::Environment.validate_cookbook_version(Chef::CookbookVersion.new("meta")).should == false
-      Chef::Environment.validate_cookbook_version("= 1.2.3a").should == false
-      Chef::Environment.validate_cookbook_version("=1.2.3a").should == false
-      Chef::Environment.validate_cookbook_version("= 1").should == false
-      Chef::Environment.validate_cookbook_version("=1").should == false
-      Chef::Environment.validate_cookbook_version("= a").should == false
-      Chef::Environment.validate_cookbook_version("=a").should == false
-      Chef::Environment.validate_cookbook_version("= 1.2.3.4").should == false
-      Chef::Environment.validate_cookbook_version("=1.2.3.4").should == false
+      Seth::Environment.validate_cookbook_version(Chef::CookbookVersion.new("meta")).should == false
+      Seth::Environment.validate_cookbook_version("= 1.2.3a").should == false
+      Seth::Environment.validate_cookbook_version("=1.2.3a").should == false
+      Seth::Environment.validate_cookbook_version("= 1").should == false
+      Seth::Environment.validate_cookbook_version("=1").should == false
+      Seth::Environment.validate_cookbook_version("= a").should == false
+      Seth::Environment.validate_cookbook_version("=a").should == false
+      Seth::Environment.validate_cookbook_version("= 1.2.3.4").should == false
+      Seth::Environment.validate_cookbook_version("=1.2.3.4").should == false
     end
 
     describe "in solo mode" do
       before do
-        Chef::Config[:solo] = true
+        Seth::Config[:solo] = true
       end
 
       after do
-        Chef::Config[:solo] = false
+        Seth::Config[:solo] = false
       end
 
       it "should raise and exception" do
         lambda {
-          Chef::Environment.validate_cookbook_version("= 1.2.3.4")
-        }.should raise_error Chef::Exceptions::IllegalVersionConstraint,
-                             "Environment cookbook version constraints not allowed in chef-solo"
+          Seth::Environment.validate_cookbook_version("= 1.2.3.4")
+        }.should raise_error Seth::Exceptions::IllegalVersionConstraint,
+                             "Environment cookbook version constraints not allowed in seth-solo"
       end
     end
 
@@ -303,7 +303,7 @@ describe Chef::Environment do
 
   describe "when updating from a parameter hash" do
     before do
-      @environment = Chef::Environment.new
+      @environment = Seth::Environment.new
     end
 
     it "updates the name from parameters[:name]" do
@@ -361,25 +361,25 @@ describe Chef::Environment do
 
   describe "api model" do
     before(:each) do
-      @rest = double("Chef::REST")
-      Chef::REST.stub(:new).and_return(@rest)
-      @query = double("Chef::Search::Query")
-      Chef::Search::Query.stub(:new).and_return(@query)
+      @rest = double("Seth::REST")
+      Seth::REST.stub(:new).and_return(@rest)
+      @query = double("Seth::Search::Query")
+      Seth::Search::Query.stub(:new).and_return(@query)
     end
 
     describe "list" do
       describe "inflated" do
         it "should return a hash of environment names and objects" do
-          e1 = double("Chef::Environment", :name => "one")
+          e1 = double("Seth::Environment", :name => "one")
           @query.should_receive(:search).with(:environment).and_yield(e1)
-          r = Chef::Environment.list(true)
+          r = Seth::Environment.list(true)
           r["one"].should == e1
         end
       end
 
       it "should return a hash of environment names and urls" do
         @rest.should_receive(:get_rest).and_return({ "one" => "http://foo" })
-        r = Chef::Environment.list
+        r = Seth::Environment.list
         r["one"].should == "http://foo"
       end
     end
@@ -388,27 +388,27 @@ describe Chef::Environment do
   describe "when loading" do
     describe "in solo mode" do
       before do
-        Chef::Config[:solo] = true
-        Chef::Config[:environment_path] = '/var/chef/environments'
+        Seth::Config[:solo] = true
+        Seth::Config[:environment_path] = '/var/seth/environments'
       end
 
       after do
-        Chef::Config[:solo] = false
+        Seth::Config[:solo] = false
       end
 
       it "should get the environment from the environment_path" do
-        File.should_receive(:directory?).with(Chef::Config[:environment_path]).and_return(true)
-        File.should_receive(:exists?).with(File.join(Chef::Config[:environment_path], 'foo.json')).and_return(false)
-        File.should_receive(:exists?).with(File.join(Chef::Config[:environment_path], 'foo.rb')).exactly(2).times.and_return(true)
-        File.should_receive(:readable?).with(File.join(Chef::Config[:environment_path], 'foo.rb')).and_return(true)
+        File.should_receive(:directory?).with(Seth::Config[:environment_path]).and_return(true)
+        File.should_receive(:exists?).with(File.join(Seth::Config[:environment_path], 'foo.json')).and_return(false)
+        File.should_receive(:exists?).with(File.join(Seth::Config[:environment_path], 'foo.rb')).exactly(2).times.and_return(true)
+        File.should_receive(:readable?).with(File.join(Seth::Config[:environment_path], 'foo.rb')).and_return(true)
         role_dsl="name \"foo\"\ndescription \"desc\"\n"
-        IO.should_receive(:read).with(File.join(Chef::Config[:environment_path], 'foo.rb')).and_return(role_dsl)
-        Chef::Environment.load('foo')
+        IO.should_receive(:read).with(File.join(Seth::Config[:environment_path], 'foo.rb')).and_return(role_dsl)
+        Seth::Environment.load('foo')
       end
 
-      it "should return a Chef::Environment object from JSON" do
-        File.should_receive(:directory?).with(Chef::Config[:environment_path]).and_return(true)
-        File.should_receive(:exists?).with(File.join(Chef::Config[:environment_path], 'foo.json')).and_return(true)
+      it "should return a Seth::Environment object from JSON" do
+        File.should_receive(:directory?).with(Seth::Config[:environment_path]).and_return(true)
+        File.should_receive(:exists?).with(File.join(Seth::Config[:environment_path], 'foo.json')).and_return(true)
         environment_hash = {
           "name" => "foo",
           "default_attributes" => {
@@ -416,49 +416,49 @@ describe Chef::Environment do
               "bar" => 1
             }
           },
-          "json_class" => "Chef::Environment",
+          "json_class" => "Seth::Environment",
           "description" => "desc",
-          "chef_type" => "environment"
+          "seth_type" => "environment"
         }
-        IO.should_receive(:read).with(File.join(Chef::Config[:environment_path], 'foo.json')).and_return(JSON.dump(environment_hash))
-        environment = Chef::Environment.load('foo')
+        IO.should_receive(:read).with(File.join(Seth::Config[:environment_path], 'foo.json')).and_return(JSON.dump(environment_hash))
+        environment = Seth::Environment.load('foo')
 
-        environment.should be_a_kind_of(Chef::Environment)
+        environment.should be_a_kind_of(Seth::Environment)
         environment.name.should == environment_hash['name']
         environment.description.should == environment_hash['description']
         environment.default_attributes.should == environment_hash['default_attributes']
       end
 
-      it "should return a Chef::Environment object from Ruby DSL" do
-        File.should_receive(:directory?).with(Chef::Config[:environment_path]).and_return(true)
-        File.should_receive(:exists?).with(File.join(Chef::Config[:environment_path], 'foo.json')).and_return(false)
-        File.should_receive(:exists?).with(File.join(Chef::Config[:environment_path], 'foo.rb')).exactly(2).times.and_return(true)
-        File.should_receive(:readable?).with(File.join(Chef::Config[:environment_path], 'foo.rb')).and_return(true)
+      it "should return a Seth::Environment object from Ruby DSL" do
+        File.should_receive(:directory?).with(Seth::Config[:environment_path]).and_return(true)
+        File.should_receive(:exists?).with(File.join(Seth::Config[:environment_path], 'foo.json')).and_return(false)
+        File.should_receive(:exists?).with(File.join(Seth::Config[:environment_path], 'foo.rb')).exactly(2).times.and_return(true)
+        File.should_receive(:readable?).with(File.join(Seth::Config[:environment_path], 'foo.rb')).and_return(true)
         role_dsl="name \"foo\"\ndescription \"desc\"\n"
-        IO.should_receive(:read).with(File.join(Chef::Config[:environment_path], 'foo.rb')).and_return(role_dsl)
-        environment = Chef::Environment.load('foo')
+        IO.should_receive(:read).with(File.join(Seth::Config[:environment_path], 'foo.rb')).and_return(role_dsl)
+        environment = Seth::Environment.load('foo')
 
-        environment.should be_a_kind_of(Chef::Environment)
+        environment.should be_a_kind_of(Seth::Environment)
         environment.name.should == 'foo'
         environment.description.should == 'desc'
       end
 
       it 'should raise an error if the configured environment_path is invalid' do
-        File.should_receive(:directory?).with(Chef::Config[:environment_path]).and_return(false)
+        File.should_receive(:directory?).with(Seth::Config[:environment_path]).and_return(false)
 
         lambda {
-          Chef::Environment.load('foo')
-        }.should raise_error Chef::Exceptions::InvalidEnvironmentPath, "Environment path '/var/chef/environments' is invalid"
+          Seth::Environment.load('foo')
+        }.should raise_error Seth::Exceptions::InvalidEnvironmentPath, "Environment path '/var/seth/environments' is invalid"
       end
 
       it 'should raise an error if the file does not exist' do
-        File.should_receive(:directory?).with(Chef::Config[:environment_path]).and_return(true)
-        File.should_receive(:exists?).with(File.join(Chef::Config[:environment_path], 'foo.json')).and_return(false)
-        File.should_receive(:exists?).with(File.join(Chef::Config[:environment_path], 'foo.rb')).and_return(false)
+        File.should_receive(:directory?).with(Seth::Config[:environment_path]).and_return(true)
+        File.should_receive(:exists?).with(File.join(Seth::Config[:environment_path], 'foo.json')).and_return(false)
+        File.should_receive(:exists?).with(File.join(Seth::Config[:environment_path], 'foo.rb')).and_return(false)
 
         lambda {
-          Chef::Environment.load('foo')
-        }.should raise_error Chef::Exceptions::EnvironmentNotFound, "Environment 'foo' could not be loaded from disk"
+          Seth::Environment.load('foo')
+        }.should raise_error Seth::Exceptions::EnvironmentNotFound, "Environment 'foo' could not be loaded from disk"
       end
     end
   end

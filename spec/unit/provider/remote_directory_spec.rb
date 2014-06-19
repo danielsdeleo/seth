@@ -19,40 +19,40 @@
 require 'spec_helper'
 require 'digest/md5'
 require 'tmpdir'
-require 'chef/mixin/file_class'
+require 'seth/mixin/file_class'
 
-class Chef::CFCCheck
-  include Chef::Mixin::FileClass
+class Seth::CFCCheck
+  include Seth::Mixin::FileClass
 end
 
-describe Chef::Provider::RemoteDirectory do
+describe Seth::Provider::RemoteDirectory do
   before do
-    Chef::FileAccessControl.any_instance.stub(:set_all)
+    Seth::FileAccessControl.any_instance.stub(:set_all)
 
-    @resource = Chef::Resource::RemoteDirectory.new(File.join(Dir.tmpdir, "tafty"))
+    @resource = Seth::Resource::RemoteDirectory.new(File.join(Dir.tmpdir, "tafty"))
     # in CHEF_SPEC_DATA/cookbooks/openldap/files/default/remotedir
     @resource.source "remotedir"
     @resource.cookbook('openldap')
 
     @cookbook_repo = ::File.expand_path(::File.join(CHEF_SPEC_DATA, "cookbooks"))
-    Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
+    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
 
-    @node = Chef::Node.new
-    cl = Chef::CookbookLoader.new(@cookbook_repo)
+    @node = Seth::Node.new
+    cl = Seth::CookbookLoader.new(@cookbook_repo)
     cl.load_cookbooks
-    @cookbook_collection = Chef::CookbookCollection.new(cl)
+    @cookbook_collection = Seth::CookbookCollection.new(cl)
 
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
 
-    @provider = Chef::Provider::RemoteDirectory.new(@resource, @run_context)
+    @provider = Seth::Provider::RemoteDirectory.new(@resource, @run_context)
     @provider.current_resource = @resource.clone
   end
 
   describe "when the contents of the directory changed on the first run and not on the second run" do
     before do
       @resource_second_run = @resource.clone
-      @provider_second_run = Chef::Provider::RemoteDirectory.new(@resource_second_run, @run_context)
+      @provider_second_run = Seth::Provider::RemoteDirectory.new(@resource_second_run, @run_context)
       @provider.run_action(:create)
       @provider_second_run.run_action(:create)
     end
@@ -183,7 +183,7 @@ describe Chef::Provider::RemoteDirectory do
         @provider.action = :create
         @provider.run_action
 
-        @fclass = Chef::CFCCheck.new
+        @fclass = Seth::CFCCheck.new
 
         Dir.mktmpdir do |tmp_dir|
           begin
@@ -194,7 +194,7 @@ describe Chef::Provider::RemoteDirectory do
 
             ::File.exist?(symlinked_dir_path).should be_false
             ::File.exist?(tmp_dir).should be_true
-          rescue Chef::Exceptions::Win32APIError => e
+          rescue Seth::Exceptions::Win32APIError => e
             pending "This must be run as an Administrator to create symlinks"
           end
         end

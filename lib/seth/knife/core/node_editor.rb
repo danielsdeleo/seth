@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/json_compat'
-require 'chef/node'
+require 'seth/json_compat'
+require 'seth/node'
 require 'tempfile'
 
-class Chef
+class Seth
   class Knife
     class NodeEditor
 
@@ -42,10 +42,10 @@ class Chef
       end
 
       def updated?
-        pristine_copy = Chef::JSONCompat.from_json(Chef::JSONCompat.to_json(node), :create_additions => false)
-        updated_copy  = Chef::JSONCompat.from_json(Chef::JSONCompat.to_json(@updated_node), :create_additions => false)
+        pristine_copy = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(node), :create_additions => false)
+        updated_copy  = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(@updated_node), :create_additions => false)
         unless pristine_copy == updated_copy
-          updated_properties = %w{name normal chef_environment run_list default override automatic}.reject do |key|
+          updated_properties = %w{name normal seth_environment run_list default override automatic}.reject do |key|
              pristine_copy[key] == updated_copy[key]
           end
         end
@@ -57,7 +57,7 @@ class Chef
       def view
         result = {}
         result["name"] = node.name
-        result["chef_environment"] = node.chef_environment
+        result["seth_environment"] = node.chef_environment
         result["normal"] = node.normal_attrs
         result["run_list"] = node.run_list
 
@@ -77,7 +77,7 @@ class Chef
 
         @updated_node = Node.new.tap do |n|
           n.name( updated_data["name"] )
-          n.chef_environment( updated_data["chef_environment"] )
+          n.seth_environment( updated_data["chef_environment"] )
           n.run_list( updated_data["run_list"])
           n.normal_attrs = updated_data["normal"]
 

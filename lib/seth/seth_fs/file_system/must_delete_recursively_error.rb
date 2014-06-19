@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/file_system_error'
+require 'seth/chef_fs/file_system/file_system_error'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class MustDeleteRecursivelyError < FileSystemError
         def initialize(entry, cause = nil)

@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/data_bag_item'
-require 'chef/encrypted_data_bag_item/decryptor'
-require 'chef/encrypted_data_bag_item/encryptor'
+require 'seth/config'
+require 'seth/data_bag_item'
+require 'seth/encrypted_data_bag_item/decryptor'
+require 'seth/encrypted_data_bag_item/encryptor'
 require 'open-uri'
 
 # An EncryptedDataBagItem represents a read-only data bag item where
@@ -35,18 +35,18 @@ require 'open-uri'
 #
 # If the shared secret is not specified at initialization or load,
 # then the contents of the file referred to in
-# Chef::Config[:encrypted_data_bag_secret] will be used as the
-# secret.  The default path is /etc/chef/encrypted_data_bag_secret
+# Seth::Config[:encrypted_data_bag_secret] will be used as the
+# secret.  The default path is /etc/seth/encrypted_data_bag_secret
 #
 # EncryptedDataBagItem is intended to provide a means to avoid storing
-# data bag items in the clear on the Chef server.  This provides some
-# protection against a breach of the Chef server or of Chef server
+# data bag items in the clear on the Seth server.  This provides some
+# protection against a breach of the Seth server or of Chef server
 # backup data.  Because the secret must be stored in the clear on any
 # node needing access to an EncryptedDataBagItem, this approach
 # provides no protection of data bag items from actors with access to
 # such nodes in the infrastructure.
 #
-class Chef::EncryptedDataBagItem
+class Seth::EncryptedDataBagItem
   ALGORITHM = 'aes-256-cbc'
 
   #
@@ -111,7 +111,7 @@ class Chef::EncryptedDataBagItem
   #   The name of the data bag item to fetch
   # +secret+::
   #   The raw secret key. If the +secret+ is nil, the value of the file at
-  #   +Chef::Config[:encrypted_data_bag_secret]+ is loaded. See +load_secret+
+  #   +Seth::Config[:encrypted_data_bag_secret]+ is loaded. See +load_secret+
   #   for more information.
   #
   # === Description
@@ -119,15 +119,15 @@ class Chef::EncryptedDataBagItem
   # Loads and decrypts the data bag item with the given name.
   #
   def self.load(data_bag, name, secret = nil)
-    raw_hash = Chef::DataBagItem.load(data_bag, name)
+    raw_hash = Seth::DataBagItem.load(data_bag, name)
     secret = secret || self.load_secret
     self.new(raw_hash, secret)
   end
 
   def self.load_secret(path=nil)
-    path ||= Chef::Config[:encrypted_data_bag_secret]
+    path ||= Seth::Config[:encrypted_data_bag_secret]
     if !path
-      raise ArgumentError, "No secret specified to load_secret and no secret found at #{Chef::Config.platform_specific_path('/etc/chef/encrypted_data_bag_secret')}"
+      raise ArgumentError, "No secret specified to load_secret and no secret found at #{Seth::Config.platform_specific_path('/etc/seth/encrypted_data_bag_secret')}"
     end
     secret = case path
              when /^\w+:\/\//

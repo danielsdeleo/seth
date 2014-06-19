@@ -1,11 +1,11 @@
-require 'chef/event_dispatch/base'
+require 'seth/event_dispatch/base'
 
-class Chef
+class Seth
   module EventDispatch
 
     # == EventDispatch::Dispatcher
     # The Dispatcher handles receiving event data from the sources
-    # (Chef::Client, Resources and Providers, etc.) and publishing the data to
+    # (Seth::Client, Resources and Providers, etc.) and publishing the data to
     # the registered subscribers.
     class Dispatcher < Base
 

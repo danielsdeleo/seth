@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Chef
+class Seth
   module Mixin
     module CreatePath
 
@@ -62,7 +62,7 @@ class Chef
           #                                             File.directory?(create_path) <- false
           #                                             Dir.mkdir(create_path)
           # Dir.mkdir(create_path) <- raises Errno::EEXIST
-          Chef::Log.debug("Creating directory #{path}")
+          Seth::Log.debug("Creating directory #{path}")
           Dir.mkdir(path)
         rescue Errno::EEXIST
         end

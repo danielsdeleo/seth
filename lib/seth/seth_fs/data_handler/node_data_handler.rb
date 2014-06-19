@@ -1,16 +1,16 @@
-require 'chef/chef_fs/data_handler/data_handler_base'
-require 'chef/node'
+require 'seth/chef_fs/data_handler/data_handler_base'
+require 'seth/node'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module DataHandler
       class NodeDataHandler < DataHandlerBase
         def normalize(node, entry)
           result = normalize_hash(node, {
             'name' => remove_dot_json(entry.name),
-            'json_class' => 'Chef::Node',
-            'chef_type' => 'node',
-            'chef_environment' => '_default',
+            'json_class' => 'Seth::Node',
+            'seth_type' => 'node',
+            'seth_environment' => '_default',
             'override' => {},
             'normal' => {},
             'default' => {},
@@ -25,8 +25,8 @@ class Chef
           return key == 'name'
         end
 
-        def chef_class
-          Chef::Node
+        def seth_class
+          Seth::Node
         end
 
         # Nodes do not support .rb files

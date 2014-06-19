@@ -19,31 +19,31 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Gentoo do
+describe Seth::Provider::Service::Gentoo do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource     = Chef::Resource::Service.new("chef")
-    @current_resource = Chef::Resource::Service.new("chef")
+    @new_resource     = Seth::Resource::Service.new("seth")
+    @current_resource = Seth::Resource::Service.new("seth")
 
-    @provider = Chef::Provider::Service::Gentoo.new(@new_resource, @run_context)
-    Chef::Resource::Service.stub(:new).and_return(@current_resource)
+    @provider = Seth::Provider::Service::Gentoo.new(@new_resource, @run_context)
+    Seth::Resource::Service.stub(:new).and_return(@current_resource)
     @status = double("Status", :exitstatus => 0, :stdout => @stdout)
     @provider.stub(:shell_out).and_return(@status)
-    File.stub(:exists?).with("/etc/init.d/chef").and_return(true)
+    File.stub(:exists?).with("/etc/init.d/seth").and_return(true)
     File.stub(:exists?).with("/sbin/rc-update").and_return(true)
-    File.stub(:exists?).with("/etc/runlevels/default/chef").and_return(false)
-    File.stub(:readable?).with("/etc/runlevels/default/chef").and_return(false)
+    File.stub(:exists?).with("/etc/runlevels/default/seth").and_return(false)
+    File.stub(:readable?).with("/etc/runlevels/default/seth").and_return(false)
   end
  # new test: found_enabled state
   #
   describe "load_current_resource" do
-    it "should raise Chef::Exceptions::Service if /sbin/rc-update does not exist" do
+    it "should raise Seth::Exceptions::Service if /sbin/rc-update does not exist" do
       File.should_receive(:exists?).with("/sbin/rc-update").and_return(false)
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
 
     it "should track when service file is not found in /etc/runlevels" do
@@ -52,7 +52,7 @@ describe Chef::Provider::Service::Gentoo do
     end
 
     it "should track when service file is found in /etc/runlevels/**/" do
-      Dir.stub(:glob).with("/etc/runlevels/**/chef").and_return(["/etc/runlevels/default/chef"])
+      Dir.stub(:glob).with("/etc/runlevels/**/seth").and_return(["/etc/runlevels/default/chef"])
       @provider.load_current_resource
       @provider.instance_variable_get("@found_script").should be_true
     end
@@ -60,13 +60,13 @@ describe Chef::Provider::Service::Gentoo do
     describe "when detecting the service enable state" do
       describe "and the glob returns a default service script file" do
         before do
-          Dir.stub(:glob).with("/etc/runlevels/**/chef").and_return(["/etc/runlevels/default/chef"])
+          Dir.stub(:glob).with("/etc/runlevels/**/seth").and_return(["/etc/runlevels/default/chef"])
         end
 
         describe "and the file exists and is readable" do
           before do
-            File.stub(:exists?).with("/etc/runlevels/default/chef").and_return(true)
-            File.stub(:readable?).with("/etc/runlevels/default/chef").and_return(true)
+            File.stub(:exists?).with("/etc/runlevels/default/seth").and_return(true)
+            File.stub(:readable?).with("/etc/runlevels/default/seth").and_return(true)
           end
           it "should set enabled to true" do
             @provider.load_current_resource
@@ -76,8 +76,8 @@ describe Chef::Provider::Service::Gentoo do
 
         describe "and the file exists but is not readable" do
           before do
-            File.stub(:exists?).with("/etc/runlevels/default/chef").and_return(true)
-            File.stub(:readable?).with("/etc/runlevels/default/chef").and_return(false)
+            File.stub(:exists?).with("/etc/runlevels/default/seth").and_return(true)
+            File.stub(:readable?).with("/etc/runlevels/default/seth").and_return(false)
           end
 
           it "should set enabled to false" do
@@ -88,8 +88,8 @@ describe Chef::Provider::Service::Gentoo do
 
         describe "and the file does not exist" do
           before do
-            File.stub(:exists?).with("/etc/runlevels/default/chef").and_return(false)
-            File.stub(:readable?).with("/etc/runlevels/default/chef").and_return("foobarbaz")
+            File.stub(:exists?).with("/etc/runlevels/default/seth").and_return(false)
+            File.stub(:readable?).with("/etc/runlevels/default/seth").and_return("foobarbaz")
           end
 
           it "should set enabled to false" do
@@ -126,16 +126,16 @@ describe Chef::Provider::Service::Gentoo do
   describe "action_methods" do
     before(:each) { @provider.stub(:load_current_resource).and_return(@current_resource) }
 
-    describe Chef::Provider::Service::Gentoo, "enable_service" do
+    describe Seth::Provider::Service::Gentoo, "enable_service" do
       it "should call rc-update add *service* default" do
-        @provider.should_receive(:run_command).with({:command => "/sbin/rc-update add chef default"})
+        @provider.should_receive(:run_command).with({:command => "/sbin/rc-update add seth default"})
         @provider.enable_service()
       end
     end
 
-    describe Chef::Provider::Service::Gentoo, "disable_service" do
+    describe Seth::Provider::Service::Gentoo, "disable_service" do
       it "should call rc-update del *service* default" do
-        @provider.should_receive(:run_command).with({:command => "/sbin/rc-update del chef default"})
+        @provider.should_receive(:run_command).with({:command => "/sbin/rc-update del seth default"})
         @provider.disable_service()
       end
     end

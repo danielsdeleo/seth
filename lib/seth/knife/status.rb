@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class Status < Knife
 
       deps do
         require 'highline'
-        require 'chef/search/query'
+        require 'seth/search/query'
       end
 
       banner "knife status QUERY (options)"
@@ -42,7 +42,7 @@ class Chef
       option :hide_healthy,
         :short => "-H",
         :long => "--hide-healthy",
-        :description => "Hide nodes that have run chef in the last hour"
+        :description => "Hide nodes that have run seth in the last hour"
 
       def highline
         @h ||= HighLine.new
@@ -50,13 +50,13 @@ class Chef
 
       def run
         all_nodes = []
-        q = Chef::Search::Query.new
+        q = Seth::Search::Query.new
         query = @name_args[0] || "*:*"
         q.search(:node, query) do |node|
           all_nodes << node
         end
         all_nodes.sort { |n1, n2|
-          if (config[:sort_reverse] || Chef::Config[:knife][:sort_status_reverse])
+          if (config[:sort_reverse] || Seth::Config[:knife][:sort_status_reverse])
             (n2["ohai_time"] or 0) <=> (n1["ohai_time"] or 0)
           else
             (n1["ohai_time"] or 0) <=> (n2["ohai_time"] or 0)

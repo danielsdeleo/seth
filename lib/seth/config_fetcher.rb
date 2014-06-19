@@ -1,9 +1,9 @@
-require 'chef/application'
-require 'chef/chef_fs/path_utils'
-require 'chef/http/simple'
-require 'chef/json_compat'
+require 'seth/application'
+require 'seth/chef_fs/path_utils'
+require 'seth/http/simple'
+require 'seth/json_compat'
 
-class Chef
+class Seth
   class ConfigFetcher
 
     attr_reader :config_location
@@ -17,9 +17,9 @@ class Chef
     def fetch_json
       config_data = read_config
       begin
-        Chef::JSONCompat.from_json(config_data)
+        Seth::JSONCompat.from_json(config_data)
       rescue JSON::ParserError => error
-        Chef::Application.fatal!("Could not parse the provided JSON file (#{config_location}): " + error.message, 2)
+        Seth::Application.fatal!("Could not parse the provided JSON file (#{config_location}): " + error.message, 2)
       end
     end
 
@@ -34,15 +34,15 @@ class Chef
     def fetch_remote_config
       http.get("")
     rescue SocketError, SystemCallError, Net::HTTPServerException => error
-      Chef::Application.fatal!("Cannot fetch config '#{config_location}': '#{error.class}: #{error.message}", 2)
+      Seth::Application.fatal!("Cannot fetch config '#{config_location}': '#{error.class}: #{error.message}", 2)
     end
 
     def read_local_config
       ::File.read(config_location)
     rescue Errno::ENOENT => error
-      Chef::Application.fatal!("Cannot load configuration from #{config_location}", 2)
+      Seth::Application.fatal!("Cannot load configuration from #{config_location}", 2)
     rescue Errno::EACCES => error
-      Chef::Application.fatal!("Permissions are incorrect on #{config_location}. Please chmod a+r #{config_location}", 2)
+      Seth::Application.fatal!("Permissions are incorrect on #{config_location}. Please chmod a+r #{config_location}", 2)
     end
 
     def config_missing?
@@ -61,15 +61,15 @@ class Chef
       begin
         real_jail = Pathname.new(config_file_jail).realpath.to_s
       rescue Errno::ENOENT
-        Chef::Log.warn("Config file jail #{config_file_jail} does not exist: will not load any config file.")
+        Seth::Log.warn("Config file jail #{config_file_jail} does not exist: will not load any config file.")
         return true
       end
 
-      !Chef::ChefFS::PathUtils.descendant_of?(real_config_file, real_jail)
+      !Seth::ChefFS::PathUtils.descendant_of?(real_config_file, real_jail)
     end
 
     def http
-      Chef::HTTP::Simple.new(config_location)
+      Seth::HTTP::Simple.new(config_location)
     end
 
     def remote_config?

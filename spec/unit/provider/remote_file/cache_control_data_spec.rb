@@ -28,12 +28,12 @@ CACHE_FILE_PATH_LIMIT =
   CACHE_FILE_MD5_HEX_LENGTH +
   CACHE_FILE_JSON_FILE_EXTENSION_LENGTH # {friendly}-{md5hex}.json == 102
 
-describe Chef::Provider::RemoteFile::CacheControlData do
+describe Seth::Provider::RemoteFile::CacheControlData do
 
   let(:uri) { URI.parse("http://www.google.com/robots.txt") }
 
   subject(:cache_control_data) do
-    Chef::Provider::RemoteFile::CacheControlData.load_and_validate(uri, current_file_checksum)
+    Seth::Provider::RemoteFile::CacheControlData.load_and_validate(uri, current_file_checksum)
   end
 
   let(:cache_path) { "remote_file/http___www_google_com_robots_txt-9839677abeeadf0691026e0cabca2339.json" }
@@ -44,7 +44,7 @@ describe Chef::Provider::RemoteFile::CacheControlData do
   context "when loading data for an unknown URI" do
 
     before do
-      Chef::FileCache.should_receive(:load).with(cache_path).and_raise(Chef::Exceptions::FileNotFound, "nope")
+      Seth::FileCache.should_receive(:load).with(cache_path).and_raise(Chef::Exceptions::FileNotFound, "nope")
     end
 
     context "and there is no current copy of the file" do
@@ -67,7 +67,7 @@ describe Chef::Provider::RemoteFile::CacheControlData do
       let(:cache_path) { "remote_file/http___bob_XXXX_example_org_-f121caacb74c05a35bcefdf578ed5fc9.json" }
 
       it "loads the cache data from a path based on a sanitized URI" do
-        Chef::Provider::RemoteFile::CacheControlData.load_and_validate(uri, current_file_checksum)
+        Seth::Provider::RemoteFile::CacheControlData.load_and_validate(uri, current_file_checksum)
       end
     end
   end
@@ -89,7 +89,7 @@ describe Chef::Provider::RemoteFile::CacheControlData do
     end
 
     before do
-      Chef::FileCache.should_receive(:load).with(cache_path).and_return(cache_json_data)
+      Seth::FileCache.should_receive(:load).with(cache_path).and_return(cache_json_data)
     end
 
     context "and there is no on-disk copy of the file" do
@@ -162,12 +162,12 @@ describe Chef::Provider::RemoteFile::CacheControlData do
       # so we can't count on the order of the keys in the json format.
 
       json_data = cache_control_data.json_data
-      Chef::JSONCompat.from_json(json_data).should == expected_serialization_data
+      Seth::JSONCompat.from_json(json_data).should == expected_serialization_data
     end
 
     it "writes data to the cache" do
       json_data = cache_control_data.json_data
-      Chef::FileCache.should_receive(:store).with(cache_path, json_data)
+      Seth::FileCache.should_receive(:store).with(cache_path, json_data)
       cache_control_data.save
     end
 
@@ -178,7 +178,7 @@ describe Chef::Provider::RemoteFile::CacheControlData do
 
       it "writes the data to the cache with a sanitized path name" do
         json_data = cache_control_data.json_data
-        Chef::FileCache.should_receive(:store).with(cache_path, json_data)
+        Seth::FileCache.should_receive(:store).with(cache_path, json_data)
         cache_control_data.save
       end
     end
@@ -192,14 +192,14 @@ describe Chef::Provider::RemoteFile::CacheControlData do
       let(:uri) { URI.parse(long_remote_path) }
       let(:truncated_remote_uri) { URI.parse(long_remote_path[0...CACHE_FILE_TRUNCATED_FRIENDLY_FILE_NAME_LENGTH]) }
       let(:truncated_file_cache_path) do
-        cache_control_data_truncated = Chef::Provider::RemoteFile::CacheControlData.load_and_validate(truncated_remote_uri, current_file_checksum)
+        cache_control_data_truncated = Seth::Provider::RemoteFile::CacheControlData.load_and_validate(truncated_remote_uri, current_file_checksum)
         cache_control_data_truncated.send('sanitized_cache_file_basename')[0...CACHE_FILE_TRUNCATED_FRIENDLY_FILE_NAME_LENGTH]
       end
 
       it "truncates the file cache path to 102 characters" do
         normalized_cache_path = cache_control_data.send('sanitized_cache_file_basename')
 
-        Chef::FileCache.should_receive(:store).with("remote_file/" + normalized_cache_path, cache_control_data.json_data)              
+        Seth::FileCache.should_receive(:store).with("remote_file/" + normalized_cache_path, cache_control_data.json_data)              
 
         cache_control_data.save
 

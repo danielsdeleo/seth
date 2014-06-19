@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-require 'chef/json_compat'
+require 'seth/json_compat'
 
-class Chef
+class Seth
   class HTTP
 
     # Middleware that takes json input and turns it into raw text
@@ -31,7 +31,7 @@ class Chef
       def handle_request(method, url, headers={}, data=false)
         if data
           headers["Content-Type"] = 'application/json'
-          data = Chef::JSONCompat.to_json(data)
+          data = Seth::JSONCompat.to_json(data)
           # Force encoding to binary to fix SSL related EOFErrors
           # cf. http://tickets.opscode.com/browse/CHEF-2363
           # http://redmine.ruby-lang.org/issues/5233

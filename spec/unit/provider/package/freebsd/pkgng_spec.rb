@@ -20,20 +20,20 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::Package::Freebsd::Port do
+describe Seth::Provider::Package::Freebsd::Port do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Package.new("zsh")
-    @provider = Chef::Provider::Package::Freebsd::Pkgng.new(@new_resource, @run_context)
+    @new_resource = Seth::Resource::Package.new("zsh")
+    @provider = Seth::Provider::Package::Freebsd::Pkgng.new(@new_resource, @run_context)
   end
 
 
   describe "initialization" do
     it "should create a current resource with the name of the new resource" do
-      @provider.current_resource.is_a?(Chef::Resource::Package).should be_true
+      @provider.current_resource.is_a?(Seth::Resource::Package).should be_true
       @provider.current_resource.name.should == 'zsh'
     end
   end

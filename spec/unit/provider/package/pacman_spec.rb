@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Package::Pacman do
+describe Seth::Provider::Package::Pacman do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Package.new("nano")
-    @current_resource = Chef::Resource::Package.new("nano")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Package.new("nano")
+    @current_resource = Seth::Resource::Package.new("nano")
 
     @status = double("Status", :exitstatus => 0)
-    @provider = Chef::Provider::Package::Pacman.new(@new_resource, @run_context)
-    Chef::Resource::Package.stub(:new).and_return(@current_resource)
+    @provider = Seth::Provider::Package::Pacman.new(@new_resource, @run_context)
+    Seth::Resource::Package.stub(:new).and_return(@current_resource)
     @provider.stub(:popen4).and_return(@status)
     @stdin = StringIO.new
     @stdout = StringIO.new(<<-ERR)
@@ -40,7 +40,7 @@ ERR
 
   describe "when determining the current package state" do
     it "should create a current resource with the name of the new_resource" do
-      Chef::Resource::Package.should_receive(:new).and_return(@current_resource)
+      Seth::Resource::Package.should_receive(:new).and_return(@current_resource)
       @provider.load_current_resource
     end
 
@@ -134,7 +134,7 @@ PACMAN_CONF
 
     it "should raise an exception if pacman fails" do
       @status.should_receive(:exitstatus).and_return(2)
-      lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should not raise an exception if pacman succeeds" do
@@ -145,7 +145,7 @@ PACMAN_CONF
     it "should raise an exception if pacman does not return a candidate version" do
       @stdout.stub(:each).and_yield("")
       @provider.stub(:popen4).and_yield(@pid, @stdin, @stdout, @stderr).and_return(@status)
-      lambda { @provider.candidate_version }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.candidate_version }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should return the current resouce" do
@@ -153,7 +153,7 @@ PACMAN_CONF
     end
   end
 
-  describe Chef::Provider::Package::Pacman, "install_package" do
+  describe Seth::Provider::Package::Pacman, "install_package" do
     it "should run pacman install with the package name and version" do
       @provider.should_receive(:run_command_with_systems_locale).with({
         :command => "pacman --sync --noconfirm --noprogressbar nano"
@@ -171,14 +171,14 @@ PACMAN_CONF
     end
   end
 
-  describe Chef::Provider::Package::Pacman, "upgrade_package" do
+  describe Seth::Provider::Package::Pacman, "upgrade_package" do
     it "should run install_package with the name and version" do
       @provider.should_receive(:install_package).with("nano", "1.0")
       @provider.upgrade_package("nano", "1.0")
     end
   end
 
-  describe Chef::Provider::Package::Pacman, "remove_package" do
+  describe Seth::Provider::Package::Pacman, "remove_package" do
     it "should run pacman remove with the package name" do
       @provider.should_receive(:run_command_with_systems_locale).with({
         :command => "pacman --remove --noconfirm --noprogressbar nano"
@@ -196,7 +196,7 @@ PACMAN_CONF
     end
   end
 
-  describe Chef::Provider::Package::Pacman, "purge_package" do
+  describe Seth::Provider::Package::Pacman, "purge_package" do
     it "should run remove_package with the name and version" do
       @provider.should_receive(:remove_package).with("nano", "1.0")
       @provider.purge_package("nano", "1.0")

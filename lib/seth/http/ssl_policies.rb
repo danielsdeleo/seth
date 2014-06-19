@@ -23,10 +23,10 @@
 
 require 'openssl'
 
-class Chef
+class Seth
   class HTTP
 
-    # == Chef::HTTP::DefaultSSLPolicy
+    # == Seth::HTTP::DefaultSSLPolicy
     # Configures SSL behavior on an HTTP object via visitor pattern.
     class DefaultSSLPolicy
 
@@ -59,12 +59,12 @@ class Chef
       def set_ca_store
         if config[:ssl_ca_path]
           unless ::File.exist?(config[:ssl_ca_path])
-            raise Chef::Exceptions::ConfigurationError, "The configured ssl_ca_path #{config[:ssl_ca_path]} does not exist"
+            raise Seth::Exceptions::ConfigurationError, "The configured ssl_ca_path #{config[:ssl_ca_path]} does not exist"
           end
           http_client.ca_path = config[:ssl_ca_path]
         elsif config[:ssl_ca_file]
           unless ::File.exist?(config[:ssl_ca_file])
-            raise Chef::Exceptions::ConfigurationError, "The configured ssl_ca_file #{config[:ssl_ca_file]} does not exist"
+            raise Seth::Exceptions::ConfigurationError, "The configured ssl_ca_file #{config[:ssl_ca_file]} does not exist"
           end
           http_client.ca_file = config[:ssl_ca_file]
         end
@@ -87,13 +87,13 @@ class Chef
       def set_client_credentials
         if (config[:ssl_client_cert] || config[:ssl_client_key])
           unless (config[:ssl_client_cert] && config[:ssl_client_key])
-            raise Chef::Exceptions::ConfigurationError, "You must configure ssl_client_cert and ssl_client_key together"
+            raise Seth::Exceptions::ConfigurationError, "You must configure ssl_client_cert and ssl_client_key together"
           end
           unless ::File.exists?(config[:ssl_client_cert])
-            raise Chef::Exceptions::ConfigurationError, "The configured ssl_client_cert #{config[:ssl_client_cert]} does not exist"
+            raise Seth::Exceptions::ConfigurationError, "The configured ssl_client_cert #{config[:ssl_client_cert]} does not exist"
           end
           unless ::File.exists?(config[:ssl_client_key])
-            raise Chef::Exceptions::ConfigurationError, "The configured ssl_client_key #{config[:ssl_client_key]} does not exist"
+            raise Seth::Exceptions::ConfigurationError, "The configured ssl_client_key #{config[:ssl_client_key]} does not exist"
           end
           http_client.cert = OpenSSL::X509::Certificate.new(::File.read(config[:ssl_client_cert]))
           http_client.key = OpenSSL::PKey::RSA.new(::File.read(config[:ssl_client_key]))
@@ -101,7 +101,7 @@ class Chef
       end
 
       def config
-        Chef::Config
+        Seth::Config
       end
 
       private

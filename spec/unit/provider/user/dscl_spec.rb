@@ -21,13 +21,13 @@ ShellCmdResult = Struct.new(:stdout, :stderr, :exitstatus)
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::User::Dscl do
+describe Seth::Provider::User::Dscl do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::User.new("toor")
-    @provider = Chef::Provider::User::Dscl.new(@new_resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::User.new("toor")
+    @provider = Seth::Provider::User::Dscl.new(@new_resource, @run_context)
   end
 
   describe "when shelling out to dscl" do
@@ -46,19 +46,19 @@ describe Chef::Provider::User::Dscl do
     it "should raise an exception for any other command" do
       shell_return = ShellCmdResult.new('out', 'err', 23)
       @provider.should_receive(:shell_out).with('dscl . -cmd /Path arguments').and_return(shell_return)
-      lambda { @provider.safe_dscl("cmd /Path arguments") }.should raise_error(Chef::Exceptions::DsclCommandFailed)
+      lambda { @provider.safe_dscl("cmd /Path arguments") }.should raise_error(Seth::Exceptions::DsclCommandFailed)
     end
 
     it "raises an exception when dscl reports 'no such key'" do
       shell_return = ShellCmdResult.new("No such key: ", 'err', 23)
       @provider.should_receive(:shell_out).with('dscl . -cmd /Path args').and_return(shell_return)
-      lambda { @provider.safe_dscl("cmd /Path args") }.should raise_error(Chef::Exceptions::DsclCommandFailed)
+      lambda { @provider.safe_dscl("cmd /Path args") }.should raise_error(Seth::Exceptions::DsclCommandFailed)
     end
 
     it "raises an exception when dscl reports 'eDSRecordNotFound'" do
       shell_return = ShellCmdResult.new("<dscl_cmd> DS Error: -14136 (eDSRecordNotFound)", 'err', -14136)
       @provider.should_receive(:shell_out).with('dscl . -cmd /Path args').and_return(shell_return)
-      lambda { @provider.safe_dscl("cmd /Path args") }.should raise_error(Chef::Exceptions::DsclCommandFailed)
+      lambda { @provider.safe_dscl("cmd /Path args") }.should raise_error(Seth::Exceptions::DsclCommandFailed)
     end
   end
 
@@ -109,7 +109,7 @@ describe Chef::Provider::User::Dscl do
     it "raises RequestedUIDUnavailable if the requested uid is already in use" do
       @provider.stub(:uid_used?).and_return(true)
       @provider.should_receive(:get_free_uid).and_return(501)
-      lambda { @provider.set_uid }.should raise_error(Chef::Exceptions::RequestedUIDUnavailable)
+      lambda { @provider.set_uid }.should raise_error(Seth::Exceptions::RequestedUIDUnavailable)
     end
 
     it "finds a valid, unused uid when none is specified" do
@@ -146,7 +146,7 @@ describe Chef::Provider::User::Dscl do
 
     it "raises InvalidHomeDirectory when the resource's home directory doesn't look right" do
       @new_resource.home('epic-fail')
-      lambda { @provider.modify_home }.should raise_error(Chef::Exceptions::InvalidHomeDirectory)
+      lambda { @provider.modify_home }.should raise_error(Seth::Exceptions::InvalidHomeDirectory)
     end
 
     it "moves the users home to the new location if it exists and the target location is different" do
@@ -171,7 +171,7 @@ describe Chef::Provider::User::Dscl do
 
     it "should raise an exception when the systems user template dir (skel) cannot be found" do
       ::File.stub(:exists?).and_return(false,false,false)
-      lambda { @provider.modify_home }.should raise_error(Chef::Exceptions::User)
+      lambda { @provider.modify_home }.should raise_error(Seth::Exceptions::User)
     end
 
     it "should run ditto to copy any missing files from skel to the new home dir" do
@@ -320,7 +320,7 @@ describe Chef::Provider::User::Dscl do
   describe "load_current_resource" do
     it "should raise an error if the required binary /usr/bin/dscl doesn't exist" do
       ::File.should_receive(:exists?).with("/usr/bin/dscl").and_return(false)
-      lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::User)
+      lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::User)
     end
 
     it "shouldn't raise an error if /usr/bin/dscl exists" do
@@ -329,7 +329,7 @@ describe Chef::Provider::User::Dscl do
     end
   end
 
-  describe "when the user does not yet exist and chef is creating it" do
+  describe "when the user does not yet exist and seth is creating it" do
     context "with a numeric gid" do
       before do
         @new_resource.comment "#mockssuck"
@@ -383,12 +383,12 @@ describe Chef::Provider::User::Dscl do
       it "should raise an exception when the group does not exist" do
         shell_return = ShellCmdResult.new("<dscl_cmd> DS Error: -14136 (eDSRecordNotFound)", 'err', -14136)
         @provider.should_receive(:shell_out).with('dscl . -read /Groups/newgroup PrimaryGroupID').and_return(shell_return)
-        lambda { @provider.dscl_set_gid }.should raise_error(Chef::Exceptions::GroupIDNotFound)
+        lambda { @provider.dscl_set_gid }.should raise_error(Seth::Exceptions::GroupIDNotFound)
       end
     end
   end
 
-  describe "when the user exists and chef is managing it" do
+  describe "when the user exists and seth is managing it" do
     before do
       @current_resource = @new_resource.dup
       @provider.current_resource = @current_resource
@@ -428,7 +428,7 @@ describe Chef::Provider::User::Dscl do
     end
   end
 
-  describe "when the user exists and chef is removing it" do
+  describe "when the user exists and seth is removing it" do
     it "removes the user's home directory when the resource is configured to manage home" do
       @new_resource.supports({ :manage_home => true })
       @provider.should_receive(:safe_dscl).with("read /Users/toor").and_return("NFSHomeDirectory: /Users/fuuuuuuuuuuuuu")

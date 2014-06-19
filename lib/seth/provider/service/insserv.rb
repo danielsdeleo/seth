@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/provider/service/init'
+require 'seth/provider/service/init'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Insserv < Chef::Provider::Service::Init
+      class Insserv < Seth::Provider::Service::Init
 
         def load_current_resource
           super

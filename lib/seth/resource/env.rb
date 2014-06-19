@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
-    class Env < Chef::Resource
+    class Env < Seth::Resource
 
       identity_attr :key_name
 

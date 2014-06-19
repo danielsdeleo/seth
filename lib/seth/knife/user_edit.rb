@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class UserEdit < Knife
 
       deps do
-        require 'chef/user'
-        require 'chef/json_compat'
+        require 'seth/user'
+        require 'seth/json_compat'
       end
 
       banner "knife user edit USER (options)"
@@ -38,10 +38,10 @@ class Chef
           exit 1
         end
 
-        original_user = Chef::User.load(@user_name).to_hash
+        original_user = Seth::User.load(@user_name).to_hash
         edited_user = edit_data(original_user)
         if original_user != edited_user
-          user = Chef::User.from_hash(edited_user)
+          user = Seth::User.from_hash(edited_user)
           user.update
           ui.msg("Saved #{user}.")
         else

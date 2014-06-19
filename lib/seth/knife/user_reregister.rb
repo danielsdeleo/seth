@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class UserReregister < Knife
 
       deps do
-        require 'chef/user'
-        require 'chef/json_compat'
+        require 'seth/user'
+        require 'seth/json_compat'
       end
 
       banner "knife user reregister USER (options)"
@@ -43,8 +43,8 @@ class Chef
           exit 1
         end
 
-        user = Chef::User.load(@user_name).reregister
-        Chef::Log.debug("Updated user data: #{user.inspect}")
+        user = Seth::User.load(@user_name).reregister
+        Seth::Log.debug("Updated user data: #{user.inspect}")
         key = user.private_key
         if config[:file]
           File.open(config[:file], "w") do |f|

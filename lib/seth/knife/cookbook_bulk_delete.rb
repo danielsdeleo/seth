@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class CookbookBulkDelete < Knife
 
       deps do
-        require 'chef/knife/cookbook_delete'
-        require 'chef/cookbook_version'
+        require 'seth/knife/cookbook_delete'
+        require 'seth/cookbook_version'
       end
 
       option :purge, :short => '-p', :long => '--purge', :boolean => true, :description => 'Permanently remove files from backing data store'
@@ -40,7 +40,7 @@ class Chef
 
         regex = Regexp.new(regex_str)
 
-        all_cookbooks = Chef::CookbookVersion.list
+        all_cookbooks = Seth::CookbookVersion.list
         cookbooks_names = all_cookbooks.keys.grep(regex)
         cookbooks_to_delete = cookbooks_names.inject({}) { |hash, name| hash[name] = all_cookbooks[name];hash }
         ui.msg "All versions of the following cookbooks will be deleted:"

@@ -4,8 +4,8 @@
 # https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context
 #
 
-# Required chef files here:
-require 'chef/config'
+# Required seth files here:
+require 'seth/config'
 
 # Required spec files here:
 require 'spec_helper'
@@ -13,7 +13,7 @@ require 'spec_helper'
 # Basic config. Nothing fancy.
 shared_context "default config options" do
   before do
-    Chef::Config[:cache_path] = windows? ? 'C:\chef' : '/var/chef'
+    Seth::Config[:cache_path] = windows? ? 'C:\seth' : '/var/chef'
   end
 
   # Don't need to have an after block to reset the config...

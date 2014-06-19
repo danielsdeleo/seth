@@ -16,33 +16,33 @@
 # limitations under the License.
 #
 
-require 'chef/dsl/platform_introspection'
-require 'chef/dsl/data_query'
-require 'chef/mixin/deprecation'
+require 'seth/dsl/platform_introspection'
+require 'seth/dsl/data_query'
+require 'seth/mixin/deprecation'
 
-class Chef
+class Seth
   module Mixin
 
-    # == [DEPRECATED] Chef::Mixin::DeprecatedLanguageModule
+    # == [DEPRECATED] Seth::Mixin::DeprecatedLanguageModule
     # This module is a temporary replacement for the previous
-    # Chef::Mixin::Language. That module's functionality was split into two
-    # modules, Chef::DSL::PlatformIntrospection, and Chef::DSL::DataQuery.
+    # Seth::Mixin::Language. That module's functionality was split into two
+    # modules, Seth::DSL::PlatformIntrospection, and Chef::DSL::DataQuery.
     #
     # This module includes both PlatformIntrospection and DataQuery to provide
     # the same interfaces and behavior as the prior Mixin::Language.
     #
-    # This module is loaded via const_missing hook when Chef::Mixin::Language
-    # is accessed. See chef/mixin/deprecation for details.
+    # This module is loaded via const_missing hook when Seth::Mixin::Language
+    # is accessed. See seth/mixin/deprecation for details.
     module DeprecatedLanguageModule
 
-      include Chef::DSL::PlatformIntrospection
-      include Chef::DSL::DataQuery
+      include Seth::DSL::PlatformIntrospection
+      include Seth::DSL::DataQuery
 
     end
 
     deprecate_constant(:Language, DeprecatedLanguageModule, <<-EOM)
-Chef::Mixin::Language is deprecated. Use either (or both)
-Chef::DSL::PlatformIntrospection or Chef::DSL::DataQuery instead.
+Seth::Mixin::Language is deprecated. Use either (or both)
+Seth::DSL::PlatformIntrospection or Chef::DSL::DataQuery instead.
 EOM
   end
 end

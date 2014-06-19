@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/knife/core/text_formatter'
-require 'chef/knife/core/generic_presenter'
+require 'seth/knife/core/text_formatter'
+require 'seth/knife/core/generic_presenter'
 
-class Chef
+class Seth
   class Knife
     module Core
 
@@ -48,8 +48,8 @@ class Chef
         end
       end
 
-      #==Chef::Knife::Core::NodePresenter
-      # A customized presenter for Chef::Node objects. Supports variable-length
+      #==Seth::Knife::Core::NodePresenter
+      # A customized presenter for Seth::Node objects. Supports variable-length
       # output formats for displaying node data
       class NodePresenter < GenericPresenter
 
@@ -62,12 +62,12 @@ class Chef
         end
 
         def summarize_json(data)
-          if data.kind_of?(Chef::Node)
+          if data.kind_of?(Seth::Node)
             node = data
             result = {}
 
             result["name"] = node.name
-            result["chef_environment"] = node.chef_environment
+            result["seth_environment"] = node.chef_environment
             result["run_list"] = node.run_list
             result["normal"] = node.normal_attrs
 
@@ -77,25 +77,25 @@ class Chef
               result["automatic"] = node.automatic_attrs
             end
 
-            Chef::JSONCompat.to_json_pretty(result)
+            Seth::JSONCompat.to_json_pretty(result)
           else
-            Chef::JSONCompat.to_json_pretty(data)
+            Seth::JSONCompat.to_json_pretty(data)
           end
         end
 
-        # Converts a Chef::Node object to a string suitable for output to a
+        # Converts a Seth::Node object to a string suitable for output to a
         # terminal. If config[:medium_output] or config[:long_output] are set
         # the volume of output is adjusted accordingly. Uses colors if enabled
         # in the ui object.
         def summarize(data)
-          if data.kind_of?(Chef::Node)
+          if data.kind_of?(Seth::Node)
             node = data
             # special case ec2 with their split horizon whatsis.
             ip = (node[:ec2] && node[:ec2][:public_ipv4]) || node[:ipaddress]
 
             summarized=<<-SUMMARY
 #{ui.color('Node Name:', :bold)}   #{ui.color(node.name, :bold)}
-#{key('Environment:')} #{node.chef_environment}
+#{key('Environment:')} #{node.seth_environment}
 #{key('FQDN:')}        #{node[:fqdn]}
 #{key('IP:')}          #{ip}
 #{key('Run List:')}    #{node.run_list}

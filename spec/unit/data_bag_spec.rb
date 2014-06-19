@@ -17,16 +17,16 @@
 #
 
 require 'spec_helper'
-require 'chef/data_bag'
+require 'seth/data_bag'
 
-describe Chef::DataBag do
+describe Seth::DataBag do
   before(:each) do
-    @data_bag = Chef::DataBag.new
+    @data_bag = Seth::DataBag.new
   end
 
   describe "initialize" do
-    it "should be a Chef::DataBag" do
-      @data_bag.should be_a_kind_of(Chef::DataBag)
+    it "should be a Seth::DataBag" do
+      @data_bag.should be_a_kind_of(Seth::DataBag)
     end
   end
 
@@ -58,11 +58,11 @@ describe Chef::DataBag do
   describe "deserialize" do
     before(:each) do
       @data_bag.name('mars_volta')
-      @deserial = Chef::JSONCompat.from_json(@data_bag.to_json)
+      @deserial = Seth::JSONCompat.from_json(@data_bag.to_json)
     end
 
-    it "should deserialize to a Chef::DataBag object" do
-      @deserial.should be_a_kind_of(Chef::DataBag)
+    it "should deserialize to a Seth::DataBag object" do
+      @deserial.should be_a_kind_of(Seth::DataBag)
     end
 
     %w{
@@ -78,8 +78,8 @@ describe Chef::DataBag do
   describe "when saving" do
     before do
       @data_bag.name('piggly_wiggly')
-      @rest = double("Chef::REST")
-      Chef::REST.stub(:new).and_return(@rest)
+      @rest = double("Seth::REST")
+      Seth::REST.stub(:new).and_return(@rest)
     end
 
     it "should silently proceed when the data bag already exists" do
@@ -95,10 +95,10 @@ describe Chef::DataBag do
 
     describe "when whyrun mode is enabled" do
       before do
-        Chef::Config[:why_run] = true
+        Seth::Config[:why_run] = true
       end
       after do
-        Chef::Config[:why_run] = false
+        Seth::Config[:why_run] = false
       end
       it "should not save" do
         @rest.should_not_receive(:post_rest)
@@ -110,68 +110,68 @@ describe Chef::DataBag do
   describe "when loading" do
     describe "from an API call" do
       before do
-        Chef::Config[:chef_server_url] = 'https://myserver.example.com'
-        @http_client = double('Chef::REST')
+        Seth::Config[:seth_server_url] = 'https://myserver.example.com'
+        @http_client = double('Seth::REST')
       end
 
       it "should get the data bag from the server" do
-        Chef::REST.should_receive(:new).with('https://myserver.example.com').and_return(@http_client)
+        Seth::REST.should_receive(:new).with('https://myserver.example.com').and_return(@http_client)
         @http_client.should_receive(:get_rest).with('data/foo')
-        Chef::DataBag.load('foo')
+        Seth::DataBag.load('foo')
       end
 
       it "should return the data bag" do
-        Chef::REST.stub(:new).and_return(@http_client)
+        Seth::REST.stub(:new).and_return(@http_client)
         @http_client.should_receive(:get_rest).with('data/foo').and_return({'bar' => 'https://myserver.example.com/data/foo/bar'})
-        data_bag = Chef::DataBag.load('foo')
+        data_bag = Seth::DataBag.load('foo')
         data_bag.should == {'bar' => 'https://myserver.example.com/data/foo/bar'}
       end
     end
 
     describe "in solo mode" do
       before do
-        Chef::Config[:solo] = true
-        Chef::Config[:data_bag_path] = '/var/chef/data_bags'
+        Seth::Config[:solo] = true
+        Seth::Config[:data_bag_path] = '/var/seth/data_bags'
       end
 
       after do
-        Chef::Config[:solo] = false
+        Seth::Config[:solo] = false
       end
 
       it "should get the data bag from the data_bag_path" do
-        File.should_receive(:directory?).with('/var/chef/data_bags').and_return(true)
-        Dir.should_receive(:glob).with('/var/chef/data_bags/foo/*.json').and_return([])
-        Chef::DataBag.load('foo')
+        File.should_receive(:directory?).with('/var/seth/data_bags').and_return(true)
+        Dir.should_receive(:glob).with('/var/seth/data_bags/foo/*.json').and_return([])
+        Seth::DataBag.load('foo')
       end
 
       it "should get the data bag from the data_bag_path by symbolic name" do
-        File.should_receive(:directory?).with('/var/chef/data_bags').and_return(true)
-        Dir.should_receive(:glob).with('/var/chef/data_bags/foo/*.json').and_return([])
-        Chef::DataBag.load(:foo)
+        File.should_receive(:directory?).with('/var/seth/data_bags').and_return(true)
+        Dir.should_receive(:glob).with('/var/seth/data_bags/foo/*.json').and_return([])
+        Seth::DataBag.load(:foo)
       end
 
       it "should return the data bag" do
-        File.should_receive(:directory?).with('/var/chef/data_bags').and_return(true)
-        Dir.stub(:glob).and_return(["/var/chef/data_bags/foo/bar.json", "/var/chef/data_bags/foo/baz.json"])
-        IO.should_receive(:read).with('/var/chef/data_bags/foo/bar.json').and_return('{"id": "bar", "name": "Bob Bar" }')
-        IO.should_receive(:read).with('/var/chef/data_bags/foo/baz.json').and_return('{"id": "baz", "name": "John Baz" }')
-        data_bag = Chef::DataBag.load('foo')
+        File.should_receive(:directory?).with('/var/seth/data_bags').and_return(true)
+        Dir.stub(:glob).and_return(["/var/seth/data_bags/foo/bar.json", "/var/chef/data_bags/foo/baz.json"])
+        IO.should_receive(:read).with('/var/seth/data_bags/foo/bar.json').and_return('{"id": "bar", "name": "Bob Bar" }')
+        IO.should_receive(:read).with('/var/seth/data_bags/foo/baz.json').and_return('{"id": "baz", "name": "John Baz" }')
+        data_bag = Seth::DataBag.load('foo')
         data_bag.should == { 'bar' => { 'id' => 'bar', 'name' => 'Bob Bar' }, 'baz' => { 'id' => 'baz', 'name' => 'John Baz' }}
       end
 
       it "should return the data bag list" do
-        File.should_receive(:directory?).with('/var/chef/data_bags').and_return(true)
-        Dir.should_receive(:glob).and_return(["/var/chef/data_bags/foo", "/var/chef/data_bags/bar"])
-        data_bag_list = Chef::DataBag.list
+        File.should_receive(:directory?).with('/var/seth/data_bags').and_return(true)
+        Dir.should_receive(:glob).and_return(["/var/seth/data_bags/foo", "/var/chef/data_bags/bar"])
+        data_bag_list = Seth::DataBag.list
         data_bag_list.should == { 'bar' => 'bar', 'foo' => 'foo' }
       end
 
       it 'should raise an error if the configured data_bag_path is invalid' do
-        File.should_receive(:directory?).with('/var/chef/data_bags').and_return(false)
+        File.should_receive(:directory?).with('/var/seth/data_bags').and_return(false)
 
         lambda {
-          Chef::DataBag.load('foo')
-        }.should raise_error Chef::Exceptions::InvalidDataBagPath, "Data bag path '/var/chef/data_bags' is invalid"
+          Seth::DataBag.load('foo')
+        }.should raise_error Seth::Exceptions::InvalidDataBagPath, "Data bag path '/var/seth/data_bags' is invalid"
       end
 
     end

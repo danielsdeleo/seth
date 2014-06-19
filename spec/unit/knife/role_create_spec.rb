@@ -18,18 +18,18 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::RoleCreate do
+describe Seth::Knife::RoleCreate do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::RoleCreate.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::RoleCreate.new
     @knife.config = {
       :description => nil
     }
     @knife.name_args = [ "adam" ]
     @knife.stub(:output).and_return(true)
-    @role = Chef::Role.new()
+    @role = Seth::Role.new()
     @role.stub(:save)
-    Chef::Role.stub(:new).and_return(@role)
+    Seth::Role.stub(:new).and_return(@role)
     @knife.stub(:edit_data).and_return(@role)
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
@@ -37,7 +37,7 @@ describe Chef::Knife::RoleCreate do
 
   describe "run" do
     it "should create a new role" do
-      Chef::Role.should_receive(:new).and_return(@role)
+      Seth::Role.should_receive(:new).and_return(@role)
       @knife.run
     end
 

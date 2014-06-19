@@ -15,17 +15,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/mixin/params_validate'
-require 'chef/mixin/create_path'
-require 'chef/exceptions'
-require 'chef/json_compat'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/create_path'
+require 'seth/exceptions'
+require 'seth/json_compat'
 require 'fileutils'
 
-class Chef
+class Seth
   class FileCache
     class << self
-      include Chef::Mixin::ParamsValidate
-      include Chef::Mixin::CreatePath
+      include Seth::Mixin::ParamsValidate
+      include Seth::Mixin::CreatePath
 
       # Write a file to the File Cache.
       #
@@ -100,7 +100,7 @@ class Chef
       # String:: A string with the file contents, or the path to the file.
       #
       # === Raises
-      # Chef::Exceptions::FileNotFound:: If it cannot find the file in the cache
+      # Seth::Exceptions::FileNotFound:: If it cannot find the file in the cache
       def load(path, read=true)
         validate(
           {
@@ -111,7 +111,7 @@ class Chef
           }
         )
         cache_path = create_cache_path(path, false)
-        raise Chef::Exceptions::FileNotFound, "Cannot find #{cache_path} for #{path}!" unless File.exists?(cache_path)
+        raise Seth::Exceptions::FileNotFound, "Cannot find #{cache_path} for #{path}!" unless File.exists?(cache_path)
         if read
           File.read(cache_path)
         else
@@ -212,7 +212,7 @@ class Chef
       private
 
       def file_cache_path
-        Chef::Config[:file_cache_path]
+        Seth::Config[:file_cache_path]
       end
 
     end

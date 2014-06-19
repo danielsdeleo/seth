@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>knife search &mdash; chef-client Man Pages</title>
+    <title>knife search &mdash; seth-client Man Pages</title>
     
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="shortcut icon" href="_static/chef.ico"/>
+    <link rel="shortcut icon" href="_static/seth.ico"/>
 
 
   </head>
   <body>
 <div style="background-color: #212c35; text-align: left; padding: 0px 0px 0px 0px">
-<a href="http://docs.opscode.com/"><img src="_static/chef_html_logo.png" border="0" alt="Chef"/></a>
+<a href="http://docs.opscode.com/"><img src="_static/seth_html_logo.png" border="0" alt="Seth"/></a>
 </div>
 
 
@@ -42,8 +42,8 @@
             
   <div class="section" id="knife-search">
 <h1>knife search<a class="headerlink" href="#knife-search" title="Permalink to this headline">¶</a></h1>
-<p>Search indexes allow queries to be made for any type of data that is indexed by the Chef server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full-text query that can be done from several locations, including from within a recipe, by using the <tt class="docutils literal"><span class="pre">search</span></tt> subcommand in Knife, or by using the <tt class="docutils literal"><span class="pre">/search</span></tt> or <tt class="docutils literal"><span class="pre">/search/INDEX</span></tt> endpoints in the Chef Server API. The search engine is based on Apache Solr and is run from the Chef server.</p>
-<p>The <strong>knife search</strong> subcommand is used run a search query for information that is indexed on a Chef server.</p>
+<p>Search indexes allow queries to be made for any type of data that is indexed by the Seth server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full-text query that can be done from several locations, including from within a recipe, by using the <tt class="docutils literal"><span class="pre">search</span></tt> subcommand in Knife, or by using the <tt class="docutils literal"><span class="pre">/search</span></tt> or <tt class="docutils literal"><span class="pre">/search/INDEX</span></tt> endpoints in the Chef Server API. The search engine is based on Apache Solr and is run from the Chef server.</p>
+<p>The <strong>knife search</strong> subcommand is used run a search query for information that is indexed on a Seth server.</p>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <p>This subcommand has the following syntax:</p>
@@ -110,7 +110,7 @@ win2k8-dev
 <dt><tt class="docutils literal"><span class="pre">-R</span> <span class="pre">INT</span></tt>, <tt class="docutils literal"><span class="pre">--rows</span> <span class="pre">INT</span></tt></dt>
 <dd>The number of rows to be returned.</dd>
 <dt><tt class="docutils literal"><span class="pre">SEARCH_QUERY</span></tt></dt>
-<dd>The search query used to identify a a list of items on a Chef server. This option uses the same syntax as the <tt class="docutils literal"><span class="pre">search</span></tt> sub-command.</dd>
+<dd>The search query used to identify a a list of items on a Seth server. This option uses the same syntax as the <tt class="docutils literal"><span class="pre">search</span></tt> sub-command.</dd>
 </dl>
 </div>
 <div class="section" id="examples">
@@ -161,7 +161,7 @@ id:                 ip-0A7CFFD5.ec2.internal
 </div>
 <p><strong>Search by node and environment</strong></p>
 <p>To search for all nodes running CentOS in the production environment, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node <span class="s1">&#39;chef_environment:production AND platform:centos&#39;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node <span class="s1">&#39;seth_environment:production AND platform:centos&#39;</span>
 </pre></div>
 </div>
 <p><strong>Search for nested attributes</strong></p>

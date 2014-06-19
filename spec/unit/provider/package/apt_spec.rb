@@ -19,15 +19,15 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::Package::Apt do
+describe Seth::Provider::Package::Apt do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::AptPackage.new("irssi", @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::AptPackage.new("irssi", @run_context)
 
     @status = double("Status", :exitstatus => 0)
-    @provider = Chef::Provider::Package::Apt.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Package::Apt.new(@new_resource, @run_context)
     @stdin = StringIO.new
     @stdout =<<-PKG_STATUS
 irssi:
@@ -52,7 +52,7 @@ PKG_STATUS
       @provider.load_current_resource
 
       current_resource = @provider.current_resource
-      current_resource.should be_a(Chef::Resource::AptPackage)
+      current_resource.should be_a(Seth::Resource::AptPackage)
       current_resource.name.should == "irssi"
       current_resource.package_name.should == "irssi"
       current_resource.version.should be_nil
@@ -175,15 +175,15 @@ SHOWPKG_STDOUT
         "apt-cache showpkg mp3-decoder",
         :timeout => @timeout
       ).and_return(showpkg)
-      lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should run apt-cache policy with the default_release option, if there is one and provider is explicitly defined" do
-      @new_resource = Chef::Resource::AptPackage.new("irssi", @run_context)
-      @provider = Chef::Provider::Package::Apt.new(@new_resource, @run_context)
+      @new_resource = Seth::Resource::AptPackage.new("irssi", @run_context)
+      @provider = Seth::Provider::Package::Apt.new(@new_resource, @run_context)
 
       @new_resource.stub(:default_release).and_return("lenny-backports")
-      @new_resource.stub(:provider).and_return("Chef::Provider::Package::Apt")
+      @new_resource.stub(:provider).and_return("Seth::Provider::Package::Apt")
       @provider.should_receive(:shell_out!).with(
         "apt-cache -o APT::Default-Release=lenny-backports policy irssi",
         :timeout => @timeout
@@ -195,13 +195,13 @@ SHOWPKG_STDOUT
       @new_resource.source "pluto"
       @provider.define_resource_requirements
       @provider.should_receive(:shell_out!).with("apt-cache policy irssi", {:timeout=>900}).and_return(@shell_out)
-      expect { @provider.run_action(:install) }.to raise_error(Chef::Exceptions::Package)
+      expect { @provider.run_action(:install) }.to raise_error(Seth::Exceptions::Package)
     end
   end
 
   context "after loading the current resource" do
     before do
-      @current_resource = Chef::Resource::AptPackage.new("irssi", @run_context)
+      @current_resource = Seth::Resource::AptPackage.new("irssi", @run_context)
       @provider.current_resource = @current_resource
     end
 
@@ -227,7 +227,7 @@ SHOWPKG_STDOUT
 
       it "should run apt-get install with the package name and version and default_release if there is one and provider is explicitly defined" do
         @new_resource = nil
-        @new_resource = Chef::Resource::AptPackage.new("irssi", @run_context)
+        @new_resource = Seth::Resource::AptPackage.new("irssi", @run_context)
         @new_resource.default_release("lenny-backports")
 
         @provider.new_resource = @new_resource
@@ -242,7 +242,7 @@ SHOWPKG_STDOUT
       end
     end
 
-    describe Chef::Provider::Package::Apt, "upgrade_package" do
+    describe Seth::Provider::Package::Apt, "upgrade_package" do
 
       it "should run install_package with the name and version" do
         @provider.should_receive(:install_package).with("irssi", "0.8.12-7")
@@ -250,7 +250,7 @@ SHOWPKG_STDOUT
       end
     end
 
-    describe Chef::Provider::Package::Apt, "remove_package" do
+    describe Seth::Provider::Package::Apt, "remove_package" do
 
       it "should run apt-get remove with the package name" do
         @provider.should_receive(:shell_out!).with(

@@ -18,31 +18,31 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::RemoteFile::Content do
+describe Seth::Provider::RemoteFile::Content do
 
   #
   # mock setup
   #
 
   let(:current_resource) do
-    Chef::Resource::RemoteFile.new("remote-file-content-spec (current resource)")
+    Seth::Resource::RemoteFile.new("remote-file-content-spec (current resource)")
   end
 
   let(:source) { [ "http://opscode.com/seattle.txt" ] }
 
   let(:new_resource) do
-    r = Chef::Resource::RemoteFile.new("remote-file-content-spec (current resource)")
+    r = Seth::Resource::RemoteFile.new("remote-file-content-spec (current resource)")
     r.source(source)
     r
   end
 
-  let(:run_context) { double("Chef::RunContext") }
+  let(:run_context) { double("Seth::RunContext") }
 
   #
   # subject
   #
   let(:content) do
-    Chef::Provider::RemoteFile::Content.new(new_resource, current_resource, run_context)
+    Seth::Provider::RemoteFile::Content.new(new_resource, current_resource, run_context)
   end
 
   describe "when the checksum of the current_resource matches the checksum set on the resource" do
@@ -56,7 +56,7 @@ describe Chef::Provider::RemoteFile::Content do
     end
 
     it "should not call any fetcher" do
-      Chef::Provider::RemoteFile::Fetcher.should_not_receive(:for_resource)
+      Seth::Provider::RemoteFile::Fetcher.should_not_receive(:for_resource)
     end
   end
 
@@ -71,7 +71,7 @@ describe Chef::Provider::RemoteFile::Content do
     end
 
     it "should not call any fetcher" do
-      Chef::Provider::RemoteFile::Fetcher.should_not_receive(:for_resource)
+      Seth::Provider::RemoteFile::Fetcher.should_not_receive(:for_resource)
     end
   end
 
@@ -84,8 +84,8 @@ describe Chef::Provider::RemoteFile::Content do
 
     describe "when the fetcher returns nil for the tempfile" do
       before do
-        http_fetcher = double("Chef::Provider::RemoteFile::HTTP", :fetch => nil)
-        Chef::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri, new_resource, current_resource).and_return(http_fetcher)
+        http_fetcher = double("Seth::Provider::RemoteFile::HTTP", :fetch => nil)
+        Seth::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri, new_resource, current_resource).and_return(http_fetcher)
       end
 
       it "should return nil for the tempfile" do
@@ -97,10 +97,10 @@ describe Chef::Provider::RemoteFile::Content do
 
       let(:mtime) { Time.now }
       let(:tempfile) { double("Tempfile") }
-      let(:http_fetcher) { double("Chef::Provider::RemoteFile::HTTP", :fetch => tempfile) }
+      let(:http_fetcher) { double("Seth::Provider::RemoteFile::HTTP", :fetch => tempfile) }
 
       before do
-        Chef::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri, new_resource, current_resource).and_return(http_fetcher)
+        Seth::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri, new_resource, current_resource).and_return(http_fetcher)
       end
 
       it "should return the tempfile object to the caller" do
@@ -148,9 +148,9 @@ describe Chef::Provider::RemoteFile::Content do
       current_resource.stub(:checksum).and_return(nil)
       @uri = double("URI")
       URI.should_receive(:parse).with(new_resource.source[0]).and_return(@uri)
-      http_fetcher = double("Chef::Provider::RemoteFile::HTTP")
+      http_fetcher = double("Seth::Provider::RemoteFile::HTTP")
       http_fetcher.should_receive(:fetch).and_raise(Errno::ECONNREFUSED)
-      Chef::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri, new_resource, current_resource).and_return(http_fetcher)
+      Seth::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri, new_resource, current_resource).and_return(http_fetcher)
     end
 
     it "should propagate the error back to the caller" do
@@ -160,7 +160,7 @@ describe Chef::Provider::RemoteFile::Content do
 
   describe "when there is an array of sources and the first fails" do
 
-    # https://github.com/opscode/chef/pull/1358#issuecomment-40853299
+    # https://github.com/opscode/seth/pull/1358#issuecomment-40853299
     def create_exception(exception_class)
       if [ Net::HTTPServerException, Net::HTTPFatalError ].include? exception_class
         exception_class.new("message", {"something" => 1})
@@ -190,17 +190,17 @@ describe Chef::Provider::RemoteFile::Content do
           @uri1 = double("URI1")
           URI.should_receive(:parse).with(new_resource.source[0]).and_return(@uri0)
           URI.should_receive(:parse).with(new_resource.source[1]).and_return(@uri1)
-          @http_fetcher_throws_exception = double("Chef::Provider::RemoteFile::HTTP")
+          @http_fetcher_throws_exception = double("Seth::Provider::RemoteFile::HTTP")
           @http_fetcher_throws_exception.should_receive(:fetch).at_least(:once).and_raise(create_exception(exception))
-          Chef::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri0, new_resource, current_resource).and_return(@http_fetcher_throws_exception)
+          Seth::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri0, new_resource, current_resource).and_return(@http_fetcher_throws_exception)
         end
 
         describe "the second url should succeed" do
           before do
             @tempfile = double("Tempfile")
             mtime = Time.now
-            http_fetcher_works = double("Chef::Provider::RemoteFile::HTTP", :fetch => @tempfile)
-            Chef::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri1, new_resource, current_resource).and_return(http_fetcher_works)
+            http_fetcher_works = double("Seth::Provider::RemoteFile::HTTP", :fetch => @tempfile)
+            Seth::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri1, new_resource, current_resource).and_return(http_fetcher_works)
           end
 
           it "should return a valid tempfile" do
@@ -215,7 +215,7 @@ describe Chef::Provider::RemoteFile::Content do
 
         describe "when both urls fail" do
           before do
-            Chef::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri1, new_resource, current_resource).and_return(@http_fetcher_throws_exception)
+            Seth::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri1, new_resource, current_resource).and_return(@http_fetcher_throws_exception)
           end
 
           it "should propagate the error back to the caller" do
@@ -236,8 +236,8 @@ describe Chef::Provider::RemoteFile::Content do
       URI.should_not_receive(:parse).with(new_resource.source[1])
       @tempfile = double("Tempfile")
       mtime = Time.now
-      http_fetcher_works = double("Chef::Provider::RemoteFile::HTTP", :fetch => @tempfile)
-      Chef::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri0, new_resource, current_resource).and_return(http_fetcher_works)
+      http_fetcher_works = double("Seth::Provider::RemoteFile::HTTP", :fetch => @tempfile)
+      Seth::Provider::RemoteFile::Fetcher.should_receive(:for_resource).with(@uri0, new_resource, current_resource).and_return(http_fetcher_works)
     end
 
     it "should return a valid tempfile" do

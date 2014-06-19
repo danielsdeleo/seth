@@ -21,15 +21,15 @@ require 'ostruct'
 
 # based on the apt specs
 
-describe Chef::Provider::Package::Ips do
+describe Seth::Provider::Package::Ips do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Package.new("crypto/gnupg", @run_context)
-    @current_resource = Chef::Resource::Package.new("crypto/gnupg", @run_context)
-    Chef::Resource::Package.stub(:new).and_return(@current_resource)
-    @provider = Chef::Provider::Package::Ips.new(@new_resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Package.new("crypto/gnupg", @run_context)
+    @current_resource = Seth::Resource::Package.new("crypto/gnupg", @run_context)
+    Seth::Resource::Package.stub(:new).and_return(@current_resource)
+    @provider = Seth::Provider::Package::Ips.new(@new_resource, @run_context)
 
     @stdin = StringIO.new
     @stderr = StringIO.new
@@ -55,7 +55,7 @@ PKG_STATUS
   context "when loading current resource" do
     it "should create a current resource with the name of the new_resource" do
       @provider.should_receive(:shell_out!).and_return(@shell_out)
-      Chef::Resource::Package.should_receive(:new).and_return(@current_resource)
+      Seth::Resource::Package.should_receive(:new).and_return(@current_resource)
       @provider.load_current_resource
     end
 
@@ -161,9 +161,9 @@ PKG_STATUS
 
     context "using the ips_package resource" do
       before do
-        @new_resource = Chef::Resource::IpsPackage.new("crypto/gnupg", @run_context)
-        @current_resource = Chef::Resource::IpsPackage.new("crypto/gnupg", @run_context)
-        @provider = Chef::Provider::Package::Ips.new(@new_resource, @run_context)
+        @new_resource = Seth::Resource::IpsPackage.new("crypto/gnupg", @run_context)
+        @current_resource = Seth::Resource::IpsPackage.new("crypto/gnupg", @run_context)
+        @provider = Seth::Provider::Package::Ips.new(@new_resource, @run_context)
       end
 
       context "when accept_license is true" do

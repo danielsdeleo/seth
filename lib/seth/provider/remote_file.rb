@@ -17,25 +17,25 @@
 # limitations under the License.
 #
 
-require 'chef/provider/file'
-require 'chef/deprecation/provider/remote_file'
-require 'chef/deprecation/warnings'
+require 'seth/provider/file'
+require 'seth/deprecation/provider/remote_file'
+require 'seth/deprecation/warnings'
 
-class Chef
+class Seth
   class Provider
-    class RemoteFile < Chef::Provider::File
+    class RemoteFile < Seth::Provider::File
 
-      extend Chef::Deprecation::Warnings
-      include Chef::Deprecation::Provider::RemoteFile
-      add_deprecation_warnings_for(Chef::Deprecation::Provider::RemoteFile.instance_methods)
+      extend Seth::Deprecation::Warnings
+      include Seth::Deprecation::Provider::RemoteFile
+      add_deprecation_warnings_for(Seth::Deprecation::Provider::RemoteFile.instance_methods)
 
       def initialize(new_resource, run_context)
-        @content_class = Chef::Provider::RemoteFile::Content
+        @content_class = Seth::Provider::RemoteFile::Content
         super
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::RemoteFile.new(@new_resource.name)
+        @current_resource = Seth::Resource::RemoteFile.new(@new_resource.name)
         super
       end
 

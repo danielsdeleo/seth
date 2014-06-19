@@ -16,35 +16,35 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/resource/package'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/resource/package'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Pacman < Chef::Provider::Package
+      class Pacman < Seth::Provider::Package
 
         def load_current_resource
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
 
           @current_resource.version(nil)
 
-          Chef::Log.debug("#{@new_resource} checking pacman for #{@new_resource.package_name}")
+          Seth::Log.debug("#{@new_resource} checking pacman for #{@new_resource.package_name}")
           status = popen4("pacman -Qi #{@new_resource.package_name}") do |pid, stdin, stdout, stderr|
             stdout.each do |line|
               line.force_encoding(Encoding::UTF_8) if line.respond_to?(:force_encoding)
               case line
               when /^Version(\s?)*: (.+)$/
-                Chef::Log.debug("#{@new_resource} current version is #{$2}")
+                Seth::Log.debug("#{@new_resource} current version is #{$2}")
                 @current_resource.version($2)
               end
             end
           end
 
           unless status.exitstatus == 0 || status.exitstatus == 1
-            raise Chef::Exceptions::Package, "pacman failed - #{status.inspect}!"
+            raise Seth::Exceptions::Package, "pacman failed - #{status.inspect}!"
           end
 
           @current_resource
@@ -74,11 +74,11 @@ class Chef
           end
 
           unless status.exitstatus == 0 || status.exitstatus == 1
-            raise Chef::Exceptions::Package, "pacman failed - #{status.inspect}!"
+            raise Seth::Exceptions::Package, "pacman failed - #{status.inspect}!"
           end
 
           unless @candidate_version
-            raise Chef::Exceptions::Package, "pacman does not have a version of package #{@new_resource.package_name}"
+            raise Seth::Exceptions::Package, "pacman does not have a version of package #{@new_resource.package_name}"
           end
 
           @candidate_version

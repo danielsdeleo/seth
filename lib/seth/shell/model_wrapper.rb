@@ -16,25 +16,25 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/convert_to_class_name'
-require 'chef/mixin/language'
+require 'seth/mixin/convert_to_class_name'
+require 'seth/mixin/language'
 
 module Shell
   class ModelWrapper
 
-    include Chef::Mixin::ConvertToClassName
+    include Seth::Mixin::ConvertToClassName
 
     attr_reader :model_symbol
 
     def initialize(model_class, symbol=nil)
       @model_class = model_class
-      @model_symbol = symbol || convert_to_snake_case(model_class.name, "Chef").to_sym
+      @model_symbol = symbol || convert_to_snake_case(model_class.name, "Seth").to_sym
     end
 
     def search(query)
       return all if query.to_s == "all"
       results = []
-      Chef::Search::Query.new.search(@model_symbol, format_query(query)) do |obj|
+      Seth::Search::Query.new.search(@model_symbol, format_query(query)) do |obj|
         if block_given?
           results << yield(obj)
         else
@@ -102,14 +102,14 @@ module Shell
     alias :list :all
 
     def show(item)
-      Chef::DataBagItem.load(@databag_name, item)
+      Seth::DataBagItem.load(@databag_name, item)
     end
 
     private
 
     def list_objects
       all_items = []
-      Chef::Search::Query.new.search(@databag_name) do |item|
+      Seth::Search::Query.new.search(@databag_name) do |item|
         all_items << item
       end
       all_items

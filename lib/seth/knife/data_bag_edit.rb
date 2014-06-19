@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class DataBagEdit < Knife
 
       deps do
-        require 'chef/data_bag_item'
-        require 'chef/encrypted_data_bag_item'
+        require 'seth/data_bag_item'
+        require 'seth/encrypted_data_bag_item'
       end
 
       banner "knife data bag edit BAG ITEM (options)"
@@ -35,18 +35,18 @@ class Chef
         :short => "-s SECRET",
         :long  => "--secret ",
         :description => "The secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |s| Chef::Config[:knife][:secret] = s }
+        :proc => Proc.new { |s| Seth::Config[:knife][:secret] = s }
 
       option :secret_file,
         :long => "--secret-file SECRET_FILE",
         :description => "A file containing the secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |sf| Chef::Config[:knife][:secret_file] = sf }
+        :proc => Proc.new { |sf| Seth::Config[:knife][:secret_file] = sf }
 
       def read_secret
         if config[:secret]
           config[:secret]
         else
-          Chef::EncryptedDataBagItem.load_secret(config[:secret_file])
+          Seth::EncryptedDataBagItem.load_secret(config[:secret_file])
         end
       end
 
@@ -59,9 +59,9 @@ class Chef
       end
 
       def load_item(bag, item_name)
-        item = Chef::DataBagItem.load(bag, item_name)
+        item = Seth::DataBagItem.load(bag, item_name)
         if use_encryption
-          Chef::EncryptedDataBagItem.new(item, read_secret).to_hash
+          Seth::EncryptedDataBagItem.new(item, read_secret).to_hash
         else
           item
         end
@@ -70,7 +70,7 @@ class Chef
       def edit_item(item)
         output = edit_data(item)
         if use_encryption
-          Chef::EncryptedDataBagItem.encrypt_data_bag_item(output, read_secret)
+          Seth::EncryptedDataBagItem.encrypt_data_bag_item(output, read_secret)
         else
           output
         end

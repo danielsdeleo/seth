@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-class Chef
+class Seth
   class Util
     class Windows
       class NetGroup
@@ -27,15 +27,15 @@ class Chef
   end
 end
 
-describe Chef::Provider::Group::Windows do
+describe Seth::Provider::Group::Windows do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Group.new("staff")
-    @net_group = double("Chef::Util::Windows::NetGroup")
-    Chef::Util::Windows::NetGroup.stub(:new).and_return(@net_group)
-    @provider = Chef::Provider::Group::Windows.new(@new_resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Group.new("staff")
+    @net_group = double("Seth::Util::Windows::NetGroup")
+    Seth::Util::Windows::NetGroup.stub(:new).and_return(@net_group)
+    @provider = Seth::Provider::Group::Windows.new(@new_resource, @run_context)
   end
 
   describe "when creating the group" do
@@ -49,10 +49,10 @@ describe Chef::Provider::Group::Windows do
   describe "manage_group" do
     before do
       @new_resource.members([ "us" ])
-      @current_resource = Chef::Resource::Group.new("staff")
+      @current_resource = Seth::Resource::Group.new("staff")
       @current_resource.members [ "all", "your", "base" ]
 
-      Chef::Util::Windows::NetGroup.stub(:new).and_return(@net_group)
+      Seth::Util::Windows::NetGroup.stub(:new).and_return(@net_group)
       @net_group.stub(:local_add_members)
       @net_group.stub(:local_set_members)
       @provider.stub(:local_group_name_to_sid)
@@ -75,7 +75,7 @@ describe Chef::Provider::Group::Windows do
 
   describe "remove_group" do
     before do
-      Chef::Util::Windows::NetGroup.stub(:new).and_return(@net_group)
+      Seth::Util::Windows::NetGroup.stub(:new).and_return(@net_group)
       @provider.stub(:run_command).and_return(true)
     end
 
@@ -86,16 +86,16 @@ describe Chef::Provider::Group::Windows do
   end
 end
 
-describe Chef::Provider::Group::Windows, "NetGroup" do
+describe Seth::Provider::Group::Windows, "NetGroup" do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Group.new("Creating a new group")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Group.new("Creating a new group")
     @new_resource.group_name "Remote Desktop Users"
   end
   it 'sets group_name correctly' do
-    Chef::Util::Windows::NetGroup.should_receive(:new).with("Remote Desktop Users")
-    Chef::Provider::Group::Windows.new(@new_resource, @run_context)
+    Seth::Util::Windows::NetGroup.should_receive(:new).with("Remote Desktop Users")
+    Seth::Provider::Group::Windows.new(@new_resource, @run_context)
   end
 end

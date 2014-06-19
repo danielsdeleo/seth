@@ -1,8 +1,8 @@
-require 'chef/chef_fs/data_handler/data_handler_base'
-require 'chef/api_client'
+require 'seth/chef_fs/data_handler/data_handler_base'
+require 'seth/api_client'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module DataHandler
       class ClientDataHandler < DataHandlerBase
         def normalize(client, entry)
@@ -11,7 +11,7 @@ class Chef
             'clientname' => remove_dot_json(entry.name),
             'admin' => false,
             'validator' => false,
-            'chef_type' => 'client'
+            'seth_type' => 'client'
           }
           if entry.respond_to?(:org) && entry.org
             defaults['orgname'] = entry.org
@@ -26,11 +26,11 @@ class Chef
           return key == 'name'
         end
 
-        def chef_class
-          Chef::ApiClient
+        def seth_class
+          Seth::ApiClient
         end
 
-        # There is no Ruby API for Chef::ApiClient
+        # There is no Ruby API for Seth::ApiClient
       end
     end
   end

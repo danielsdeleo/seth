@@ -17,24 +17,24 @@
 #
 require 'spec_helper'
 
-describe Chef::Provider::Package::Portage, "load_current_resource" do
+describe Seth::Provider::Package::Portage, "load_current_resource" do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Package.new("dev-util/git")
-    @new_resource_without_category = Chef::Resource::Package.new("git")
-    @current_resource = Chef::Resource::Package.new("dev-util/git")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Package.new("dev-util/git")
+    @new_resource_without_category = Seth::Resource::Package.new("git")
+    @current_resource = Seth::Resource::Package.new("dev-util/git")
 
-    @provider = Chef::Provider::Package::Portage.new(@new_resource, @run_context)
-    Chef::Resource::Package.stub(:new).and_return(@current_resource)
+    @provider = Seth::Provider::Package::Portage.new(@new_resource, @run_context)
+    Seth::Resource::Package.stub(:new).and_return(@current_resource)
   end
 
   describe "when determining the current state of the package" do
 
     it "should create a current resource with the name of new_resource" do
       ::Dir.stub(:[]).with("/var/db/pkg/dev-util/git-*").and_return(["/var/db/pkg/dev-util/git-1.0.0"])
-      Chef::Resource::Package.should_receive(:new).and_return(@current_resource)
+      Seth::Resource::Package.should_receive(:new).and_return(@current_resource)
       @provider.load_current_resource
     end
 
@@ -64,34 +64,34 @@ describe Chef::Provider::Package::Portage, "load_current_resource" do
 
     it "should return a package name match from /var/db/pkg/* if a category isn't specified and a match is found" do
       ::Dir.stub(:[]).with("/var/db/pkg/*/git-*").and_return(["/var/db/pkg/dev-util/git-foobar-0.9", "/var/db/pkg/dev-util/git-1.0.0"])
-      @provider = Chef::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
+      @provider = Seth::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
       @provider.load_current_resource
       @provider.current_resource.version.should == "1.0.0"
     end
 
     it "should return a current resource with a nil version if a category isn't specified and a name match from /var/db/pkg/* is not found" do
       ::Dir.stub(:[]).with("/var/db/pkg/*/git-*").and_return(["/var/db/pkg/dev-util/notgit-1.0.0"])
-      @provider = Chef::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
+      @provider = Seth::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
       @provider.load_current_resource
       @provider.current_resource.version.should be_nil
     end
 
     it "should throw an exception if a category isn't specified and multiple packages are found" do
       ::Dir.stub(:[]).with("/var/db/pkg/*/git-*").and_return(["/var/db/pkg/dev-util/git-1.0.0", "/var/db/pkg/funny-words/git-1.0.0"])
-      @provider = Chef::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
-      lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::Package)
+      @provider = Seth::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
+      lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should return a current resource with a nil version if a category is specified and multiple packages are found" do
       ::Dir.stub(:[]).with("/var/db/pkg/dev-util/git-*").and_return(["/var/db/pkg/dev-util/git-1.0.0", "/var/db/pkg/funny-words/git-1.0.0"])
-      @provider = Chef::Provider::Package::Portage.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Package::Portage.new(@new_resource, @run_context)
       @provider.load_current_resource
       @provider.current_resource.version.should be_nil
     end
 
     it "should return a current resource with a nil version if a category is not specified and multiple packages from the same category are found" do
       ::Dir.stub(:[]).with("/var/db/pkg/*/git-*").and_return(["/var/db/pkg/dev-util/git-1.0.0", "/var/db/pkg/dev-util/git-1.0.1"])
-      @provider = Chef::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
+      @provider = Seth::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
       @provider.load_current_resource
       @provider.current_resource.version.should be_nil
     end
@@ -99,7 +99,7 @@ describe Chef::Provider::Package::Portage, "load_current_resource" do
 
   describe "once the state of the package is known" do
 
-    describe Chef::Provider::Package::Portage, "candidate_version" do
+    describe Seth::Provider::Package::Portage, "candidate_version" do
       it "should return the candidate_version variable if already set" do
         @provider.candidate_version = "1.0.0"
         @provider.should_not_receive(:popen4)
@@ -109,7 +109,7 @@ describe Chef::Provider::Package::Portage, "load_current_resource" do
       it "should throw an exception if the exitstatus is not 0" do
         @status = double("Status", :exitstatus => 1)
         @provider.stub(:popen4).and_return(@status)
-        lambda { @provider.candidate_version }.should raise_error(Chef::Exceptions::Package)
+        lambda { @provider.candidate_version }.should raise_error(Seth::Exceptions::Package)
       end
 
       it "should find the candidate_version if a category is specifed and there are no duplicates" do
@@ -180,7 +180,7 @@ Searching...
 EOF
 
         @status = double("Status", :exitstatus => 0)
-        @provider = Chef::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
+        @provider = Seth::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
         @provider.should_receive(:popen4).and_yield(nil, nil, StringIO.new(output), nil).and_return(@status)
         @provider.candidate_version.should == "1.6.0.6"
       end
@@ -225,9 +225,9 @@ Searching...
 EOF
 
         @status = double("Status", :exitstatus => 0)
-        @provider = Chef::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
+        @provider = Seth::Provider::Package::Portage.new(@new_resource_without_category, @run_context)
         @provider.should_receive(:popen4).and_yield(nil, nil, StringIO.new(output), nil).and_return(@status)
-        lambda { @provider.candidate_version }.should raise_error(Chef::Exceptions::Package)
+        lambda { @provider.candidate_version }.should raise_error(Seth::Exceptions::Package)
       end
 
       it "should find the candidate_version if a category is specifed and there are category duplicates" do
@@ -270,13 +270,13 @@ Searching...
 EOF
 
         @status = double("Status", :exitstatus => 0)
-        @provider = Chef::Provider::Package::Portage.new(@new_resource, @run_context)
+        @provider = Seth::Provider::Package::Portage.new(@new_resource, @run_context)
         @provider.should_receive(:popen4).and_yield(nil, nil, StringIO.new(output), nil).and_return(@status)
         @provider.candidate_version.should == "1.6.0.6"
       end
     end
 
-    describe Chef::Provider::Package::Portage, "install_package" do
+    describe Seth::Provider::Package::Portage, "install_package" do
       it "should install a normally versioned package using portage" do
         @provider.should_receive(:run_command_with_systems_locale).with({
           :command => "emerge -g --color n --nospinner --quiet =dev-util/git-1.0.0"
@@ -301,7 +301,7 @@ EOF
       end
     end
 
-    describe Chef::Provider::Package::Portage, "remove_package" do
+    describe Seth::Provider::Package::Portage, "remove_package" do
       it "should un-emerge the package with no version specified" do
         @provider.should_receive(:run_command_with_systems_locale).with({
           :command => "emerge --unmerge --color n --nospinner --quiet dev-util/git"

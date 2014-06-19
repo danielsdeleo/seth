@@ -15,9 +15,9 @@
 # limitations under the License.
 #
 
-require 'chef/request_id'
+require 'seth/request_id'
 
-class Chef
+class Seth
   class HTTP
     class RemoteRequestID
 
@@ -25,7 +25,7 @@ class Chef
       end
 
       def handle_request(method, url, headers={}, data=false)
-        headers.merge!({'X-REMOTE-REQUEST-ID' => Chef::RequestID.instance.request_id})
+        headers.merge!({'X-REMOTE-REQUEST-ID' => Seth::RequestID.instance.request_id})
         [method, url, headers, data]
       end
 

@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::User do
+describe Seth::Provider::User do
 
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Group.new("wheel", @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Group.new("wheel", @run_context)
     @new_resource.gid 500
     @new_resource.members "aj"
 
-    @provider = Chef::Provider::Group.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Group.new(@new_resource, @run_context)
 
-    @current_resource = Chef::Resource::Group.new("aj", @run_context)
+    @current_resource = Seth::Resource::Group.new("aj", @run_context)
     @current_resource.gid 500
     @current_resource.members "aj"
 
@@ -248,9 +248,9 @@ describe Chef::Provider::User do
       @provider.run_action(:modify)
     end
 
-    it "should raise a Chef::Exceptions::Group if the group doesn't exist" do
+    it "should raise a Seth::Exceptions::Group if the group doesn't exist" do
       @provider.group_exists = false
-      lambda { @provider.run_action(:modify) }.should raise_error(Chef::Exceptions::Group)
+      lambda { @provider.run_action(:modify) }.should raise_error(Seth::Exceptions::Group)
     end
   end
 

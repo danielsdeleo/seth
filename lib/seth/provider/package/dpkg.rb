@@ -16,40 +16,40 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/resource/package'
-require 'chef/mixin/get_source_from_package'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/resource/package'
+require 'seth/mixin/get_source_from_package'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Dpkg < Chef::Provider::Package::Apt
+      class Dpkg < Seth::Provider::Package::Apt
         # http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
         DPKG_INFO = /([a-z\d\-\+\.]+)\t([\w\d.~:-]+)/
         DPKG_INSTALLED = /^Status: install ok installed/
         DPKG_VERSION = /^Version: (.+)$/
 
-        include Chef::Mixin::GetSourceFromPackage
+        include Seth::Mixin::GetSourceFromPackage
         def define_resource_requirements
           super
           requirements.assert(:install) do |a|
             a.assertion{ not @new_resource.source.nil? }
-            a.failure_message Chef::Exceptions::Package, "Source for package #{@new_resource.name} required for action install"
+            a.failure_message Seth::Exceptions::Package, "Source for package #{@new_resource.name} required for action install"
           end
 
           # TODO this was originally written for any action in which .source is provided
           # but would it make more sense to only look at source if the action is :install?
           requirements.assert(:all_actions) do |a|
             a.assertion { @source_exists }
-            a.failure_message Chef::Exceptions::Package, "Package #{@new_resource.name} not found: #{@new_resource.source}"
+            a.failure_message Seth::Exceptions::Package, "Package #{@new_resource.name} not found: #{@new_resource.source}"
             a.whyrun "Assuming it would have been previously downloaded."
           end
         end
 
         def load_current_resource
           @source_exists = true
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
           @new_resource.version(nil)
 
@@ -57,7 +57,7 @@ class Chef
             @source_exists = ::File.exists?(@new_resource.source)
             if @source_exists
               # Get information from the package if supplied
-              Chef::Log.debug("#{@new_resource} checking dpkg status")
+              Seth::Log.debug("#{@new_resource} checking dpkg status")
               status = popen4("dpkg-deb -W #{@new_resource.source}") do |pid, stdin, stdout, stderr|
                 stdout.each_line do |line|
                   if pkginfo = DPKG_INFO.match(line)
@@ -75,7 +75,7 @@ class Chef
 
           # Check to see if it is installed
           package_installed = nil
-          Chef::Log.debug("#{@new_resource} checking install state")
+          Seth::Log.debug("#{@new_resource} checking install state")
           status = popen4("dpkg -s #{@current_resource.package_name}") do |pid, stdin, stdout, stderr|
             stdout.each_line do |line|
               case line
@@ -83,7 +83,7 @@ class Chef
                 package_installed = true
               when DPKG_VERSION
                 if package_installed
-                  Chef::Log.debug("#{@new_resource} current version is #{$1}")
+                  Seth::Log.debug("#{@new_resource} current version is #{$1}")
                   @current_resource.version($1)
                 end
               end
@@ -91,7 +91,7 @@ class Chef
           end
 
           unless status.exitstatus == 0 || status.exitstatus == 1
-            raise Chef::Exceptions::Package, "dpkg failed - #{status.inspect}!"
+            raise Seth::Exceptions::Package, "dpkg failed - #{status.inspect}!"
           end
 
           @current_resource

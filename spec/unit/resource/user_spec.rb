@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::User, "initialize" do
+describe Seth::Resource::User, "initialize" do
   before(:each) do
-    @resource = Chef::Resource::User.new("adam")
+    @resource = Seth::Resource::User.new("adam")
   end
 
-  it "should create a new Chef::Resource::User" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::User)
+  it "should create a new Seth::Resource::User" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::User)
   end
 
   it "should set the resource_name to :user" do
@@ -69,9 +69,9 @@ describe Chef::Resource::User, "initialize" do
 end
 
 %w{username comment home shell password}.each do |attrib|
-  describe Chef::Resource::User, attrib do
+  describe Seth::Resource::User, attrib do
     before(:each) do
-      @resource = Chef::Resource::User.new("adam")
+      @resource = Seth::Resource::User.new("adam")
     end
 
     it "should allow a string" do
@@ -86,9 +86,9 @@ end
 end
 
 %w{uid gid}.each do |attrib|
-  describe Chef::Resource::User, attrib do
+  describe Seth::Resource::User, attrib do
     before(:each) do
-      @resource = Chef::Resource::User.new("adam")
+      @resource = Seth::Resource::User.new("adam")
     end
 
     it "should allow a string" do
@@ -108,7 +108,7 @@ end
 
   describe "when it has uid, gid, and home" do
     before do
-      @resource = Chef::Resource::User.new("root")
+      @resource = Seth::Resource::User.new("root")
       @resource.uid(123)
       @resource.gid(456)
       @resource.home("/usr/local/root/")

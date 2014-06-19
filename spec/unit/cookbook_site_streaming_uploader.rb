@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-require 'chef/cookbook_site_streaming_uploader'
+require 'seth/cookbook_site_streaming_uploader'
 
 class FakeTempfile
   def initialize(basename)
@@ -34,13 +34,13 @@ class FakeTempfile
 
 end
 
-describe Chef::CookbookSiteStreamingUploader do
+describe Seth::CookbookSiteStreamingUploader do
 
   describe "create_build_dir" do
 
     before(:each) do
       @cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, 'cookbooks'))
-      @loader = Chef::CookbookLoader.new(@cookbook_repo)
+      @loader = Seth::CookbookLoader.new(@cookbook_repo)
       @loader.load_cookbooks
       File.stub(:unlink).and_return()
     end
@@ -49,10 +49,10 @@ describe Chef::CookbookSiteStreamingUploader do
       cookbook = @loader[:openldap]
       files_count = Dir.glob(File.join(@cookbook_repo, cookbook.name.to_s, '**', '*'), File::FNM_DOTMATCH).count { |file| File.file?(file) }
 
-      Tempfile.should_receive(:new).with("chef-#{cookbook.name}-build").and_return(FakeTempfile.new("chef-#{cookbook.name}-build"))
+      Tempfile.should_receive(:new).with("seth-#{cookbook.name}-build").and_return(FakeTempfile.new("chef-#{cookbook.name}-build"))
       FileUtils.should_receive(:mkdir_p).exactly(files_count + 1).times
       FileUtils.should_receive(:cp).exactly(files_count).times
-      Chef::CookbookSiteStreamingUploader.create_build_dir(cookbook)
+      Seth::CookbookSiteStreamingUploader.create_build_dir(cookbook)
     end
 
   end # create_build_dir
@@ -69,17 +69,17 @@ describe Chef::CookbookSiteStreamingUploader do
 
     it "should send an http request" do
       Net::HTTP.any_instance.should_receive(:request)
-      Chef::CookbookSiteStreamingUploader.make_request(:post, @uri, 'bill', @secret_filename)
+      Seth::CookbookSiteStreamingUploader.make_request(:post, @uri, 'bill', @secret_filename)
     end
 
     it "should read the private key file" do
       File.should_receive(:read).with(@secret_filename).and_return(@rsa_key)
-      Chef::CookbookSiteStreamingUploader.make_request(:post, @uri, 'bill', @secret_filename)
+      Seth::CookbookSiteStreamingUploader.make_request(:post, @uri, 'bill', @secret_filename)
     end
 
     it "should add the authentication signed header" do
       Mixlib::Authentication::SigningObject.any_instance.should_receive(:sign).and_return({})
-      Chef::CookbookSiteStreamingUploader.make_request(:post, @uri, 'bill', @secret_filename)
+      Seth::CookbookSiteStreamingUploader.make_request(:post, @uri, 'bill', @secret_filename)
     end
 
     it "should be able to send post requests" do
@@ -88,7 +88,7 @@ describe Chef::CookbookSiteStreamingUploader do
       Net::HTTP::Post.should_receive(:new).once.and_return(post)
       Net::HTTP::Put.should_not_receive(:new)
       Net::HTTP::Get.should_not_receive(:new)
-      Chef::CookbookSiteStreamingUploader.make_request(:post, @uri, 'bill', @secret_filename)
+      Seth::CookbookSiteStreamingUploader.make_request(:post, @uri, 'bill', @secret_filename)
     end
 
     it "should be able to send put requests" do
@@ -97,23 +97,23 @@ describe Chef::CookbookSiteStreamingUploader do
       Net::HTTP::Post.should_not_receive(:new)
       Net::HTTP::Put.should_receive(:new).once.and_return(put)
       Net::HTTP::Get.should_not_receive(:new)
-      Chef::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename)
+      Seth::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename)
     end
 
     it "should be able to receive files to attach as argument" do
-      Chef::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename, {
+      Seth::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename, {
         :myfile => File.new(File.join(CHEF_SPEC_DATA, 'config.rb')), # a dummy file
       })
     end
 
     it "should be able to receive strings to attach as argument" do
-      Chef::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename, {
+      Seth::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename, {
         :mystring => 'Lorem ipsum',
       })
     end
 
     it "should be able to receive strings and files as argument at the same time" do
-      Chef::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename, {
+      Seth::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename, {
         :myfile1 => File.new(File.join(CHEF_SPEC_DATA, 'config.rb')),
         :mystring1 => 'Lorem ipsum',
         :myfile2 => File.new(File.join(CHEF_SPEC_DATA, 'config.rb')),
@@ -126,11 +126,11 @@ describe Chef::CookbookSiteStreamingUploader do
   describe "StreamPart" do
     before(:each) do
       @file = File.new(File.join(CHEF_SPEC_DATA, 'config.rb'))
-      @stream_part = Chef::CookbookSiteStreamingUploader::StreamPart.new(@file, File.size(@file))
+      @stream_part = Seth::CookbookSiteStreamingUploader::StreamPart.new(@file, File.size(@file))
     end
 
     it "should create a StreamPart" do
-      @stream_part.should be_instance_of(Chef::CookbookSiteStreamingUploader::StreamPart)
+      @stream_part.should be_instance_of(Seth::CookbookSiteStreamingUploader::StreamPart)
     end
 
     it "should expose its size" do
@@ -148,11 +148,11 @@ describe Chef::CookbookSiteStreamingUploader do
   describe "StringPart" do
     before(:each) do
       @str = 'What a boring string'
-      @string_part = Chef::CookbookSiteStreamingUploader::StringPart.new(@str)
+      @string_part = Seth::CookbookSiteStreamingUploader::StringPart.new(@str)
     end
 
     it "should create a StringPart" do
-      @string_part.should be_instance_of(Chef::CookbookSiteStreamingUploader::StringPart)
+      @string_part.should be_instance_of(Seth::CookbookSiteStreamingUploader::StringPart)
     end
 
     it "should expose its size" do
@@ -169,15 +169,15 @@ describe Chef::CookbookSiteStreamingUploader do
     before(:each) do
       @string1 = "stream1"
       @string2 = "stream2"
-      @stream1 = Chef::CookbookSiteStreamingUploader::StringPart.new(@string1)
-      @stream2 = Chef::CookbookSiteStreamingUploader::StringPart.new(@string2)
+      @stream1 = Seth::CookbookSiteStreamingUploader::StringPart.new(@string1)
+      @stream2 = Seth::CookbookSiteStreamingUploader::StringPart.new(@string2)
       @parts = [ @stream1, @stream2 ]
 
-      @multipart_stream = Chef::CookbookSiteStreamingUploader::MultipartStream.new(@parts)
+      @multipart_stream = Seth::CookbookSiteStreamingUploader::MultipartStream.new(@parts)
     end
 
     it "should create a MultipartStream" do
-      @multipart_stream.should be_instance_of(Chef::CookbookSiteStreamingUploader::MultipartStream)
+      @multipart_stream.should be_instance_of(Seth::CookbookSiteStreamingUploader::MultipartStream)
     end
 
     it "should expose its size" do

@@ -20,35 +20,35 @@
 #
 
 require File.expand_path("../../spec_helper", __FILE__)
-require 'chef/resource_reporter'
+require 'seth/resource_reporter'
 
-describe Chef::ResourceReporter do
+describe Seth::ResourceReporter do
   before(:all) do
-    @reporting_toggle_default = Chef::Config[:enable_reporting]
-    Chef::Config[:enable_reporting] = true
+    @reporting_toggle_default = Seth::Config[:enable_reporting]
+    Seth::Config[:enable_reporting] = true
   end
 
   after(:all) do
-    Chef::Config[:enable_reporting] = @reporting_toggle_default
+    Seth::Config[:enable_reporting] = @reporting_toggle_default
   end
 
   before do
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.name("spitfire")
-    @rest_client = double("Chef::REST (mock)")
+    @rest_client = double("Seth::REST (mock)")
     @rest_client.stub(:post_rest).and_return(true)
-    @resource_reporter = Chef::ResourceReporter.new(@rest_client)
-    @new_resource      = Chef::Resource::File.new("/tmp/a-file.txt")
+    @resource_reporter = Seth::ResourceReporter.new(@rest_client)
+    @new_resource      = Seth::Resource::File.new("/tmp/a-file.txt")
     @cookbook_name = "monkey"
     @new_resource.cookbook_name = @cookbook_name
     @cookbook_version = double("Cookbook::Version", :version => "1.2.3")
     @new_resource.stub(:cookbook_version).and_return(@cookbook_version)
-    @current_resource  = Chef::Resource::File.new("/tmp/a-file.txt")
+    @current_resource  = Seth::Resource::File.new("/tmp/a-file.txt")
     @start_time = Time.new
     @end_time = Time.new + 20
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @run_status = Chef::RunStatus.new(@node, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @run_status = Seth::RunStatus.new(@node, @events)
     @run_id = @run_status.run_id
     Time.stub(:now).and_return(@start_time, @end_time)
   end
@@ -75,7 +75,7 @@ describe Chef::ResourceReporter do
 
   end
 
-  context "after the chef run completes" do
+  context "after the seth run completes" do
 
     before do
     end
@@ -86,7 +86,7 @@ describe Chef::ResourceReporter do
     end
   end
 
-  context "when chef fails" do
+  context "when seth fails" do
     before do
       @rest_client.stub(:create_url).and_return("reports/nodes/spitfire/runs/#{@run_id}");
       @rest_client.stub(:raw_http_request).and_return({"result"=>"ok"});
@@ -172,7 +172,7 @@ describe Chef::ResourceReporter do
 
         context "and a subsequent resource fails before loading current resource" do
           before do
-            @next_new_resource = Chef::Resource::Service.new("apache2")
+            @next_new_resource = Seth::Resource::Service.new("apache2")
             @exception = Exception.new
             @exception.set_backtrace(caller)
             @resource_reporter.resource_failed(@next_new_resource, :create, @exception)
@@ -197,7 +197,7 @@ describe Chef::ResourceReporter do
       # used for implementation.
       context "and a nested resource is updated" do
         before do
-          @implementation_resource = Chef::Resource::CookbookFile.new("/preseed-file.txt")
+          @implementation_resource = Seth::Resource::CookbookFile.new("/preseed-file.txt")
         @resource_reporter.resource_action_start(@implementation_resource , :create)
         @resource_reporter.resource_current_state_loaded(@implementation_resource, :create, @implementation_resource)
         @resource_reporter.resource_updated(@implementation_resource, :create)
@@ -213,7 +213,7 @@ describe Chef::ResourceReporter do
 
       context "and a nested resource runs but is not updated" do
         before do
-          @implementation_resource = Chef::Resource::CookbookFile.new("/preseed-file.txt")
+          @implementation_resource = Seth::Resource::CookbookFile.new("/preseed-file.txt")
           @resource_reporter.resource_action_start(@implementation_resource , :create)
           @resource_reporter.resource_current_state_loaded(@implementation_resource, :create, @implementation_resource)
           @resource_reporter.resource_up_to_date(@implementation_resource, :create)
@@ -266,7 +266,7 @@ describe Chef::ResourceReporter do
     context "when the new_resource does not have a string for name and identity" do
       context "the new_resource name and id are nil" do
         before do
-          @bad_resource = Chef::Resource::File.new("/tmp/nameless_file.txt")
+          @bad_resource = Seth::Resource::File.new("/tmp/nameless_file.txt")
           @bad_resource.stub(:name).and_return(nil)
           @bad_resource.stub(:identity).and_return(nil)
           @resource_reporter.resource_action_start(@bad_resource, :create)
@@ -289,7 +289,7 @@ describe Chef::ResourceReporter do
 
       context "the new_resource name and id are hashes" do
         before do
-          @bad_resource = Chef::Resource::File.new("/tmp/filename_as_hash.txt")
+          @bad_resource = Seth::Resource::File.new("/tmp/filename_as_hash.txt")
           @bad_resource.stub(:name).and_return({:foo=>:bar})
           @bad_resource.stub(:identity).and_return({:foo=>:bar})
           @resource_reporter.resource_action_start(@bad_resource, :create)
@@ -439,7 +439,7 @@ describe Chef::ResourceReporter do
 
     context "when the resource is a RegistryKey with binary data" do
       let(:new_resource) do
-        resource = Chef::Resource::RegistryKey.new('Wubba\Lubba\Dub\Dubs')
+        resource = Seth::Resource::RegistryKey.new('Wubba\Lubba\Dub\Dubs')
         resource.values([ { :name => 'rick', :type => :binary, :data => 255.chr * 1 } ])
         resource.stub(:cookbook_name).and_return(@cookbook_name)
         resource.stub(:cookbook_version).and_return(@cookbook_version)
@@ -447,7 +447,7 @@ describe Chef::ResourceReporter do
       end
 
       let(:current_resource) do
-        resource = Chef::Resource::RegistryKey.new('Wubba\Lubba\Dub\Dubs')
+        resource = Seth::Resource::RegistryKey.new('Wubba\Lubba\Dub\Dubs')
         resource.values([ { :name => 'rick', :type => :binary, :data => 255.chr * 1 } ])
         resource
       end
@@ -459,7 +459,7 @@ describe Chef::ResourceReporter do
 
       before do
         @backtrace = ["foo.rb:1 in `foo!'","bar.rb:2 in `bar!","'baz.rb:3 in `baz!'"]
-        @node = Chef::Node.new
+        @node = Seth::Node.new
         @node.name("spitfire")
         @exception = ArgumentError.new
         @exception.stub(:inspect).and_return("Net::HTTPServerException")
@@ -495,7 +495,7 @@ describe Chef::ResourceReporter do
 
     context "when new_resource does not have a cookbook_name" do
       before do
-        @bad_resource = Chef::Resource::File.new("/tmp/a-file.txt")
+        @bad_resource = Seth::Resource::File.new("/tmp/a-file.txt")
         @bad_resource.cookbook_name = nil
 
         @resource_reporter.resource_action_start(@bad_resource, :create)
@@ -546,10 +546,10 @@ describe Chef::ResourceReporter do
 
     context "when including a resource that overrides Resource#state" do
       before do
-        @current_state_resource = Chef::Resource::WithState.new("Stateful", @run_context)
+        @current_state_resource = Seth::Resource::WithState.new("Stateful", @run_context)
         @current_state_resource.state = nil
 
-        @new_state_resource = Chef::Resource::WithState.new("Stateful", @run_context)
+        @new_state_resource = Seth::Resource::WithState.new("Stateful", @run_context)
         @new_state_resource.state = "Running"
         @resource_reporter.resource_action_start(@new_state_resource, :create)
         @resource_reporter.resource_current_state_loaded(@new_state_resource, :create, @current_state_resource)
@@ -587,7 +587,7 @@ describe Chef::ResourceReporter do
         @rest_client.should_receive(:post_rest).
           with("reports/nodes/spitfire/runs", {:action => :start, :run_id => @run_id,
                                                :start_time => @start_time.to_s},
-               {'X-Ops-Reporting-Protocol-Version' => Chef::ResourceReporter::PROTOCOL_VERSION}).
+               {'X-Ops-Reporting-Protocol-Version' => Seth::ResourceReporter::PROTOCOL_VERSION}).
           and_raise(@error)
       end
 
@@ -603,7 +603,7 @@ describe Chef::ResourceReporter do
       end
 
       it "prints an error about the 404" do
-        Chef::Log.should_receive(:debug).with(/404/)
+        Seth::Log.should_receive(:debug).with(/404/)
         @resource_reporter.run_started(@run_status)
       end
 
@@ -616,7 +616,7 @@ describe Chef::ResourceReporter do
         @error = Net::HTTPServerException.new("500 message", @response)
         @rest_client.should_receive(:post_rest).
           with("reports/nodes/spitfire/runs", {:action => :start, :run_id => @run_id, :start_time => @start_time.to_s},
-               {'X-Ops-Reporting-Protocol-Version' => Chef::ResourceReporter::PROTOCOL_VERSION}).
+               {'X-Ops-Reporting-Protocol-Version' => Seth::ResourceReporter::PROTOCOL_VERSION}).
           and_raise(@error)
       end
 
@@ -632,30 +632,30 @@ describe Chef::ResourceReporter do
       end
 
       it "prints an error about the error" do
-        Chef::Log.should_receive(:info).with(/500/)
+        Seth::Log.should_receive(:info).with(/500/)
         @resource_reporter.run_started(@run_status)
       end
     end
 
     context "when the server returns a 500 to the client and enable_reporting_url_fatals is true" do
       before do
-        @enable_reporting_url_fatals = Chef::Config[:enable_reporting_url_fatals]
-        Chef::Config[:enable_reporting_url_fatals] = true
+        @enable_reporting_url_fatals = Seth::Config[:enable_reporting_url_fatals]
+        Seth::Config[:enable_reporting_url_fatals] = true
         # 500 getting the run_id
         @response = Net::HTTPInternalServerError.new("a response body", "500", "Internal Server Error")
         @error = Net::HTTPServerException.new("500 message", @response)
         @rest_client.should_receive(:post_rest).
           with("reports/nodes/spitfire/runs", {:action => :start, :run_id => @run_id, :start_time => @start_time.to_s},
-               {'X-Ops-Reporting-Protocol-Version' => Chef::ResourceReporter::PROTOCOL_VERSION}).
+               {'X-Ops-Reporting-Protocol-Version' => Seth::ResourceReporter::PROTOCOL_VERSION}).
           and_raise(@error)
       end
 
       after do
-        Chef::Config[:enable_reporting_url_fatals] = @enable_reporting_url_fatals
+        Seth::Config[:enable_reporting_url_fatals] = @enable_reporting_url_fatals
       end
 
       it "fails the run and prints an message about the error" do
-        Chef::Log.should_receive(:error).with(/500/)
+        Seth::Log.should_receive(:error).with(/500/)
         lambda {
           @resource_reporter.run_started(@run_status)
         }.should raise_error(Net::HTTPServerException)
@@ -667,7 +667,7 @@ describe Chef::ResourceReporter do
         response = {"uri"=>"https://example.com/reports/nodes/spitfire/runs/@run_id"}
         @rest_client.should_receive(:post_rest).
           with("reports/nodes/spitfire/runs", {:action => :start, :run_id => @run_id, :start_time => @start_time.to_s},
-               {'X-Ops-Reporting-Protocol-Version' => Chef::ResourceReporter::PROTOCOL_VERSION}).
+               {'X-Ops-Reporting-Protocol-Version' => Seth::ResourceReporter::PROTOCOL_VERSION}).
           and_return(response)
         @resource_reporter.run_started(@run_status)
       end
@@ -685,7 +685,7 @@ describe Chef::ResourceReporter do
         @resource_reporter.stub(:end_time).and_return(@end_time)
         @expected_data = @resource_reporter.prepare_run_data
 
-        post_url = "https://chef_server/example_url"
+        post_url = "https://seth_server/example_url"
         response = {"result"=>"ok"}
 
         @rest_client.should_receive(:create_url).
@@ -696,7 +696,7 @@ describe Chef::ResourceReporter do
           method.should eq(:POST)
           url.should eq(post_url)
           headers.should eq({'Content-Encoding' => 'gzip',
-                             'X-Ops-Reporting-Protocol-Version' => Chef::ResourceReporter::PROTOCOL_VERSION
+                             'X-Ops-Reporting-Protocol-Version' => Seth::ResourceReporter::PROTOCOL_VERSION
           })
           data_stream = Zlib::GzipReader.new(StringIO.new(data))
           data = data_stream.read

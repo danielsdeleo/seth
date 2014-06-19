@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/from_file'
-require 'chef/mixin/params_validate'
+require 'seth/mixin/from_file'
+require 'seth/mixin/params_validate'
 
-class Chef
+class Seth
   class ResourceDefinition
 
-    include Chef::Mixin::FromFile
-    include Chef::Mixin::ParamsValidate
+    include Seth::Mixin::FromFile
+    include Seth::Mixin::ParamsValidate
 
     attr_accessor :name, :params, :recipe, :node
 

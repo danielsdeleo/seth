@@ -19,12 +19,12 @@
 
 require 'spec_helper'
 
-describe Chef::RunStatus do
+describe Seth::RunStatus do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @run_status = Chef::RunStatus.new(@node, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @run_status = Seth::RunStatus.new(@node, @events)
   end
 
   describe "before the run context has been set" do
@@ -68,7 +68,7 @@ describe Chef::RunStatus do
         @run_status.end_time.should == @end_time
       end
 
-      it "gives the elapsed time of the chef run" do
+      it "gives the elapsed time of the seth run" do
         @run_status.elapsed_time.should == 23
       end
 
@@ -82,7 +82,7 @@ describe Chef::RunStatus do
 
     describe "with resources in the resource_collection" do
       before do
-        @all_resources = [Chef::Resource::Cat.new("whiskers"), Chef::Resource::ZenMaster.new('dtz')]
+        @all_resources = [Seth::Resource::Cat.new("whiskers"), Chef::Resource::ZenMaster.new('dtz')]
         @run_context.resource_collection.all_resources.replace(@all_resources)
       end
 

@@ -20,11 +20,11 @@
 
 require 'spec_helper'
 
-require 'chef/run_context'
-require 'chef/rest'
+require 'seth/run_context'
+require 'seth/rest'
 require 'rbconfig'
 
-describe Chef::Client do
+describe Seth::Client do
 
   let(:hostname) { "hostname" }
   let(:machinename) { "machinename.example.org" }
@@ -51,9 +51,9 @@ describe Chef::Client do
   end
 
   let(:node) do
-    Chef::Node.new.tap do |n|
+    Seth::Node.new.tap do |n|
       n.name(fqdn)
-      n.chef_environment("_default")
+      n.seth_environment("_default")
     end
   end
 
@@ -61,39 +61,39 @@ describe Chef::Client do
   let(:client_opts) { {} }
 
   let(:client) do
-    Chef::Client.new(json_attribs, client_opts).tap do |c|
+    Seth::Client.new(json_attribs, client_opts).tap do |c|
       c.node = node
     end
   end
 
   before do
-    Chef::Log.logger = Logger.new(StringIO.new)
+    Seth::Log.logger = Logger.new(StringIO.new)
 
     # Node/Ohai data
-    #Chef::Config[:node_name] = fqdn
+    #Seth::Config[:node_name] = fqdn
     Ohai::System.stub(:new).and_return(ohai_system)
   end
 
   describe "authentication protocol selection" do
     after do
-      Chef::Config[:authentication_protocol_version] = "1.0"
+      Seth::Config[:authentication_protocol_version] = "1.0"
     end
 
     context "when the node name is <= 90 bytes" do
       it "does not force the authentication protocol to 1.1" do
-        Chef::Config[:node_name] = ("f" * 90)
+        Seth::Config[:node_name] = ("f" * 90)
         # ugly that this happens as a side effect of a getter :(
         client.node_name
-        Chef::Config[:authentication_protocol_version].should == "1.0"
+        Seth::Config[:authentication_protocol_version].should == "1.0"
       end
     end
 
     context "when the node name is > 90 bytes" do
       it "sets the authentication protocol to version 1.1" do
-        Chef::Config[:node_name] = ("f" * 91)
+        Seth::Config[:node_name] = ("f" * 91)
         # ugly that this happens as a side effect of a getter :(
         client.node_name
-        Chef::Config[:authentication_protocol_version].should == "1.1"
+        Seth::Config[:authentication_protocol_version].should == "1.1"
       end
     end
   end
@@ -112,11 +112,11 @@ describe Chef::Client do
 
         context "and force_logger is set" do
           before do
-            Chef::Config[:force_logger] = true
+            Seth::Config[:force_logger] = true
           end
 
           it "configures the :null formatter" do
-            Chef::Config[:force_logger].should be_true
+            Seth::Config[:force_logger].should be_true
             client.formatters_for_run.should == [[:null]]
           end
 
@@ -135,7 +135,7 @@ describe Chef::Client do
 
         context "and force_formatter is set" do
           before do
-            Chef::Config[:force_formatter] = true
+            Seth::Config[:force_formatter] = true
           end
           it "it configures the :doc formatter" do
             client.formatters_for_run.should == [[:doc]]
@@ -148,7 +148,7 @@ describe Chef::Client do
     context "when a formatter is configured" do
       context "with no output path" do
         before do
-          Chef::Config.add_formatter(:min)
+          Seth::Config.add_formatter(:min)
         end
 
         it "does not configure a default formatter" do
@@ -166,7 +166,7 @@ describe Chef::Client do
       context "with an output path" do
         before do
           @tmpout = Tempfile.open("rspec-for-client-formatter-selection-#{Process.pid}")
-          Chef::Config.add_formatter(:min, @tmpout.path)
+          Seth::Config.add_formatter(:min, @tmpout.path)
         end
 
         after do
@@ -187,10 +187,10 @@ describe Chef::Client do
 
   describe "a full client run" do
     shared_examples_for "a successful client run" do
-      let(:http_node_load) { double("Chef::REST (node)") }
-      let(:http_cookbook_sync) { double("Chef::REST (cookbook sync)") }
-      let(:http_node_save) { double("Chef::REST (node save)") }
-      let(:runner) { double("Chef::Runner") }
+      let(:http_node_load) { double("Seth::REST (node)") }
+      let(:http_cookbook_sync) { double("Seth::REST (cookbook sync)") }
+      let(:http_node_save) { double("Seth::REST (node save)") }
+      let(:runner) { double("Seth::Runner") }
 
       let(:api_client_exists?) { false }
 
@@ -203,39 +203,39 @@ describe Chef::Client do
         # --Client.register
         #   Make sure Client#register thinks the client key doesn't
         #   exist, so it tries to register and create one.
-        File.should_receive(:exists?).with(Chef::Config[:client_key]).exactly(1).times.and_return(api_client_exists?)
+        File.should_receive(:exists?).with(Seth::Config[:client_key]).exactly(1).times.and_return(api_client_exists?)
 
         unless api_client_exists?
           #   Client.register will register with the validation client name.
-          Chef::ApiClient::Registration.any_instance.should_receive(:run)
+          Seth::ApiClient::Registration.any_instance.should_receive(:run)
         end
       end
 
       def stub_for_node_load
         #   Client.register will then turn around create another
-        #   Chef::REST object, this time with the client key it got from the
+        #   Seth::REST object, this time with the client key it got from the
         #   previous step.
-        Chef::REST.should_receive(:new).
-          with(Chef::Config[:chef_server_url], fqdn, Chef::Config[:client_key]).
+        Seth::REST.should_receive(:new).
+          with(Seth::Config[:seth_server_url], fqdn, Chef::Config[:client_key]).
           exactly(1).
           and_return(http_node_load)
 
         # --Client#build_node
         #   looks up the node, which we will return, then later saves it.
-        Chef::Node.should_receive(:find_or_create).with(fqdn).and_return(node)
+        Seth::Node.should_receive(:find_or_create).with(fqdn).and_return(node)
 
         # --ResourceReporter#node_load_completed
         #   gets a run id from the server for storing resource history
         #   (has its own tests, so stubbing it here.)
-        Chef::ResourceReporter.any_instance.should_receive(:node_load_completed)
+        Seth::ResourceReporter.any_instance.should_receive(:node_load_completed)
       end
 
       def stub_for_sync_cookbooks
         # --Client#setup_run_context
         # ---Client#sync_cookbooks -- downloads the list of cookbooks to sync
         #
-        Chef::CookbookSynchronizer.any_instance.should_receive(:sync_cookbooks)
-        Chef::REST.should_receive(:new).with(Chef::Config[:chef_server_url]).and_return(http_cookbook_sync)
+        Seth::CookbookSynchronizer.any_instance.should_receive(:sync_cookbooks)
+        Seth::REST.should_receive(:new).with(Chef::Config[:seth_server_url]).and_return(http_cookbook_sync)
         http_cookbook_sync.should_receive(:post).
           with("environments/_default/cookbook_versions", {:run_list => []}).
           and_return({})
@@ -243,27 +243,27 @@ describe Chef::Client do
 
       def stub_for_converge
         # --Client#converge
-        Chef::Runner.should_receive(:new).and_return(runner)
+        Seth::Runner.should_receive(:new).and_return(runner)
         runner.should_receive(:converge).and_return(true)
 
         # --ResourceReporter#run_completed
         #   updates the server with the resource history
         #   (has its own tests, so stubbing it here.)
-        Chef::ResourceReporter.any_instance.should_receive(:run_completed)
+        Seth::ResourceReporter.any_instance.should_receive(:run_completed)
       end
 
       def stub_for_node_save
         node.stub(:data_for_save).and_return(node.for_json)
 
         # --Client#save_updated_node
-        Chef::REST.should_receive(:new).with(Chef::Config[:chef_server_url]).and_return(http_node_save)
+        Seth::REST.should_receive(:new).with(Chef::Config[:seth_server_url]).and_return(http_node_save)
         http_node_save.should_receive(:put_rest).with("nodes/#{fqdn}", node.for_json).and_return(true)
       end
 
       def stub_for_run
-        Chef::RunLock.any_instance.should_receive(:acquire)
-        Chef::RunLock.any_instance.should_receive(:save_pid)
-        Chef::RunLock.any_instance.should_receive(:release)
+        Seth::RunLock.any_instance.should_receive(:acquire)
+        Seth::RunLock.any_instance.should_receive(:save_pid)
+        Seth::RunLock.any_instance.should_receive(:release)
 
         # Post conditions: check that node has been filled in correctly
         client.should_receive(:run_started)
@@ -271,11 +271,11 @@ describe Chef::Client do
       end
 
       before do
-        Chef::Config[:client_fork] = enable_fork
-        Chef::Config[:cache_path] = windows? ? 'C:\chef' : '/var/chef'
+        Seth::Config[:client_fork] = enable_fork
+        Seth::Config[:cache_path] = windows? ? 'C:\seth' : '/var/chef'
 
-        stub_const("Chef::Client::STDOUT_FD", stdout)
-        stub_const("Chef::Client::STDERR_FD", stderr)
+        stub_const("Seth::Client::STDOUT_FD", stdout)
+        stub_const("Seth::Client::STDERR_FD", stderr)
 
         stub_for_register
         stub_for_node_load
@@ -296,12 +296,12 @@ describe Chef::Client do
     end
 
 
-    describe "when running chef-client without fork" do
+    describe "when running seth-client without fork" do
 
       include_examples "a successful client run"
     end
 
-    describe "when running chef-client with forking enabled", :unix_only do
+    describe "when running seth-client with forking enabled", :unix_only do
       include_examples "a successful client run" do
         let(:process_status) do
           double("Process::Status")
@@ -331,7 +331,7 @@ describe Chef::Client do
       let(:client_opts) { {:override_runlist => "recipe[override_recipe]"} }
 
       it "should permit spaces in overriding run list" do
-        Chef::Client.new(nil, :override_runlist => 'role[a], role[b]')
+        Seth::Client.new(nil, :override_runlist => 'role[a], role[b]')
       end
 
       describe "when running the client" do
@@ -339,15 +339,15 @@ describe Chef::Client do
 
           before do
             # Client will try to compile and run override_recipe
-            Chef::RunContext::CookbookCompiler.any_instance.should_receive(:compile)
+            Seth::RunContext::CookbookCompiler.any_instance.should_receive(:compile)
           end
 
           def stub_for_sync_cookbooks
             # --Client#setup_run_context
             # ---Client#sync_cookbooks -- downloads the list of cookbooks to sync
             #
-            Chef::CookbookSynchronizer.any_instance.should_receive(:sync_cookbooks)
-            Chef::REST.should_receive(:new).with(Chef::Config[:chef_server_url]).and_return(http_cookbook_sync)
+            Seth::CookbookSynchronizer.any_instance.should_receive(:sync_cookbooks)
+            Seth::REST.should_receive(:new).with(Chef::Config[:seth_server_url]).and_return(http_cookbook_sync)
             http_cookbook_sync.should_receive(:post).
               with("environments/_default/cookbook_versions", {:run_list => ["override_recipe"]}).
               and_return({})
@@ -372,8 +372,8 @@ describe Chef::Client do
           # --Client#setup_run_context
           # ---Client#sync_cookbooks -- downloads the list of cookbooks to sync
           #
-          Chef::CookbookSynchronizer.any_instance.should_receive(:sync_cookbooks)
-          Chef::REST.should_receive(:new).with(Chef::Config[:chef_server_url]).and_return(http_cookbook_sync)
+          Seth::CookbookSynchronizer.any_instance.should_receive(:sync_cookbooks)
+          Seth::REST.should_receive(:new).with(Chef::Config[:seth_server_url]).and_return(http_cookbook_sync)
           http_cookbook_sync.should_receive(:post).
             with("environments/_default/cookbook_versions", {:run_list => ["new_run_list_recipe"]}).
             and_return({})
@@ -382,12 +382,12 @@ describe Chef::Client do
         before do
           # Client will try to compile and run the new_run_list_recipe, but we
           # do not create a fixture for this.
-          Chef::RunContext::CookbookCompiler.any_instance.should_receive(:compile)
+          Seth::RunContext::CookbookCompiler.any_instance.should_receive(:compile)
         end
 
         it "sets the new run list on the node" do
           client.run
-          node.run_list.should == Chef::RunList.new(new_runlist)
+          node.run_list.should == Seth::RunList.new(new_runlist)
         end
 
       end
@@ -399,17 +399,17 @@ describe Chef::Client do
   describe "when handling run failures" do
 
     it "should remove the run_lock on failure of #load_node" do
-      @run_lock = double("Chef::RunLock", :acquire => true)
-      Chef::RunLock.stub(:new).and_return(@run_lock)
+      @run_lock = double("Seth::RunLock", :acquire => true)
+      Seth::RunLock.stub(:new).and_return(@run_lock)
 
-      @events = double("Chef::EventDispatch::Dispatcher").as_null_object
-      Chef::EventDispatch::Dispatcher.stub(:new).and_return(@events)
+      @events = double("Seth::EventDispatch::Dispatcher").as_null_object
+      Seth::EventDispatch::Dispatcher.stub(:new).and_return(@events)
 
-      # @events is created on Chef::Client.new, so we need to recreate it after mocking
-      client = Chef::Client.new
+      # @events is created on Seth::Client.new, so we need to recreate it after mocking
+      client = Seth::Client.new
       client.stub(:load_node).and_raise(Exception)
       @run_lock.should_receive(:release)
-      if(Chef::Config[:client_fork] && !windows?)
+      if(Seth::Config[:client_fork] && !windows?)
         client.should_receive(:fork) do |&block|
           block.call
         end
@@ -418,10 +418,10 @@ describe Chef::Client do
     end
   end
 
-  describe "when notifying other objects of the status of the chef run" do
+  describe "when notifying other objects of the status of the seth run" do
     before do
-      Chef::Client.clear_notifications
-      Chef::Node.stub(:find_or_create).and_return(node)
+      Seth::Client.clear_notifications
+      Seth::Node.stub(:find_or_create).and_return(node)
       node.stub(:save)
       client.load_node
       client.build_node
@@ -429,7 +429,7 @@ describe Chef::Client do
 
     it "notifies observers that the run has started" do
       notified = false
-      Chef::Client.when_run_starts do |run_status|
+      Seth::Client.when_run_starts do |run_status|
         run_status.node.should == node
         notified = true
       end
@@ -440,7 +440,7 @@ describe Chef::Client do
 
     it "notifies observers that the run has completed successfully" do
       notified = false
-      Chef::Client.when_run_completes_successfully do |run_status|
+      Seth::Client.when_run_completes_successfully do |run_status|
         run_status.node.should == node
         notified = true
       end
@@ -451,7 +451,7 @@ describe Chef::Client do
 
     it "notifies observers that the run failed" do
       notified = false
-      Chef::Client.when_run_fails do |run_status|
+      Seth::Client.when_run_fails do |run_status|
         run_status.node.should == node
         notified = true
       end
@@ -464,15 +464,15 @@ describe Chef::Client do
   describe "build_node" do
     it "should expand the roles and recipes for the node" do
       node.run_list << "role[role_containing_cookbook1]"
-      role_containing_cookbook1 = Chef::Role.new
+      role_containing_cookbook1 = Seth::Role.new
       role_containing_cookbook1.name("role_containing_cookbook1")
       role_containing_cookbook1.run_list << "cookbook1"
 
       # build_node will call Node#expand! with server, which will
       # eventually hit the server to expand the included role.
-      mock_chef_rest = double("Chef::REST")
-      mock_chef_rest.should_receive(:get_rest).with("roles/role_containing_cookbook1").and_return(role_containing_cookbook1)
-      Chef::REST.should_receive(:new).and_return(mock_chef_rest)
+      mock_seth_rest = double("Seth::REST")
+      mock_seth_rest.should_receive(:get_rest).with("roles/role_containing_cookbook1").and_return(role_containing_cookbook1)
+      Seth::REST.should_receive(:new).and_return(mock_seth_rest)
 
       # check pre-conditions.
       node[:roles].should be_nil
@@ -480,7 +480,7 @@ describe Chef::Client do
 
       client.policy_builder.stub(:node).and_return(node)
 
-      # chefspec and possibly others use the return value of this method
+      # sethspec and possibly others use the return value of this method
       client.build_node.should == node
 
       # check post-conditions.
@@ -493,26 +493,26 @@ describe Chef::Client do
     end
 
     it "should set the environment from the specified configuration value" do
-      node.chef_environment.should == "_default"
-      Chef::Config[:environment] = "A"
+      node.seth_environment.should == "_default"
+      Seth::Config[:environment] = "A"
 
-      test_env = Chef::Environment.new
+      test_env = Seth::Environment.new
       test_env.name("A")
 
-      mock_chef_rest = double("Chef::REST")
-      mock_chef_rest.should_receive(:get_rest).with("environments/A").and_return(test_env)
-      Chef::REST.should_receive(:new).and_return(mock_chef_rest)
+      mock_seth_rest = double("Seth::REST")
+      mock_seth_rest.should_receive(:get_rest).with("environments/A").and_return(test_env)
+      Seth::REST.should_receive(:new).and_return(mock_seth_rest)
       client.policy_builder.stub(:node).and_return(node)
       client.build_node.should == node
 
-      node.chef_environment.should == "A"
+      node.seth_environment.should == "A"
     end
   end
 
   describe "windows_admin_check" do
     context "platform is not windows" do
       before do
-        Chef::Platform.stub(:windows?).and_return(false)
+        Seth::Platform.stub(:windows?).and_return(false)
       end
 
       it "shouldn't be called" do
@@ -523,7 +523,7 @@ describe Chef::Client do
 
     context "platform is windows" do
       before do
-        Chef::Platform.stub(:windows?).and_return(true)
+        Seth::Platform.stub(:windows?).and_return(true)
       end
 
       it "should be called" do
@@ -537,7 +537,7 @@ describe Chef::Client do
         end
 
         it "should not log a warning message" do
-          Chef::Log.should_not_receive(:warn)
+          Seth::Log.should_not_receive(:warn)
           client.do_windows_admin_check
         end
 
@@ -554,7 +554,7 @@ describe Chef::Client do
         end
 
         it "should log a warning message" do
-          Chef::Log.should_receive(:warn)
+          Seth::Log.should_receive(:warn)
           client.do_windows_admin_check
         end
 
@@ -569,14 +569,14 @@ describe Chef::Client do
 
   describe "assert_cookbook_path_not_empty" do
     before do
-      Chef::Config[:solo] = true
-      Chef::Config[:cookbook_path] = ["/path/to/invalid/cookbook_path"]
+      Seth::Config[:solo] = true
+      Seth::Config[:cookbook_path] = ["/path/to/invalid/cookbook_path"]
     end
     context "when any directory of cookbook_path contains no cookbook" do
       it "raises CookbookNotFound error" do
         expect do
           client.send(:assert_cookbook_path_not_empty, nil)
-        end.to raise_error(Chef::Exceptions::CookbookNotFound, 'None of the cookbook paths set in Chef::Config[:cookbook_path], ["/path/to/invalid/cookbook_path"], contain any cookbooks')
+        end.to raise_error(Seth::Exceptions::CookbookNotFound, 'None of the cookbook paths set in Chef::Config[:cookbook_path], ["/path/to/invalid/cookbook_path"], contain any cookbooks')
       end
     end
   end
@@ -611,7 +611,7 @@ describe Chef::Client do
       let(:fqdn) { nil }
 
       it "throws an exception" do
-        expect { client.node_name }.to raise_error(Chef::Exceptions::CannotDetermineNodeName)
+        expect { client.node_name }.to raise_error(Seth::Exceptions::CannotDetermineNodeName)
       end
     end
 

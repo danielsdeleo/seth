@@ -1,16 +1,16 @@
 $:.unshift(File.dirname(__FILE__) + '/lib')
-require 'chef/version'
+require 'seth/version'
 
 Gem::Specification.new do |s|
-  s.name = 'chef'
-  s.version = Chef::VERSION
+  s.name = 'seth'
+  s.version = Seth::VERSION
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ["README.md", "CONTRIBUTING.md", "LICENSE" ]
   s.summary = "A systems integration framework, built to bring the benefits of configuration management to your entire infrastructure."
   s.description = s.summary
   s.author = "Adam Jacob"
   s.email = "adam@opscode.com"
-  s.homepage = "http://wiki.opscode.com/display/chef"
+  s.homepage = "http://wiki.opscode.com/display/seth"
 
   s.add_dependency "mixlib-config", "~> 2.0"
   s.add_dependency "mixlib-cli", "~> 1.4"
@@ -31,12 +31,12 @@ Gem::Specification.new do |s|
   s.add_dependency "yajl-ruby", "~> 1.1"
   s.add_dependency "net-ssh", "~> 2.6"
   s.add_dependency "net-ssh-multi", "~> 1.1"
-  # CHEF-3027: The knife-cloud plugins require newer features from highline, core chef should not.
+  # CHEF-3027: The knife-cloud plugins require newer features from highline, core seth should not.
   s.add_dependency "highline", "~> 1.6", ">= 1.6.9"
   s.add_dependency "erubis", "~> 2.7"
   s.add_dependency "diff-lcs", "~> 1.2", ">= 1.2.4"
 
-  s.add_dependency "chef-zero", "~> 2.1", ">= 2.1.4"
+  s.add_dependency "seth-zero", "~> 2.1", ">= 2.1.4"
 
   s.add_dependency "pry", "~> 0.9"
 
@@ -51,10 +51,10 @@ Gem::Specification.new do |s|
   %w(rspec-core rspec-expectations rspec-mocks).each { |gem| s.add_development_dependency gem, "~> 2.14.0" }
 
   s.bindir       = "bin"
-  # chef-service-manager is a windows only executable.
+  # seth-service-manager is a windows only executable.
   # However gemspec doesn't give us a way to have this executable only
   # on windows. So we're including this in all platforms.
-  s.executables  = %w( chef-client chef-solo knife chef-shell shef chef-apply chef-service-manager )
+  s.executables  = %w( seth-client chef-solo knife chef-shell shef chef-apply chef-service-manager )
 
   s.require_path = 'lib'
   s.files = %w(Rakefile LICENSE README.md CONTRIBUTING.md) + Dir.glob("{distro,lib,tasks,spec}/**/*", File::FNM_DOTMATCH).reject {|f| File.directory?(f) }

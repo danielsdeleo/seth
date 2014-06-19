@@ -21,19 +21,19 @@ require 'ostruct'
 require 'spec_helper'
 require 'tmpdir'
 
-describe Chef::Provider::Directory do
+describe Seth::Provider::Directory do
   before(:each) do
-    @new_resource = Chef::Resource::Directory.new(Dir.tmpdir)
+    @new_resource = Seth::Resource::Directory.new(Dir.tmpdir)
     if !windows?
       @new_resource.owner(500)
       @new_resource.group(500)
       @new_resource.mode(0644)
     end
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @directory = Chef::Provider::Directory.new(@new_resource, @run_context)
+    @directory = Seth::Provider::Directory.new(@new_resource, @run_context)
   end
 
 
@@ -48,7 +48,7 @@ describe Chef::Provider::Directory do
 
   describe "scanning file security metadata on unix" do
     before do
-      Chef::Platform.stub(:windows?).and_return(false)
+      Seth::Platform.stub(:windows?).and_return(false)
     end
     let(:mock_stat) do
       cstats = double("stats")
@@ -99,7 +99,7 @@ describe Chef::Provider::Directory do
   it "should raise an exception if the parent directory does not exist and recursive is false" do
     @new_resource.path "/tmp/some/dir"
     @new_resource.recursive false
-    lambda { @directory.run_action(:create) }.should raise_error(Chef::Exceptions::EnclosingDirectoryDoesNotExist)
+    lambda { @directory.run_action(:create) }.should raise_error(Seth::Exceptions::EnclosingDirectoryDoesNotExist)
   end
 
   # Unix only for now. While file security attribute reporting for windows is
@@ -126,7 +126,7 @@ describe Chef::Provider::Directory do
   it "should raise an error when creating a directory when parent directory is a file" do
     File.should_receive(:directory?).and_return(false)
     Dir.should_not_receive(:mkdir).with(@new_resource.path)
-    lambda { @directory.run_action(:create) }.should raise_error(Chef::Exceptions::EnclosingDirectoryDoesNotExist)
+    lambda { @directory.run_action(:create) }.should raise_error(Seth::Exceptions::EnclosingDirectoryDoesNotExist)
     @directory.new_resource.should_not be_updated
   end
 
@@ -181,8 +181,8 @@ describe Chef::Provider::Directory do
     cstats.stub(:gid).and_return(500)
     cstats.stub(:mode).and_return(0755)
     # File.stat is called in:
-    # - Chef::Provider::File.load_current_resource_attrs
-    # - Chef::ScanAccessControl via Chef::Provider::File.setup_acl
+    # - Seth::Provider::File.load_current_resource_attrs
+    # - Seth::ScanAccessControl via Chef::Provider::File.setup_acl
     File.stub(:stat).and_return(cstats)
   end
 end

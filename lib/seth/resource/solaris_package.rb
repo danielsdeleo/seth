@@ -17,17 +17,17 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/provider/package/solaris'
+require 'seth/resource/package'
+require 'seth/provider/package/solaris'
 
-class Chef
+class Seth
   class Resource
-    class SolarisPackage < Chef::Resource::Package
+    class SolarisPackage < Seth::Resource::Package
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :solaris_package
-        @provider = Chef::Provider::Package::Solaris
+        @provider = Seth::Provider::Package::Solaris
       end
 
     end

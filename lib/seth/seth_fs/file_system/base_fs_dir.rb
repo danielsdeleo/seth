@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/base_fs_object'
-require 'chef/chef_fs/file_system/nonexistent_fs_object'
+require 'seth/chef_fs/file_system/base_fs_object'
+require 'seth/chef_fs/file_system/nonexistent_fs_object'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class BaseFSDir < BaseFSObject
         def initialize(name, parent)

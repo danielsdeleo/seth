@@ -1,7 +1,7 @@
-require 'chef/formatters/base'
-require 'chef/config'
+require 'seth/formatters/base'
+require 'seth/config'
 
-class Chef
+class Seth
   module Formatters
     #--
     # TODO: not sold on the name, but the output is similar to what rspec calls
@@ -25,7 +25,7 @@ class Chef
       end
 
       def run_start(version)
-        puts_line "Starting Chef Client, version #{version}"
+        puts_line "Starting Seth Client, version #{version}"
       end
 
       def total_resources
@@ -34,19 +34,19 @@ class Chef
 
       def run_completed(node)
         @end_time = Time.now
-        if Chef::Config[:why_run]
-          puts_line "Chef Client finished, #{@updated_resources}/#{total_resources} resources would have been updated"
+        if Seth::Config[:why_run]
+          puts_line "Seth Client finished, #{@updated_resources}/#{total_resources} resources would have been updated"
         else
-          puts_line "Chef Client finished, #{@updated_resources}/#{total_resources} resources updated in #{elapsed_time} seconds"
+          puts_line "Seth Client finished, #{@updated_resources}/#{total_resources} resources updated in #{elapsed_time} seconds"
         end
       end
 
       def run_failed(exception)
         @end_time = Time.now
-        if Chef::Config[:why_run]
-          puts_line "Chef Client failed. #{@updated_resources} resources would have been updated"
+        if Seth::Config[:why_run]
+          puts_line "Seth Client failed. #{@updated_resources} resources would have been updated"
         else
-          puts_line "Chef Client failed. #{@updated_resources} resources updated in #{elapsed_time} seconds"
+          puts_line "Seth Client failed. #{@updated_resources} resources updated in #{elapsed_time} seconds"
         end
       end
 
@@ -211,7 +211,7 @@ class Chef
       # times per resource, e.g., a file may have its content updated, and then
       # its permissions updated.
       def resource_update_applied(resource, action, update)
-        prefix = Chef::Config[:why_run] ? "Would " : ""
+        prefix = Seth::Config[:why_run] ? "Would " : ""
         Array(update).each do |line|
           next if line.nil?
           output_record line
@@ -274,7 +274,7 @@ class Chef
       # Called when an assertion declared by a provider fails
       def provider_requirement_failed(action, resource, exception, message)
         return unless message
-        color = Chef::Config[:why_run] ? :yellow : :red
+        color = Seth::Config[:why_run] ? :yellow : :red
         [ message ].flatten.each do |line|
           start_line("* #{line}", color)
         end

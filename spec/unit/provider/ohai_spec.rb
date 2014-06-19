@@ -18,16 +18,16 @@
 
 require 'spec_helper'
 
-require 'chef/run_context'
+require 'seth/run_context'
 
-describe Chef::Provider::Ohai do
+describe Seth::Provider::Ohai do
   before(:each) do
     # Copied from client_spec
     @fqdn = "hostname.domainname"
     @hostname = "hostname"
     @platform = "example-platform"
     @platform_version = "example-platform"
-    Chef::Config[:node_name] = @fqdn
+    Seth::Config[:node_name] = @fqdn
     mock_ohai = {
       :fqdn => @fqdn,
       :hostname => @hostname,
@@ -45,20 +45,20 @@ describe Chef::Provider::Ohai do
     mock_ohai.stub(:data).and_return(mock_ohai[:data],
                                       mock_ohai[:data2])
     Ohai::System.stub(:new).and_return(mock_ohai)
-    Chef::Platform.stub(:find_platform_and_version).and_return({ "platform" => @platform,
+    Seth::Platform.stub(:find_platform_and_version).and_return({ "platform" => @platform,
                                                                   "platform_version" => @platform_version})
     # Fake node with a dummy save
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.name(@fqdn)
     @node.stub(:save).and_return(@node)
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Ohai.new("ohai_reload")
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Ohai.new("ohai_reload")
     ohai = Ohai::System.new
     ohai.all_plugins
     @node.consume_external_attrs(ohai.data,{})
 
-    @provider = Chef::Provider::Ohai.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Ohai.new(@new_resource, @run_context)
   end
 
   describe "when reloading ohai" do

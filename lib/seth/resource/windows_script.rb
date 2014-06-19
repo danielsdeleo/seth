@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/resource/script'
-require 'chef/mixin/windows_architecture_helper'
+require 'seth/resource/script'
+require 'seth/mixin/windows_architecture_helper'
 
-class Chef
+class Seth
   class Resource
-    class WindowsScript < Chef::Resource::Script
+    class WindowsScript < Seth::Resource::Script
 
       protected
 
@@ -31,7 +31,7 @@ class Chef
         @resource_name = resource_name
       end
 
-      include Chef::Mixin::WindowsArchitectureHelper
+      include Seth::Mixin::WindowsArchitectureHelper
 
       public
 
@@ -48,7 +48,7 @@ class Chef
 
       def assert_architecture_compatible!(desired_architecture)
         if ! node_supports_windows_architecture?(node, desired_architecture)
-          raise Chef::Exceptions::Win32ArchitectureIncorrect,
+          raise Seth::Exceptions::Win32ArchitectureIncorrect,
           "cannot execute script with requested architecture '#{desired_architecture.to_s}' on a system with architecture '#{node_windows_architecture(node)}'"
         end
       end

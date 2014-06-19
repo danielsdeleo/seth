@@ -1,8 +1,8 @@
-require 'chef/chef_fs/file_system/base_fs_object'
-require 'chef/chef_fs/file_system/nonexistent_fs_object'
+require 'seth/chef_fs/file_system/base_fs_object'
+require 'seth/chef_fs/file_system/nonexistent_fs_object'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class MultiplexedDir < BaseFSDir
         def initialize(*multiplexed_dirs)
@@ -24,7 +24,7 @@ class Chef
             multiplexed_dirs.each do |dir|
               dir.children.each do |child|
                 if seen[child.name]
-                  Chef::Log.warn("Child with name '#{child.name}' found in multiple directories: #{seen[child.name].path_for_printing} and #{child.path_for_printing}")
+                  Seth::Log.warn("Child with name '#{child.name}' found in multiple directories: #{seen[child.name].path_for_printing} and #{child.path_for_printing}")
                 else
                   result << child
                   seen[child.name] = child

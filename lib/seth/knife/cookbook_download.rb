@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class CookbookDownload < Knife
 
@@ -27,7 +27,7 @@ class Chef
       attr_accessor :cookbook_name
 
       deps do
-        require 'chef/cookbook_version'
+        require 'seth/cookbook_version'
       end
 
       banner "knife cookbook download COOKBOOK [VERSION] (options)"
@@ -75,7 +75,7 @@ class Chef
         basedir = File.join(config[:download_directory], "#{@cookbook_name}-#{cookbook.version}")
         if File.exists?(basedir)
           if config[:force]
-            Chef::Log.debug("Deleting #{basedir}")
+            Seth::Log.debug("Deleting #{basedir}")
             FileUtils.rm_rf(basedir)
           else
             ui.fatal("Directory #{basedir} exists, use --force to overwrite")
@@ -83,12 +83,12 @@ class Chef
           end
         end
 
-        Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
+        Seth::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
           next unless manifest.has_key?(segment)
           ui.info("Downloading #{segment}")
           manifest[segment].each do |segment_file|
             dest = File.join(basedir, segment_file['path'].gsub('/', File::SEPARATOR))
-            Chef::Log.debug("Downloading #{segment_file['path']} to #{dest}")
+            Seth::Log.debug("Downloading #{segment_file['path']} to #{dest}")
             FileUtils.mkdir_p(File.dirname(dest))
             rest.sign_on_redirect = false
             tempfile = rest.get_rest(segment_file['url'], true)
@@ -113,9 +113,9 @@ class Chef
 
       def available_versions
         @available_versions ||= begin
-          versions = Chef::CookbookVersion.available_versions(@cookbook_name)
+          versions = Seth::CookbookVersion.available_versions(@cookbook_name)
           unless versions.nil?
-            versions.map! { |version| Chef::Version.new(version) }
+            versions.map! { |version| Seth::Version.new(version) }
             versions.sort!
           end
           versions

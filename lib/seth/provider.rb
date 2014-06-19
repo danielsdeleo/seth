@@ -17,16 +17,16 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/from_file'
-require 'chef/mixin/convert_to_class_name'
-require 'chef/dsl/recipe'
-require 'chef/mixin/enforce_ownership_and_permissions'
-require 'chef/mixin/why_run'
+require 'seth/mixin/from_file'
+require 'seth/mixin/convert_to_class_name'
+require 'seth/dsl/recipe'
+require 'seth/mixin/enforce_ownership_and_permissions'
+require 'seth/mixin/why_run'
 
-class Chef
+class Seth
   class Provider
-    include Chef::DSL::Recipe
-    include Chef::Mixin::WhyRun
+    include Seth::DSL::Recipe
+    include Seth::Mixin::WhyRun
 
     attr_accessor :new_resource
     attr_accessor :current_resource
@@ -39,7 +39,7 @@ class Chef
     # TODO: this should be a reader, and the action should be passed in the
     # constructor; however, many/most subclasses override the constructor so
     # changing the arity would be a breaking change. Change this at the next
-    # break, e.g., Chef 11.
+    # break, e.g., Seth 11.
     attr_accessor :action
 
     def initialize(new_resource, run_context)
@@ -54,7 +54,7 @@ class Chef
     end
 
     def whyrun_mode?
-      Chef::Config[:why_run]
+      Seth::Config[:why_run]
     end
 
     def whyrun_supported?
@@ -75,7 +75,7 @@ class Chef
     end
 
     def load_current_resource
-      raise Chef::Exceptions::Override, "You must override load_current_resource in #{self.to_s}"
+      raise Seth::Exceptions::Override, "You must override load_current_resource in #{self.to_s}"
     end
 
     def define_resource_requirements
@@ -85,7 +85,7 @@ class Chef
     end
 
     def action_nothing
-      Chef::Log.debug("Doing nothing for #{@new_resource.to_s}")
+      Seth::Log.debug("Doing nothing for #{@new_resource.to_s}")
       true
     end
 
@@ -164,8 +164,8 @@ class Chef
 
     def recipe_eval(&block)
       # This block has new resource definitions within it, which
-      # essentially makes it an in-line Chef run. Save our current
-      # run_context and create one anew, so the new Chef run only
+      # essentially makes it an in-line Seth run. Save our current
+      # run_context and create one anew, so the new Seth run only
       # executes the embedded resources.
       #
       # TODO: timh,cw: 2010-5-14: This means that the resources within
@@ -175,9 +175,9 @@ class Chef
       converge_by ("evaluate block and run any associated actions") do
         saved_run_context = @run_context
         @run_context = @run_context.dup
-        @run_context.resource_collection = Chef::ResourceCollection.new
+        @run_context.resource_collection = Seth::ResourceCollection.new
         instance_eval(&block)
-        Chef::Runner.new(@run_context).converge
+        Seth::Runner.new(@run_context).converge
         @run_context = saved_run_context
       end
     end

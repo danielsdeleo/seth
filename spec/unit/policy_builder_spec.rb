@@ -1,6 +1,6 @@
 #
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright 2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,9 @@
 #
 
 require 'spec_helper'
-require 'chef/policy_builder'
+require 'seth/policy_builder'
 
-describe Chef::PolicyBuilder do
+describe Seth::PolicyBuilder do
 
   # TODO: test the strategy method
 

@@ -19,13 +19,13 @@
 require 'tempfile'
 require 'erubis'
 
-class Chef
+class Seth
   module Deprecation
     module Mixin
       # == Deprecation::Provider::Mixin::Template
       # This module contains the deprecated functions of
-      # Chef::Mixin::Template. These functions are refactored to different
-      # components. They are frozen and will be removed in Chef 12.
+      # Seth::Mixin::Template. These functions are refactored to different
+      # components. They are frozen and will be removed in Seth 12.
       #
 
       module Template
@@ -36,7 +36,7 @@ class Chef
           rescue Object => e
             raise TemplateError.new(e, template, context)
           end
-          Tempfile.open("chef-rendered-template") do |tempfile|
+          Tempfile.open("seth-rendered-template") do |tempfile|
             tempfile.print(output)
             tempfile.close
             yield tempfile

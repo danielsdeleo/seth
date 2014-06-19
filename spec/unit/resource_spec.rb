@@ -21,55 +21,55 @@
 
 require 'spec_helper'
 
-class ResourceTestHarness < Chef::Resource
-  provider_base Chef::Provider::Package
+class ResourceTestHarness < Seth::Resource
+  provider_base Seth::Provider::Package
 end
 
-describe Chef::Resource do
+describe Seth::Resource do
   before(:each) do
     @cookbook_repo_path =  File.join(CHEF_SPEC_DATA, 'cookbooks')
-    @cookbook_collection = Chef::CookbookCollection.new(Chef::CookbookLoader.new(@cookbook_repo_path))
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
-    @resource = Chef::Resource.new("funk", @run_context)
+    @cookbook_collection = Seth::CookbookCollection.new(Chef::CookbookLoader.new(@cookbook_repo_path))
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
+    @resource = Seth::Resource.new("funk", @run_context)
   end
 
   describe "when inherited" do
 
     it "adds an entry to a list of subclasses" do
-      subclass = Class.new(Chef::Resource)
-      Chef::Resource.resource_classes.should include(subclass)
+      subclass = Class.new(Seth::Resource)
+      Seth::Resource.resource_classes.should include(subclass)
     end
 
     it "keeps track of subclasses of subclasses" do
-      subclass = Class.new(Chef::Resource)
+      subclass = Class.new(Seth::Resource)
       subclass_of_subclass = Class.new(subclass)
-      Chef::Resource.resource_classes.should include(subclass_of_subclass)
+      Seth::Resource.resource_classes.should include(subclass_of_subclass)
     end
 
   end
 
   describe "when declaring the identity attribute" do
     it "has no identity attribute by default" do
-      Chef::Resource.identity_attr.should be_nil
+      Seth::Resource.identity_attr.should be_nil
     end
 
     it "sets an identity attribute" do
-      resource_class = Class.new(Chef::Resource)
+      resource_class = Class.new(Seth::Resource)
       resource_class.identity_attr(:path)
       resource_class.identity_attr.should == :path
     end
 
     it "inherits an identity attribute from a superclass" do
-      resource_class = Class.new(Chef::Resource)
+      resource_class = Class.new(Seth::Resource)
       resource_subclass = Class.new(resource_class)
       resource_class.identity_attr(:package_name)
       resource_subclass.identity_attr.should == :package_name
     end
 
     it "overrides the identity attribute from a superclass when the identity attr is set" do
-      resource_class = Class.new(Chef::Resource)
+      resource_class = Class.new(Seth::Resource)
       resource_subclass = Class.new(resource_class)
       resource_class.identity_attr(:package_name)
       resource_subclass.identity_attr(:something_else)
@@ -79,7 +79,7 @@ describe Chef::Resource do
 
   describe "when no identity attribute has been declared" do
     before do
-      @resource_sans_id = Chef::Resource.new("my-name")
+      @resource_sans_id = Seth::Resource.new("my-name")
     end
 
     # Would rather force identity attributes to be set for everything,
@@ -91,7 +91,7 @@ describe Chef::Resource do
 
   describe "when an identity attribute has been declared" do
     before do
-      @file_resource_class = Class.new(Chef::Resource) do
+      @file_resource_class = Class.new(Seth::Resource) do
         identity_attr :path
         attr_accessor :path
       end
@@ -107,24 +107,24 @@ describe Chef::Resource do
 
   describe "when declaring state attributes" do
     it "has no state_attrs by default" do
-      Chef::Resource.state_attrs.should be_empty
+      Seth::Resource.state_attrs.should be_empty
     end
 
     it "sets a list of state attributes" do
-      resource_class = Class.new(Chef::Resource)
+      resource_class = Class.new(Seth::Resource)
       resource_class.state_attrs(:checksum, :owner, :group, :mode)
       resource_class.state_attrs.should =~ [:checksum, :owner, :group, :mode]
     end
 
     it "inherits state attributes from the superclass" do
-      resource_class = Class.new(Chef::Resource)
+      resource_class = Class.new(Seth::Resource)
       resource_subclass = Class.new(resource_class)
       resource_class.state_attrs(:checksum, :owner, :group, :mode)
       resource_subclass.state_attrs.should =~ [:checksum, :owner, :group, :mode]
     end
 
     it "combines inherited state attributes with non-inherited state attributes" do
-      resource_class = Class.new(Chef::Resource)
+      resource_class = Class.new(Seth::Resource)
       resource_subclass = Class.new(resource_class)
       resource_class.state_attrs(:checksum, :owner)
       resource_subclass.state_attrs(:group, :mode)
@@ -135,7 +135,7 @@ describe Chef::Resource do
 
   describe "when a set of state attributes has been declared" do
     before do
-      @file_resource_class = Class.new(Chef::Resource) do
+      @file_resource_class = Class.new(Seth::Resource) do
 
         state_attrs :checksum, :owner, :group, :mode
 
@@ -164,7 +164,7 @@ describe Chef::Resource do
 
   describe "load_prior_resource" do
     before(:each) do
-      @prior_resource = Chef::Resource.new("funk")
+      @prior_resource = Seth::Resource.new("funk")
       @prior_resource.supports(:funky => true)
       @prior_resource.source_line
       @prior_resource.allowed_actions << :funkytown
@@ -213,75 +213,75 @@ describe Chef::Resource do
 
   describe "notifies" do
     it "should make notified resources appear in the actions hash" do
-      @run_context.resource_collection << Chef::Resource::ZenMaster.new("coffee")
+      @run_context.resource_collection << Seth::Resource::ZenMaster.new("coffee")
       @resource.notifies :reload, @run_context.resource_collection.find(:zen_master => "coffee")
       @resource.delayed_notifications.detect{|e| e.resource.name == "coffee" && e.action == :reload}.should_not be_nil
     end
 
     it "should make notified resources be capable of acting immediately" do
-      @run_context.resource_collection << Chef::Resource::ZenMaster.new("coffee")
+      @run_context.resource_collection << Seth::Resource::ZenMaster.new("coffee")
       @resource.notifies :reload, @run_context.resource_collection.find(:zen_master => "coffee"), :immediate
       @resource.immediate_notifications.detect{|e| e.resource.name == "coffee" && e.action == :reload}.should_not be_nil
     end
 
     it "should raise an exception if told to act in other than :delay or :immediate(ly)" do
-      @run_context.resource_collection << Chef::Resource::ZenMaster.new("coffee")
+      @run_context.resource_collection << Seth::Resource::ZenMaster.new("coffee")
       lambda {
         @resource.notifies :reload, @run_context.resource_collection.find(:zen_master => "coffee"), :someday
       }.should raise_error(ArgumentError)
     end
 
     it "should allow multiple notified resources appear in the actions hash" do
-      @run_context.resource_collection << Chef::Resource::ZenMaster.new("coffee")
+      @run_context.resource_collection << Seth::Resource::ZenMaster.new("coffee")
       @resource.notifies :reload, @run_context.resource_collection.find(:zen_master => "coffee")
       @resource.delayed_notifications.detect{|e| e.resource.name == "coffee" && e.action == :reload}.should_not be_nil
 
-      @run_context.resource_collection << Chef::Resource::ZenMaster.new("beans")
+      @run_context.resource_collection << Seth::Resource::ZenMaster.new("beans")
       @resource.notifies :reload, @run_context.resource_collection.find(:zen_master => "beans")
       @resource.delayed_notifications.detect{|e| e.resource.name == "beans" && e.action == :reload}.should_not be_nil
     end
 
     it "creates a notification for a resource that is not yet in the resource collection" do
       @resource.notifies(:restart, :service => 'apache')
-      expected_notification = Chef::Resource::Notification.new({:service => "apache"}, :restart, @resource)
+      expected_notification = Seth::Resource::Notification.new({:service => "apache"}, :restart, @resource)
       @resource.delayed_notifications.should include(expected_notification)
     end
 
     it "notifies another resource immediately" do
       @resource.notifies_immediately(:restart, :service => 'apache')
-      expected_notification = Chef::Resource::Notification.new({:service => "apache"}, :restart, @resource)
+      expected_notification = Seth::Resource::Notification.new({:service => "apache"}, :restart, @resource)
       @resource.immediate_notifications.should include(expected_notification)
     end
 
-    it "notifies a resource to take action at the end of the chef run" do
+    it "notifies a resource to take action at the end of the seth run" do
       @resource.notifies_delayed(:restart, :service => "apache")
-      expected_notification = Chef::Resource::Notification.new({:service => "apache"}, :restart, @resource)
+      expected_notification = Seth::Resource::Notification.new({:service => "apache"}, :restart, @resource)
       @resource.delayed_notifications.should include(expected_notification)
     end
   end
 
   describe "subscribes" do
     it "should make resources appear in the actions hash of subscribed nodes" do
-      @run_context.resource_collection << Chef::Resource::ZenMaster.new("coffee")
+      @run_context.resource_collection << Seth::Resource::ZenMaster.new("coffee")
       zr = @run_context.resource_collection.find(:zen_master => "coffee")
       @resource.subscribes :reload, zr
       zr.delayed_notifications.detect{|e| e.resource.name == "funk" && e.action == :reload}.should_not be_nil
     end
 
     it "should make resources appear in the actions hash of subscribed nodes" do
-      @run_context.resource_collection << Chef::Resource::ZenMaster.new("coffee")
+      @run_context.resource_collection << Seth::Resource::ZenMaster.new("coffee")
       zr = @run_context.resource_collection.find(:zen_master => "coffee")
       @resource.subscribes :reload, zr
       zr.delayed_notifications.detect{|e| e.resource.name == @resource.name && e.action == :reload}.should_not be_nil
 
-      @run_context.resource_collection << Chef::Resource::ZenMaster.new("bean")
+      @run_context.resource_collection << Seth::Resource::ZenMaster.new("bean")
       zrb = @run_context.resource_collection.find(:zen_master => "bean")
       zrb.subscribes :reload, zr
       zr.delayed_notifications.detect{|e| e.resource.name == @resource.name && e.action == :reload}.should_not be_nil
     end
 
     it "should make subscribed resources be capable of acting immediately" do
-      @run_context.resource_collection << Chef::Resource::ZenMaster.new("coffee")
+      @run_context.resource_collection << Seth::Resource::ZenMaster.new("coffee")
       zr = @run_context.resource_collection.find(:zen_master => "coffee")
       @resource.subscribes :reload, zr, :immediately
       zr.immediate_notifications.detect{|e| e.resource.name == @resource.name && e.action == :reload}.should_not be_nil
@@ -313,14 +313,14 @@ describe Chef::Resource do
 
   describe "to_s" do
     it "should become a string like resource_name[name]" do
-      zm = Chef::Resource::ZenMaster.new("coffee")
+      zm = Seth::Resource::ZenMaster.new("coffee")
       zm.to_s.should eql("zen_master[coffee]")
     end
   end
 
   describe "is" do
     it "should return the arguments passed with 'is'" do
-      zm = Chef::Resource::ZenMaster.new("coffee")
+      zm = Seth::Resource::ZenMaster.new("coffee")
       zm.is("one", "two", "three").should == %w|one two three|
     end
 
@@ -355,8 +355,8 @@ describe Chef::Resource do
   describe "self.json_create" do
     it "should deserialize itself from json" do
       json = @resource.to_json
-      serialized_node = Chef::JSONCompat.from_json(json)
-      serialized_node.should be_a_kind_of(Chef::Resource)
+      serialized_node = Seth::JSONCompat.from_json(json)
+      serialized_node.should be_a_kind_of(Seth::Resource)
       serialized_node.name.should eql(@resource.name)
     end
   end
@@ -411,12 +411,12 @@ describe Chef::Resource do
 
   describe "setting the base provider class for the resource" do
 
-    it "defaults to Chef::Provider for the base class" do
-      Chef::Resource.provider_base.should == Chef::Provider
+    it "defaults to Seth::Provider for the base class" do
+      Seth::Resource.provider_base.should == Chef::Provider
     end
 
     it "allows the base provider to be overriden by a " do
-      ResourceTestHarness.provider_base.should == Chef::Provider::Package
+      ResourceTestHarness.provider_base.should == Seth::Provider::Package
     end
 
   end
@@ -461,8 +461,8 @@ describe Chef::Resource do
 
   describe "when invoking its action" do
     before do
-      @resource = Chef::Resource.new("provided", @run_context)
-      @resource.provider = Chef::Provider::SnakeOil
+      @resource = Seth::Resource.new("provided", @run_context)
+      @resource.provider = Seth::Provider::SnakeOil
       @node.automatic_attrs[:platform] = "fubuntu"
       @node.automatic_attrs[:platform_version] = '10.04'
     end
@@ -476,7 +476,7 @@ describe Chef::Resource do
       snitch_variable = nil
       @resource.only_if { snitch_variable = true }
       @resource.only_if.first.positivity.should == :only_if
-      #Chef::Mixin::Command.should_receive(:only_if).with(true, {}).and_return(false)
+      #Seth::Mixin::Command.should_receive(:only_if).with(true, {}).and_return(false)
       @resource.run_action(:purr)
       snitch_variable.should be_true
     end
@@ -491,20 +491,20 @@ describe Chef::Resource do
     end
 
     it "accepts command options for only_if conditionals" do
-      Chef::Resource::Conditional.any_instance.should_receive(:evaluate_command).at_least(1).times
+      Seth::Resource::Conditional.any_instance.should_receive(:evaluate_command).at_least(1).times
       @resource.only_if("true", :cwd => '/tmp')
       @resource.only_if.first.command_opts.should == {:cwd => '/tmp'}
       @resource.run_action(:purr)
     end
 
     it "runs not_if as a command when it is a string" do
-      Chef::Resource::Conditional.any_instance.should_receive(:evaluate_command).at_least(1).times
+      Seth::Resource::Conditional.any_instance.should_receive(:evaluate_command).at_least(1).times
       @resource.not_if "pwd"
       @resource.run_action(:purr)
     end
 
     it "runs not_if as a block when it is a ruby block" do
-      Chef::Resource::Conditional.any_instance.should_receive(:evaluate_block).at_least(1).times
+      Seth::Resource::Conditional.any_instance.should_receive(:evaluate_block).at_least(1).times
       @resource.not_if { puts 'foo' }
       @resource.run_action(:purr)
     end
@@ -539,12 +539,12 @@ describe Chef::Resource do
         resource.guard_interpreter.should == :default
       end
 
-      it "should raise Chef::Exceptions::ValidationFailed on an attempt to set the guard_interpreter attribute to something other than a Symbol" do
-        expect { resource.guard_interpreter('command_dot_com') }.to raise_error(Chef::Exceptions::ValidationFailed)
+      it "should raise Seth::Exceptions::ValidationFailed on an attempt to set the guard_interpreter attribute to something other than a Symbol" do
+        expect { resource.guard_interpreter('command_dot_com') }.to raise_error(Seth::Exceptions::ValidationFailed)
       end
 
       it "should not raise an exception when setting the guard interpreter attribute to a Symbol" do
-        Chef::GuardInterpreter::ResourceGuardInterpreter.stub(:new).and_return(nil)
+        Seth::GuardInterpreter::ResourceGuardInterpreter.stub(:new).and_return(nil)
         expect { resource.guard_interpreter(:command_dot_com) }.not_to raise_error
       end
     end
@@ -553,7 +553,7 @@ describe Chef::Resource do
 
   describe "should_skip?" do
     before do
-      @resource = Chef::Resource::Cat.new("sugar", @run_context)
+      @resource = Seth::Resource::Cat.new("sugar", @run_context)
     end
 
     it "should return false by default" do
@@ -611,7 +611,7 @@ describe Chef::Resource do
     end
 
     it "should print \"skipped due to action :nothing\" message for doc formatter when action is :nothing" do
-      fdoc = Chef::Formatters.new(:doc, STDOUT, STDERR)
+      fdoc = Seth::Formatters.new(:doc, STDOUT, STDERR)
       @run_context.stub(:events).and_return(fdoc)
       fdoc.should_receive(:puts).with(" (skipped due to action :nothing)", anything())
       @resource.should_skip?(:nothing)
@@ -621,7 +621,7 @@ describe Chef::Resource do
 
   describe "when resource action is :nothing" do
     before do
-      @resource1 = Chef::Resource::Cat.new("sugar", @run_context)
+      @resource1 = Seth::Resource::Cat.new("sugar", @run_context)
       @resource1.action = :nothing
 
       @node.automatic_attrs[:platform] = "fubuntu"
@@ -638,15 +638,15 @@ describe Chef::Resource do
 
     it "should run only_if/not_if conditionals when notified to run another action (CHEF-972)" do
       snitch_var1 = snitch_var2 = 0
-      @runner = Chef::Runner.new(@run_context)
-      Chef::Platform.set(
+      @runner = Seth::Runner.new(@run_context)
+      Seth::Platform.set(
         :resource => :cat,
-        :provider => Chef::Provider::SnakeOil
+        :provider => Seth::Provider::SnakeOil
       )
 
       @resource1.only_if { snitch_var1 = 1 }
       @resource1.not_if { snitch_var2 = 2 }
-      @resource2 = Chef::Resource::Cat.new("coffee", @run_context)
+      @resource2 = Seth::Resource::Cat.new("coffee", @run_context)
       @resource2.notifies :purr, @resource1
       @resource2.action = :purr
 
@@ -662,22 +662,22 @@ describe Chef::Resource do
   describe "building the platform map" do
 
     it 'adds mappings for a single platform' do
-      klz = Class.new(Chef::Resource)
-      Chef::Resource.platform_map.should_receive(:set).with(
+      klz = Class.new(Seth::Resource)
+      Seth::Resource.platform_map.should_receive(:set).with(
         :platform => :autobots, :short_name => :dinobot, :resource => klz
       )
       klz.provides :dinobot, :on_platforms => ['autobots']
     end
 
     it 'adds mappings for multiple platforms' do
-      klz = Class.new(Chef::Resource)
-      Chef::Resource.platform_map.should_receive(:set).twice
+      klz = Class.new(Seth::Resource)
+      Seth::Resource.platform_map.should_receive(:set).twice
       klz.provides :energy, :on_platforms => ['autobots','decepticons']
     end
 
     it 'adds mappings for all platforms' do
-      klz = Class.new(Chef::Resource)
-      Chef::Resource.platform_map.should_receive(:set).with(
+      klz = Class.new(Seth::Resource)
+      Seth::Resource.platform_map.should_receive(:set).with(
         :short_name => :tape_deck, :resource => klz
       )
       klz.provides :tape_deck
@@ -688,12 +688,12 @@ describe Chef::Resource do
   describe "lookups from the platform map" do
 
     before(:each) do
-      @node = Chef::Node.new
+      @node = Seth::Node.new
       @node.name("bumblebee")
       @node.automatic[:platform] = "autobots"
       @node.automatic[:platform_version] = "6.1"
-      Object.const_set('Soundwave', Class.new(Chef::Resource))
-      Object.const_set('Grimlock', Class.new(Chef::Resource){ provides :dinobot, :on_platforms => ['autobots'] })
+      Object.const_set('Soundwave', Class.new(Seth::Resource))
+      Object.const_set('Grimlock', Class.new(Seth::Resource){ provides :dinobot, :on_platforms => ['autobots'] })
     end
 
     after(:each) do
@@ -703,19 +703,19 @@ describe Chef::Resource do
 
     describe "resource_for_platform" do
       it 'return a resource by short_name and platform' do
-        Chef::Resource.resource_for_platform(:dinobot,'autobots','6.1').should eql(Grimlock)
+        Seth::Resource.resource_for_platform(:dinobot,'autobots','6.1').should eql(Grimlock)
       end
       it "returns a resource by short_name if nothing else matches" do
-        Chef::Resource.resource_for_node(:soundwave, @node).should eql(Soundwave)
+        Seth::Resource.resource_for_node(:soundwave, @node).should eql(Soundwave)
       end
     end
 
     describe "resource_for_node" do
       it "returns a resource by short_name and node" do
-        Chef::Resource.resource_for_node(:dinobot, @node).should eql(Grimlock)
+        Seth::Resource.resource_for_node(:dinobot, @node).should eql(Grimlock)
       end
       it "returns a resource by short_name if nothing else matches" do
-        Chef::Resource.resource_for_node(:soundwave, @node).should eql(Soundwave)
+        Seth::Resource.resource_for_node(:soundwave, @node).should eql(Soundwave)
       end
     end
 
@@ -750,14 +750,14 @@ describe Chef::Resource do
         it "raises an exception immmediately" do
           lambda do
             @resource.notifies(:run, "typo[missing-closing-bracket")
-          end.should raise_error(Chef::Exceptions::InvalidResourceSpecification)
+          end.should raise_error(Seth::Exceptions::InvalidResourceSpecification)
         end
       end
     end
 
     describe "with a resource reference" do
       before do
-        @notified_resource = Chef::Resource.new("punk", @run_context)
+        @notified_resource = Seth::Resource.new("punk", @run_context)
       end
 
       it "creates a delayed notification when timing is not specified" do
@@ -786,15 +786,15 @@ describe Chef::Resource do
   describe "resource sensitive attribute" do
 
     before(:each) do
-       @resource_file = Chef::Resource::File.new("/nonexistent/CHEF-5098/file", @run_context)
+       @resource_file = Seth::Resource::File.new("/nonexistent/CHEF-5098/file", @run_context)
        @action = :create
     end 
 
     def compiled_resource_data(resource, action, err)
-      error_inspector = Chef::Formatters::ErrorInspectors::ResourceFailureInspector.new(resource, action, err)
-      description = Chef::Formatters::ErrorDescription.new("test")
+      error_inspector = Seth::Formatters::ErrorInspectors::ResourceFailureInspector.new(resource, action, err)
+      description = Seth::Formatters::ErrorDescription.new("test")
       error_inspector.add_explanation(description)
-      Chef::Log.info("descrtiption: #{description.inspect},error_inspector: #{error_inspector}")
+      Seth::Log.info("descrtiption: #{description.inspect},error_inspector: #{error_inspector}")
       description.sections[1]["Compiled Resource:"]
     end
 
@@ -818,9 +818,9 @@ describe Chef::Resource do
   end
 end
 
-describe Chef::Resource::Notification do
+describe Seth::Resource::Notification do
   before do
-    @notification = Chef::Resource::Notification.new(:service_apache, :restart, :template_httpd_conf)
+    @notification = Seth::Resource::Notification.new(:service_apache, :restart, :template_httpd_conf)
   end
 
   it "has a resource to be notified" do
@@ -836,17 +836,17 @@ describe Chef::Resource::Notification do
   end
 
   it "is a duplicate of another notification with the same target resource and action" do
-    other = Chef::Resource::Notification.new(:service_apache, :restart, :sync_web_app_code)
+    other = Seth::Resource::Notification.new(:service_apache, :restart, :sync_web_app_code)
     @notification.duplicates?(other).should be_true
   end
 
   it "is not a duplicate of another notification if the actions differ" do
-    other = Chef::Resource::Notification.new(:service_apache, :enable, :install_apache)
+    other = Seth::Resource::Notification.new(:service_apache, :enable, :install_apache)
     @notification.duplicates?(other).should be_false
   end
 
   it "is not a duplicate of another notification if the target resources differ" do
-    other = Chef::Resource::Notification.new(:service_sshd, :restart, :template_httpd_conf)
+    other = Seth::Resource::Notification.new(:service_sshd, :restart, :template_httpd_conf)
     @notification.duplicates?(other).should be_false
   end
 
@@ -855,11 +855,11 @@ describe Chef::Resource::Notification do
   end
 
   it "takes no action to resolve a resource reference that doesn't need to be resolved" do
-    @keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
+    @keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
     @notification.resource = @keyboard_cat
-    @long_cat = Chef::Resource::Cat.new("long_cat")
+    @long_cat = Seth::Resource::Cat.new("long_cat")
     @notification.notifying_resource = @long_cat
-    @resource_collection = Chef::ResourceCollection.new
+    @resource_collection = Seth::ResourceCollection.new
     # would raise an error since the resource is not in the collection
     @notification.resolve_resource_reference(@resource_collection)
     @notification.resource.should == @keyboard_cat
@@ -867,21 +867,21 @@ describe Chef::Resource::Notification do
 
   it "resolves a lazy reference to a resource" do
     @notification.resource = {:cat => "keyboard_cat"}
-    @keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
-    @resource_collection = Chef::ResourceCollection.new
+    @keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
+    @resource_collection = Seth::ResourceCollection.new
     @resource_collection << @keyboard_cat
-    @long_cat = Chef::Resource::Cat.new("long_cat")
+    @long_cat = Seth::Resource::Cat.new("long_cat")
     @notification.notifying_resource = @long_cat
     @notification.resolve_resource_reference(@resource_collection)
     @notification.resource.should == @keyboard_cat
   end
 
   it "resolves a lazy reference to its notifying resource" do
-    @keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
+    @keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
     @notification.resource = @keyboard_cat
     @notification.notifying_resource = {:cat => "long_cat"}
-    @long_cat = Chef::Resource::Cat.new("long_cat")
-    @resource_collection = Chef::ResourceCollection.new
+    @long_cat = Seth::Resource::Cat.new("long_cat")
+    @resource_collection = Seth::ResourceCollection.new
     @resource_collection << @long_cat
     @notification.resolve_resource_reference(@resource_collection)
     @notification.notifying_resource.should == @long_cat
@@ -889,11 +889,11 @@ describe Chef::Resource::Notification do
 
   it "resolves lazy references to both its resource and its notifying resource" do
     @notification.resource = {:cat => "keyboard_cat"}
-    @keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
-    @resource_collection = Chef::ResourceCollection.new
+    @keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
+    @resource_collection = Seth::ResourceCollection.new
     @resource_collection << @keyboard_cat
     @notification.notifying_resource = {:cat => "long_cat"}
-    @long_cat = Chef::Resource::Cat.new("long_cat")
+    @long_cat = Seth::Resource::Cat.new("long_cat")
     @resource_collection << @long_cat
     @notification.resolve_resource_reference(@resource_collection)
     @notification.resource.should == @keyboard_cat
@@ -902,64 +902,64 @@ describe Chef::Resource::Notification do
 
   it "raises a RuntimeError if you try to reference multiple resources" do
     @notification.resource = {:cat => ["keyboard_cat", "cheez_cat"]}
-    @keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
-    @cheez_cat = Chef::Resource::Cat.new("cheez_cat")
-    @resource_collection = Chef::ResourceCollection.new
+    @keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
+    @cheez_cat = Seth::Resource::Cat.new("cheez_cat")
+    @resource_collection = Seth::ResourceCollection.new
     @resource_collection << @keyboard_cat
     @resource_collection << @cheez_cat
-    @long_cat = Chef::Resource::Cat.new("long_cat")
+    @long_cat = Seth::Resource::Cat.new("long_cat")
     @notification.notifying_resource = @long_cat
     lambda {@notification.resolve_resource_reference(@resource_collection)}.should raise_error(RuntimeError)
   end
 
   it "raises a RuntimeError if you try to reference multiple notifying resources" do
     @notification.notifying_resource = {:cat => ["long_cat", "cheez_cat"]}
-    @long_cat = Chef::Resource::Cat.new("long_cat")
-    @cheez_cat = Chef::Resource::Cat.new("cheez_cat")
-    @resource_collection = Chef::ResourceCollection.new
+    @long_cat = Seth::Resource::Cat.new("long_cat")
+    @cheez_cat = Seth::Resource::Cat.new("cheez_cat")
+    @resource_collection = Seth::ResourceCollection.new
     @resource_collection << @long_cat
     @resource_collection << @cheez_cat
-    @keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
+    @keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
     @notification.resource = @keyboard_cat
     lambda {@notification.resolve_resource_reference(@resource_collection)}.should raise_error(RuntimeError)
   end
 
   it "raises a RuntimeError if it can't find a resource in the resource collection when resolving a lazy reference" do
     @notification.resource = {:cat => "keyboard_cat"}
-    @cheez_cat = Chef::Resource::Cat.new("cheez_cat")
-    @resource_collection = Chef::ResourceCollection.new
+    @cheez_cat = Seth::Resource::Cat.new("cheez_cat")
+    @resource_collection = Seth::ResourceCollection.new
     @resource_collection << @cheez_cat
-    @long_cat = Chef::Resource::Cat.new("long_cat")
+    @long_cat = Seth::Resource::Cat.new("long_cat")
     @notification.notifying_resource = @long_cat
     lambda {@notification.resolve_resource_reference(@resource_collection)}.should raise_error(RuntimeError)
   end
 
   it "raises a RuntimeError if it can't find a notifying resource in the resource collection when resolving a lazy reference" do
     @notification.notifying_resource = {:cat => "long_cat"}
-    @cheez_cat = Chef::Resource::Cat.new("cheez_cat")
-    @resource_collection = Chef::ResourceCollection.new
+    @cheez_cat = Seth::Resource::Cat.new("cheez_cat")
+    @resource_collection = Seth::ResourceCollection.new
     @resource_collection << @cheez_cat
-    @keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
+    @keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
     @notification.resource = @keyboard_cat
     lambda {@notification.resolve_resource_reference(@resource_collection)}.should raise_error(RuntimeError)
   end
 
   it "raises an ArgumentError if improper syntax is used in the lazy reference to its resource" do
     @notification.resource = "cat => keyboard_cat"
-    @keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
-    @resource_collection = Chef::ResourceCollection.new
+    @keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
+    @resource_collection = Seth::ResourceCollection.new
     @resource_collection << @keyboard_cat
-    @long_cat = Chef::Resource::Cat.new("long_cat")
+    @long_cat = Seth::Resource::Cat.new("long_cat")
     @notification.notifying_resource = @long_cat
     lambda {@notification.resolve_resource_reference(@resource_collection)}.should raise_error(ArgumentError)
   end
 
   it "raises an ArgumentError if improper syntax is used in the lazy reference to its notifying resource" do
     @notification.notifying_resource = "cat => long_cat"
-    @long_cat = Chef::Resource::Cat.new("long_cat")
-    @resource_collection = Chef::ResourceCollection.new
+    @long_cat = Seth::Resource::Cat.new("long_cat")
+    @resource_collection = Seth::ResourceCollection.new
     @resource_collection << @long_cat
-    @keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
+    @keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
     @notification.resource = @keyboard_cat
     lambda {@notification.resolve_resource_reference(@resource_collection)}.should raise_error(ArgumentError)
   end

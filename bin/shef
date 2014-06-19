@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# ./chef-shell - Run the Chef REPL (Shell)
+# ./seth-shell - Run the Seth REPL (Shell)
 #
 # Author:: Daniel DeLeo (<dan@kallistec.com>)
 # Copyright:: Copyright (c) 2009
@@ -29,7 +29,7 @@ require 'irb/ext/save-history'
 
 $:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "..", "lib")))
 
-require "chef/shell"
+require "seth/shell"
 
-Chef::Log.warn("DEPRECATED: The 'shef' program is renamed to 'chef-shell'")
+Seth::Log.warn("DEPRECATED: The 'shef' program is renamed to 'seth-shell'")
 Shell.start

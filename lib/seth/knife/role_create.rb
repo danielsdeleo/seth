@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class RoleCreate < Knife
 
       deps do
-        require 'chef/role'
-        require 'chef/json_compat'
+        require 'seth/role'
+        require 'seth/json_compat'
       end
 
       banner "knife role create ROLE (options)"
@@ -43,7 +43,7 @@ class Chef
           exit 1
         end
 
-        role = Chef::Role.new
+        role = Seth::Role.new
         role.name(@role_name)
         role.description(config[:description]) if config[:description]
         create_object(role)

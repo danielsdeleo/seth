@@ -18,20 +18,20 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
+require 'seth/resource'
 
-class Chef
+class Seth
   class Resource
 
-    # == Chef::Resource::LWRPBase
-    # Base class for LWRP resources. Adds DSL sugar on top of Chef::Resource,
+    # == Seth::Resource::LWRPBase
+    # Base class for LWRP resources. Adds DSL sugar on top of Seth::Resource,
     # so attributes, default action, etc. can be defined with pleasing syntax.
     class LWRPBase < Resource
 
       NULL_ARG = Object.new
 
-      extend Chef::Mixin::ConvertToClassName
-      extend Chef::Mixin::FromFile
+      extend Seth::Mixin::ConvertToClassName
+      extend Seth::Mixin::FromFile
 
       # Evaluates the LWRP resource file and instantiates a new Resource class.
       def self.build_from_file(cookbook_name, filename, run_context)
@@ -41,10 +41,10 @@ class Chef
         class_name = convert_to_class_name(rname)
         if Resource.strict_const_defined?(class_name)
           old_class = Resource.send(:remove_const, class_name)
-          # CHEF-3432 -- Chef::Resource keeps a list of subclasses; need to
+          # CHEF-3432 -- Seth::Resource keeps a list of subclasses; need to
           # remove old ones from the list when replacing.
           resource_classes.delete(old_class)
-          Chef::Log.info("#{class_name} lightweight resource already initialized -- overriding!")
+          Seth::Log.info("#{class_name} lightweight resource already initialized -- overriding!")
         end
 
         resource_class = Class.new(self)
@@ -53,8 +53,8 @@ class Chef
         resource_class.run_context = run_context
         resource_class.class_from_file(filename)
 
-        Chef::Resource.const_set(class_name, resource_class)
-        Chef::Log.debug("Loaded contents of #{filename} into a resource named #{rname} defined in Chef::Resource::#{class_name}")
+        Seth::Resource.const_set(class_name, resource_class)
+        Seth::Log.debug("Loaded contents of #{filename} into a resource named #{rname} defined in Chef::Resource::#{class_name}")
 
         resource_class
       end

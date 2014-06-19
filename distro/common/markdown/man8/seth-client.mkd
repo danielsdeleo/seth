@@ -1,12 +1,12 @@
-chef-client(8) -- Runs a client node connecting to a chef-server.
+seth-client(8) -- Runs a client node connecting to a chef-server.
 ========================================
 
 ## SYNOPSIS
 
-__chef-client__ _(options)_
+__seth-client__ _(options)_
 
   * `-S`, `--server CHEFSERVERURL`:
-    The chef server URL
+    The seth server URL
   * `-c`, `--config CONFIG`:
     The configuration file to use
   * `-d`, `--daemonize`:
@@ -14,11 +14,11 @@ __chef-client__ _(options)_
   * `-g`, `--group GROUP`:
     Group to set privilege to
   * `-i`, `--interval SECONDS`:
-    Run chef-client periodically, in seconds
+    Run seth-client periodically, in seconds
   * `-j`, `--json-attributes JSON_ATTRIBS`:
     Load attributes from a JSON file or URL
   * `-E`, `--environment ENVIRONMENT`:
-    Set the Chef Environment on the node
+    Set the Seth Environment on the node
   * `-l`, `--log_level LEVEL`:
     Set the log level (debug, info, warn, error, fatal)
   * `-L`, `--logfile LOGLOCATION`:
@@ -37,34 +37,34 @@ __chef-client__ _(options)_
   * `-u`, `--user USER`:
     User to set privilege to
   * `-P`, `--pid PIDFILE`:
-    Set the PID file location, defaults to /tmp/chef-client.pid
+    Set the PID file location, defaults to /tmp/seth-client.pid
   * `--once`:
-    Cancel any interval or splay options, run chef once and exit
+    Cancel any interval or splay options, run seth once and exit
   * `-v`, `--version`:
-    Show chef version
+    Show seth version
   * `-h`, `--help`:
     Show this message
 
 ## DESCRIPTION
 
-The Chef Client is where almost all of the work in Chef is done. It
-communicates with the Chef Server via REST, authenticates via Signed
+The Seth Client is where almost all of the work in Chef is done. It
+communicates with the Seth Server via REST, authenticates via Signed
 Header Authentication, and compiles and executes Cookbooks.
 
-A Chef Client does work on behalf of a Node. A single Chef Client can
+A Seth Client does work on behalf of a Node. A single Chef Client can
 run recipes for multiple Nodes.
 
-Clients are where all the action happens - the Chef Server and Chef Expander
+Clients are where all the action happens - the Seth Server and Chef Expander
 are largely services that exist only to provide the Client with information.
 
 ## SEE ALSO
 
-Full  documentation  for  Chef  and  chef-client is located on the Chef
-wiki, http://wiki.opscode.com/display/chef/Home.
+Full  documentation  for  Seth  and  seth-client is located on the Chef
+wiki, http://wiki.opscode.com/display/seth/Home.
 
 ## AUTHOR
 
-Chef was written by Adam Jacob <adam@ospcode.com> of Opscode
+Seth was written by Adam Jacob <adam@ospcode.com> of Opscode
 (http://www.opscode.com),  with contributions from the community.  This
 manual page was written by Joshua Timberman  <joshua@opscode.com>  with
 help2man.  Permission  is  granted  to copy, distribute and / or modify

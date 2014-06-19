@@ -21,13 +21,13 @@
 ################################################################################
 # You MUST specify the address of the server the API requests will be
 # sent to.  Only specify protocol, hostname, and port.
-chef_server 'http://127.0.0.1:8889'
+seth_server 'http://127.0.0.1:8889'
 
 # If you are doing development testing, you can specify the address of
 # the Solr server.  The presence of this parameter will enable tests
 # to force commits to Solr, greatly decreasing the amout of time
 # needed for testing the search endpoint.  This is only an
-# optimization for development!  If you are testing a "live" Chef
+# optimization for development!  If you are testing a "live" Seth
 # Server, or otherwise do not have access to the Solr server from your
 # testing location, you should not specify a value for this parameter.
 # The tests will still run, albeit slower, as they will now need to
@@ -41,7 +41,7 @@ chef_server 'http://127.0.0.1:8889'
 # differs significantly from this.
 maximum_search_time 0
 
-# OSC sends erchef a host header with a port, so this option needs
+# OSC sends erseth a host header with a port, so this option needs
 # # to be enabled for Pedant tests to work correctly
 explicit_port_url true
 

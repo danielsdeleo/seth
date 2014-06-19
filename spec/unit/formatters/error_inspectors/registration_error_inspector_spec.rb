@@ -22,6 +22,6 @@ require 'spec_helper'
 #require 'support/shared/unit/api_error_inspector_spec'
 
 
-describe Chef::Formatters::ErrorInspectors::RegistrationErrorInspector do
+describe Seth::Formatters::ErrorInspectors::RegistrationErrorInspector do
   it_behaves_like "an api error inspector"
 end

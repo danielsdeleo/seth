@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-UPLOAD" "1" "Chef 11.12.0" "" "knife upload"
+.TH "KNIFE-UPLOAD" "1" "Seth 11.12.0" "" "knife upload"
 .SH NAME
 knife-upload \- The man page for the knife upload subcommand.
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife upload\fP subcommand is used to upload roles, cookbooks, environments, and data bags to the Chef server from the current working directory in the chef\-repo\&. This subcommand is often used in conjunction with \fBknife diff\fP, which can be used to see exactly what changes will be uploaded, and then \fBknife download\fP, which does the opposite of \fBknife upload\fP\&.
+The \fBknife upload\fP subcommand is used to upload roles, cookbooks, environments, and data bags to the Seth server from the current working directory in the seth\-repo\&. This subcommand is often used in conjunction with \fBknife diff\fP, which can be used to see exactly what changes will be uploaded, and then \fBknife download\fP, which does the opposite of \fBknife upload\fP\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -55,11 +55,11 @@ This subcommand has the following options:
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
 .TP
-.B \fB\-\-chef\-repo\-path PATH\fP
-The path to the chef\-repo\&. This setting will override the default path to the chef\-repo\&. Default: same as specified by \fBchef_repo_path\fP in config.rb.
+.B \fB\-\-seth\-repo\-path PATH\fP
+The path to the seth\-repo\&. This setting will override the default path to the chef\-repo\&. Default: same as specified by \fBchef_repo_path\fP in config.rb.
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -95,7 +95,7 @@ Indicates that a cookbook cannot be modified; any changes to this cookbook must 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-n\fP, \fB\-\-dry\-run\fP
 Indicates that no action is taken and that results are only printed out. Default: \fBfalse\fP\&.
@@ -104,22 +104,22 @@ Indicates that no action is taken and that results are only printed out. Default
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-\-[no\-]purge\fP
-Use \fB\-\-purge\fP to delete roles, cookbooks, etc. from the Chef server if their corresponding files do not exist in the chef\-repo\&. By default, such objects are left alone and NOT purged. Default: \fB\-\-no\-purge\fP\&.
+Use \fB\-\-purge\fP to delete roles, cookbooks, etc. from the Seth server if their corresponding files do not exist in the seth\-repo\&. By default, such objects are left alone and NOT purged. Default: \fB\-\-no\-purge\fP\&.
 .TP
 .B \fB\-\-[no\-]recurse\fP
 Use \fB\-\-no\-recurse\fP to disable uploading a directory recursively. Default: \fB\-\-recurse\fP\&.
 .TP
 .B \fB\-\-repo\-mode MODE\fP
-The layout of the local chef\-repo\&. Possible values: \fBstatic\fP, \fBeverything\fP, or \fBhosted_everything\fP\&. Use \fBstatic\fP for just roles, environments, cookbooks, and data bags. By default, \fBeverything\fP and \fBhosted_everything\fP are dynamically selected depending on the server type. Default: \fBeverything\fP / \fBhosted_everything\fP\&.
+The layout of the local seth\-repo\&. Possible values: \fBstatic\fP, \fBeverything\fP, or \fBhosted_everything\fP\&. Use \fBstatic\fP for just roles, environments, cookbooks, and data bags. By default, \fBeverything\fP and \fBhosted_everything\fP are dynamically selected depending on the server type. Default: \fBeverything\fP / \fBhosted_everything\fP\&.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -128,12 +128,12 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP
 .sp
-Browse to the top level of the chef\-repo and enter:
+Browse to the top level of the seth\-repo and enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -145,7 +145,7 @@ $ knife upload
 .UNINDENT
 .UNINDENT
 .sp
-or from anywhere in the chef\-repo, enter:
+or from anywhere in the seth\-repo, enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -157,7 +157,7 @@ $ knife upload /
 .UNINDENT
 .UNINDENT
 .sp
-Browse to the top level of the chef\-repo and enter:
+Browse to the top level of the seth\-repo and enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -169,7 +169,7 @@ $ knife upload cookbooks
 .UNINDENT
 .UNINDENT
 .sp
-or from anywhere in the chef\-repo, enter:
+or from anywhere in the seth\-repo, enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -181,7 +181,7 @@ $ knife upload /cookbooks
 .UNINDENT
 .UNINDENT
 .sp
-Browse to the top level of the chef\-repo and enter:
+Browse to the top level of the seth\-repo and enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -193,7 +193,7 @@ $ knife upload environments
 .UNINDENT
 .UNINDENT
 .sp
-or from anywhere in the chef\-repo, enter:
+or from anywhere in the seth\-repo, enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -205,7 +205,7 @@ $ knife upload /environments
 .UNINDENT
 .UNINDENT
 .sp
-Browse to the top level of the chef\-repo and enter:
+Browse to the top level of the seth\-repo and enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -229,7 +229,7 @@ $ knife upload production.json
 .UNINDENT
 .UNINDENT
 .sp
-Browse to the top level of the chef\-repo and enter:
+Browse to the top level of the seth\-repo and enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -241,7 +241,7 @@ $ knife upload roles
 .UNINDENT
 .UNINDENT
 .sp
-or from anywhere in the chef\-repo, enter:
+or from anywhere in the seth\-repo, enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -253,7 +253,7 @@ $ knife upload /roles
 .UNINDENT
 .UNINDENT
 .sp
-Browse to the top level of the chef\-repo and enter:
+Browse to the top level of the seth\-repo and enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -275,6 +275,6 @@ $ knife upload \(gaknife deps nodes/*.json\(ga
 .UNINDENT
 .UNINDENT
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

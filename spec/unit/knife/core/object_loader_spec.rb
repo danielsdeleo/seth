@@ -18,19 +18,19 @@
 #
 
 require 'spec_helper'
-require 'chef/knife/core/object_loader'
+require 'seth/knife/core/object_loader'
 
-describe Chef::Knife::Core::ObjectLoader do
+describe Seth::Knife::Core::ObjectLoader do
   before(:each) do
-    @knife = Chef::Knife.new
+    @knife = Seth::Knife.new
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
     Dir.chdir(File.join(CHEF_SPEC_DATA, 'object_loader'))
   end
 
-  shared_examples_for "Chef object" do |chef_class|
-    it "should create a #{chef_class} object" do
-      @object.should be_a_kind_of(chef_class)
+  shared_examples_for "Seth object" do |seth_class|
+    it "should create a #{seth_class} object" do
+      @object.should be_a_kind_of(seth_class)
     end
 
     it "should has a attribute 'name'" do
@@ -39,14 +39,14 @@ describe Chef::Knife::Core::ObjectLoader do
   end
 
   {
-    'nodes' => Chef::Node,
-    'roles' => Chef::Role,
-    'environments' => Chef::Environment
-  }.each do |repo_location, chef_class|
+    'nodes' => Seth::Node,
+    'roles' => Seth::Role,
+    'environments' => Seth::Environment
+  }.each do |repo_location, seth_class|
 
-    describe "when the file is a #{chef_class}" do
+    describe "when the file is a #{seth_class}" do
       before do
-        @loader = Chef::Knife::Core::ObjectLoader.new(chef_class, @knife.ui)
+        @loader = Seth::Knife::Core::ObjectLoader.new(seth_class, @knife.ui)
       end
 
       describe "when the file is a Ruby" do
@@ -54,7 +54,7 @@ describe Chef::Knife::Core::ObjectLoader do
           @object = @loader.load_from(repo_location, 'test.rb')
         end
 
-        it_behaves_like "Chef object", chef_class
+        it_behaves_like "Seth object", seth_class
       end
 
       #NOTE: This is check for the bug described at CHEF-2352
@@ -64,7 +64,7 @@ describe Chef::Knife::Core::ObjectLoader do
             @object = @loader.load_from(repo_location, 'test_json_class.json')
           end
 
-          it_behaves_like "Chef object", chef_class
+          it_behaves_like "Seth object", seth_class
         end
 
         describe "and it has not defined 'json_class'" do
@@ -72,7 +72,7 @@ describe Chef::Knife::Core::ObjectLoader do
             @object = @loader.load_from(repo_location, 'test.json')
           end
 
-          it_behaves_like "Chef object", chef_class
+          it_behaves_like "Seth object", seth_class
         end
       end
     end

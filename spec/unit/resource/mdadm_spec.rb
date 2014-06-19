@@ -19,15 +19,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Mdadm do
+describe Seth::Resource::Mdadm do
 
   before(:each) do
-    @resource = Chef::Resource::Mdadm.new("fakey_fakerton")
+    @resource = Seth::Resource::Mdadm.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::Mdadm" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Mdadm)
+  it "should create a new Seth::Resource::Mdadm" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Mdadm)
   end
 
   it "should have a resource name of :mdadm" do

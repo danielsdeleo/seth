@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class CookbookMetadata < Knife
 
       deps do
-        require 'chef/cookbook_loader'
-        require 'chef/cookbook/metadata'
+        require 'seth/cookbook_loader'
+        require 'seth/cookbook/metadata'
       end
 
       banner "knife cookbook metadata COOKBOOK (options)"
@@ -42,10 +42,10 @@ class Chef
         :description => "Generate metadata for all cookbooks, rather than just a single cookbook"
 
       def run
-        config[:cookbook_path] ||= Chef::Config[:cookbook_path]
+        config[:cookbook_path] ||= Seth::Config[:cookbook_path]
 
         if config[:all]
-          cl = Chef::CookbookLoader.new(config[:cookbook_path])
+          cl = Seth::CookbookLoader.new(config[:cookbook_path])
           cl.load_cookbooks
           cl.each do |cname, cookbook|
             generate_metadata(cname.to_s)
@@ -73,15 +73,15 @@ class Chef
 
       def generate_metadata_from_file(cookbook, file)
         ui.info("Generating metadata for #{cookbook} from #{file}")
-        md = Chef::Cookbook::Metadata.new
+        md = Seth::Cookbook::Metadata.new
         md.name(cookbook)
         md.from_file(file)
         json_file = File.join(File.dirname(file), 'metadata.json')
         File.open(json_file, "w") do |f|
-          f.write(Chef::JSONCompat.to_json_pretty(md))
+          f.write(Seth::JSONCompat.to_json_pretty(md))
         end
         generated = true
-        Chef::Log.debug("Generated #{json_file}")
+        Seth::Log.debug("Generated #{json_file}")
       rescue Exceptions::ObsoleteDependencySyntax, Exceptions::InvalidVersionConstraint => e
         ui.stderr.puts "ERROR: The cookbook '#{cookbook}' contains invalid or obsolete metadata syntax."
         ui.stderr.puts "in #{file}:"
@@ -93,7 +93,7 @@ class Chef
       def validate_metadata_json(path, cookbook)
         json_file = File.join(path, cookbook, 'metadata.json')
         if File.exist?(json_file)
-          Chef::Cookbook::Metadata.validate_json(IO.read(json_file))
+          Seth::Cookbook::Metadata.validate_json(IO.read(json_file))
         end
       rescue Exceptions::ObsoleteDependencySyntax, Exceptions::InvalidVersionConstraint => e
         ui.stderr.puts "ERROR: The cookbook '#{cookbook}' contains invalid or obsolete metadata syntax."

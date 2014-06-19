@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
+require 'seth/resource/package'
 
-class Chef
+class Seth
   class Resource
-    class GemPackage < Chef::Resource::Package
+    class GemPackage < Seth::Resource::Package
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :gem_package
-        @provider = Chef::Provider::Package::Rubygems
+        @provider = Seth::Provider::Package::Rubygems
       end
 
       def source(arg=nil)

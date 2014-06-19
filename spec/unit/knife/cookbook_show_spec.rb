@@ -19,13 +19,13 @@
 # rename to cookbook not coookbook
 require 'spec_helper'
 
-describe Chef::Knife::CookbookShow do
+describe Seth::Knife::CookbookShow do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::CookbookShow.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::CookbookShow.new
     @knife.config = { }
     @knife.name_args = [ "cookbook_name" ]
-    @rest = double(Chef::REST)
+    @rest = double(Seth::REST)
     @knife.stub(:rest).and_return(@rest)
     @knife.stub(:pretty_print).and_return(true)
     @knife.stub(:output).and_return(true)
@@ -85,7 +85,7 @@ describe Chef::Knife::CookbookShow do
     describe "with 3 arguments: name, version, and segment" do
       before(:each) do
         @knife.name_args = [ "cookbook_name", "0.1.0", "recipes" ]
-        @cookbook_response = Chef::CookbookVersion.new("cookbook_name")
+        @cookbook_response = Seth::CookbookVersion.new("cookbook_name")
         @manifest = {
           "recipes" => [
             {
@@ -110,7 +110,7 @@ describe Chef::Knife::CookbookShow do
     describe "with 4 arguments: name, version, segment and filename" do
       before(:each) do
         @knife.name_args = [ "cookbook_name", "0.1.0", "recipes", "default.rb" ]
-        @cookbook_response = Chef::CookbookVersion.new("cookbook_name")
+        @cookbook_response = Seth::CookbookVersion.new("cookbook_name")
         @cookbook_response.manifest = {
           "recipes" => [
             {
@@ -135,7 +135,7 @@ describe Chef::Knife::CookbookShow do
     describe "with 4 arguments: name, version, segment and filename -- with specificity" do
       before(:each) do
         @knife.name_args = [ "cookbook_name", "0.1.0", "files", "afile.rb" ]
-        @cookbook_response = Chef::CookbookVersion.new("cookbook_name")
+        @cookbook_response = Seth::CookbookVersion.new("cookbook_name")
         @cookbook_response.manifest = {
           "files" => [
             {

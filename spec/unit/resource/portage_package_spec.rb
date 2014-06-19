@@ -18,21 +18,21 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_helper"))
 
-describe Chef::Resource::PortagePackage, "initialize" do
+describe Seth::Resource::PortagePackage, "initialize" do
 
   before(:each) do
-    @resource = Chef::Resource::PortagePackage.new("foo")
+    @resource = Seth::Resource::PortagePackage.new("foo")
   end
 
-  it "should return a Chef::Resource::PortagePackage" do
-    @resource.should be_a_kind_of(Chef::Resource::PortagePackage)
+  it "should return a Seth::Resource::PortagePackage" do
+    @resource.should be_a_kind_of(Seth::Resource::PortagePackage)
   end
 
   it "should set the resource_name to :portage_package" do
     @resource.resource_name.should eql(:portage_package)
   end
 
-  it "should set the provider to Chef::Provider::Package::Portage" do
-    @resource.provider.should eql(Chef::Provider::Package::Portage)
+  it "should set the provider to Seth::Provider::Package::Portage" do
+    @resource.provider.should eql(Seth::Provider::Package::Portage)
   end
 end

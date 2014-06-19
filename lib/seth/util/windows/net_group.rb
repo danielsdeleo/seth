@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/util/windows'
+require 'seth/util/windows'
 
 #wrapper around a subset of the NetGroup* APIs.
-#nothing Chef specific, but not complete enough to be its own gem, so util for now.
-class Chef::Util::Windows::NetGroup < Chef::Util::Windows
+#nothing Seth specific, but not complete enough to be its own gem, so util for now.
+class Seth::Util::Windows::NetGroup < Chef::Util::Windows
 
   private
 
@@ -67,7 +67,7 @@ class Chef::Util::Windows::NetGroup < Chef::Util::Windows
         nread.times do |i|
           sid_address = members[i * PTR_SIZE, PTR_SIZE].unpack('L')[0]
           sid_ptr = FFI::Pointer.new(sid_address)
-          member_sid = Chef::ReservedNames::Win32::Security::SID.new(sid_ptr)
+          member_sid = Seth::ReservedNames::Win32::Security::SID.new(sid_ptr)
           group_members << member_sid.to_s
         end
         NetApiBufferFree(ptr)

@@ -18,23 +18,23 @@
 
 
 require 'spec_helper'
-describe Chef::Provider::Git do
+describe Seth::Provider::Git do
 
   before(:each) do
     STDOUT.stub(:tty?).and_return(true)
-    Chef::Log.level = :info
+    Seth::Log.level = :info
 
-    @current_resource = Chef::Resource::Git.new("web2.0 app")
+    @current_resource = Seth::Resource::Git.new("web2.0 app")
     @current_resource.revision("d35af14d41ae22b19da05d7d03a0bafc321b244c")
 
-    @resource = Chef::Resource::Git.new("web2.0 app")
-    @resource.repository "git://github.com/opscode/chef.git"
+    @resource = Seth::Resource::Git.new("web2.0 app")
+    @resource.repository "git://github.com/opscode/seth.git"
     @resource.destination "/my/deploy/dir"
     @resource.revision "d35af14d41ae22b19da05d7d03a0bafc321b244c"
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @provider = Chef::Provider::Git.new(@resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @provider = Seth::Provider::Git.new(@resource, @run_context)
     @provider.current_resource = @current_resource
   end
 
@@ -82,7 +82,7 @@ describe Chef::Provider::Git do
   context "resolving revisions to a SHA" do
 
     before do
-      @git_ls_remote = "git ls-remote \"git://github.com/opscode/chef.git\" "
+      @git_ls_remote = "git ls-remote \"git://github.com/opscode/seth.git\" "
     end
 
     it "returns resource.revision as is if revision is already a full SHA" do
@@ -111,7 +111,7 @@ describe Chef::Provider::Git do
       @provider.action = :checkout
       @provider.define_resource_requirements
       ::File.stub(:directory?).with("/my/deploy").and_return(true)
-      lambda {@provider.process_resource_requirements}.should raise_error(Chef::Exceptions::InvalidRemoteGitReference)
+      lambda {@provider.process_resource_requirements}.should raise_error(Seth::Exceptions::InvalidRemoteGitReference)
     end
 
     it "raises an unresolvable git reference error if the revision can't be resolved to any revision and assertions are run" do
@@ -119,7 +119,7 @@ describe Chef::Provider::Git do
       @provider.action = :checkout
       @provider.should_receive(:shell_out!).and_return(double("ShellOut result", :stdout => "\n"))
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::UnresolvableGitReference)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::UnresolvableGitReference)
     end
 
     it "does not raise an error if the revision can't be resolved when assertions are not run" do
@@ -153,7 +153,7 @@ fa8097ff666af3ce64761d8e1f1c2aa292a11378\trefs/tags/0.7.2
 44f9be0b33ba5c10027ddb030a5b2f0faa3eeb8d\trefs/tags/0.7.4
 d7b9957f67236fa54e660cc3ab45ffecd6e0ba38\trefs/tags/0.7.8
 b7d19519a1c15f1c1a324e2683bd728b6198ce5a\trefs/tags/0.7.8^{}
-ebc1b392fe7e8f0fbabc305c299b4d365d2b4d9b\trefs/tags/chef-server-package
+ebc1b392fe7e8f0fbabc305c299b4d365d2b4d9b\trefs/tags/seth-server-package
 SHAS
       @resource.revision ''
       @provider.should_receive(:shell_out!).with(@git_ls_remote + "\"HEAD\"", {:log_tag=>"git[web2.0 app]"}).and_return(double("ShellOut result", :stdout => @stdout))
@@ -168,7 +168,7 @@ SHAS
   context "with an ssh wrapper" do
     let(:deploy_user)  { "deployNinja" }
     let(:wrapper)      { "do_it_this_way.sh" }
-    let(:expected_cmd) { 'git clone  "git://github.com/opscode/chef.git" "/my/deploy/dir"' }
+    let(:expected_cmd) { 'git clone  "git://github.com/opscode/seth.git" "/my/deploy/dir"' }
     let(:default_options) do
       {
         :user => deploy_user,
@@ -202,7 +202,7 @@ SHAS
     Etc.stub(:getpwnam).and_return(double("Struct::Passwd", :name => @resource.user, :dir => "/home/deployNinja"))
     @resource.destination "/Application Support/with/space"
     @resource.ssh_wrapper "do_it_this_way.sh"
-    expected_cmd = "git clone  \"git://github.com/opscode/chef.git\" \"/Application Support/with/space\""
+    expected_cmd = "git clone  \"git://github.com/opscode/seth.git\" \"/Application Support/with/space\""
     @provider.should_receive(:shell_out!).with(expected_cmd, :user => "deployNinja",
                                                 :environment =>{"GIT_SSH"=>"do_it_this_way.sh",
                                                                 "HOME" => "/home/deployNinja"},
@@ -212,14 +212,14 @@ SHAS
 
   it "compiles a clone command using --depth for shallow cloning" do
     @resource.depth 5
-    expected_cmd = "git clone --depth 5 \"git://github.com/opscode/chef.git\" \"/my/deploy/dir\""
+    expected_cmd = "git clone --depth 5 \"git://github.com/opscode/seth.git\" \"/my/deploy/dir\""
     @provider.should_receive(:shell_out!).with(expected_cmd, :log_tag => "git[web2.0 app]")
     @provider.clone
   end
 
   it "compiles a clone command with a remote other than ``origin''" do
     @resource.remote "opscode"
-    expected_cmd = "git clone -o opscode \"git://github.com/opscode/chef.git\" \"/my/deploy/dir\""
+    expected_cmd = "git clone -o opscode \"git://github.com/opscode/seth.git\" \"/my/deploy/dir\""
     @provider.should_receive(:shell_out!).with(expected_cmd, :log_tag => "git[web2.0 app]")
     @provider.clone
   end
@@ -392,7 +392,7 @@ SHAS
 
   it "raises an error if the git clone command would fail because the enclosing directory doesn't exist" do
     @provider.stub(:shell_out!)
-    lambda {@provider.run_action(:sync)}.should raise_error(Chef::Exceptions::MissingParentDirectory)
+    lambda {@provider.run_action(:sync)}.should raise_error(Seth::Exceptions::MissingParentDirectory)
   end
 
   it "does a checkout by cloning the repo and then enabling submodules" do

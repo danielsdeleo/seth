@@ -17,18 +17,18 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class DataBagFromFile < Knife
 
       deps do
-        require 'chef/data_bag'
-        require 'chef/data_bag_item'
-        require 'chef/knife/core/object_loader'
-        require 'chef/json_compat'
-        require 'chef/encrypted_data_bag_item'
+        require 'seth/data_bag'
+        require 'seth/data_bag_item'
+        require 'seth/knife/core/object_loader'
+        require 'seth/json_compat'
+        require 'seth/encrypted_data_bag_item'
       end
 
       banner "knife data bag from file BAG FILE|FOLDER [FILE|FOLDER..] (options)"
@@ -38,12 +38,12 @@ class Chef
         :short => "-s SECRET",
         :long  => "--secret ",
         :description => "The secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |s| Chef::Config[:knife][:secret] = s }
+        :proc => Proc.new { |s| Seth::Config[:knife][:secret] = s }
 
       option :secret_file,
         :long => "--secret-file SECRET_FILE",
         :description => "A file containing the secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |sf| Chef::Config[:knife][:secret_file] = sf }
+        :proc => Proc.new { |sf| Seth::Config[:knife][:secret_file] = sf }
 
       option :all,
         :short => "-a",
@@ -54,7 +54,7 @@ class Chef
         if config[:secret]
           config[:secret]
         else
-          Chef::EncryptedDataBagItem.load_secret(config[:secret_file])
+          Seth::EncryptedDataBagItem.load_secret(config[:secret_file])
         end
       end
 
@@ -110,11 +110,11 @@ class Chef
           item = loader.load_from("#{data_bags_path}", data_bag, item_path)
           item = if use_encryption
                    secret = read_secret
-                   Chef::EncryptedDataBagItem.encrypt_data_bag_item(item, secret)
+                   Seth::EncryptedDataBagItem.encrypt_data_bag_item(item, secret)
                  else
                    item
                  end
-          dbag = Chef::DataBagItem.new
+          dbag = Seth::DataBagItem.new
           dbag.data_bag(data_bag)
           dbag.raw_data = item
           dbag.save

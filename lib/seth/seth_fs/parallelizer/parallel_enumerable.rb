@@ -1,7 +1,7 @@
-require 'chef/chef_fs/parallelizer/flatten_enumerable'
+require 'seth/chef_fs/parallelizer/flatten_enumerable'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     class Parallelizer
       class ParallelEnumerable
         include Enumerable

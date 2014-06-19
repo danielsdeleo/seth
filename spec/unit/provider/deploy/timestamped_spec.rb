@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Deploy::Timestamped do
+describe Seth::Provider::Deploy::Timestamped do
 
   before do
     @release_time = Time.utc( 2004, 8, 15, 16, 23, 42)
     Time.stub(:now).and_return(@release_time)
     @expected_release_dir = "/my/deploy/dir/releases/20040815162342"
-    @resource = Chef::Resource::Deploy.new("/my/deploy/dir")
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @timestamped_deploy = Chef::Provider::Deploy::Timestamped.new(@resource, @run_context)
+    @resource = Seth::Resource::Deploy.new("/my/deploy/dir")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @timestamped_deploy = Seth::Provider::Deploy::Timestamped.new(@resource, @run_context)
     @runner = double("runnah")
-    Chef::Runner.stub(:new).and_return(@runner)
+    Seth::Runner.stub(:new).and_return(@runner)
   end
 
   it "gives a timestamp for release_slug" do

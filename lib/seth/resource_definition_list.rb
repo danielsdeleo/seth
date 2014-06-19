@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/from_file'
-require 'chef/resource_definition'
+require 'seth/mixin/from_file'
+require 'seth/resource_definition'
 
-class Chef
+class Seth
   class ResourceDefinitionList
-    include Chef::Mixin::FromFile
+    include Seth::Mixin::FromFile
 
     attr_accessor :defines
 

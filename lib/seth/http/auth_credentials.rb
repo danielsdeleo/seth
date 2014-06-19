@@ -20,10 +20,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'chef/log'
+require 'seth/log'
 require 'mixlib/authentication/signedheaderauth'
 
-class Chef
+class Seth
   class HTTP
     class AuthCredentials
       attr_reader :client_name, :key
@@ -38,13 +38,13 @@ class Chef
 
       def signature_headers(request_params={})
         raise ArgumentError, "Cannot sign the request without a client name, check that :node_name is assigned" if client_name.nil?
-        Chef::Log.debug("Signing the request as #{client_name}")
+        Seth::Log.debug("Signing the request as #{client_name}")
 
         # params_in = {:http_method => :GET, :path => "/clients", :body => "", :host => "localhost"}
         request_params                 = request_params.dup
         request_params[:timestamp]     = Time.now.utc.iso8601
         request_params[:user_id]       = client_name
-        request_params[:proto_version] = Chef::Config[:authentication_protocol_version]
+        request_params[:proto_version] = Seth::Config[:authentication_protocol_version]
         host = request_params.delete(:host) || "localhost"
 
         sign_obj = Mixlib::Authentication::SignedHeaderAuth.signing_object(request_params)

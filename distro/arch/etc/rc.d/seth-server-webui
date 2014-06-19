@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-daemon_bin="/usr/bin/chef-server-webui"
+daemon_bin="/usr/bin/seth-server-webui"
 daemon_name=$(basename $daemon_bin)
 PIDF="/var/run/$daemon_name.pid"
 

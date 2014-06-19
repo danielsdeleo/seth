@@ -17,8 +17,8 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'chef/knife/raw'
-require 'chef/knife/show'
+require 'seth/knife/raw'
+require 'seth/knife/show'
 
 describe 'knife raw' do
   extend IntegrationSupport
@@ -27,7 +27,7 @@ describe 'knife raw' do
 
   include_context "default config options"
 
-  when_the_chef_server "has one of each thing" do
+  when_the_seth_server "has one of each thing" do
     client 'x', '{}'
     cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"' }
     data_bag 'x', { 'y' => '{}' }
@@ -40,9 +40,9 @@ describe 'knife raw' do
       knife('raw /nodes/x').should_succeed <<EOM
 {
   "name": "x",
-  "json_class": "Chef::Node",
-  "chef_type": "node",
-  "chef_environment": "_default",
+  "json_class": "Seth::Node",
+  "seth_type": "node",
+  "seth_environment": "_default",
   "override": {
   },
   "normal": {
@@ -67,8 +67,8 @@ EOM
 {
   "name": "x",
   "description": "",
-  "json_class": "Chef::Role",
-  "chef_type": "role",
+  "json_class": "Seth::Role",
+  "seth_type": "role",
   "default_attributes": {
   },
   "override_attributes": {
@@ -89,8 +89,8 @@ EOM
 {
   "name": "x",
   "description": "eek",
-  "json_class": "Chef::Role",
-  "chef_type": "role",
+  "json_class": "Seth::Role",
+  "seth_type": "role",
   "default_attributes": {
   },
   "override_attributes": {
@@ -108,8 +108,8 @@ EOM
 {
   "name": "x",
   "description": "eek",
-  "json_class": "Chef::Role",
-  "chef_type": "role",
+  "json_class": "Seth::Role",
+  "seth_type": "role",
   "default_attributes": {
   },
   "override_attributes": {
@@ -137,8 +137,8 @@ EOM
 {
   "name": "y",
   "description": "eek",
-  "json_class": "Chef::Role",
-  "chef_type": "role",
+  "json_class": "Seth::Role",
+  "seth_type": "role",
   "default_attributes": {
   },
   "override_attributes": {
@@ -154,7 +154,7 @@ EOM
 
         knife("raw -m POST -i #{file.path} /roles").should_succeed <<EOM
 {
-  "uri": "#{ChefZero::RSpec.server.url}/roles/y"
+  "uri": "#{SethZero::RSpec.server.url}/roles/y"
 }
 EOM
         knife('show /roles/y.json').should_succeed <<EOM
@@ -169,7 +169,7 @@ EOM
 
     context 'When a server returns raw json' do
       before :each do
-        Chef::Config.chef_server_url = "http://localhost:9018"
+        Seth::Config.seth_server_url = "http://localhost:9018"
         app = lambda do |env|
           [200, {'Content-Type' => 'application/json' }, ['{ "x": "y", "a": "b" }'] ]
         end
@@ -199,7 +199,7 @@ EOM
 
     context 'When a server returns text' do
       before :each do
-        Chef::Config.chef_server_url = "http://localhost:9018"
+        Seth::Config.seth_server_url = "http://localhost:9018"
         app = lambda do |env|
           [200, {'Content-Type' => 'text' }, ['{ "x": "y", "a": "b" }'] ]
         end

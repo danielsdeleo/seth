@@ -1,5 +1,5 @@
 #
-# Sample Chef Config File
+# Sample Seth Config File
 #
 
 environment "production"

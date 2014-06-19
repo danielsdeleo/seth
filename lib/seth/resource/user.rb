@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
+require 'seth/resource'
 
-class Chef
+class Seth
   class Resource
-    class User < Chef::Resource
+    class User < Seth::Resource
 
       identity_attr :username
 

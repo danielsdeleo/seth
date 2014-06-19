@@ -18,31 +18,31 @@
 #
 
 
-require 'chef/dsl/recipe'
-require 'chef/dsl/data_query'
-require 'chef/dsl/platform_introspection'
-require 'chef/dsl/include_recipe'
-require 'chef/dsl/registry_helper'
-require 'chef/dsl/reboot_pending'
+require 'seth/dsl/recipe'
+require 'seth/dsl/data_query'
+require 'seth/dsl/platform_introspection'
+require 'seth/dsl/include_recipe'
+require 'seth/dsl/registry_helper'
+require 'seth/dsl/reboot_pending'
 
-require 'chef/mixin/from_file'
+require 'seth/mixin/from_file'
 
-require 'chef/mixin/deprecation'
+require 'seth/mixin/deprecation'
 
-class Chef
-  # == Chef::Recipe
-  # A Recipe object is the context in which Chef recipes are evaluated.
+class Seth
+  # == Seth::Recipe
+  # A Recipe object is the context in which Seth recipes are evaluated.
   class Recipe
 
-    include Chef::DSL::DataQuery
-    include Chef::DSL::PlatformIntrospection
-    include Chef::DSL::IncludeRecipe
-    include Chef::DSL::Recipe
-    include Chef::DSL::RegistryHelper
-    include Chef::DSL::RebootPending
+    include Seth::DSL::DataQuery
+    include Seth::DSL::PlatformIntrospection
+    include Seth::DSL::IncludeRecipe
+    include Seth::DSL::Recipe
+    include Seth::DSL::RegistryHelper
+    include Seth::DSL::RebootPending
 
-    include Chef::Mixin::FromFile
-    include Chef::Mixin::Deprecation
+    include Seth::Mixin::FromFile
+    include Seth::Mixin::Deprecation
 
     attr_accessor :cookbook_name, :recipe_name, :recipe, :params, :run_context
 
@@ -83,7 +83,7 @@ class Chef
       run_context.resource_collection.find(*args)
     end
 
-    # This was moved to Chef::Node#tag, redirecting here for compatability
+    # This was moved to Seth::Node#tag, redirecting here for compatability
     def tag(*tags)
       run_context.node.tag(*tags)
     end

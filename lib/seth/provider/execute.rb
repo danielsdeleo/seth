@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
-require 'chef/log'
-require 'chef/provider'
+require 'seth/mixin/shell_out'
+require 'seth/log'
+require 'seth/provider'
 
-class Chef
+class Seth
   class Provider
-    class Execute < Chef::Provider
+    class Execute < Seth::Provider
 
-      include Chef::Mixin::ShellOut
+      include Seth::Mixin::ShellOut
 
       def load_current_resource
         true
@@ -38,7 +38,7 @@ class Chef
         opts = {}
 
         if sentinel_file = sentinel_file_if_exists
-          Chef::Log.debug("#{@new_resource} sentinel file #{sentinel_file} exists - nothing to do")
+          Seth::Log.debug("#{@new_resource} sentinel file #{sentinel_file} exists - nothing to do")
           return false
         end
 
@@ -53,12 +53,12 @@ class Chef
         opts[:umask] = @new_resource.umask if @new_resource.umask
         opts[:log_level] = :info
         opts[:log_tag] = @new_resource.to_s
-        if STDOUT.tty? && !Chef::Config[:daemon] && Chef::Log.info?
+        if STDOUT.tty? && !Seth::Config[:daemon] && Chef::Log.info?
           opts[:live_stream] = STDOUT
         end
         converge_by("execute #{@new_resource.command}") do
           result = shell_out!(@new_resource.command, opts)
-          Chef::Log.info("#{@new_resource} ran successfully")
+          Seth::Log.info("#{@new_resource} ran successfully")
         end
       end
 
@@ -69,7 +69,7 @@ class Chef
           relative = Pathname(sentinel_file).relative?
           cwd = @new_resource.cwd
           if relative && !cwd
-            Chef::Log.warn "You have provided relative path for execute#creates (#{sentinel_file}) without execute#cwd (see CHEF-3819)"
+            Seth::Log.warn "You have provided relative path for execute#creates (#{sentinel_file}) without execute#cwd (see CHEF-3819)"
           end
 
           if ::File.exists?(sentinel_file)

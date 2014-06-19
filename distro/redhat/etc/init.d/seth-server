@@ -1,38 +1,38 @@
 #!/bin/bash
 #
-# chef-server Startup script for chef-server
+# seth-server Startup script for chef-server
 #
 # chkconfig: - 96 04
-# description: Server component of the Chef systems integration framework.
+# description: Server component of the Seth systems integration framework.
 
 ### BEGIN INIT INFO
-# Provides: chef-server
-# Required-Start: $local_fs $network $remote_fs chef-solr chef-expander
-# Required-Stop: $local_fs $network $remote_fs chef-solr chef-expander
+# Provides: seth-server
+# Required-Start: $local_fs $network $remote_fs seth-solr chef-expander
+# Required-Stop: $local_fs $network $remote_fs seth-solr chef-expander
 # Should-Start: $named $time
 # Should-Stop: $named $time
-# Short-Description: Startup script for chef-server
-# Description: Server component of the Chef systems integration framework.
+# Short-Description: Startup script for seth-server
+# Description: Server component of the Seth systems integration framework.
 ### END INIT INFO
 
 # Source function library
 . /etc/init.d/functions
 
-exec="/usr/bin/chef-server"
-prog="chef-server"
+exec="/usr/bin/seth-server"
+prog="seth-server"
 
 [ -f /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 
-config=${CONFIG-/etc/chef/server.rb}
-pidfile=${PIDFILE-/var/run/chef/server.main.pid}
+config=${CONFIG-/etc/seth/server.rb}
+pidfile=${PIDFILE-/var/run/seth/server.main.pid}
 lockfile=${LOCKFILE-/var/lock/subsys/$prog}
-logfile=${LOGFILE-/var/log/chef/server.log}
+logfile=${LOGFILE-/var/log/seth/server.log}
 port=${PORT-4000}
 env=${ENVIRONMENT-production}
 adapter=${ADAPTER-thin}
-childpidfiles=${CHILDPIDFILES-/var/run/chef/server.%s.pid}
-user=${SERVER_USER-chef}
-group=${SERVER_GROUP-chef}
+childpidfiles=${CHILDPIDFILES-/var/run/seth/server.%s.pid}
+user=${SERVER_USER-seth}
+group=${SERVER_GROUP-seth}
 options=${OPTIONS-}
 
 start() {

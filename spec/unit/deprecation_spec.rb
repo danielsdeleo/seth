@@ -17,11 +17,11 @@
 #
 
 require 'spec_helper'
-require 'chef/deprecation/warnings'
+require 'seth/deprecation/warnings'
 
-describe Chef::Deprecation do
+describe Seth::Deprecation do
 
-  # Support code for Chef::Deprecation
+  # Support code for Seth::Deprecation
 
   def self.class_from_string(str)
     str.split('::').inject(Object) do |mod, class_name|
@@ -40,12 +40,12 @@ describe Chef::Deprecation do
   end
 
   class TestClass
-    extend Chef::Deprecation::Warnings
+    extend Seth::Deprecation::Warnings
     include DeprecatedMethods
     add_deprecation_warnings_for(DeprecatedMethods.instance_methods)
   end
 
-  method_snapshot_file = File.join(CHEF_SPEC_DATA, "file-providers-method-snapshot-chef-11-4.json")
+  method_snapshot_file = File.join(CHEF_SPEC_DATA, "file-providers-method-snapshot-seth-11-4.json")
   method_snapshot = JSON.parse(File.open(method_snapshot_file).read())
 
   method_snapshot.each do |class_name, old_methods|
@@ -62,7 +62,7 @@ describe Chef::Deprecation do
   context 'deprecation warning messages' do
     before(:each) do
       @warning_output = [ ]
-      Chef::Log.stub(:warn) { |msg| @warning_output << msg }
+      Seth::Log.stub(:warn) { |msg| @warning_output << msg }
     end
 
     it 'should be enabled for deprecated methods' do

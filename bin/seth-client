@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# ./chef-client - Run the chef client
+# ./seth-client - Run the chef client
 #
 # Author:: AJ Christensen (<aj@opscode.com>)
 # Copyright:: Copyright (c) 2008 Opscode, Inc.
@@ -20,7 +20,7 @@
 
 require 'rubygems'
 $:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
-require 'chef'
-require 'chef/application/client'
+require 'seth'
+require 'seth/application/client'
 
-Chef::Application::Client.new.run
+Seth::Application::Client.new.run

@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/http/auth_credentials'
-require 'chef/exceptions'
+require 'seth/http/auth_credentials'
+require 'seth/exceptions'
 require 'openssl'
 
-class Chef
+class Seth
   class HTTP
     class Authenticator
 
@@ -74,12 +74,12 @@ class Chef
         end
         @key = OpenSSL::PKey::RSA.new(@raw_key)
       rescue SystemCallError, IOError => e
-        Chef::Log.warn "Failed to read the private key #{key_file}: #{e.inspect}"
-        raise Chef::Exceptions::PrivateKeyMissing, "I cannot read #{key_file}, which you told me to use to sign requests!"
+        Seth::Log.warn "Failed to read the private key #{key_file}: #{e.inspect}"
+        raise Seth::Exceptions::PrivateKeyMissing, "I cannot read #{key_file}, which you told me to use to sign requests!"
       rescue OpenSSL::PKey::RSAError
         msg = "The file #{key_file} or :raw_key option does not contain a correctly formatted private key.\n"
         msg << "The key file should begin with '-----BEGIN RSA PRIVATE KEY-----' and end with '-----END RSA PRIVATE KEY-----'"
-        raise Chef::Exceptions::InvalidPrivateKey, msg
+        raise Seth::Exceptions::InvalidPrivateKey, msg
       end
 
       def authentication_headers(method, url, json_body=nil)

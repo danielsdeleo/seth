@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Chef::FileContentManagement::Deploy::MvUnix do
+describe Seth::FileContentManagement::Deploy::MvUnix do
 
   let(:content_deployer) { described_class.new }
   let(:target_file_path) { "/etc/my_app.conf" }
@@ -50,13 +50,13 @@ describe Chef::FileContentManagement::Deploy::MvUnix do
     end
 
     # This context represents the case where:
-    # * Chef runs as root
+    # * Seth runs as root
     # * The owner and group of the target file match the owner and group of the
     #   staging file.
     context "when the user has permissions to set file ownership" do
 
       # For the purposes of this test, the uid/gid can be anything. These
-      # values are just chosen because (assuming chef-client's euid == 1001 and
+      # values are just chosen because (assuming seth-client's euid == 1001 and
       # egid == 1001), the `chown` call is allowed by the OS. See the
       # description of `EPERM` in `man 2 chown` for reference.
       let(:target_file_uid) { 1001 }
@@ -76,10 +76,10 @@ describe Chef::FileContentManagement::Deploy::MvUnix do
     context "when the user does not have permissions to set file ownership" do
 
       # The test code does not care what these values are. These values are
-      # chosen because they're representitive of the case that chef-client is
+      # chosen because they're representitive of the case that seth-client is
       # running as non-root and is managing a file that got ownership set to
       # root somehow. In this example, gid==20 is something like "staff" which
-      # the user running chef-client is a member of (but it's not that user's
+      # the user running seth-client is a member of (but it's not that user's
       # primary group).
       let(:target_file_uid) { 0 }
       let(:target_file_gid) { 20 }
@@ -88,8 +88,8 @@ describe Chef::FileContentManagement::Deploy::MvUnix do
         File.should_receive(:chown).with(target_file_uid, nil, staging_file_path).and_raise(Errno::EPERM)
         File.should_receive(:chown).with(nil, target_file_gid, staging_file_path).and_raise(Errno::EPERM)
 
-        Chef::Log.should_receive(:warn).with(/^Could not set uid/)
-        Chef::Log.should_receive(:warn).with(/^Could not set gid/)
+        Seth::Log.should_receive(:warn).with(/^Could not set uid/)
+        Seth::Log.should_receive(:warn).with(/^Could not set gid/)
       end
 
       it "fixes up permissions and moves the file into place" do

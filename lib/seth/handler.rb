@@ -15,14 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'chef/client'
+require 'seth/client'
 require 'forwardable'
 
-class Chef
-  # == Chef::Handler
+class Seth
+  # == Seth::Handler
   # The base class for an Exception or Notification Handler. Create your own
-  # handler by subclassing Chef::Handler. When a Chef run fails with an
-  # uncaught Exception, Chef will set the +run_status+ on your handler and call
+  # handler by subclassing Seth::Handler. When a Chef run fails with an
+  # uncaught Exception, Seth will set the +run_status+ on your handler and call
   # +report+
   #
   # ===Example:
@@ -30,17 +30,17 @@ class Chef
   #   require 'net/smtp'
   #
   #   module MyOrg
-  #     class OhNoes < Chef::Handler
+  #     class OhNoes < Seth::Handler
   #
   #       def report
   #         # Create the email message
   #         message  = "From: Your Name <your@mail.address>\n"
   #         message << "To: Destination Address <someone@example.com>\n"
-  #         message << "Subject: Chef Run Failure\n"
+  #         message << "Subject: Seth Run Failure\n"
   #         message << "Date: #{Time.now.rfc2822}\n\n"
   #
   #         # The Node is available as +node+
-  #         message << "Chef run failed on #{node.name}\n"
+  #         message << "Seth run failed on #{node.name}\n"
   #         # +run_status+ is a value object with all of the run status data
   #         message << "#{run_status.formatted_exception}\n"
   #         # Join the backtrace lines. Coerce to an array just in case.
@@ -59,146 +59,146 @@ class Chef
 
     # The list of currently configured start handlers
     def self.start_handlers
-      Array(Chef::Config[:start_handlers])
+      Array(Seth::Config[:start_handlers])
     end
 
     # Run the start handlers. This will usually be called by a notification
-    # from Chef::Client
+    # from Seth::Client
     def self.run_start_handlers(run_status)
-      Chef::Log.info("Running start handlers")
+      Seth::Log.info("Running start handlers")
       start_handlers.each do |handler|
         handler.run_report_safely(run_status)
       end
-      Chef::Log.info("Start handlers complete.")
+      Seth::Log.info("Start handlers complete.")
     end
 
-    # Wire up a notification to run the start handlers when the chef run
+    # Wire up a notification to run the start handlers when the seth run
     # starts.
-    Chef::Client.when_run_starts do |run_status|
+    Seth::Client.when_run_starts do |run_status|
       run_start_handlers(run_status)
     end
 
     # The list of currently configured report handlers
     def self.report_handlers
-      Array(Chef::Config[:report_handlers])
+      Array(Seth::Config[:report_handlers])
     end
 
     # Run the report handlers. This will usually be called by a notification
-    # from Chef::Client
+    # from Seth::Client
     def self.run_report_handlers(run_status)
       events = run_status.events
       events.handlers_start(report_handlers.size)
-      Chef::Log.info("Running report handlers")
+      Seth::Log.info("Running report handlers")
       report_handlers.each do |handler|
         handler.run_report_safely(run_status)
         events.handler_executed(handler)
       end
       events.handlers_completed
-      Chef::Log.info("Report handlers complete")
+      Seth::Log.info("Report handlers complete")
     end
 
-    # Wire up a notification to run the report handlers if the chef run
+    # Wire up a notification to run the report handlers if the seth run
     # succeeds.
-    Chef::Client.when_run_completes_successfully do |run_status|
+    Seth::Client.when_run_completes_successfully do |run_status|
       run_report_handlers(run_status)
     end
 
     # The list of currently configured exception handlers
     def self.exception_handlers
-      Array(Chef::Config[:exception_handlers])
+      Array(Seth::Config[:exception_handlers])
     end
 
     # Run the exception handlers. Usually will be called by a notification
-    # from Chef::Client when the run fails.
+    # from Seth::Client when the run fails.
     def self.run_exception_handlers(run_status)
       events = run_status.events
       events.handlers_start(exception_handlers.size)
-      Chef::Log.error("Running exception handlers")
+      Seth::Log.error("Running exception handlers")
       exception_handlers.each do |handler|
         handler.run_report_safely(run_status)
         events.handler_executed(handler)
       end
       events.handlers_completed
-      Chef::Log.error("Exception handlers complete")
+      Seth::Log.error("Exception handlers complete")
     end
 
-    # Wire up a notification to run the exception handlers if the chef run fails.
-    Chef::Client.when_run_fails do |run_status|
+    # Wire up a notification to run the exception handlers if the seth run fails.
+    Seth::Client.when_run_fails do |run_status|
       run_exception_handlers(run_status)
     end
 
     extend Forwardable
 
-    # The Chef::RunStatus object containing data about the Chef run.
+    # The Seth::RunStatus object containing data about the Chef run.
     attr_reader :run_status
 
     ##
     # :method: start_time
     #
-    # The time the chef run started
+    # The time the seth run started
     def_delegator :@run_status, :start_time
 
     ##
     # :method: end_time
     #
-    # The time the chef run ended
+    # The time the seth run ended
     def_delegator :@run_status, :end_time
 
     ##
     # :method: elapsed_time
     #
-    # The time elapsed between the start and finish of the chef run
+    # The time elapsed between the start and finish of the seth run
     def_delegator :@run_status, :elapsed_time
 
     ##
     # :method: run_context
     #
-    # The Chef::RunContext object used by the chef run
+    # The Seth::RunContext object used by the seth run
     def_delegator :@run_status, :run_context
 
     ##
     # :method: exception
     #
-    # The uncaught Exception that terminated the chef run, or nil if the run
+    # The uncaught Exception that terminated the seth run, or nil if the run
     # completed successfully
     def_delegator :@run_status, :exception
 
     ##
     # :method: backtrace
     #
-    # The backtrace captured by the uncaught exception that terminated the chef
+    # The backtrace captured by the uncaught exception that terminated the seth
     # run, or nil if the run completed successfully
     def_delegator :@run_status, :backtrace
 
     ##
     # :method: node
     #
-    # The Chef::Node for this client run
+    # The Seth::Node for this client run
     def_delegator :@run_status, :node
 
     ##
     # :method: all_resources
     #
-    # An Array containing all resources in the chef run's resource_collection
+    # An Array containing all resources in the seth run's resource_collection
     def_delegator :@run_status, :all_resources
 
     ##
     # :method: updated_resources
     #
-    # An Array containing all resources that were updated during the chef run
+    # An Array containing all resources that were updated during the seth run
     def_delegator :@run_status, :updated_resources
 
     ##
     # :method: success?
     #
-    # Was the chef run successful? True if the chef run did not raise an
+    # Was the seth run successful? True if the chef run did not raise an
     # uncaught exception
     def_delegator :@run_status, :success?
 
     ##
     # :method: failed?
     #
-    # Did the chef run fail? True if the chef run raised an uncaught exception
+    # Did the seth run fail? True if the chef run raised an uncaught exception
     def_delegator :@run_status, :failed?
 
     # The main entry point for report handling. Subclasses should override this
@@ -213,8 +213,8 @@ class Chef
     def run_report_safely(run_status)
       run_report_unsafe(run_status)
     rescue Exception => e
-      Chef::Log.error("Report handler #{self.class.name} raised #{e.inspect}")
-      Array(e.backtrace).each { |line| Chef::Log.error(line) }
+      Seth::Log.error("Report handler #{self.class.name} raised #{e.inspect}")
+      Array(e.backtrace).each { |line| Seth::Log.error(line) }
     ensure
       @run_status = nil
     end

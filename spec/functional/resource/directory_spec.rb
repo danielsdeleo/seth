@@ -18,18 +18,18 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Directory do
-  include_context Chef::Resource::Directory
+describe Seth::Resource::Directory do
+  include_context Seth::Resource::Directory
 
   let(:directory_base) { "directory_spec" }
 
   let(:default_mode) { ((0100777 - File.umask) & 07777).to_s(8) }
 
   def create_resource
-    events = Chef::EventDispatch::Dispatcher.new
-    node = Chef::Node.new
-    run_context = Chef::RunContext.new(node, {}, events)
-    Chef::Resource::Directory.new(path, run_context)
+    events = Seth::EventDispatch::Dispatcher.new
+    node = Seth::Node.new
+    run_context = Seth::RunContext.new(node, {}, events)
+    Seth::Resource::Directory.new(path, run_context)
   end
 
   let(:resource) do

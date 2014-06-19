@@ -17,16 +17,16 @@
 #
 
 require 'spec_helper'
-require "chef/node/immutable_collections"
+require "seth/node/immutable_collections"
 
-describe Chef::Node::ImmutableMash do
+describe Seth::Node::ImmutableMash do
   before do
     @data_in = {:top => {:second_level => "some value"},
                 "top_level_2" => %w[array of values],
                 :top_level_3 => [{:hash_array => 1, :hash_array_b => 2}],
                 :top_level_4 => {:level2 => {:key => "value"}}
     }
-    @immutable_mash = Chef::Node::ImmutableMash.new(@data_in)
+    @immutable_mash = Seth::Node::ImmutableMash.new(@data_in)
   end
 
   it "element references like regular hash" do
@@ -38,20 +38,20 @@ describe Chef::Node::ImmutableMash do
   end
 
   it "converts Hash-like inputs into ImmutableMash's" do
-    @immutable_mash[:top].should be_a(Chef::Node::ImmutableMash)
+    @immutable_mash[:top].should be_a(Seth::Node::ImmutableMash)
   end
 
   it "converts array inputs into ImmutableArray's" do
-    @immutable_mash[:top_level_2].should be_a(Chef::Node::ImmutableArray)
+    @immutable_mash[:top_level_2].should be_a(Seth::Node::ImmutableArray)
   end
 
   it "converts arrays of hashes to ImmutableArray's of ImmutableMashes" do
-    @immutable_mash[:top_level_3].first.should be_a(Chef::Node::ImmutableMash)
+    @immutable_mash[:top_level_3].first.should be_a(Seth::Node::ImmutableMash)
   end
 
   it "converts nested hashes to ImmutableMashes" do
-    @immutable_mash[:top_level_4].should be_a(Chef::Node::ImmutableMash)
-    @immutable_mash[:top_level_4][:level2].should be_a(Chef::Node::ImmutableMash)
+    @immutable_mash[:top_level_4].should be_a(Seth::Node::ImmutableMash)
+    @immutable_mash[:top_level_4][:level2].should be_a(Seth::Node::ImmutableMash)
   end
 
   describe "to_hash" do
@@ -109,12 +109,12 @@ describe Chef::Node::ImmutableMash do
 
 end
 
-describe Chef::Node::ImmutableArray do
+describe Seth::Node::ImmutableArray do
 
   before do
-    @immutable_array = Chef::Node::ImmutableArray.new(%w[foo bar baz] + Array(1..3) + [nil, true, false, [ "el", 0, nil ] ])
-    immutable_mash = Chef::Node::ImmutableMash.new({:m => 'm'})
-    @immutable_nested_array = Chef::Node::ImmutableArray.new(["level1",@immutable_array, immutable_mash])
+    @immutable_array = Seth::Node::ImmutableArray.new(%w[foo bar baz] + Array(1..3) + [nil, true, false, [ "el", 0, nil ] ])
+    immutable_mash = Seth::Node::ImmutableMash.new({:m => 'm'})
+    @immutable_nested_array = Seth::Node::ImmutableArray.new(["level1",@immutable_array, immutable_mash])
   end
 
   ##

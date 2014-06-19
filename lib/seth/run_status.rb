@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-# == Chef::RunStatus
-# Tracks various aspects of a Chef run, including the Node and RunContext,
+# == Seth::RunStatus
+# Tracks various aspects of a Seth run, including the Node and RunContext,
 # start and end time, and any Exception that stops the run. RunStatus objects
 # are passed to any notification or exception handlers at the completion of a
-# Chef run.
-class Chef::RunStatus
+# Seth run.
+class Seth::RunStatus
 
   attr_reader :events
 
@@ -84,12 +84,12 @@ class Chef::RunStatus
     @exception && @exception.backtrace
   end
 
-  # Did the Chef run fail?
+  # Did the Seth run fail?
   def failed?
     !success?
   end
 
-  # Did the chef run succeed? returns +true+ if no exception has been set.
+  # Did the seth run succeed? returns +true+ if no exception has been set.
   def success?
     @exception.nil?
   end

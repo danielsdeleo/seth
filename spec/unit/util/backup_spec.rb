@@ -20,16 +20,16 @@
 require 'spec_helper'
 require 'tmpdir'
 
-describe Chef::Util::Backup do
+describe Seth::Util::Backup do
 
   let (:tempfile) do
-    Tempfile.new("chef-util-backup-spec-test")
+    Tempfile.new("seth-util-backup-spec-test")
   end
 
   before(:each) do
     @new_resource = double("new_resource")
     @new_resource.should_receive(:path).at_least(:once).and_return(tempfile.path)
-    @backup = Chef::Util::Backup.new(@new_resource)
+    @backup = Seth::Util::Backup.new(@new_resource)
   end
 
   it "should store the resource passed to new as new_resource" do
@@ -107,35 +107,35 @@ describe Chef::Util::Backup do
   describe "backup_filename" do
     it "should return a timestamped path" do
       @backup.should_receive(:path).and_return('/a/b/c.txt')
-      @backup.send(:backup_filename).should =~ %r|^/a/b/c.txt.chef-\d{14}.\d{6}$|
+      @backup.send(:backup_filename).should =~ %r|^/a/b/c.txt.seth-\d{14}.\d{6}$|
     end
     it "should strip the drive letter off for windows" do
       @backup.should_receive(:path).and_return('c:\a\b\c.txt')
-      @backup.send(:backup_filename).should =~ %r|^\\a\\b\\c.txt.chef-\d{14}.\d{6}$|
+      @backup.send(:backup_filename).should =~ %r|^\\a\\b\\c.txt.seth-\d{14}.\d{6}$|
     end
     it "should strip the drive letter off for windows (with forwardslashes)" do
       @backup.should_receive(:path).and_return('c:/a/b/c.txt')
-      @backup.send(:backup_filename).should =~ %r|^/a/b/c.txt.chef-\d{14}.\d{6}$|
+      @backup.send(:backup_filename).should =~ %r|^/a/b/c.txt.seth-\d{14}.\d{6}$|
     end
   end
 
   describe "backup_path" do
-    it "uses the file's directory when Chef::Config[:file_backup_path] is nil" do
+    it "uses the file's directory when Seth::Config[:file_backup_path] is nil" do
       @backup.should_receive(:path).and_return('/a/b/c.txt')
-      Chef::Config[:file_backup_path] = nil
-      @backup.send(:backup_path).should =~ %r|^/a/b/c.txt.chef-\d{14}.\d{6}$|
+      Seth::Config[:file_backup_path] = nil
+      @backup.send(:backup_path).should =~ %r|^/a/b/c.txt.seth-\d{14}.\d{6}$|
     end
 
-    it "uses the configured Chef::Config[:file_backup_path]" do
+    it "uses the configured Seth::Config[:file_backup_path]" do
       @backup.should_receive(:path).and_return('/a/b/c.txt')
-      Chef::Config[:file_backup_path] = '/backupdir'
-      @backup.send(:backup_path).should =~ %r|^/backupdir[\\/]+a/b/c.txt.chef-\d{14}.\d{6}$|
+      Seth::Config[:file_backup_path] = '/backupdir'
+      @backup.send(:backup_path).should =~ %r|^/backupdir[\\/]+a/b/c.txt.seth-\d{14}.\d{6}$|
     end
 
-    it "uses the configured Chef::Config[:file_backup_path] and strips the drive on windows" do
+    it "uses the configured Seth::Config[:file_backup_path] and strips the drive on windows" do
       @backup.should_receive(:path).and_return('c:\\a\\b\\c.txt')
-      Chef::Config[:file_backup_path] = 'c:\backupdir'
-      @backup.send(:backup_path).should =~ %r|^c:\\backupdir[\\/]+a\\b\\c.txt.chef-\d{14}.\d{6}$|
+      Seth::Config[:file_backup_path] = 'c:\backupdir'
+      @backup.send(:backup_path).should =~ %r|^c:\\backupdir[\\/]+a\\b\\c.txt.seth-\d{14}.\d{6}$|
     end
   end
 

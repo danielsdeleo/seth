@@ -1,9 +1,9 @@
-require 'chef/http'
-require 'chef/http/authenticator'
-require 'chef/http/decompressor'
+require 'seth/http'
+require 'seth/http/authenticator'
+require 'seth/http/decompressor'
 
 
-class Chef
+class Seth
   class HTTP
 
     class Simple < HTTP

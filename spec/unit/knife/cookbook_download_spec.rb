@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::CookbookDownload do
+describe Seth::Knife::CookbookDownload do
   before(:each) do
-    @knife = Chef::Knife::CookbookDownload.new
+    @knife = Seth::Knife::CookbookDownload.new
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
   end
@@ -43,7 +43,7 @@ describe Chef::Knife::CookbookDownload do
     describe 'with a cookbook name' do
       before(:each) do
         @knife.name_args = ['foobar']
-        @knife.config[:download_directory] = '/var/tmp/chef'
+        @knife.config[:download_directory] = '/var/tmp/seth'
         @rest_mock = double('rest')
         @knife.stub(:rest).and_return(@rest_mock)
 
@@ -76,8 +76,8 @@ describe Chef::Knife::CookbookDownload do
       it 'should determine which version if one was not explicitly specified'do
         @cookbook_mock.stub(:manifest).and_return({})
         @knife.should_receive(:determine_version).and_return('1.0.0')
-        File.should_receive(:exists?).with('/var/tmp/chef/foobar-1.0.0').and_return(false)
-        Chef::CookbookVersion.stub(:COOKBOOK_SEGEMENTS).and_return([])
+        File.should_receive(:exists?).with('/var/tmp/seth/foobar-1.0.0').and_return(false)
+        Seth::CookbookVersion.stub(:COOKBOOK_SEGEMENTS).and_return([])
         @knife.run
       end
 
@@ -93,15 +93,15 @@ describe Chef::Knife::CookbookDownload do
         end
 
         it 'should print an error and exit if the cookbook download directory already exists' do
-          File.should_receive(:exists?).with('/var/tmp/chef/foobar-1.0.0').and_return(true)
-          @knife.ui.should_receive(:fatal).with(/\/var\/tmp\/chef\/foobar-1\.0\.0 exists/i)
+          File.should_receive(:exists?).with('/var/tmp/seth/foobar-1.0.0').and_return(true)
+          @knife.ui.should_receive(:fatal).with(/\/var\/tmp\/seth\/foobar-1\.0\.0 exists/i)
           lambda { @knife.run }.should raise_error(SystemExit)
         end
 
         describe 'when downloading the cookbook' do
           before(:each) do
             @files.map { |f| File.dirname(f) }.flatten.uniq.each do |dir|
-              FileUtils.should_receive(:mkdir_p).with("/var/tmp/chef/foobar-1.0.0/#{dir}").
+              FileUtils.should_receive(:mkdir_p).with("/var/tmp/seth/foobar-1.0.0/#{dir}").
               at_least(:once)
             end
 
@@ -113,25 +113,25 @@ describe Chef::Knife::CookbookDownload do
             @rest_mock.should_receive(:sign_on_redirect=).with(false).at_least(:once)
             @files.each do |f|
               FileUtils.should_receive(:mv).
-                        with("/var/tmp/#{File.basename(f)}", "/var/tmp/chef/foobar-1.0.0/#{f}")
+                        with("/var/tmp/#{File.basename(f)}", "/var/tmp/seth/foobar-1.0.0/#{f}")
             end
           end
 
           it "should download the cookbook when the cookbook download directory doesn't exist" do
-            File.should_receive(:exists?).with('/var/tmp/chef/foobar-1.0.0').and_return(false)
+            File.should_receive(:exists?).with('/var/tmp/seth/foobar-1.0.0').and_return(false)
             @knife.run
             ['attributes', 'recipes', 'templates'].each do |segment|
               @stdout.string.should match /downloading #{segment}/im
             end
             @stdout.string.should match /downloading foobar cookbook version 1\.0\.0/im
-            @stdout.string.should match /cookbook downloaded to \/var\/tmp\/chef\/foobar-1\.0\.0/im
+            @stdout.string.should match /cookbook downloaded to \/var\/tmp\/seth\/foobar-1\.0\.0/im
           end
 
           describe 'with -f or --force' do
             it 'should remove the existing the cookbook download directory if it exists' do
               @knife.config[:force] = true
-              File.should_receive(:exists?).with('/var/tmp/chef/foobar-1.0.0').and_return(true)
-              FileUtils.should_receive(:rm_rf).with('/var/tmp/chef/foobar-1.0.0')
+              File.should_receive(:exists?).with('/var/tmp/seth/foobar-1.0.0').and_return(true)
+              FileUtils.should_receive(:rm_rf).with('/var/tmp/seth/foobar-1.0.0')
               @knife.run
             end
           end
@@ -179,23 +179,23 @@ describe Chef::Knife::CookbookDownload do
     end
 
     it 'should return nil if there are no versions' do
-      Chef::CookbookVersion.should_receive(:available_versions).
+      Seth::CookbookVersion.should_receive(:available_versions).
                             with('foobar').
                             and_return(nil)
       @knife.available_versions.should == nil
     end
 
     it 'should return the available versions' do
-      Chef::CookbookVersion.should_receive(:available_versions).
+      Seth::CookbookVersion.should_receive(:available_versions).
                             with('foobar').
                             and_return(['1.1.0', '2.0.0', '1.0.0'])
-      @knife.available_versions.should == [Chef::Version.new('1.0.0'),
-                                           Chef::Version.new('1.1.0'),
-                                           Chef::Version.new('2.0.0')]
+      @knife.available_versions.should == [Seth::Version.new('1.0.0'),
+                                           Seth::Version.new('1.1.0'),
+                                           Seth::Version.new('2.0.0')]
     end
 
     it 'should avoid multiple API calls to the server' do
-      Chef::CookbookVersion.should_receive(:available_versions).
+      Seth::CookbookVersion.should_receive(:available_versions).
                             once.
                             with('foobar').
                             and_return(['1.1.0', '2.0.0', '1.0.0'])

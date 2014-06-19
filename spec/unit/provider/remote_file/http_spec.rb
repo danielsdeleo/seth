@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::RemoteFile::HTTP do
+describe Seth::Provider::RemoteFile::HTTP do
 
   let(:uri) { URI.parse("http://opscode.com/seattle.txt") }
 
@@ -27,28 +27,28 @@ describe Chef::Provider::RemoteFile::HTTP do
   let(:current_resource_checksum) { "41e78735319af11327e9d2ca8535ea1c191e5ac1f76bb08d88fe6c3f93a8c8e5" }
 
   let(:current_resource) do
-    current_resource = Chef::Resource::RemoteFile.new("/tmp/foo.txt")
+    current_resource = Seth::Resource::RemoteFile.new("/tmp/foo.txt")
     current_resource.source(existing_file_source) if existing_file_source
     current_resource.checksum(current_resource_checksum)
     current_resource
   end
 
   let(:new_resource) do
-    Chef::Resource::RemoteFile.new("/tmp/foo.txt")
+    Seth::Resource::RemoteFile.new("/tmp/foo.txt")
   end
 
   subject(:fetcher) do
-    Chef::Provider::RemoteFile::HTTP.new(uri, new_resource, current_resource)
+    Seth::Provider::RemoteFile::HTTP.new(uri, new_resource, current_resource)
   end
 
-  let(:cache_control_data) { Chef::Provider::RemoteFile::CacheControlData.new(uri) }
+  let(:cache_control_data) { Seth::Provider::RemoteFile::CacheControlData.new(uri) }
 
   describe "generating cache control headers" do
 
     context "and there is no valid cache control data for this URI on disk" do
 
       before do
-        Chef::Provider::RemoteFile::CacheControlData.should_receive(:load_and_validate).with(uri, current_resource_checksum).and_return(cache_control_data)
+        Seth::Provider::RemoteFile::CacheControlData.should_receive(:load_and_validate).with(uri, current_resource_checksum).and_return(cache_control_data)
       end
 
       it "does not add conditional GET headers" do
@@ -79,7 +79,7 @@ describe Chef::Provider::RemoteFile::HTTP do
         cache_control_data.etag = etag
         cache_control_data.mtime = mtime
 
-        Chef::Provider::RemoteFile::CacheControlData.should_receive(:load_and_validate).with(uri, current_resource_checksum).and_return(cache_control_data)
+        Seth::Provider::RemoteFile::CacheControlData.should_receive(:load_and_validate).with(uri, current_resource_checksum).and_return(cache_control_data)
       end
 
       context "and no conditional get features are enabled" do
@@ -157,14 +157,14 @@ describe Chef::Provider::RemoteFile::HTTP do
     let(:expected_http_opts) { {} }
     let(:expected_http_args) { [uri, expected_http_opts] }
 
-    let(:tempfile_path) { "/tmp/chef-mock-tempfile-abc123" }
+    let(:tempfile_path) { "/tmp/seth-mock-tempfile-abc123" }
 
     let(:tempfile) { double(Tempfile, :path => tempfile_path, :close => nil) }
 
     let(:last_response) { {} }
 
     let(:rest) do
-      rest = double(Chef::HTTP::Simple)
+      rest = double(Seth::HTTP::Simple)
       rest.stub(:streaming_request).and_return(tempfile)
       rest.stub(:last_response).and_return(last_response)
       rest
@@ -173,9 +173,9 @@ describe Chef::Provider::RemoteFile::HTTP do
     before do
       new_resource.headers({})
       new_resource.use_last_modified(false)
-      Chef::Provider::RemoteFile::CacheControlData.should_receive(:load_and_validate).with(uri, current_resource_checksum).and_return(cache_control_data)
+      Seth::Provider::RemoteFile::CacheControlData.should_receive(:load_and_validate).with(uri, current_resource_checksum).and_return(cache_control_data)
 
-      Chef::HTTP::Simple.should_receive(:new).with(*expected_http_args).and_return(rest)
+      Seth::HTTP::Simple.should_receive(:new).with(*expected_http_args).and_return(rest)
     end
 
 
@@ -195,7 +195,7 @@ describe Chef::Provider::RemoteFile::HTTP do
 
       before do
         cache_control_data.should_receive(:save)
-        Chef::Digester.should_receive(:checksum_for_file).with(tempfile_path).and_return(fetched_content_checksum)
+        Seth::Digester.should_receive(:checksum_for_file).with(tempfile_path).and_return(fetched_content_checksum)
       end
 
       it "should return a tempfile" do
@@ -274,21 +274,21 @@ describe Chef::Provider::RemoteFile::HTTP do
 
         # CHEF-3140
         # Some servers return tarballs as content type tar and encoding gzip, which
-        # is totally wrong. When this happens and gzip isn't disabled, Chef::HTTP::Simple
+        # is totally wrong. When this happens and gzip isn't disabled, Seth::HTTP::Simple
         # will decompress the file for you, which is not at all what you expected
         # to happen (you end up with an uncomressed tar archive instead of the
         # gzipped tar archive you expected). To work around this behavior, we
         # detect when users are fetching gzipped files and turn off gzip in
-        # Chef::HTTP::Simple.
+        # Seth::HTTP::Simple.
 
         it "should disable gzip compression in the client" do
           # Before block in the parent context has set an expectation on
-          # Chef::HTTP::Simple.new() being called with expected arguments. Here we fufil
+          # Seth::HTTP::Simple.new() being called with expected arguments. Here we fufil
           # that expectation, so that we can explicitly set it for this test.
           # This is intended to provide insurance that refactoring of the parent
           # context does not negate the value of this particular example.
-          Chef::HTTP::Simple.new(*expected_http_args)
-          Chef::HTTP::Simple.should_receive(:new).once.with(*expected_http_args).and_return(rest)
+          Seth::HTTP::Simple.new(*expected_http_args)
+          Seth::HTTP::Simple.should_receive(:new).once.with(*expected_http_args).and_return(rest)
           fetcher.fetch
           cache_control_data.etag.should be_nil
           cache_control_data.mtime.should be_nil

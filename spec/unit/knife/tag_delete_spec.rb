@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe Chef::Knife::TagDelete do
+describe Seth::Knife::TagDelete do
   before(:each) do
-    Chef::Config[:node_name] = "webmonkey.example.com"
-    @knife = Chef::Knife::TagDelete.new
-    @knife.name_args = [ Chef::Config[:node_name], "sadtag" ]
+    Seth::Config[:node_name] = "webmonkey.example.com"
+    @knife = Seth::Knife::TagDelete.new
+    @knife.name_args = [ Seth::Config[:node_name], "sadtag" ]
 
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.stub :save
     @node.tags << "sadtag" << "happytag"
-    Chef::Node.stub(:load).and_return @node
+    Seth::Node.stub(:load).and_return @node
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
   end

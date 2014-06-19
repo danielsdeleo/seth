@@ -17,20 +17,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Chef
-  # == Chef::Exceptions
-  # Chef's custom exceptions are all contained within the Chef::Exceptions
+class Seth
+  # == Seth::Exceptions
+  # Seth's custom exceptions are all contained within the Chef::Exceptions
   # namespace.
   class Exceptions
 
-    # Backcompat with Chef::ShellOut code:
+    # Backcompat with Seth::ShellOut code:
     require 'mixlib/shellout/exceptions'
 
     def self.const_missing(const_name)
       if const_name == :ShellCommandFailed
-        Chef::Log.warn("Chef::Exceptions::ShellCommandFailed is deprecated, use Mixlib::ShellOut::ShellCommandFailed")
+        Seth::Log.warn("Chef::Exceptions::ShellCommandFailed is deprecated, use Mixlib::ShellOut::ShellCommandFailed")
         called_from = caller[0..3].inject("Called from:\n") {|msg, trace_line| msg << "  #{trace_line}\n" }
-        Chef::Log.warn(called_from)
+        Seth::Log.warn(called_from)
         Mixlib::ShellOut::ShellCommandFailed
       else
         super
@@ -128,7 +128,7 @@ class Chef
     # match OP VERSION. ArgumentError?
     class InvalidVersionConstraint < ArgumentError; end
 
-    # Version constraints are not allowed in chef-solo
+    # Version constraints are not allowed in seth-solo
     class IllegalVersionConstraint < NotImplementedError; end
 
     # File operation attempted but no permissions to perform it
@@ -197,8 +197,8 @@ class Chef
 
     end
     # Exception class for collecting multiple failures. Used when running
-    # delayed notifications so that chef can process each delayed
-    # notification even if chef client or other notifications fail.
+    # delayed notifications so that seth can process each delayed
+    # notification even if seth client or other notifications fail.
     class MultipleFailures < StandardError
       def initialize(*args)
         super
@@ -214,7 +214,7 @@ class Chef
 
       def client_run_failure(exception)
         set_backtrace(exception.backtrace)
-        @all_failures << [ "chef run", exception ]
+        @all_failures << [ "seth run", exception ]
       end
 
       def notification_failure(exception)
@@ -323,8 +323,8 @@ class Chef
       end
     end
 
-    # Raised when Chef::Config[:run_lock_timeout] is set and some other client run fails
-    # to release the run lock becure Chef::Config[:run_lock_timeout] seconds pass.
+    # Raised when Seth::Config[:run_lock_timeout] is set and some other client run fails
+    # to release the run lock becure Seth::Config[:run_lock_timeout] seconds pass.
     class RunLockTimeout < RuntimeError
       def initialize(duration, blocking_pid)
         super "Unable to acquire lock. Waited #{duration} seconds for #{blocking_pid} to release."

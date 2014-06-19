@@ -49,11 +49,11 @@ end
 
 describe Shell::ClientSession do
   before do
-    Chef::Config[:shell_config] = { :override_runlist => [Chef::RunList::RunListItem.new('shell::override')] }
+    Seth::Config[:shell_config] = { :override_runlist => [Chef::RunList::RunListItem.new('shell::override')] }
     @session = Shell::ClientSession.instance
-    @node = Chef::Node.build("foo")
+    @node = Seth::Node.build("foo")
     @session.node = @node
-    @client = double("Chef::Client.new",
+    @client = double("Seth::Client.new",
                      :run_ohai => true,
                      :load_node => true,
                      :build_node => true,
@@ -63,14 +63,14 @@ describe Shell::ClientSession do
 
   it "builds the node's run_context with the proper environment" do
     @session.instance_variable_set(:@client, @client)
-    @expansion = Chef::RunList::RunListExpansion.new(@node.chef_environment, [])
+    @expansion = Seth::RunList::RunListExpansion.new(@node.seth_environment, [])
 
-    @node.run_list.should_receive(:expand).with(@node.chef_environment).and_return(@expansion)
+    @node.run_list.should_receive(:expand).with(@node.seth_environment).and_return(@expansion)
     @session.rebuild_context
   end
 
   it "passes the shell CLI args to the client" do
-    Chef::Client.should_receive(:new).with(nil, Chef::Config[:shell_config]).and_return(@client)
+    Seth::Client.should_receive(:new).with(nil, Chef::Config[:shell_config]).and_return(@client)
     @session.send(:rebuild_node)
   end
 
@@ -78,12 +78,12 @@ end
 
 describe Shell::StandAloneSession do
   before do
-    Chef::Config[:shell_config] = { :override_runlist => [Chef::RunList::RunListItem.new('shell::override')] }
+    Seth::Config[:shell_config] = { :override_runlist => [Chef::RunList::RunListItem.new('shell::override')] }
     @session = Shell::StandAloneSession.instance
-    @node = @session.node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = @session.run_context = Chef::RunContext.new(@node, {}, @events)
-    @recipe = @session.recipe = Chef::Recipe.new(nil, nil, @run_context)
+    @node = @session.node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = @session.run_context = Seth::RunContext.new(@node, {}, @events)
+    @recipe = @session.recipe = Seth::Recipe.new(nil, nil, @run_context)
     Shell::Extensions.extend_context_recipe(@recipe)
   end
 
@@ -103,25 +103,25 @@ describe Shell::StandAloneSession do
     @session.cookbook_loader.should be_nil
   end
 
-  it "runs chef with the standalone recipe" do
+  it "runs seth with the standalone recipe" do
     @session.stub(:node_built?).and_return(true)
-    Chef::Log.stub(:level)
-    chef_runner = double("Chef::Runner.new", :converge => :converged)
+    Seth::Log.stub(:level)
+    seth_runner = double("Seth::Runner.new", :converge => :converged)
     # pre-heat resource collection cache
     @session.resource_collection
 
-    Chef::Runner.should_receive(:new).with(@session.recipe.run_context).and_return(chef_runner)
-    @recipe.run_chef.should == :converged
+    Seth::Runner.should_receive(:new).with(@session.recipe.run_context).and_return(seth_runner)
+    @recipe.run_seth.should == :converged
   end
 
   it "passes the shell CLI args to the client" do
-    @client = double("Chef::Client.new",
+    @client = double("Seth::Client.new",
                      :run_ohai => true,
                      :load_node => true,
                      :build_node => true,
                      :register => true,
                      :sync_cookbooks => {})
-    Chef::Client.should_receive(:new).with(nil, Chef::Config[:shell_config]).and_return(@client)
+    Seth::Client.should_receive(:new).with(nil, Chef::Config[:shell_config]).and_return(@client)
     @session.send(:rebuild_node)
   end
 
@@ -129,24 +129,24 @@ end
 
 describe Shell::SoloSession do
   before do
-    Chef::Config[:shell_config] = { :override_runlist => [Chef::RunList::RunListItem.new('shell::override')] }
-    Chef::Config[:shell_solo] = true
+    Seth::Config[:shell_config] = { :override_runlist => [Chef::RunList::RunListItem.new('shell::override')] }
+    Seth::Config[:shell_solo] = true
     @session = Shell::SoloSession.instance
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = @session.run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = @session.run_context = Seth::RunContext.new(@node, {}, @events)
     @session.node = @node
-    @recipe = @session.recipe = Chef::Recipe.new(nil, nil, @run_context)
+    @recipe = @session.recipe = Seth::Recipe.new(nil, nil, @run_context)
     Shell::Extensions.extend_context_recipe(@recipe)
   end
 
   after do
-    Chef::Config[:shell_solo] = nil
+    Seth::Config[:shell_solo] = nil
   end
 
-  it "returns a collection based on it's compilation object and the extra recipe provided by chef-shell" do
+  it "returns a collection based on it's compilation object and the extra recipe provided by seth-shell" do
     @session.stub(:node_built?).and_return(true)
-    kitteh = Chef::Resource::Cat.new("keyboard")
+    kitteh = Seth::Resource::Cat.new("keyboard")
     @recipe.run_context.resource_collection << kitteh
     @session.resource_collection.should include(kitteh)
   end
@@ -163,31 +163,31 @@ describe Shell::SoloSession do
 
   it "generates its resource collection from the compiled cookbooks and the ad hoc recipe" do
     @session.stub(:node_built?).and_return(true)
-    kitteh_cat = Chef::Resource::Cat.new("kitteh")
+    kitteh_cat = Seth::Resource::Cat.new("kitteh")
     @run_context.resource_collection << kitteh_cat
-    keyboard_cat = Chef::Resource::Cat.new("keyboard_cat")
+    keyboard_cat = Seth::Resource::Cat.new("keyboard_cat")
     @recipe.run_context.resource_collection << keyboard_cat
     #@session.rebuild_collection
     @session.resource_collection.should include(kitteh_cat, keyboard_cat)
   end
 
-  it "runs chef with a resource collection from the compiled cookbooks" do
+  it "runs seth with a resource collection from the compiled cookbooks" do
     @session.stub(:node_built?).and_return(true)
-    Chef::Log.stub(:level)
-    chef_runner = double("Chef::Runner.new", :converge => :converged)
-    Chef::Runner.should_receive(:new).with(an_instance_of(Chef::RunContext)).and_return(chef_runner)
+    Seth::Log.stub(:level)
+    seth_runner = double("Seth::Runner.new", :converge => :converged)
+    Seth::Runner.should_receive(:new).with(an_instance_of(Chef::RunContext)).and_return(seth_runner)
 
-    @recipe.run_chef.should == :converged
+    @recipe.run_seth.should == :converged
   end
 
   it "passes the shell CLI args to the client" do
-    @client = double("Chef::Client.new",
+    @client = double("Seth::Client.new",
                      :run_ohai => true,
                      :load_node => true,
                      :build_node => true,
                      :register => true,
                      :sync_cookbooks => {})
-    Chef::Client.should_receive(:new).with(nil, Chef::Config[:shell_config]).and_return(@client)
+    Seth::Client.should_receive(:new).with(nil, Chef::Config[:shell_config]).and_return(@client)
     @session.send(:rebuild_node)
   end
 

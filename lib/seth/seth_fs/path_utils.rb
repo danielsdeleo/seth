@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs'
+require 'seth/chef_fs'
 require 'pathname'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     class PathUtils
 
       # If you are in 'source', this is what you would have to type to reach 'dest'
@@ -28,15 +28,15 @@ class Chef
       # relative_to('/a/b', '/a/b') == '.'
       def self.relative_to(dest, source)
         # Skip past the common parts
-        source_parts = Chef::ChefFS::PathUtils.split(source)
-        dest_parts = Chef::ChefFS::PathUtils.split(dest)
+        source_parts = Seth::ChefFS::PathUtils.split(source)
+        dest_parts = Seth::ChefFS::PathUtils.split(dest)
         i = 0
         until i >= source_parts.length || i >= dest_parts.length || source_parts[i] != dest_parts[i]
           i+=1
         end
         # dot-dot up from 'source' to the common ancestor, then
         # descend to 'dest' from the common ancestor
-        result = Chef::ChefFS::PathUtils.join(*(['..']*(source_parts.length-i) + dest_parts[i,dest.length-i]))
+        result = Seth::ChefFS::PathUtils.join(*(['..']*(source_parts.length-i) + dest_parts[i,dest.length-i]))
         result == '' ? '.' : result
       end
 
@@ -57,7 +57,7 @@ class Chef
       end
 
       def self.regexp_path_separator
-        Chef::ChefFS::windows? ? '[\/\\\\]' : '/'
+        Seth::ChefFS::windows? ? '[\/\\\\]' : '/'
       end
 
       # Given a path which may only be partly real (i.e. /x/y/z when only /x exists,

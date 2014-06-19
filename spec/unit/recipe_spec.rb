@@ -21,32 +21,32 @@
 
 require 'spec_helper'
 
-describe Chef::Recipe do
+describe Seth::Recipe do
 
   let(:cookbook_repo) { File.expand_path(File.join(File.dirname(__FILE__), "..", "data", "cookbooks")) }
 
   let(:cookbook_loader) do
-    loader = Chef::CookbookLoader.new(cookbook_repo)
+    loader = Seth::CookbookLoader.new(cookbook_repo)
     loader.load_cookbooks
     loader
   end
 
-  let(:cookbook_collection) { Chef::CookbookCollection.new(cookbook_loader) }
+  let(:cookbook_collection) { Seth::CookbookCollection.new(cookbook_loader) }
 
   let(:node) do
-    Chef::Node.new.tap {|n| n.normal[:tags] = [] }
+    Seth::Node.new.tap {|n| n.normal[:tags] = [] }
   end
 
   let(:events) do
-    Chef::EventDispatch::Dispatcher.new
+    Seth::EventDispatch::Dispatcher.new
   end
 
   let(:run_context) do
-    Chef::RunContext.new(node, cookbook_collection, events)
+    Seth::RunContext.new(node, cookbook_collection, events)
   end
 
   let(:recipe) do
-    Chef::Recipe.new("hjk", "test", run_context)
+    Seth::Recipe.new("hjk", "test", run_context)
   end
 
   describe "method_missing" do
@@ -119,7 +119,7 @@ describe Chef::Recipe do
       describe "should locate platform mapped resources" do
 
         it "locate resource for particular platform" do
-          Object.const_set('ShaunTheSheep', Class.new(Chef::Resource){ provides :laughter, :on_platforms => ["television"] })
+          Object.const_set('ShaunTheSheep', Class.new(Seth::Resource){ provides :laughter, :on_platforms => ["television"] })
           node.automatic[:platform] = "television"
           node.automatic[:platform_version] = "123"
           res = recipe.laughter "timmy"
@@ -128,7 +128,7 @@ describe Chef::Recipe do
         end
 
         it "locate a resource for all platforms" do
-          Object.const_set("YourMom", Class.new(Chef::Resource){ provides :love_and_caring })
+          Object.const_set("YourMom", Class.new(Seth::Resource){ provides :love_and_caring })
           res = recipe.love_and_caring "mommy"
           res.name.should eql("mommy")
           res.kind_of?(YourMom)
@@ -156,7 +156,7 @@ describe Chef::Recipe do
 
       it "does not add the resource to the resource collection" do
         zm_resource # force let binding evaluation
-        expect { run_context.resource_collection.resources(:zen_master => "klopp") }.to raise_error(Chef::Exceptions::ResourceNotFound)
+        expect { run_context.resource_collection.resources(:zen_master => "klopp") }.to raise_error(Seth::Exceptions::ResourceNotFound)
       end
 
     end
@@ -190,7 +190,7 @@ describe Chef::Recipe do
       it "gives a sane error message when using method_missing" do
         lambda do
           recipe.no_such_resource("foo")
-        end.should raise_error(NoMethodError, %q[No resource or method named `no_such_resource' for `Chef::Recipe "test"'])
+        end.should raise_error(NoMethodError, %q[No resource or method named `no_such_resource' for `Seth::Recipe "test"'])
       end
 
       it "gives a sane error message when using method_missing 'bare'" do
@@ -199,15 +199,15 @@ describe Chef::Recipe do
             # Giving an argument will change this from NameError to NoMethodError
             no_such_resource
           end
-        end.should raise_error(NameError, %q[No resource, method, or local variable named `no_such_resource' for `Chef::Recipe "test"'])
+        end.should raise_error(NameError, %q[No resource, method, or local variable named `no_such_resource' for `Seth::Recipe "test"'])
       end
 
       it "gives a sane error message when using build_resource" do
-        expect { recipe.build_resource(:no_such_resource, "foo") }.to raise_error(Chef::Exceptions::NoSuchResourceType)
+        expect { recipe.build_resource(:no_such_resource, "foo") }.to raise_error(Seth::Exceptions::NoSuchResourceType)
       end
 
       it "gives a sane error message when using declare_resource" do
-        expect { recipe.declare_resource(:no_such_resource, "bar") }.to raise_error(Chef::Exceptions::NoSuchResourceType)
+        expect { recipe.declare_resource(:no_such_resource, "bar") }.to raise_error(Seth::Exceptions::NoSuchResourceType)
       end
 
     end
@@ -219,7 +219,7 @@ describe Chef::Recipe do
           recipe.zen_master("klopp") do
             this_method_doesnt_exist
           end
-        end.should raise_error(NoMethodError, "undefined method `this_method_doesnt_exist' for Chef::Resource::ZenMaster")
+        end.should raise_error(NoMethodError, "undefined method `this_method_doesnt_exist' for Seth::Resource::ZenMaster")
 
       end
 
@@ -228,7 +228,7 @@ describe Chef::Recipe do
     describe "resource cloning" do
 
       let(:second_recipe) do
-        Chef::Recipe.new("second_cb", "second_recipe", run_context)
+        Seth::Recipe.new("second_cb", "second_recipe", run_context)
       end
 
       let(:original_resource) do
@@ -274,7 +274,7 @@ describe Chef::Recipe do
 
     describe "resource definitions" do
       it "should execute defined resources" do
-        crow_define = Chef::ResourceDefinition.new
+        crow_define = Seth::ResourceDefinition.new
         crow_define.define :crow, :peace => false, :something => true do
           zen_master "lao tzu" do
             peace params[:peace]
@@ -290,7 +290,7 @@ describe Chef::Recipe do
       end
 
       it "should set the node on defined resources" do
-        crow_define = Chef::ResourceDefinition.new
+        crow_define = Seth::ResourceDefinition.new
         crow_define.define :crow, :peace => false, :something => true do
           zen_master "lao tzu" do
             peace params[:peace]

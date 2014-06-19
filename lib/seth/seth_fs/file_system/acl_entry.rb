@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/rest_list_entry'
-require 'chef/chef_fs/file_system/not_found_error'
-require 'chef/chef_fs/file_system/operation_not_allowed_error'
-require 'chef/chef_fs/file_system/operation_failed_error'
+require 'seth/chef_fs/file_system/rest_list_entry'
+require 'seth/chef_fs/file_system/not_found_error'
+require 'seth/chef_fs/file_system/operation_not_allowed_error'
+require 'seth/chef_fs/file_system/operation_failed_error'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class AclEntry < RestListEntry
         PERMISSIONS = %w(create read update delete grant)
@@ -32,7 +32,7 @@ class Chef
         end
 
         def delete(recurse)
-          raise Chef::ChefFS::FileSystem::OperationNotAllowedError.new(:delete, self, e), "ACLs cannot be deleted."
+          raise Seth::ChefFS::FileSystem::OperationNotAllowedError.new(:delete, self, e), "ACLs cannot be deleted."
         end
 
         def write(file_contents)
@@ -42,12 +42,12 @@ class Chef
             begin
               rest.put("#{api_path}/#{permission}", { permission => acls[permission] })
             rescue Timeout::Error => e
-              raise Chef::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
+              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
             rescue Net::HTTPServerException => e
               if e.response.code == "404"
-                raise Chef::ChefFS::FileSystem::NotFoundError.new(self, e)
+                raise Seth::ChefFS::FileSystem::NotFoundError.new(self, e)
               else
-                raise Chef::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
+                raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
               end
             end
           end

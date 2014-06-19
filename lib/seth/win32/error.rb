@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/win32/api/error'
-require 'chef/win32/memory'
-require 'chef/win32/unicode'
-require 'chef/exceptions'
+require 'seth/win32/api/error'
+require 'seth/win32/memory'
+require 'seth/win32/unicode'
+require 'seth/exceptions'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     class Error
-      include Chef::ReservedNames::Win32::API::Error
-      extend Chef::ReservedNames::Win32::API::Error
+      include Seth::ReservedNames::Win32::API::Error
+      extend Seth::ReservedNames::Win32::API::Error
 
       def self.format_message(message_id = 0, args = {})
         flags = args[:flags] || FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ARGUMENT_ARRAY
@@ -42,7 +42,7 @@ class Chef
         begin
           return buffer.read_pointer.read_wstring(num_chars)
         ensure
-          Chef::ReservedNames::Win32::Memory.local_free(buffer.read_pointer)
+          Seth::ReservedNames::Win32::Memory.local_free(buffer.read_pointer)
         end
       end
 
@@ -56,7 +56,7 @@ class Chef
       # === Returns
       # nil::: always returns nil when it does not raise
       # === Raises
-      # Chef::Exceptions::Win32APIError:::
+      # Seth::Exceptions::Win32APIError:::
       def self.raise!(message = nil)
         code = get_last_error
         msg = format_message(code).strip
@@ -66,7 +66,7 @@ class Chef
         formatted_message << "System Error Code: #{code}\n"
         formatted_message << "System Error Message: #{msg}\n"
         formatted_message << "---- End Win32 API output ----\n"
-        raise Chef::Exceptions::Win32APIError, msg + "\n" + formatted_message
+        raise Seth::Exceptions::Win32APIError, msg + "\n" + formatted_message
       end
     end
   end

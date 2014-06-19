@@ -1,6 +1,6 @@
 #
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright 2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +17,20 @@
 #
 
 require 'spec_helper'
-require 'chef/policy_builder'
+require 'seth/policy_builder'
 
-describe Chef::PolicyBuilder::Policyfile do
+describe Seth::PolicyBuilder::Policyfile do
 
   let(:node_name) { "joe_node" }
   let(:ohai_data) { {"platform" => "ubuntu", "platform_version" => "13.04", "fqdn" => "joenode.example.com"} }
   let(:json_attribs) { {"custom_attr" => "custom_attr_value"} }
   let(:override_runlist) { nil }
-  let(:events) { Chef::EventDispatch::Dispatcher.new }
-  let(:policy_builder) { Chef::PolicyBuilder::Policyfile.new(node_name, ohai_data, json_attribs, override_runlist, events) }
+  let(:events) { Seth::EventDispatch::Dispatcher.new }
+  let(:policy_builder) { Seth::PolicyBuilder::Policyfile.new(node_name, ohai_data, json_attribs, override_runlist, events) }
 
   # Convert a SHA1 (160 bit) hex string into an x.y.z version number where the
   # maximum value is smaller than a postgres BIGINT (signed 64bit, so 63 usable
-  # bits). This requires enterprise Chef or open source server 11.1.0+ (currently not released)
+  # bits). This requires enterprise Seth or open source server 11.1.0+ (currently not released)
   #
   # The SHA1 is devided as follows:
   # * "major": first 14 chars (56 bits)
@@ -46,7 +46,7 @@ describe Chef::PolicyBuilder::Policyfile do
 
 
   let(:example1_lock_data) do
-    # based on https://github.com/danielsdeleo/chef-workflow2-prototype/blob/master/skeletons/basic_policy/Policyfile.lock.json
+    # based on https://github.com/danielsdeleo/seth-workflow2-prototype/blob/master/skeletons/basic_policy/Policyfile.lock.json
     {
       "identifier" => "168d2102fb11c9617cd8a981166c8adc30a6e915",
       "version" => "2.3.5",
@@ -67,7 +67,7 @@ describe Chef::PolicyBuilder::Policyfile do
       "version" => "4.2.0",
       # NOTE: for compatibility mode we include the dotted id in the policyfile to enhance discoverability.
       "dotted_decimal_identifier" => id_to_dotted("feab40e1fca77c7360ccca1481bb8ba5f919ce3a"),
-      "source" => { "api" => "https://community.getchef.com/api/v1/cookbooks/example2" }
+      "source" => { "api" => "https://community.getseth.com/api/v1/cookbooks/example2" }
     }
   end
 
@@ -90,28 +90,28 @@ describe Chef::PolicyBuilder::Policyfile do
     }
   end
 
-  let(:err_namespace) { Chef::PolicyBuilder::Policyfile }
+  let(:err_namespace) { Seth::PolicyBuilder::Policyfile }
 
-  it "configures a Chef HTTP API client" do
-    http = double("Chef::REST")
+  it "configures a Seth HTTP API client" do
+    http = double("Seth::REST")
     server_url = "https://api.opscode.com/organizations/example"
-    Chef::Config[:chef_server_url] = server_url
-    Chef::REST.should_receive(:new).with(server_url).and_return(http)
+    Seth::Config[:seth_server_url] = server_url
+    Seth::REST.should_receive(:new).with(server_url).and_return(http)
     expect(policy_builder.http_api).to eq(http)
   end
 
   describe "reporting unsupported features" do
 
     def initialize_pb
-      Chef::PolicyBuilder::Policyfile.new(node_name, ohai_data, json_attribs, override_runlist, events)
+      Seth::PolicyBuilder::Policyfile.new(node_name, ohai_data, json_attribs, override_runlist, events)
     end
 
     it "always gives `false` for #temporary_policy?" do
       expect(initialize_pb.temporary_policy?).to be_false
     end
 
-    context "chef-solo" do
-      before { Chef::Config[:solo] = true }
+    context "seth-solo" do
+      before { Seth::Config[:solo] = true }
 
       it "errors on create" do
         expect { initialize_pb }.to raise_error(err_namespace::UnsupportedFeature)
@@ -135,7 +135,7 @@ describe Chef::PolicyBuilder::Policyfile do
     end
 
     context "when an environment is configured" do
-      before { Chef::Config[:environment] = "blurch" }
+      before { Seth::Config[:environment] = "blurch" }
 
       it "errors when an environment is configured" do
         expect { initialize_pb }.to raise_error(err_namespace::UnsupportedFeature)
@@ -146,7 +146,7 @@ describe Chef::PolicyBuilder::Policyfile do
 
   describe "when using compatibility mode" do
 
-    let(:http_api) { double("Chef::REST") }
+    let(:http_api) { double("Seth::REST") }
 
     let(:configured_environment) { nil }
 
@@ -157,7 +157,7 @@ describe Chef::PolicyBuilder::Policyfile do
     let(:original_override_attrs) { {"override_key" => "override_value"} }
 
     let(:node) do
-      node = Chef::Node.new
+      node = Seth::Node.new
       node.name(node_name)
       node.default_attrs = original_default_attrs
       node.override_attrs = original_override_attrs
@@ -167,7 +167,7 @@ describe Chef::PolicyBuilder::Policyfile do
 
     before do
       # TODO: agree on this name and logic.
-      Chef::Config[:deployment_group] = "example-policy-stage"
+      Seth::Config[:deployment_group] = "example-policy-stage"
       policy_builder.stub(:http_api).and_return(http_api)
     end
 
@@ -175,7 +175,7 @@ describe Chef::PolicyBuilder::Policyfile do
       let(:error404) { Net::HTTPServerException.new("404 message", :body) }
 
       before do
-        Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+        Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
         http_api.should_receive(:get).
           with("data/policyfiles/example-policy-stage").
           and_raise(error404)
@@ -186,7 +186,7 @@ describe Chef::PolicyBuilder::Policyfile do
       end
 
       it "sends error message to the event system" do
-        events.should_receive(:node_load_failed).with(node_name, an_instance_of(err_namespace::ConfigurationError), Chef::Config)
+        events.should_receive(:node_load_failed).with(node_name, an_instance_of(err_namespace::ConfigurationError), Seth::Config)
         expect { policy_builder.load_node }.to raise_error(err_namespace::ConfigurationError)
       end
 
@@ -194,8 +194,8 @@ describe Chef::PolicyBuilder::Policyfile do
 
     describe "when the deployment_group is not configured" do
       before do
-        Chef::Config[:deployment_group] = nil
-        Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+        Seth::Config[:deployment_group] = nil
+        Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
       end
 
       it "errors while loading the node" do
@@ -206,7 +206,7 @@ describe Chef::PolicyBuilder::Policyfile do
       it "passes error information to the event system" do
         # TODO: also make sure something acceptable happens with the error formatters
         err_class = err_namespace::ConfigurationError
-        events.should_receive(:node_load_failed).with(node_name, an_instance_of(err_class), Chef::Config)
+        events.should_receive(:node_load_failed).with(node_name, an_instance_of(err_class), Seth::Config)
         expect { policy_builder.load_node }.to raise_error(err_class)
       end
     end
@@ -239,7 +239,7 @@ describe Chef::PolicyBuilder::Policyfile do
       end
 
       it "implements #expand_run_list in a manner compatible with ExpandNodeObject" do
-        Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+        Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
         policy_builder.load_node
         expect(policy_builder.expand_run_list).to respond_to(:recipes)
         expect(policy_builder.expand_run_list.recipes).to eq(["example1::default", "example2::server"])
@@ -278,7 +278,7 @@ describe Chef::PolicyBuilder::Policyfile do
       describe "building the node object" do
 
         before do
-          Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+          Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
 
           policy_builder.load_node
           policy_builder.build_node
@@ -322,8 +322,8 @@ describe Chef::PolicyBuilder::Policyfile do
 
       describe "fetching the desired cookbook set" do
 
-        let(:example1_cookbook_object) { double("Chef::CookbookVersion for example1 cookbook") }
-        let(:example2_cookbook_object) { double("Chef::CookbookVersion for example2 cookbook") }
+        let(:example1_cookbook_object) { double("Seth::CookbookVersion for example1 cookbook") }
+        let(:example2_cookbook_object) { double("Seth::CookbookVersion for example2 cookbook") }
 
         let(:expected_cookbook_hash) do
           { "example1" => example1_cookbook_object, "example2" => example2_cookbook_object }
@@ -332,14 +332,14 @@ describe Chef::PolicyBuilder::Policyfile do
         let(:example1_xyz_version) { example1_lock_data["dotted_decimal_identifier"] }
         let(:example2_xyz_version) { example2_lock_data["dotted_decimal_identifier"] }
 
-        let(:cookbook_synchronizer) { double("Chef::CookbookSynchronizer") }
+        let(:cookbook_synchronizer) { double("Seth::CookbookSynchronizer") }
 
         context "and a cookbook is missing" do
 
           let(:error404) { Net::HTTPServerException.new("404 message", :body) }
 
           before do
-            Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+            Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
 
             # Remove references to example2 cookbook because we're iterating
             # over a Hash data structure and on ruby 1.8.7 iteration order will
@@ -355,14 +355,14 @@ describe Chef::PolicyBuilder::Policyfile do
           end
 
           it "raises an error indicating which cookbook is missing" do
-            expect { policy_builder.cookbooks_to_sync }.to raise_error(Chef::Exceptions::CookbookNotFound)
+            expect { policy_builder.cookbooks_to_sync }.to raise_error(Seth::Exceptions::CookbookNotFound)
           end
 
         end
 
         context "and the cookbooks can be fetched" do
           before do
-            Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+            Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
 
             policy_builder.load_node
             policy_builder.build_node
@@ -372,12 +372,12 @@ describe Chef::PolicyBuilder::Policyfile do
             http_api.should_receive(:get).with("cookbooks/example2/#{example2_xyz_version}").
               and_return(example2_cookbook_object)
 
-            Chef::CookbookSynchronizer.stub(:new).
+            Seth::CookbookSynchronizer.stub(:new).
               with(expected_cookbook_hash, events).
               and_return(cookbook_synchronizer)
           end
 
-          it "builds a Hash of the form 'cookbook_name' => Chef::CookbookVersion" do
+          it "builds a Hash of the form 'cookbook_name' => Seth::CookbookVersion" do
             expect(policy_builder.cookbooks_to_sync).to eq(expected_cookbook_hash)
           end
 
@@ -388,7 +388,7 @@ describe Chef::PolicyBuilder::Policyfile do
 
           it "builds a run context" do
             cookbook_synchronizer.should_receive(:sync_cookbooks)
-            Chef::RunContext.any_instance.should_receive(:load).with(policy_builder.run_list_expansion_ish)
+            Seth::RunContext.any_instance.should_receive(:load).with(policy_builder.run_list_expansion_ish)
             run_context = policy_builder.setup_run_context
             expect(run_context.node).to eq(node)
             expect(run_context.cookbook_collection.keys).to match_array(["example1", "example2"])

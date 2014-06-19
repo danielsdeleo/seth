@@ -1,6 +1,6 @@
 # Author:: Bryan McLellan <btm@loftninjas.org>
 # Author:: Seth Chisamore <schisamo@opscode.com>
-# Copyright:: Copyright (c) 2011,2014, Chef Software, Inc.
+# Copyright:: Copyright (c) 2011,2014, Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/dsl/platform_introspection'
-require 'chef/dsl/registry_helper'
+require 'seth/dsl/platform_introspection'
+require 'seth/dsl/registry_helper'
 
-class Chef
+class Seth
   module DSL
     module RebootPending
 
-      include Chef::DSL::RegistryHelper
-      include Chef::DSL::PlatformIntrospection
+      include Seth::DSL::RegistryHelper
+      include Seth::DSL::PlatformIntrospection
 
       # Returns true if the system needs a reboot or is expected to reboot
       # Raises UnsupportedPlatform if this functionality isn't provided yet
@@ -53,7 +53,7 @@ class Chef
           # This should work for Debian as well if update-notifier-common happens to be installed. We need an API for that.
           File.exists?('/var/run/reboot-required')
         else
-          raise Chef::Exceptions::UnsupportedPlatform.new(node[:platform])
+          raise Seth::Exceptions::UnsupportedPlatform.new(node[:platform])
         end
       end
     end

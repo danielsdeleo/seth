@@ -52,23 +52,23 @@ if ENV["COVERAGE"]
   end
 end
 
-require 'chef'
-require 'chef/knife'
+require 'seth'
+require 'seth/knife'
 
-Dir['lib/chef/knife/**/*.rb'].
+Dir['lib/seth/knife/**/*.rb'].
   map {|f| f.gsub('lib/', '') }.
   map {|f| f.gsub(%r[\.rb$], '') }.
   each {|f| require f }
 
-require 'chef/mixins'
-require 'chef/dsl'
-require 'chef/application'
-require 'chef/applications'
+require 'seth/mixins'
+require 'seth/dsl'
+require 'seth/application'
+require 'seth/applications'
 
-require 'chef/shell'
-require 'chef/util/file_edit'
+require 'seth/shell'
+require 'seth/util/file_edit'
 
-require 'chef/config'
+require 'seth/config'
 
 # If you want to load anything into the testing environment
 # without versioning it, add it to spec/support/local_gems.rb
@@ -132,7 +132,7 @@ RSpec.configure do |config|
   }
 
   # Functional Resource tests that are provider-specific:
-  # context "on platforms that use useradd", :provider => {:user => Chef::Provider::User::Useradd}} do #...
+  # context "on platforms that use useradd", :provider => {:user => Seth::Provider::User::Useradd}} do #...
   config.filter_run_excluding :provider => lambda {|criteria|
     type, target_provider = criteria.first
 
@@ -140,7 +140,7 @@ RSpec.configure do |config|
     platform_version = TEST_PLATFORM_VERSION.dup
 
     begin
-      provider_for_running_platform = Chef::Platform.find_provider(platform, platform_version, type)
+      provider_for_running_platform = Seth::Platform.find_provider(platform, platform_version, type)
       provider_for_running_platform != target_provider
     rescue ArgumentError # no provider for platform
       true
@@ -151,7 +151,7 @@ RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
   config.before(:each) do
-    Chef::Config.reset
+    Seth::Config.reset
   end
 end
 

@@ -18,16 +18,16 @@
 #
 
 require 'spec_helper'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
 metadata = { :unix_only => true,
   :requires_root => true,
-  :provider => {:user => Chef::Provider::User::Useradd}
+  :provider => {:user => Seth::Provider::User::Useradd}
 }
 
-describe Chef::Resource::User, metadata do
+describe Seth::Resource::User, metadata do
 
-  include Chef::Mixin::ShellOut
+  include Seth::Mixin::ShellOut
 
 
   # Utility code for /etc/passwd interaction, avoid any caching of user records:
@@ -56,7 +56,7 @@ describe Chef::Resource::User, metadata do
   before do
     pending "porting implementation for user provider in aix" if OHAI_SYSTEM[:platform] == 'aix'
     # Silence shell_out live stream
-    Chef::Log.level = :warn
+    Seth::Log.level = :warn
   end
 
   after do
@@ -69,21 +69,21 @@ describe Chef::Resource::User, metadata do
   end
 
   let(:node) do
-    n = Chef::Node.new
+    n = Seth::Node.new
     n.consume_external_attrs(OHAI_SYSTEM.data.dup, {})
     n
   end
 
   let(:events) do
-    Chef::EventDispatch::Dispatcher.new
+    Seth::EventDispatch::Dispatcher.new
   end
 
   let(:run_context) do
-    Chef::RunContext.new(node, {}, events)
+    Seth::RunContext.new(node, {}, events)
   end
 
   let(:username) do
-    "chef-functional-test"
+    "seth-functional-test"
   end
 
   let(:uid) { nil }
@@ -94,7 +94,7 @@ describe Chef::Resource::User, metadata do
   let(:comment) { nil }
 
   let(:user_resource) do
-    r = Chef::Resource::User.new("TEST USER RESOURCE", run_context)
+    r = Seth::Resource::User.new("TEST USER RESOURCE", run_context)
     r.username(username)
     r.uid(uid)
     r.home(home)
@@ -221,7 +221,7 @@ describe Chef::Resource::User, metadata do
         let(:password) { "$1$RRa/wMM/$XltKfoX5ffnexVF4dHZZf/" }
         it "sets the user's shadow password" do
           pw_entry.passwd.should == "x"
-          expected_shadow = "chef-functional-test:$1$RRa/wMM/$XltKfoX5ffnexVF4dHZZf/"
+          expected_shadow = "seth-functional-test:$1$RRa/wMM/$XltKfoX5ffnexVF4dHZZf/"
           etc_shadow.should include(expected_shadow)
         end
       end
@@ -257,7 +257,7 @@ describe Chef::Resource::User, metadata do
       let(:existing_comment) { nil }
 
       let(:existing_user) do
-        r = Chef::Resource::User.new("TEST USER RESOURCE", run_context)
+        r = Seth::Resource::User.new("TEST USER RESOURCE", run_context)
         # username is identity attr, must match.
         r.username(username)
         r.uid(existing_uid)
@@ -374,7 +374,7 @@ describe Chef::Resource::User, metadata do
 
         it "ensures the password is set" do
           pw_entry.passwd.should == "x"
-          expected_shadow = "chef-functional-test:$1$RRa/wMM/$XltKfoX5ffnexVF4dHZZf/"
+          expected_shadow = "seth-functional-test:$1$RRa/wMM/$XltKfoX5ffnexVF4dHZZf/"
           etc_shadow.should include(expected_shadow)
         end
 
@@ -388,7 +388,7 @@ describe Chef::Resource::User, metadata do
 
         it "ensures the password is set to the desired value" do
           pw_entry.passwd.should == "x"
-          expected_shadow = "chef-functional-test:$1$RRa/wMM/$XltKfoX5ffnexVF4dHZZf/"
+          expected_shadow = "seth-functional-test:$1$RRa/wMM/$XltKfoX5ffnexVF4dHZZf/"
           etc_shadow.should include(expected_shadow)
         end
       end
@@ -443,7 +443,7 @@ describe Chef::Resource::User, metadata do
   describe "action :lock" do
     context "when the user does not exist" do
       it "raises a sensible error" do
-        expect { user_resource.run_action(:lock) }.to raise_error(Chef::Exceptions::User)
+        expect { user_resource.run_action(:lock) }.to raise_error(Seth::Exceptions::User)
       end
     end
 
@@ -478,7 +478,7 @@ describe Chef::Resource::User, metadata do
   describe "action :unlock" do
     context "when the user does not exist" do
       it "raises a sensible error" do
-        expect { user_resource.run_action(:unlock) }.to raise_error(Chef::Exceptions::User)
+        expect { user_resource.run_action(:unlock) }.to raise_error(Seth::Exceptions::User)
       end
     end
 
@@ -511,12 +511,12 @@ describe Chef::Resource::User, metadata do
             # This should be an error instead; note that usermod still exits 0
             # (which is probably why this case silently fails):
             #
-            # DEBUG: ---- Begin output of usermod -U chef-functional-test ----
+            # DEBUG: ---- Begin output of usermod -U seth-functional-test ----
             # DEBUG: STDOUT:
             # DEBUG: STDERR: usermod: unlocking the user's password would result in a passwordless account.
             # You should set a password with usermod -p to unlock this user's password.
-            # DEBUG: ---- End output of usermod -U chef-functional-test ----
-            # DEBUG: Ran usermod -U chef-functional-test returned 0
+            # DEBUG: ---- End output of usermod -U seth-functional-test ----
+            # DEBUG: Ran usermod -U seth-functional-test returned 0
             @error.should be_nil
             pw_entry.passwd.should == 'x'
             shadow_password.should == "!"

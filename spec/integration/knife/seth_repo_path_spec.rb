@@ -17,10 +17,10 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'chef/knife/list'
-require 'chef/knife/show'
+require 'seth/knife/list'
+require 'seth/knife/show'
 
-describe 'chef_repo_path tests' do
+describe 'seth_repo_path tests' do
   extend IntegrationSupport
   include KnifeSupport
 
@@ -43,7 +43,7 @@ describe 'chef_repo_path tests' do
       file 'roles2/role2.json', {}
       file 'users2/user2.json', {}
 
-      directory 'chef_repo2' do
+      directory 'seth_repo2' do
         file 'clients/client3.json', {}
         file 'cookbooks/cookbook3/metadata.rb', ''
         file 'data_bags/bag3/item3.json', {}
@@ -53,9 +53,9 @@ describe 'chef_repo_path tests' do
         file 'users/user3.json', {}
       end
 
-      it 'knife list --local -Rfp --chef-repo-path chef_repo2 / grabs chef_repo2 stuff' do
-        Chef::Config.delete(:chef_repo_path)
-        knife("list --local -Rfp --chef-repo-path #{path_to('chef_repo2')} /").should_succeed <<EOM
+      it 'knife list --local -Rfp --seth-repo-path chef_repo2 / grabs chef_repo2 stuff' do
+        Seth::Config.delete(:seth_repo_path)
+        knife("list --local -Rfp --seth-repo-path #{path_to('chef_repo2')} /").should_succeed <<EOM
 /clients/
 /clients/client3.json
 /cookbooks/
@@ -78,13 +78,13 @@ EOM
       context 'when all _paths are set to alternates' do
         before :each do
           %w(client cookbook data_bag environment node role user).each do |object_name|
-            Chef::Config["#{object_name}_path".to_sym] = File.join(Chef::Config.chef_repo_path, "#{object_name}s2")
+            Seth::Config["#{object_name}_path".to_sym] = File.join(Chef::Config.seth_repo_path, "#{object_name}s2")
           end
-          Chef::Config.chef_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
+          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
         end
 
-        it 'knife list --local -Rfp --chef-repo-path chef_repo2 / grabs chef_repo2 stuff' do
-          knife("list --local -Rfp --chef-repo-path #{path_to('chef_repo2')} /").should_succeed <<EOM
+        it 'knife list --local -Rfp --seth-repo-path chef_repo2 / grabs chef_repo2 stuff' do
+          knife("list --local -Rfp --seth-repo-path #{path_to('chef_repo2')} /").should_succeed <<EOM
 /clients/
 /clients/client3.json
 /cookbooks/
@@ -118,8 +118,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2' do
-          cwd 'chef_repo2'
+        context 'when cwd is inside seth_repo2' do
+          cwd 'seth_repo2'
           it 'knife list --local -Rfp lists everything' do
             knife('list --local -Rfp').should_succeed <<EOM
 clients/
@@ -156,10 +156,10 @@ EOM
         end
       end
 
-      context 'when all _paths except chef_repo_path are set to alternates' do
+      context 'when all _paths except seth_repo_path are set to alternates' do
         before :each do
           %w(client cookbook data_bag environment node role user).each do |object_name|
-            Chef::Config["#{object_name}_path".to_sym] = File.join(Chef::Config.chef_repo_path, "#{object_name}s2")
+            Seth::Config["#{object_name}_path".to_sym] = File.join(Chef::Config.seth_repo_path, "#{object_name}s2")
           end
         end
 
@@ -194,8 +194,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2' do
-          cwd 'chef_repo2'
+        context 'when cwd is inside seth_repo2' do
+          cwd 'seth_repo2'
           it 'knife list -Rfp fails' do
             knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
@@ -212,12 +212,12 @@ EOM
         end
       end
 
-      context 'when only chef_repo_path is set to its alternate' do
+      context 'when only seth_repo_path is set to its alternate' do
         before :each do
           %w(client cookbook data_bag environment node role user).each do |object_name|
-            Chef::Config.delete("#{object_name}_path".to_sym)
+            Seth::Config.delete("#{object_name}_path".to_sym)
           end
-          Chef::Config.chef_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
+          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
         end
 
         context 'when cwd is at the top level' do
@@ -234,8 +234,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2' do
-          cwd 'chef_repo2'
+        context 'when cwd is inside seth_repo2' do
+          cwd 'seth_repo2'
           it 'knife list --local -Rfp lists everything' do
             knife('list --local -Rfp').should_succeed <<EOM
 clients/
@@ -258,8 +258,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2/data_bags' do
-          cwd 'chef_repo2/data_bags'
+        context 'when cwd is inside seth_repo2/data_bags' do
+          cwd 'seth_repo2/data_bags'
           it 'knife list --local -Rfp lists data bags' do
             knife('list --local -Rfp').should_succeed <<EOM
 bag3/
@@ -272,12 +272,12 @@ EOM
       context 'when paths are set to point to both versions of each' do
         before :each do
           %w(client cookbook data_bag environment node role user).each do |object_name|
-            Chef::Config["#{object_name}_path".to_sym] = [
-              File.join(Chef::Config.chef_repo_path, "#{object_name}s"),
-              File.join(Chef::Config.chef_repo_path, "#{object_name}s2")
+            Seth::Config["#{object_name}_path".to_sym] = [
+              File.join(Seth::Config.seth_repo_path, "#{object_name}s"),
+              File.join(Seth::Config.seth_repo_path, "#{object_name}s2")
             ]
           end
-          Chef::Config.chef_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
+          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
         end
 
         context 'when there is a directory in clients1 and file in clients2 with the same name' do
@@ -311,7 +311,7 @@ EOM
           directory 'cookbooks/blah'
           file 'cookbooks2/blah/metadata.rb', ''
           it 'knife list -Rfp cookbooks shows files in blah' do
-            knife('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'blah' is empty or entirely chefignored at #{Chef::Config.cookbook_path[0]}/blah\n")
+            knife('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'blah' is empty or entirely sethignored at #{Seth::Config.cookbook_path[0]}/blah\n")
 /cookbooks/blah/
 /cookbooks/blah/metadata.rb
 /cookbooks/cookbook1/
@@ -326,7 +326,7 @@ EOM
           file 'cookbooks/blah/metadata.json', {}
           file 'cookbooks2/blah/metadata.rb', ''
           it 'knife list -Rfp cookbooks shows files in the first cookbook and not the second' do
-            knife('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Chef::Config.cookbook_path[0]}/blah and #{Chef::Config.cookbook_path[1]}/blah\n")
+            knife('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.cookbook_path[0]}/blah and #{Chef::Config.cookbook_path[1]}/blah\n")
 /cookbooks/blah/
 /cookbooks/blah/metadata.json
 /cookbooks/cookbook1/
@@ -356,7 +356,7 @@ EOM
           file 'data_bags/blah/item1.json', ''
           file 'data_bags2/blah/item2.json', ''
           it 'knife list -Rfp data_bags shows only items in data_bags1' do
-            knife('list --local -Rfp /data_bags').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Chef::Config.data_bag_path[0]}/blah and #{Chef::Config.data_bag_path[1]}/blah\n")
+            knife('list --local -Rfp /data_bags').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.data_bag_path[0]}/blah and #{Chef::Config.data_bag_path[1]}/blah\n")
 /data_bags/bag/
 /data_bags/bag/item.json
 /data_bags/bag2/
@@ -434,8 +434,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2' do
-          cwd 'chef_repo2'
+        context 'when cwd is inside seth_repo2' do
+          cwd 'seth_repo2'
           it 'knife list --local -Rfp lists everything' do
             knife('list --local -Rfp').should_succeed <<EOM
 clients/
@@ -480,14 +480,14 @@ EOM
         end
       end
 
-      context 'when when chef_repo_path is set to both places and no other _path is set' do
+      context 'when when seth_repo_path is set to both places and no other _path is set' do
         before :each do
           %w(client cookbook data_bag environment node role user).each do |object_name|
-            Chef::Config.delete("#{object_name}_path".to_sym)
+            Seth::Config.delete("#{object_name}_path".to_sym)
           end
-          Chef::Config.chef_repo_path = [
-            Chef::Config.chef_repo_path,
-            File.join(Chef::Config.chef_repo_path, 'chef_repo2')
+          Seth::Config.seth_repo_path = [
+            Seth::Config.seth_repo_path,
+            File.join(Seth::Config.seth_repo_path, 'chef_repo2')
           ]
         end
 
@@ -536,8 +536,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2' do
-          cwd 'chef_repo2'
+        context 'when cwd is inside seth_repo2' do
+          cwd 'seth_repo2'
           it 'knife list --local -Rfp lists everything' do
             knife('list --local -Rfp').should_succeed <<EOM
 clients/
@@ -569,8 +569,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2/data_bags' do
-          cwd 'chef_repo2/data_bags'
+        context 'when cwd is inside seth_repo2/data_bags' do
+          cwd 'seth_repo2/data_bags'
           it 'knife list --local -Rfp lists data bags' do
             knife('list --local -Rfp').should_succeed <<EOM
 bag/
@@ -585,10 +585,10 @@ EOM
       context 'when cookbook_path is set and nothing else' do
         before :each do
           %w(client data_bag environment node role user).each do |object_name|
-            Chef::Config.delete("#{object_name}_path".to_sym)
+            Seth::Config.delete("#{object_name}_path".to_sym)
           end
-          Chef::Config.delete(:chef_repo_path)
-          Chef::Config.cookbook_path = File.join(@repository_dir, 'chef_repo2', 'cookbooks')
+          Seth::Config.delete(:seth_repo_path)
+          Seth::Config.cookbook_path = File.join(@repository_dir, 'seth_repo2', 'cookbooks')
         end
 
         context 'when cwd is at the top level' do
@@ -605,8 +605,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2' do
-          cwd 'chef_repo2'
+        context 'when cwd is inside seth_repo2' do
+          cwd 'seth_repo2'
           it 'knife list --local -Rfp lists everything' do
             knife('list --local -Rfp').should_succeed <<EOM
 clients/
@@ -629,8 +629,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2/data_bags' do
-          cwd 'chef_repo2/data_bags'
+        context 'when cwd is inside seth_repo2/data_bags' do
+          cwd 'seth_repo2/data_bags'
           it 'knife list --local -Rfp lists data bags' do
             knife('list --local -Rfp').should_succeed <<EOM
 bag3/
@@ -643,12 +643,12 @@ EOM
       context 'when cookbook_path is set to multiple places and nothing else is set' do
         before :each do
           %w(client data_bag environment node role user).each do |object_name|
-            Chef::Config.delete("#{object_name}_path".to_sym)
+            Seth::Config.delete("#{object_name}_path".to_sym)
           end
-          Chef::Config.delete(:chef_repo_path)
-          Chef::Config.cookbook_path = [
+          Seth::Config.delete(:seth_repo_path)
+          Seth::Config.cookbook_path = [
             File.join(@repository_dir, 'cookbooks'),
-            File.join(@repository_dir, 'chef_repo2', 'cookbooks')
+            File.join(@repository_dir, 'seth_repo2', 'cookbooks')
           ]
         end
 
@@ -697,8 +697,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2' do
-          cwd 'chef_repo2'
+        context 'when cwd is inside seth_repo2' do
+          cwd 'seth_repo2'
           it 'knife list --local -Rfp lists everything' do
             knife('list --local -Rfp').should_succeed <<EOM
 clients/
@@ -730,8 +730,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2/data_bags' do
-          cwd 'chef_repo2/data_bags'
+        context 'when cwd is inside seth_repo2/data_bags' do
+          cwd 'seth_repo2/data_bags'
           it 'knife list --local -Rfp lists data bags' do
             knife('list --local -Rfp').should_succeed <<EOM
 bag/
@@ -743,13 +743,13 @@ EOM
         end
       end
 
-      context 'when data_bag_path and chef_repo_path are set, and nothing else' do
+      context 'when data_bag_path and seth_repo_path are set, and nothing else' do
         before :each do
           %w(client cookbook  environment node role user).each do |object_name|
-            Chef::Config.delete("#{object_name}_path".to_sym)
+            Seth::Config.delete("#{object_name}_path".to_sym)
           end
-          Chef::Config.data_bag_path = File.join(Chef::Config.chef_repo_path, 'data_bags')
-          Chef::Config.chef_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
+          Seth::Config.data_bag_path = File.join(Chef::Config.seth_repo_path, 'data_bags')
+          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
         end
 
         context 'when cwd is at the top level' do
@@ -769,8 +769,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2' do
-          cwd 'chef_repo2'
+        context 'when cwd is inside seth_repo2' do
+          cwd 'seth_repo2'
           it 'knife list --local -Rfp lists everything' do
             knife('list --local -Rfp').should_succeed <<EOM
 clients/
@@ -793,8 +793,8 @@ EOM
           end
         end
 
-        context 'when cwd is inside chef_repo2/data_bags' do
-          cwd 'chef_repo2/data_bags'
+        context 'when cwd is inside seth_repo2/data_bags' do
+          cwd 'seth_repo2/data_bags'
           it 'knife list --local -Rfp fails' do
             knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
@@ -806,10 +806,10 @@ EOM
 
         before :each do
           %w(client cookbook  environment node role user).each do |object_name|
-            Chef::Config.delete("#{object_name}_path".to_sym)
+            Seth::Config.delete("#{object_name}_path".to_sym)
           end
-          Chef::Config.delete(:chef_repo_path)
-          Chef::Config.data_bag_path = File.join(@repository_dir, 'data_bags')
+          Seth::Config.delete(:seth_repo_path)
+          Seth::Config.data_bag_path = File.join(@repository_dir, 'data_bags')
         end
 
         it 'knife list --local -Rfp / lists data bags' do
@@ -843,9 +843,9 @@ EOM
       context 'when the repository _paths point to places that do not exist' do
         before :each do
           %w(client cookbook data_bag environment node role user).each do |object_name|
-            Chef::Config["#{object_name}_path".to_sym] = File.join(Chef::Config.chef_repo_path, 'nowhere', object_name)
+            Seth::Config["#{object_name}_path".to_sym] = File.join(Chef::Config.seth_repo_path, 'nowhere', object_name)
           end
-          Chef::Config.chef_repo_path = File.join(Chef::Config.chef_repo_path, 'nowhere')
+          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'nowhere')
         end
 
         it 'knife list --local -Rfp / fails' do

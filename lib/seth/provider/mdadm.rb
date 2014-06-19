@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/log'
-require 'chef/mixin/shell_out'
-require 'chef/provider'
+require 'seth/log'
+require 'seth/mixin/shell_out'
+require 'seth/provider'
 
-class Chef
+class Seth
   class Provider
-    class Mdadm < Chef::Provider
+    class Mdadm < Seth::Provider
 
-      include Chef::Mixin::ShellOut
+      include Seth::Mixin::ShellOut
 
       def popen4
         raise Exception, "deprecated"
@@ -35,9 +35,9 @@ class Chef
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::Mdadm.new(@new_resource.name)
+        @current_resource = Seth::Resource::Mdadm.new(@new_resource.name)
         @current_resource.raid_device(@new_resource.raid_device)
-        Chef::Log.debug("#{@new_resource} checking for software raid device #{@current_resource.raid_device}")
+        Seth::Log.debug("#{@new_resource} checking for software raid device #{@current_resource.raid_device}")
 
         device_not_found = 4
         mdadm = shell_out!("mdadm --detail --test #{@new_resource.raid_device}", :returns => [0,device_not_found])
@@ -53,12 +53,12 @@ class Chef
             command << " --metadata=#{@new_resource.metadata}"
             command << " --bitmap=#{@new_resource.bitmap}" if @new_resource.bitmap
             command << " --raid-devices #{@new_resource.devices.length} #{@new_resource.devices.join(" ")}"
-            Chef::Log.debug("#{@new_resource} mdadm command: #{command}")
+            Seth::Log.debug("#{@new_resource} mdadm command: #{command}")
             shell_out!(command)
-            Chef::Log.info("#{@new_resource} created raid device (#{@new_resource.raid_device})")
+            Seth::Log.info("#{@new_resource} created raid device (#{@new_resource.raid_device})")
           end
         else
-          Chef::Log.debug("#{@new_resource} raid device already exists, skipping create (#{@new_resource.raid_device})")
+          Seth::Log.debug("#{@new_resource} raid device already exists, skipping create (#{@new_resource.raid_device})")
         end
       end
 
@@ -66,12 +66,12 @@ class Chef
         unless @current_resource.exists
           converge_by("assemble RAID device #{new_resource.raid_device}") do
             command = "yes | mdadm --assemble #{@new_resource.raid_device} #{@new_resource.devices.join(" ")}"
-            Chef::Log.debug("#{@new_resource} mdadm command: #{command}")
+            Seth::Log.debug("#{@new_resource} mdadm command: #{command}")
             shell_out!(command)
-            Chef::Log.info("#{@new_resource} assembled raid device (#{@new_resource.raid_device})")
+            Seth::Log.info("#{@new_resource} assembled raid device (#{@new_resource.raid_device})")
           end
         else
-          Chef::Log.debug("#{@new_resource} raid device already exists, skipping assemble (#{@new_resource.raid_device})")
+          Seth::Log.debug("#{@new_resource} raid device already exists, skipping assemble (#{@new_resource.raid_device})")
         end
       end
 
@@ -79,12 +79,12 @@ class Chef
         if @current_resource.exists
           converge_by("stop RAID device #{new_resource.raid_device}") do
             command = "yes | mdadm --stop #{@new_resource.raid_device}"
-            Chef::Log.debug("#{@new_resource} mdadm command: #{command}")
+            Seth::Log.debug("#{@new_resource} mdadm command: #{command}")
             shell_out!(command)
-            Chef::Log.info("#{@new_resource} stopped raid device (#{@new_resource.raid_device})")
+            Seth::Log.info("#{@new_resource} stopped raid device (#{@new_resource.raid_device})")
           end
         else
-          Chef::Log.debug("#{@new_resource} raid device doesn't exist (#{@new_resource.raid_device}) - not stopping")
+          Seth::Log.debug("#{@new_resource} raid device doesn't exist (#{@new_resource.raid_device}) - not stopping")
         end
       end
 

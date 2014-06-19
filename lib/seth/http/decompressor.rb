@@ -17,9 +17,9 @@
 #
 
 require 'zlib'
-require 'chef/http/http_request'
+require 'seth/http/http_request'
 
-class Chef
+class Seth
   class HTTP
 
     # Middleware-esque class for handling compression in HTTP responses.
@@ -79,10 +79,10 @@ class Chef
         else
           case response[CONTENT_ENCODING]
           when GZIP
-            Chef::Log.debug "decompressing gzip response"
+            Seth::Log.debug "decompressing gzip response"
             Zlib::Inflate.new(Zlib::MAX_WBITS + 16).inflate(response.body)
           when DEFLATE
-            Chef::Log.debug "decompressing deflate response"
+            Seth::Log.debug "decompressing deflate response"
             Zlib::Inflate.inflate(response.body)
           else
             response.body
@@ -94,20 +94,20 @@ class Chef
       # object you can use to unzip/inflate a streaming response.
       def stream_response_handler(response)
         if gzip_disabled?
-          Chef::Log.debug "disable_gzip is set. \
+          Seth::Log.debug "disable_gzip is set. \
             Not using #{response[CONTENT_ENCODING]} \
             and initializing noop stream deflator."
           NoopInflater.new
         else
           case response[CONTENT_ENCODING]
           when GZIP
-            Chef::Log.debug "Initializing gzip stream deflator"
+            Seth::Log.debug "Initializing gzip stream deflator"
             GzipInflater.new
           when DEFLATE
-            Chef::Log.debug "Initializing deflate stream deflator"
+            Seth::Log.debug "Initializing deflate stream deflator"
             DeflateInflater.new
           else
-            Chef::Log.debug "content_encoding = '#{response[CONTENT_ENCODING]}' \
+            Seth::Log.debug "content_encoding = '#{response[CONTENT_ENCODING]}' \
               initializing noop stream deflator."
             NoopInflater.new
           end

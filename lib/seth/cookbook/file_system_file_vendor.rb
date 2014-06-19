@@ -17,17 +17,17 @@
 # limitations under the License.
 #
 
-require 'chef/cookbook/file_vendor'
+require 'seth/cookbook/file_vendor'
 
-class Chef
+class Seth
   class Cookbook
-    # == Chef::Cookbook::FileSystemFileVendor
-    # This FileVendor loads files from Chef::Config.cookbook_path. The
+    # == Seth::Cookbook::FileSystemFileVendor
+    # This FileVendor loads files from Seth::Config.cookbook_path. The
     # thing that's sort of janky about this FileVendor implementation is
     # that it basically takes only the cookbook's name from the manifest
     # and throws the rest away then re-builds the list of files on the
     # disk. This is due to the manifest not having the on-disk file
-    # locations, since in the chef-client case, that information is
+    # locations, since in the seth-client case, that information is
     # non-sensical.
     class FileSystemFileVendor < FileVendor
 
@@ -38,7 +38,7 @@ class Chef
       end
 
       # Implements abstract base's requirement. It looks in the
-      # Chef::Config.cookbook_path file hierarchy for the requested
+      # Seth::Config.cookbook_path file hierarchy for the requested
       # file.
       def get_filename(filename)
         location = @repo_paths.inject(nil) do |memo, basepath|

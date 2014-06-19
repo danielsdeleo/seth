@@ -20,10 +20,10 @@ if RUBY_PLATFORM =~ /mswin|mingw32|windows/
   require 'Win32API'
 end
 
-class Chef
+class Seth
   class Provider
     class Env
-      class Windows < Chef::Provider::Env
+      class Windows < Seth::Provider::Env
 
         def create_env
           obj = env_obj(@new_resource.key_name)

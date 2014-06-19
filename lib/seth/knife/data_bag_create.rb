@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class DataBagCreate < Knife
 
       deps do
-        require 'chef/data_bag'
-        require 'chef/encrypted_data_bag_item'
+        require 'seth/data_bag'
+        require 'seth/encrypted_data_bag_item'
       end
 
       banner "knife data bag create BAG [ITEM] (options)"
@@ -35,18 +35,18 @@ class Chef
         :short => "-s SECRET",
         :long  => "--secret ",
         :description => "The secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |s| Chef::Config[:knife][:secret] = s }
+        :proc => Proc.new { |s| Seth::Config[:knife][:secret] = s }
 
       option :secret_file,
         :long => "--secret-file SECRET_FILE",
         :description => "A file containing the secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |sf| Chef::Config[:knife][:secret_file] = sf }
+        :proc => Proc.new { |sf| Seth::Config[:knife][:secret_file] = sf }
 
       def read_secret
         if config[:secret]
           config[:secret]
         else
-          Chef::EncryptedDataBagItem.load_secret(config[:secret_file])
+          Seth::EncryptedDataBagItem.load_secret(config[:secret_file])
         end
       end
 
@@ -68,8 +68,8 @@ class Chef
         end
 
         begin
-          Chef::DataBag.validate_name!(@data_bag_name)
-        rescue Chef::Exceptions::InvalidDataBagName => e
+          Seth::DataBag.validate_name!(@data_bag_name)
+        rescue Seth::Exceptions::InvalidDataBagName => e
           ui.fatal(e.message)
           exit(1)
         end
@@ -86,9 +86,9 @@ class Chef
         # if an item is specified, create it, as well
         if @data_bag_item_name
           create_object({ "id" => @data_bag_item_name }, "data_bag_item[#{@data_bag_item_name}]") do |output|
-            item = Chef::DataBagItem.from_hash(
+            item = Seth::DataBagItem.from_hash(
                      if use_encryption
-                       Chef::EncryptedDataBagItem.encrypt_data_bag_item(output, read_secret)
+                       Seth::EncryptedDataBagItem.encrypt_data_bag_item(output, read_secret)
                      else
                        output
                      end)

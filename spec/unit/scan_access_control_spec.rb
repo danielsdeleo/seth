@@ -16,15 +16,15 @@
 #
 
 require File.expand_path("../../spec_helper", __FILE__)
-require 'chef/scan_access_control'
+require 'seth/scan_access_control'
 
-describe Chef::ScanAccessControl do
+describe Seth::ScanAccessControl do
 
   before do
-    @new_resource = Chef::Resource::File.new("/tmp/foo/bar/baz/link")
+    @new_resource = Seth::Resource::File.new("/tmp/foo/bar/baz/link")
     @real_file = "/tmp/foo/bar/real/file"
-    @current_resource = Chef::Resource::File.new(@new_resource.path)
-    @scanner = Chef::ScanAccessControl.new(@new_resource, @current_resource)
+    @current_resource = Seth::Resource::File.new(@new_resource.path)
+    @scanner = Seth::ScanAccessControl.new(@new_resource, @current_resource)
   end
 
   describe "when the fs entity does not exist" do
@@ -56,7 +56,7 @@ describe Chef::ScanAccessControl do
     end
 
     describe "when new_resource does not specify mode, user or group" do
-      # these tests are necessary for minitest-chef-handler to use as an API, see CHEF-3235
+      # these tests are necessary for minitest-seth-handler to use as an API, see CHEF-3235
       before do
         @scanner.set_all!
       end

@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Provider
-    class Easy < Chef::Provider
+    class Easy < Seth::Provider
       def load_current_resource
         true
       end

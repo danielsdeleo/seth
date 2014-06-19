@@ -21,16 +21,16 @@ require 'yajl'
 require 'openssl'
 require 'base64'
 require 'digest/sha2'
-require 'chef/encrypted_data_bag_item'
-require 'chef/encrypted_data_bag_item/unsupported_encrypted_data_bag_item_format'
-require 'chef/encrypted_data_bag_item/unacceptable_encrypted_data_bag_item_format'
-require 'chef/encrypted_data_bag_item/decryption_failure'
-require 'chef/encrypted_data_bag_item/unsupported_cipher'
+require 'seth/encrypted_data_bag_item'
+require 'seth/encrypted_data_bag_item/unsupported_encrypted_data_bag_item_format'
+require 'seth/encrypted_data_bag_item/unacceptable_encrypted_data_bag_item_format'
+require 'seth/encrypted_data_bag_item/decryption_failure'
+require 'seth/encrypted_data_bag_item/unsupported_cipher'
 
-class Chef::EncryptedDataBagItem
+class Seth::EncryptedDataBagItem
 
   #=== Decryptor
-  # For backwards compatibility, Chef implements decryption/deserialization for
+  # For backwards compatibility, Seth implements decryption/deserialization for
   # older encrypted data bag item formats in addition to the current version.
   # Each decryption/deserialization strategy is implemented as a class in this
   # namespace. For convenience the factory method +Decryptor.for()+ can be used
@@ -53,7 +53,7 @@ class Chef::EncryptedDataBagItem
         Version0Decryptor.new(encrypted_value, key)
       else
         raise UnsupportedEncryptedDataBagItemFormat,
-          "This version of chef does not support encrypted data bag item format version '#{format_version}'"
+          "This version of seth does not support encrypted data bag item format version '#{format_version}'"
       end
     end
 
@@ -66,10 +66,10 @@ class Chef::EncryptedDataBagItem
     end
 
     def self.assert_format_version_acceptable!(format_version)
-      unless format_version.kind_of?(Integer) and format_version >= Chef::Config[:data_bag_decrypt_minimum_version]
+      unless format_version.kind_of?(Integer) and format_version >= Seth::Config[:data_bag_decrypt_minimum_version]
         raise UnacceptableEncryptedDataBagItemFormat,
           "The encrypted data bag item has format version `#{format_version}', " +
-          "but the config setting 'data_bag_decrypt_minimum_version' requires version `#{Chef::Config[:data_bag_decrypt_minimum_version]}'"
+          "but the config setting 'data_bag_decrypt_minimum_version' requires version `#{Seth::Config[:data_bag_decrypt_minimum_version]}'"
       end
     end
 
@@ -158,12 +158,12 @@ class Chef::EncryptedDataBagItem
       end
 
       def assert_valid_cipher!
-        # In the future, chef may support configurable ciphers. For now, only
+        # In the future, seth may support configurable ciphers. For now, only
         # aes-256-cbc is supported.
         requested_cipher = @encrypted_data["cipher"]
         unless requested_cipher == ALGORITHM
           raise UnsupportedCipher,
-            "Cipher '#{requested_cipher}' is not supported by this version of Chef. Available ciphers: ['#{ALGORITHM}']"
+            "Cipher '#{requested_cipher}' is not supported by this version of Seth. Available ciphers: ['#{ALGORITHM}']"
         end
       end
     end

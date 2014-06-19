@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
-require 'chef/knife/cookbook_site_install'
+require 'seth/knife'
+require 'seth/knife/cookbook_site_install'
 
-class Chef::Knife::CookbookSiteVendor < Chef::Knife::CookbookSiteInstall
+class Seth::Knife::CookbookSiteVendor < Chef::Knife::CookbookSiteInstall
 
   def self.load_deps
     superclass.load_deps

@@ -17,14 +17,14 @@
 #
 
 
-class Chef
+class Seth
   module Deprecation
     module Provider
 
       # == Deprecation::Provider::CookbookFile
       # This module contains the deprecated functions of
-      # Chef::Provider::CookbookFile. These functions are refactored to
-      # different components. They are frozen and will be removed in Chef 12.
+      # Seth::Provider::CookbookFile. These functions are refactored to
+      # different components. They are frozen and will be removed in Seth 12.
       #
       module CookbookFile
 

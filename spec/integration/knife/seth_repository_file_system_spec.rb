@@ -16,10 +16,10 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'chef/knife/list'
-require 'chef/knife/show'
+require 'seth/knife/list'
+require 'seth/knife/show'
 
-describe 'General chef_repo file system checks' do
+describe 'General seth_repo file system checks' do
   extend IntegrationSupport
   include KnifeSupport
 
@@ -51,7 +51,7 @@ EOM
       directory 'cookbooks/cookbook1'
 
       it "knife list --local -Rfp / does not return it" do
-        knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely chefignored at #{Chef::Config.chef_repo_path}/cookbooks/cookbook1\n")
+        knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.chef_repo_path}/cookbooks/cookbook1\n")
 /cookbooks/
 EOM
       end
@@ -61,7 +61,7 @@ EOM
       directory 'cookbooks/cookbook1/recipes'
 
       it "knife list --local -Rfp / does not return it" do
-        knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely chefignored at #{Chef::Config.chef_repo_path}/cookbooks/cookbook1\n")
+        knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.chef_repo_path}/cookbooks/cookbook1\n")
 /cookbooks/
 EOM
       end
@@ -86,7 +86,7 @@ EOM
       directory 'cookbooks/cookbook1/templates/default'
 
       it "knife list --local -Rfp / does not return it" do
-        knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely chefignored at #{Chef::Config.chef_repo_path}/cookbooks/cookbook1\n")
+        knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.chef_repo_path}/cookbooks/cookbook1\n")
 /cookbooks/
 EOM
       end

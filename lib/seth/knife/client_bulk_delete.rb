@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class ClientBulkDelete < Knife
 
       deps do
-        require 'chef/api_client'
-        require 'chef/json_compat'
+        require 'seth/api_client'
+        require 'seth/json_compat'
       end
 
       option :delete_validators,
@@ -39,7 +39,7 @@ class Chef
           ui.fatal("You must supply a regular expression to match the results against")
           exit 42
         end
-        all_clients = Chef::ApiClient.list(true)
+        all_clients = Seth::ApiClient.list(true)
 
         matcher = /#{name_args[0]}/
         clients_to_delete = {}

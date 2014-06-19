@@ -1,5 +1,5 @@
 # x86-mingw32 Gemspec #
-gemspec = eval(IO.read(File.expand_path("../chef.gemspec", __FILE__)))
+gemspec = eval(IO.read(File.expand_path("../seth.gemspec", __FILE__)))
 
 gemspec.platform = "x86-mingw32"
 

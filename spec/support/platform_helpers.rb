@@ -1,7 +1,7 @@
 require 'fcntl'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
-include Chef::Mixin::ShellOut
+include Seth::Mixin::ShellOut
 
 def ruby_gte_20?
   RUBY_VERSION.to_f >= 2.0
@@ -95,7 +95,7 @@ end
 DEV_NULL = windows? ? 'NUL' : '/dev/null'
 
 def selinux_enabled?
-  # This code is currently copied from lib/chef/util/selinux to make
+  # This code is currently copied from lib/seth/util/selinux to make
   # specs independent of product.
   selinuxenabled_path = which("selinuxenabled")
   if selinuxenabled_path

@@ -17,12 +17,12 @@
 # limitations under the License.
 #
 
-require 'chef/node/immutable_collections'
-require 'chef/node/attribute_collections'
-require 'chef/mixin/deep_merge'
-require 'chef/log'
+require 'seth/node/immutable_collections'
+require 'seth/node/attribute_collections'
+require 'seth/mixin/deep_merge'
+require 'seth/log'
 
-class Chef
+class Seth
   class Node
 
     # == Attribute
@@ -315,7 +315,7 @@ class Chef
          @merged_attributes ||= begin
                                   components = [merge_defaults, @normal, merge_overrides, @automatic]
                                   resolved_attrs = components.inject(Mash.new) do |merged, component|
-                                    Chef::Mixin::DeepMerge.hash_only_merge(merged, component)
+                                    Seth::Mixin::DeepMerge.hash_only_merge(merged, component)
                                   end
                                   immutablize(resolved_attrs)
                                 end
@@ -380,14 +380,14 @@ class Chef
        def merge_defaults
          DEFAULT_COMPONENTS.inject(Mash.new) do |merged, component_ivar|
            component_value = instance_variable_get(component_ivar)
-           Chef::Mixin::DeepMerge.merge(merged, component_value)
+           Seth::Mixin::DeepMerge.merge(merged, component_value)
          end
        end
 
        def merge_overrides
          OVERRIDE_COMPONENTS.inject(Mash.new) do |merged, component_ivar|
            component_value = instance_variable_get(component_ivar)
-           Chef::Mixin::DeepMerge.merge(merged, component_value)
+           Seth::Mixin::DeepMerge.merge(merged, component_value)
          end
        end
 

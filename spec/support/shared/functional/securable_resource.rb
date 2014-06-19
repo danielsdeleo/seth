@@ -78,14 +78,14 @@ end
 
 shared_context "use Windows permissions", :windows_only do
   if windows?
-    SID ||= Chef::ReservedNames::Win32::Security::SID
-    ACE ||= Chef::ReservedNames::Win32::Security::ACE
-    ACL ||= Chef::ReservedNames::Win32::Security::ACL
-    SecurableObject ||= Chef::ReservedNames::Win32::Security::SecurableObject
+    SID ||= Seth::ReservedNames::Win32::Security::SID
+    ACE ||= Seth::ReservedNames::Win32::Security::ACE
+    ACL ||= Seth::ReservedNames::Win32::Security::ACL
+    SecurableObject ||= Seth::ReservedNames::Win32::Security::SecurableObject
   end
 
   def get_security_descriptor(path)
-    Chef::ReservedNames::Win32::Security.get_named_security_info(path)
+    Seth::ReservedNames::Win32::Security.get_named_security_info(path)
   end
 
   def explicit_aces
@@ -103,36 +103,36 @@ shared_context "use Windows permissions", :windows_only do
   # Standard expected rights
   let(:expected_read_perms) do
     {
-      :generic => Chef::ReservedNames::Win32::API::Security::GENERIC_READ,
-      :specific => Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_READ,
+      :generic => Seth::ReservedNames::Win32::API::Security::GENERIC_READ,
+      :specific => Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_READ,
     }
   end
 
   let(:expected_read_execute_perms) do
     {
-      :generic => Chef::ReservedNames::Win32::API::Security::GENERIC_READ | Chef::ReservedNames::Win32::API::Security::GENERIC_EXECUTE,
-      :specific => Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_READ | Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE
+      :generic => Seth::ReservedNames::Win32::API::Security::GENERIC_READ | Chef::ReservedNames::Win32::API::Security::GENERIC_EXECUTE,
+      :specific => Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_READ | Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE
     }
   end
 
   let(:expected_write_perms) do
     {
-      :generic => Chef::ReservedNames::Win32::API::Security::GENERIC_WRITE,
-      :specific => Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_WRITE
+      :generic => Seth::ReservedNames::Win32::API::Security::GENERIC_WRITE,
+      :specific => Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_WRITE
     }
   end
 
   let(:expected_modify_perms) do
     {
-      :generic => Chef::ReservedNames::Win32::API::Security::GENERIC_READ | Chef::ReservedNames::Win32::API::Security::GENERIC_WRITE | Chef::ReservedNames::Win32::API::Security::GENERIC_EXECUTE | Chef::ReservedNames::Win32::API::Security::DELETE,
-      :specific => Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_READ | Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_WRITE | Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE | Chef::ReservedNames::Win32::API::Security::DELETE
+      :generic => Seth::ReservedNames::Win32::API::Security::GENERIC_READ | Chef::ReservedNames::Win32::API::Security::GENERIC_WRITE | Chef::ReservedNames::Win32::API::Security::GENERIC_EXECUTE | Chef::ReservedNames::Win32::API::Security::DELETE,
+      :specific => Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_READ | Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_WRITE | Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE | Chef::ReservedNames::Win32::API::Security::DELETE
     }
   end
 
   let(:expected_full_control_perms) do
     {
-      :generic => Chef::ReservedNames::Win32::API::Security::GENERIC_ALL,
-      :specific => Chef::ReservedNames::Win32::API::Security::FILE_ALL_ACCESS
+      :generic => Seth::ReservedNames::Win32::API::Security::GENERIC_ALL,
+      :specific => Seth::ReservedNames::Win32::API::Security::FILE_ALL_ACCESS
     }
   end
 
@@ -206,7 +206,7 @@ shared_examples_for "a securable resource with existing target" do
       end
 
       it "should set permissions as specified" do
-        pending('Linux does not support lchmod', :if => resource.instance_of?(Chef::Resource::Link) && !os_x? && !freebsd?) do
+        pending('Linux does not support lchmod', :if => resource.instance_of?(Seth::Resource::Link) && !os_x? && !freebsd?) do
           (File.lstat(path).mode & 007777).should == (@mode_string.oct & 007777)
         end
       end
@@ -224,7 +224,7 @@ shared_examples_for "a securable resource with existing target" do
       end
 
       it "should set permissions in numeric form as a ruby-interpreted octal" do
-        pending('Linux does not support lchmod', :if => resource.instance_of?(Chef::Resource::Link) && !os_x? && !freebsd?) do
+        pending('Linux does not support lchmod', :if => resource.instance_of?(Seth::Resource::Link) && !os_x? && !freebsd?) do
           (File.lstat(path).mode & 007777).should == (@mode_integer & 007777)
         end
       end
@@ -310,7 +310,7 @@ shared_examples_for "a securable resource without existing target" do
     end
 
     it "fails to set owner when owner has invalid characters" do
-      lambda { resource.owner 'Lance "The Nose" Glindenberry III' }.should raise_error#(Chef::Exceptions::ValidationFailed)
+      lambda { resource.owner 'Lance "The Nose" Glindenberry III' }.should raise_error#(Seth::Exceptions::ValidationFailed)
     end
 
     it "sets owner when owner is specified with a \\" do
@@ -345,7 +345,7 @@ shared_examples_for "a securable resource without existing target" do
     end
 
     it "fails to set group when group has invalid characters" do
-      lambda { resource.group 'Lance "The Nose" Glindenberry III' }.should raise_error(Chef::Exceptions::ValidationFailed)
+      lambda { resource.group 'Lance "The Nose" Glindenberry III' }.should raise_error(Seth::Exceptions::ValidationFailed)
     end
 
     it "sets group when group is specified with a \\" do
@@ -441,7 +441,7 @@ shared_examples_for "a securable resource without existing target" do
 
     context "with a mode attribute" do
       if windows?
-        Security ||= Chef::ReservedNames::Win32::API::Security
+        Security ||= Seth::ReservedNames::Win32::API::Security
       end
 
       it "respects mode in string form as an octal number" do
@@ -491,7 +491,7 @@ shared_examples_for "a securable resource without existing target" do
 
       it 'warns when mode tries to set owner bits but owner is not specified' do
         @warn = []
-        Chef::Log.stub(:warn) { |msg| @warn << msg }
+        Seth::Log.stub(:warn) { |msg| @warn << msg }
 
         resource.mode 0400
         resource.run_action(:create)
@@ -501,7 +501,7 @@ shared_examples_for "a securable resource without existing target" do
 
       it 'warns when mode tries to set group bits but group is not specified' do
         @warn = []
-        Chef::Log.stub(:warn) { |msg| @warn << msg }
+        Seth::Log.stub(:warn) { |msg| @warn << msg }
 
         resource.mode 0040
         resource.run_action(:create)

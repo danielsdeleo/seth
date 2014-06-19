@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/provider/package/smartos'
+require 'seth/resource/package'
+require 'seth/provider/package/smartos'
 
-class Chef
+class Seth
   class Resource
-    class SmartosPackage < Chef::Resource::Package
+    class SmartosPackage < Seth::Resource::Package
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :smartos_package
-        @provider = Chef::Provider::Package::SmartOS
+        @provider = Seth::Provider::Package::SmartOS
       end
 
     end
@@ -34,5 +34,5 @@ class Chef
 end
 
 # Backwards compatability
-# @todo remove in Chef 12
-Chef::Resource::SmartOSPackage = Chef::Resource::SmartosPackage
+# @todo remove in Seth 12
+Seth::Resource::SmartOSPackage = Chef::Resource::SmartosPackage

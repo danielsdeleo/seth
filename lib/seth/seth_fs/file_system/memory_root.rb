@@ -1,7 +1,7 @@
-require 'chef/chef_fs/file_system/memory_dir'
+require 'seth/chef_fs/file_system/memory_dir'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class MemoryRoot < MemoryDir
         def initialize(pretty_name, cannot_be_in_regex = nil)

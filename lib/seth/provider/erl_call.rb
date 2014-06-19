@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/log'
-require 'chef/mixin/command'
-require 'chef/provider'
+require 'seth/log'
+require 'seth/mixin/command'
+require 'seth/provider'
 
-class Chef
+class Seth
   class Provider
-    class ErlCall < Chef::Provider
-      include Chef::Mixin::Command
+    class ErlCall < Seth::Provider
+      include Seth::Mixin::Command
 
       def initialize(node, new_resource)
         super(node, new_resource)
@@ -63,15 +63,15 @@ class Chef
           begin
             pid, stdin, stdout, stderr = popen4(command, :waitlast => true)
 
-            Chef::Log.debug("#{@new_resource} running")
-            Chef::Log.debug("#{@new_resource} command: #{command}")
-            Chef::Log.debug("#{@new_resource} code: #{@new_resource.code}")
+            Seth::Log.debug("#{@new_resource} running")
+            Seth::Log.debug("#{@new_resource} command: #{command}")
+            Seth::Log.debug("#{@new_resource} code: #{@new_resource.code}")
 
             @new_resource.code.each_line { |line| stdin.puts(line.chomp) }
 
             stdin.close
 
-            Chef::Log.debug("#{@new_resource} output: ")
+            Seth::Log.debug("#{@new_resource} output: ")
 
             stdout_output = ""
             stdout.each_line { |line| stdout_output << line }
@@ -83,18 +83,18 @@ class Chef
 
             # fail if stderr contains anything
             if stderr_output.length > 0
-              raise Chef::Exceptions::ErlCall, stderr_output
+              raise Seth::Exceptions::ErlCall, stderr_output
             end
 
             # fail if the first 4 characters aren't "{ok,"
             unless stdout_output[0..3].include?('{ok,')
-              raise Chef::Exceptions::ErlCall, stdout_output
+              raise Seth::Exceptions::ErlCall, stdout_output
             end
 
             @new_resource.updated_by_last_action(true)
 
-            Chef::Log.debug("#{@new_resource} #{stdout_output}")
-            Chef::Log.info("#{@new_resouce} ran successfully")
+            Seth::Log.debug("#{@new_resource} #{stdout_output}")
+            Seth::Log.info("#{@new_resouce} ran successfully")
           ensure
             Process.wait(pid) if pid
           end

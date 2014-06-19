@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class RoleBulkDelete < Knife
 
       deps do
-        require 'chef/role'
-        require 'chef/json_compat'
+        require 'seth/role'
+        require 'seth/json_compat'
       end
 
       banner "knife role bulk delete REGEX (options)"
@@ -35,7 +35,7 @@ class Chef
           exit 1
         end
 
-        all_roles = Chef::Role.list(true)
+        all_roles = Seth::Role.list(true)
 
         matcher = /#{@name_args[0]}/
         roles_to_delete = {}

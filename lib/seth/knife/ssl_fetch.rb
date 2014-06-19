@@ -1,6 +1,6 @@
 #
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/knife/ssl_fetch'
-require 'chef/config'
+require 'seth/knife/ssl_fetch'
+require 'seth/config'
 
-class Chef
+class Seth
   class Knife
-    class SslFetch < Chef::Knife
+    class SslFetch < Seth::Knife
 
       deps do
         require 'pp'
@@ -39,13 +39,13 @@ class Chef
 
       def uri
         @uri ||= begin
-          Chef::Log.debug("Checking SSL cert on #{given_uri}")
+          Seth::Log.debug("Checking SSL cert on #{given_uri}")
           URI.parse(given_uri)
         end
       end
 
       def given_uri
-        (name_args[0] or Chef::Config.chef_server_url)
+        (name_args[0] or Seth::Config.seth_server_url)
       end
 
       def host
@@ -106,7 +106,7 @@ class Chef
       end
 
       def configuration
-        Chef::Config
+        Seth::Config
       end
 
       def trusted_certs_dir

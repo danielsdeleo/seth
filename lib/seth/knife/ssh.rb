@@ -16,25 +16,25 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class Ssh < Knife
 
       deps do
         require 'net/ssh'
         require 'net/ssh/multi'
-        require 'chef/monkey_patches/net-ssh-multi'
+        require 'seth/monkey_patches/net-ssh-multi'
         require 'readline'
-        require 'chef/exceptions'
-        require 'chef/search/query'
-        require 'chef/mixin/shell_out'
-        require 'chef/mixin/command'
+        require 'seth/exceptions'
+        require 'seth/search/query'
+        require 'seth/mixin/shell_out'
+        require 'seth/mixin/command'
         require 'mixlib/shellout'
       end
 
-      include Chef::Mixin::ShellOut
+      include Seth::Mixin::ShellOut
 
       attr_writer :password
 
@@ -51,7 +51,7 @@ class Chef
         :short => "-a ATTR",
         :long => "--attribute ATTR",
         :description => "The attribute to use for opening the connection - default depends on the context",
-        :proc => Proc.new { |key| Chef::Config[:knife][:ssh_attribute] = key.strip }
+        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_attribute] = key.strip }
 
       option :manual,
         :short => "-m",
@@ -78,13 +78,13 @@ class Chef
         :short => "-p PORT",
         :long => "--ssh-port PORT",
         :description => "The ssh port",
-        :proc => Proc.new { |key| Chef::Config[:knife][:ssh_port] = key.strip }
+        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_port] = key.strip }
 
       option :ssh_gateway,
         :short => "-G GATEWAY",
         :long => "--ssh-gateway GATEWAY",
         :description => "The ssh gateway",
-        :proc => Proc.new { |key| Chef::Config[:knife][:ssh_gateway] = key.strip }
+        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_gateway] = key.strip }
 
       option :forward_agent,
         :short => "-A",
@@ -116,7 +116,7 @@ class Chef
           case config[:on_error]
           when :skip
             ui.warn "Failed to connect to #{server.host} -- #{$!.class.name}: #{$!.message}"
-            $!.backtrace.each { |l| Chef::Log.debug(l) }
+            $!.backtrace.each { |l| Seth::Log.debug(l) }
           when :raise
             #Net::SSH::Multi magic to force exception to be re-raised.
             throw :go, :raise
@@ -127,7 +127,7 @@ class Chef
       end
 
       def configure_gateway
-        config[:ssh_gateway] ||= Chef::Config[:knife][:ssh_gateway]
+        config[:ssh_gateway] ||= Seth::Config[:knife][:ssh_gateway]
         if config[:ssh_gateway]
           gw_host, gw_user = config[:ssh_gateway].split('@').reverse
           gw_host, gw_port = gw_host.split(':')
@@ -161,7 +161,7 @@ class Chef
 
       def search_nodes
         list = Array.new
-        query = Chef::Search::Query.new
+        query = Seth::Search::Query.new
         @action_nodes = query.search(:node, @name_args[0])[0]
         @action_nodes.each do |item|
           # we should skip the loop to next iteration if the item
@@ -191,12 +191,12 @@ class Chef
       def session_from_list(list)
         list.each do |item|
           host, ssh_port = item
-          Chef::Log.debug("Adding #{host}")
+          Seth::Log.debug("Adding #{host}")
           session_opts = {}
 
           ssh_config = Net::SSH.configuration_for(host)
 
-          # Chef::Config[:knife][:ssh_user] is parsed in #configure_user and written to config[:ssh_user]
+          # Seth::Config[:knife][:ssh_user] is parsed in #configure_user and written to config[:ssh_user]
           user = config[:ssh_user] || ssh_config[:user]
           hostspec = user ? "#{user}@#{host}" : host
           session_opts[:keys] = File.expand_path(config[:identity_file]) if config[:identity_file]
@@ -205,9 +205,9 @@ class Chef
           session_opts[:forward_agent] = config[:forward_agent]
           session_opts[:port] = config[:ssh_port] ||
                                 ssh_port || # Use cloud port if available
-                                Chef::Config[:knife][:ssh_port] ||
+                                Seth::Config[:knife][:ssh_port] ||
                                 ssh_config[:port]
-          session_opts[:logger] = Chef::Log.logger if Chef::Log.level == :debug
+          session_opts[:logger] = Seth::Log.logger if Chef::Log.level == :debug
 
           if !config[:host_key_verify]
             session_opts[:paranoid] = false
@@ -379,7 +379,7 @@ class Chef
                  new_window_cmds.call].join(" ")
           shell_out!(cmd)
           exec("tmux attach-session -t #{tmux_name}")
-        rescue Chef::Exceptions::Exec
+        rescue Seth::Exceptions::Exec
         end
       end
 
@@ -408,13 +408,13 @@ class Chef
       end
 
       def configure_attribute
-        # Setting 'knife[:ssh_attribute] = "foo"' in knife.rb => Chef::Config[:knife][:ssh_attribute] == 'foo'
-        # Running 'knife ssh -a foo' => both Chef::Config[:knife][:ssh_attribute] && config[:attribute] == foo
+        # Setting 'knife[:ssh_attribute] = "foo"' in knife.rb => Seth::Config[:knife][:ssh_attribute] == 'foo'
+        # Running 'knife ssh -a foo' => both Seth::Config[:knife][:ssh_attribute] && config[:attribute] == foo
         # Thus we can differentiate between a config file value and a command line override at this point by checking config[:attribute]
         # We can tell here if fqdn was passed from the command line, rather than being the default, by checking config[:attribute]
         # However, after here, we cannot tell these things, so we must preserve config[:attribute]
-        config[:override_attribute] = config[:attribute] || Chef::Config[:knife][:ssh_attribute]
-        config[:attribute] = (Chef::Config[:knife][:ssh_attribute] ||
+        config[:override_attribute] = config[:attribute] || Seth::Config[:knife][:ssh_attribute]
+        config[:attribute] = (Seth::Config[:knife][:ssh_attribute] ||
                               config[:attribute] ||
                               "fqdn").strip
       end
@@ -429,12 +429,12 @@ class Chef
           rescue Mixlib::ShellOut::ShellCommandFailed
           end
         end
-        raise Chef::Exceptions::Exec, "no command found for cssh" unless cssh_cmd
+        raise Seth::Exceptions::Exec, "no command found for cssh" unless cssh_cmd
 
         session.servers_for.each do |server|
           cssh_cmd << " #{server.user ? "#{server.user}@#{server.host}" : server.host}"
         end
-        Chef::Log.debug("starting cssh session with command: #{cssh_cmd}")
+        Seth::Log.debug("starting cssh session with command: #{cssh_cmd}")
         exec(cssh_cmd)
       end
 
@@ -445,7 +445,7 @@ class Chef
 
       def configure_user
         config[:ssh_user] = get_stripped_unfrozen_value(config[:ssh_user] ||
-                             Chef::Config[:knife][:ssh_user])
+                             Seth::Config[:knife][:ssh_user])
       end
 
       # This is a bit overly complicated because of the way we want knife ssh to work with -P causing a password prompt for
@@ -469,13 +469,13 @@ class Chef
           # Otherwise, the password has either been specified on the command line,
           # in knife.rb, or key based auth will be attempted
           config[:ssh_password] = get_stripped_unfrozen_value(ssh_password ||
-                             Chef::Config[:knife][:ssh_password])
+                             Seth::Config[:knife][:ssh_password])
         end
       end
 
       def configure_identity_file
         config[:identity_file] = get_stripped_unfrozen_value(config[:identity_file] ||
-                             Chef::Config[:knife][:ssh_identity_file])
+                             Seth::Config[:knife][:ssh_identity_file])
       end
 
       def extract_nested_value(data_structure, path_spec)
@@ -483,7 +483,7 @@ class Chef
       end
 
       def run
-        extend Chef::Mixin::Command
+        extend Seth::Mixin::Command
 
         @longest = 0
 
@@ -507,8 +507,8 @@ class Chef
         when "cssh"
           cssh
         when "csshx"
-          Chef::Log.warn("knife ssh csshx will be deprecated in a future release")
-          Chef::Log.warn("please use knife ssh cssh instead")
+          Seth::Log.warn("knife ssh csshx will be deprecated in a future release")
+          Seth::Log.warn("please use knife ssh cssh instead")
           cssh
         else
           ssh_command(@name_args[1..-1].join(" "))

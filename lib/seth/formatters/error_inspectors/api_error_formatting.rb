@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Formatters
 
     module APIErrorFormatting
@@ -27,33 +27,33 @@ class Chef
         error_description.section("Networking Error:",<<-E)
 #{exception.message}
 
-Your chef_server_url may be misconfigured, or the network could be down.
+Your seth_server_url may be misconfigured, or the network could be down.
 E
         error_description.section("Relevant Config Settings:",<<-E)
-chef_server_url  "#{server_url}"
+seth_server_url  "#{server_url}"
 E
       end
 
       def describe_401_error(error_description)
         if clock_skew?
           error_description.section("Authentication Error:",<<-E)
-Failed to authenticate to the chef server (http 401).
+Failed to authenticate to the seth server (http 401).
 The request failed because your clock has drifted by more than 15 minutes.
 Syncing your clock to an NTP Time source should resolve the issue.
 E
         else
           error_description.section("Authentication Error:",<<-E)
-Failed to authenticate to the chef server (http 401).
+Failed to authenticate to the seth server (http 401).
 E
 
           error_description.section("Server Response:", format_rest_error)
           error_description.section("Relevant Config Settings:",<<-E)
-chef_server_url   "#{server_url}"
+seth_server_url   "#{server_url}"
 node_name         "#{username}"
 client_key        "#{api_key}"
 
 If these settings are correct, your client_key may be invalid, or
-you may have a chef user with the same client name as this node.
+you may have a seth user with the same client name as this node.
 E
         end
       end
@@ -73,7 +73,7 @@ E
       end
 
       def describe_503_error(error_description)
-        error_description.section("Server Unavailable","The Chef Server is temporarily unavailable")
+        error_description.section("Server Unavailable","The Seth Server is temporarily unavailable")
         error_description.section("Server Response:", format_rest_error)
       end
 
@@ -83,10 +83,10 @@ E
         error_description.section("Unexpected API Request Failure:", format_rest_error)
       end
 
-      # Parses JSON from the error response sent by Chef Server and returns the
+      # Parses JSON from the error response sent by Seth Server and returns the
       # error message
       def format_rest_error
-        Array(Chef::JSONCompat.from_json(exception.response.body)["error"]).join('; ')
+        Array(Seth::JSONCompat.from_json(exception.response.body)["error"]).join('; ')
       rescue Exception
         safe_format_rest_error
       end
@@ -100,7 +100,7 @@ E
       end
 
       def server_url
-        config[:chef_server_url]
+        config[:seth_server_url]
       end
 
       def clock_skew?
@@ -116,7 +116,7 @@ E
         # .../lib/ruby/1.9.1/net/http.rb:2789:in `stream_check'
         # .../lib/ruby/1.9.1/net/http.rb:2709:in `read_body'
         # .../lib/ruby/1.9.1/net/http.rb:2736:in `body'
-        # .../lib/chef/formatters/error_inspectors/api_error_formatting.rb:91:in `rescue in format_rest_error'
+        # .../lib/seth/formatters/error_inspectors/api_error_formatting.rb:91:in `rescue in format_rest_error'
         begin
           exception.response.body
         rescue Exception

@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Provider
-    class WhyrunSafeRubyBlock < Chef::Provider::RubyBlock
+    class WhyrunSafeRubyBlock < Seth::Provider::RubyBlock
       def action_create
         @new_resource.block.call
         @new_resource.updated_by_last_action(true)
         @run_context.events.resource_update_applied(@new_resource, :create, "execute the whyrun_safe_ruby_block #{@new_resource.name}")
-        Chef::Log.info("#{@new_resource} called")
+        Seth::Log.info("#{@new_resource} called")
       end
     end
   end

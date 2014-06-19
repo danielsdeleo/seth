@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/cookbook/file_vendor'
+require 'seth/cookbook/file_vendor'
 
-class Chef
+class Seth
   class Cookbook
-    # == Chef::Cookbook::RemoteFileVendor
+    # == Seth::Cookbook::RemoteFileVendor
     # This FileVendor loads files by either fetching them from the local cache, or
     # if not available, loading them from the remote server.
     class RemoteFileVendor < FileVendor
@@ -32,7 +32,7 @@ class Chef
       end
 
       # Implements abstract base's requirement. It looks in the
-      # Chef::Config.cookbook_path file hierarchy for the requested
+      # Seth::Config.cookbook_path file hierarchy for the requested
       # file.
       def get_filename(filename)
         if filename =~ /([^\/]+)\/(.+)$/
@@ -52,8 +52,8 @@ class Chef
         validate_cached_copy(cache_filename)
 
         current_checksum = nil
-        if Chef::FileCache.has_key?(cache_filename)
-          current_checksum = Chef::CookbookVersion.checksum_cookbook_file(Chef::FileCache.load(cache_filename, false))
+        if Seth::FileCache.has_key?(cache_filename)
+          current_checksum = Seth::CookbookVersion.checksum_cookbook_file(Chef::FileCache.load(cache_filename, false))
         end
 
         # If the checksums are different between on-disk (current) and on-server
@@ -62,14 +62,14 @@ class Chef
         if current_checksum != found_manifest_record['checksum']
           raw_file = @rest.get_rest(found_manifest_record[:url], true)
 
-          Chef::Log.debug("Storing updated #{cache_filename} in the cache.")
-          Chef::FileCache.move_to(raw_file.path, cache_filename)
+          Seth::Log.debug("Storing updated #{cache_filename} in the cache.")
+          Seth::FileCache.move_to(raw_file.path, cache_filename)
         else
-          Chef::Log.debug("Not fetching #{cache_filename}, as the cache is up to date.")
-          Chef::Log.debug("current checksum: #{current_checksum}; manifest checksum: #{found_manifest_record['checksum']})")
+          Seth::Log.debug("Not fetching #{cache_filename}, as the cache is up to date.")
+          Seth::Log.debug("current checksum: #{current_checksum}; manifest checksum: #{found_manifest_record['checksum']})")
         end
 
-        full_path_cache_filename = Chef::FileCache.load(cache_filename, false)
+        full_path_cache_filename = Seth::FileCache.load(cache_filename, false)
 
         # return the filename, not the contents (second argument= false)
         full_path_cache_filename

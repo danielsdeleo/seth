@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Perl do
+describe Seth::Resource::Perl do
 
   before(:each) do
-    @resource = Chef::Resource::Perl.new("fakey_fakerton")
+    @resource = Seth::Resource::Perl.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::Perl" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Perl)
+  it "should create a new Seth::Resource::Perl" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Perl)
   end
 
   it "should have a resource name of :perl" do

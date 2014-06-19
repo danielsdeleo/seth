@@ -17,22 +17,22 @@
 # limitations under the License.
 #
 
-require "chef/resource/scm"
+require "seth/resource/scm"
 
-class Chef
+class Seth
   class Resource
-    class Subversion < Chef::Resource::Scm
+    class Subversion < Seth::Resource::Scm
 
       def initialize(name, run_context=nil)
         super
         @svn_arguments = '--no-auth-cache'
         @svn_info_args = '--no-auth-cache'
         @resource_name = :subversion
-        @provider = Chef::Provider::Subversion
+        @provider = Seth::Provider::Subversion
         allowed_actions << :force_export
       end
 
-      # Override exception to strip password if any, so it won't appear in logs and different Chef notifications
+      # Override exception to strip password if any, so it won't appear in logs and different Seth notifications
       def custom_exception_message(e)
         "#{self} (#{defined_at}) had an error: #{e.class.name}: #{svn_password ? e.message.gsub(svn_password, "[hidden_password]") : e.message}"
       end

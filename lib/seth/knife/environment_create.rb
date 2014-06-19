@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class EnvironmentCreate < Knife
 
       deps do
-        require 'chef/environment'
-        require 'chef/json_compat'
+        require 'seth/environment'
+        require 'seth/json_compat'
       end
 
       banner "knife environment create ENVIRONMENT (options)"
@@ -43,7 +43,7 @@ class Chef
           exit 1
         end
 
-        env = Chef::Environment.new
+        env = Seth::Environment.new
         env.name(env_name)
         env.description(config[:description]) if config[:description]
         create_object(env)

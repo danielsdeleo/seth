@@ -16,12 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/provider/user/useradd'
+require 'seth/provider/user/useradd'
 
-class Chef
+class Seth
   class Provider
     class User
-      class Solaris < Chef::Provider::User::Useradd
+      class Solaris < Seth::Provider::User::Useradd
         UNIVERSAL_OPTIONS = [[:comment, "-c"], [:gid, "-g"], [:shell, "-s"], [:uid, "-u"]]
 
         attr_writer :password_file
@@ -45,7 +45,7 @@ class Chef
 
         def manage_password
           if @current_resource.password != @new_resource.password && @new_resource.password
-            Chef::Log.debug("#{@new_resource} setting password to #{@new_resource.password}")
+            Seth::Log.debug("#{@new_resource} setting password to #{@new_resource.password}")
             write_shadow_file
           end
         end

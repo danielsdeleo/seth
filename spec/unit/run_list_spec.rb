@@ -20,12 +20,12 @@
 
 require 'spec_helper'
 
-require 'chef/version_class'
-require 'chef/version_constraint'
+require 'seth/version_class'
+require 'seth/version_constraint'
 
-describe Chef::RunList do
+describe Seth::RunList do
   before(:each) do
-    @run_list = Chef::RunList.new
+    @run_list = Seth::RunList.new
   end
 
   describe "<<" do
@@ -87,7 +87,7 @@ describe Chef::RunList do
   describe "==" do
     it "should believe two RunLists are equal if they have the same members" do
       @run_list << "foo"
-      r = Chef::RunList.new
+      r = Seth::RunList.new
       r << "foo"
       @run_list.should == r
     end
@@ -167,15 +167,15 @@ describe Chef::RunList do
 
   describe "when expanding the run list" do
     before(:each) do
-      @role = Chef::Role.new
+      @role = Seth::Role.new
       @role.name "stubby"
       @role.run_list "one", "two"
       @role.default_attributes :one => :two
       @role.override_attributes :three => :four
 
-      Chef::Role.stub(:load).and_return(@role)
-      @rest = double("Chef::REST", { :get_rest => @role, :url => "/" })
-      Chef::REST.stub(:new).and_return(@rest)
+      Seth::Role.stub(:load).and_return(@role)
+      @rest = double("Seth::REST", { :get_rest => @role, :url => "/" })
+      Seth::REST.stub(:new).and_return(@rest)
 
       @run_list << "role[stubby]"
       @run_list << "kitty"
@@ -183,19 +183,19 @@ describe Chef::RunList do
 
     describe "from disk" do
       it "should load the role from disk" do
-        Chef::Role.should_receive(:from_disk).with("stubby")
+        Seth::Role.should_receive(:from_disk).with("stubby")
         @run_list.expand("_default", "disk")
       end
 
       it "should log a helpful error if the role is not available" do
-        Chef::Role.stub(:from_disk).and_raise(Chef::Exceptions::RoleNotFound)
-        Chef::Log.should_receive(:error).with("Role stubby (included by 'top level') is in the runlist but does not exist. Skipping expand.")
+        Seth::Role.stub(:from_disk).and_raise(Chef::Exceptions::RoleNotFound)
+        Seth::Log.should_receive(:error).with("Role stubby (included by 'top level') is in the runlist but does not exist. Skipping expand.")
         @run_list.expand("_default", "disk")
       end
     end
 
-    describe "from the chef server" do
-      it "should load the role from the chef server" do
+    describe "from the seth server" do
+      it "should load the role from the seth server" do
         #@rest.should_receive(:get_rest).with("roles/stubby")
         expansion = @run_list.expand("_default", "server")
         expansion.recipes.should == ['one', 'two', 'kitty']
@@ -208,7 +208,7 @@ describe Chef::RunList do
 
       describe "with an environment set" do
         before do
-          @role.env_run_list["production"] = Chef::RunList.new( "one", "two", "five")
+          @role.env_run_list["production"] = Seth::RunList.new( "one", "two", "five")
         end
 
         it "expands the run list using the environment specific run list" do
@@ -218,22 +218,22 @@ describe Chef::RunList do
 
         describe "and multiply nested roles" do
           before do
-            @multiple_rest_requests = double("Chef::REST")
+            @multiple_rest_requests = double("Seth::REST")
 
             @role.env_run_list["production"] << "role[prod-base]"
 
-            @role_prod_base = Chef::Role.new
+            @role_prod_base = Seth::Role.new
             @role_prod_base.name("prod-base")
-            @role_prod_base.env_run_list["production"] = Chef::RunList.new("role[nested-deeper]")
+            @role_prod_base.env_run_list["production"] = Seth::RunList.new("role[nested-deeper]")
 
 
-            @role_nested_deeper = Chef::Role.new
+            @role_nested_deeper = Seth::Role.new
             @role_nested_deeper.name("nested-deeper")
-            @role_nested_deeper.env_run_list["production"] = Chef::RunList.new("recipe[prod-secret-sauce]")
+            @role_nested_deeper.env_run_list["production"] = Seth::RunList.new("recipe[prod-secret-sauce]")
           end
 
           it "expands the run list using the specified environment for all nested roles" do
-            Chef::REST.stub(:new).and_return(@multiple_rest_requests)
+            Seth::REST.stub(:new).and_return(@multiple_rest_requests)
             @multiple_rest_requests.should_receive(:get_rest).with("roles/stubby").and_return(@role)
             @multiple_rest_requests.should_receive(:get_rest).with("roles/prod-base").and_return(@role_prod_base)
             @multiple_rest_requests.should_receive(:get_rest).with("roles/nested-deeper").and_return(@role_nested_deeper)
@@ -265,13 +265,13 @@ describe Chef::RunList do
     end
 
     it "should recurse into a child role" do
-      dog = Chef::Role.new
+      dog = Seth::Role.new
       dog.name "dog"
       dog.default_attributes :seven => :nine
       dog.run_list "three"
       @role.run_list << "role[dog]"
-      Chef::Role.stub(:from_disk).with("stubby").and_return(@role)
-      Chef::Role.stub(:from_disk).with("dog").and_return(dog)
+      Seth::Role.stub(:from_disk).with("stubby").and_return(@role)
+      Seth::Role.stub(:from_disk).with("dog").and_return(dog)
 
       expansion = @run_list.expand("_default", 'disk')
       expansion.recipes[2].should == "three"
@@ -279,13 +279,13 @@ describe Chef::RunList do
     end
 
     it "should not recurse infinitely" do
-      dog = Chef::Role.new
+      dog = Seth::Role.new
       dog.name "dog"
       dog.default_attributes :seven => :nine
       dog.run_list "role[dog]", "three"
       @role.run_list << "role[dog]"
-      Chef::Role.stub(:from_disk).with("stubby").and_return(@role)
-      Chef::Role.should_receive(:from_disk).with("dog").once.and_return(dog)
+      Seth::Role.stub(:from_disk).with("stubby").and_return(@role)
+      Seth::Role.should_receive(:from_disk).with("dog").once.and_return(dog)
 
       expansion = @run_list.expand("_default", 'disk')
       expansion.recipes[2].should == "three"

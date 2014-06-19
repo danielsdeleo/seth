@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-class SnitchyProvider < Chef::Provider
+class SnitchyProvider < Seth::Provider
   def self.all_actions_called
     @all_actions_called ||= []
   end
@@ -52,7 +52,7 @@ class SnitchyProvider < Chef::Provider
 
 end
 
-class FailureResource < Chef::Resource
+class FailureResource < Seth::Resource
 
   attr_accessor :action
 
@@ -66,35 +66,35 @@ class FailureResource < Chef::Resource
   end
 end
 
-class FailureProvider < Chef::Provider
+class FailureProvider < Seth::Provider
 
-  class ChefClientFail < StandardError; end
+  class SethClientFail < StandardError; end
 
   def load_current_resource
     true
   end
 
   def action_fail
-    raise ChefClientFail, "chef had an error of some sort"
+    raise SethClientFail, "seth had an error of some sort"
   end
 end
 
-describe Chef::Runner do
+describe Seth::Runner do
 
   before(:each) do
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.name "latte"
     @node.automatic[:platform] = "mac_os_x"
     @node.automatic[:platform_version] = "10.5.1"
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, Chef::CookbookCollection.new({}), @events)
-    @first_resource = Chef::Resource::Cat.new("loulou1", @run_context)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, Chef::CookbookCollection.new({}), @events)
+    @first_resource = Seth::Resource::Cat.new("loulou1", @run_context)
     @run_context.resource_collection << @first_resource
-    Chef::Platform.set(
+    Seth::Platform.set(
       :resource => :cat,
-      :provider => Chef::Provider::SnakeOil
+      :provider => Seth::Provider::SnakeOil
     )
-    @runner = Chef::Runner.new(@run_context)
+    @runner = Seth::Runner.new(@run_context)
   end
 
   it "should pass each resource in the collection to a provider" do
@@ -103,52 +103,52 @@ describe Chef::Runner do
   end
 
   it "should use the provider specified by the resource (if it has one)" do
-    provider = Chef::Provider::Easy.new(@run_context.resource_collection[0], @run_context)
+    provider = Seth::Provider::Easy.new(@run_context.resource_collection[0], @run_context)
     # Expect provider to be called twice, because will fall back to old provider lookup
-    @run_context.resource_collection[0].should_receive(:provider).twice.and_return(Chef::Provider::Easy)
-    Chef::Provider::Easy.should_receive(:new).once.and_return(provider)
+    @run_context.resource_collection[0].should_receive(:provider).twice.and_return(Seth::Provider::Easy)
+    Seth::Provider::Easy.should_receive(:new).once.and_return(provider)
     @runner.converge
   end
 
   it "should use the platform provider if it has one" do
-    Chef::Platform.should_receive(:find_provider_for_node).once.and_return(Chef::Provider::SnakeOil)
+    Seth::Platform.should_receive(:find_provider_for_node).once.and_return(Chef::Provider::SnakeOil)
     @runner.converge
   end
 
   it "should run the action for each resource" do
-    Chef::Platform.should_receive(:find_provider_for_node).once.and_return(Chef::Provider::SnakeOil)
-    provider = Chef::Provider::SnakeOil.new(@run_context.resource_collection[0], @run_context)
+    Seth::Platform.should_receive(:find_provider_for_node).once.and_return(Chef::Provider::SnakeOil)
+    provider = Seth::Provider::SnakeOil.new(@run_context.resource_collection[0], @run_context)
     provider.should_receive(:action_sell).once.and_return(true)
-    Chef::Provider::SnakeOil.should_receive(:new).once.and_return(provider)
+    Seth::Provider::SnakeOil.should_receive(:new).once.and_return(provider)
     @runner.converge
   end
 
   it "should raise exceptions as thrown by a provider" do
-    provider = Chef::Provider::SnakeOil.new(@run_context.resource_collection[0], @run_context)
-    Chef::Provider::SnakeOil.stub(:new).once.and_return(provider)
+    provider = Seth::Provider::SnakeOil.new(@run_context.resource_collection[0], @run_context)
+    Seth::Provider::SnakeOil.stub(:new).once.and_return(provider)
     provider.stub(:action_sell).once.and_raise(ArgumentError)
     lambda { @runner.converge }.should raise_error(ArgumentError)
   end
 
   it "should not raise exceptions thrown by providers if the resource has ignore_failure set to true" do
     @run_context.resource_collection[0].stub(:ignore_failure).and_return(true)
-    provider = Chef::Provider::SnakeOil.new(@run_context.resource_collection[0], @run_context)
-    Chef::Provider::SnakeOil.stub(:new).once.and_return(provider)
+    provider = Seth::Provider::SnakeOil.new(@run_context.resource_collection[0], @run_context)
+    Seth::Provider::SnakeOil.stub(:new).once.and_return(provider)
     provider.stub(:action_sell).once.and_raise(ArgumentError)
     lambda { @runner.converge }.should_not raise_error
   end
 
   it "should retry with the specified delay if retries are specified" do
     @first_resource.retries 3
-    provider = Chef::Provider::SnakeOil.new(@run_context.resource_collection[0], @run_context)
-    Chef::Provider::SnakeOil.stub(:new).once.and_return(provider)
+    provider = Seth::Provider::SnakeOil.new(@run_context.resource_collection[0], @run_context)
+    Seth::Provider::SnakeOil.stub(:new).once.and_return(provider)
     provider.stub(:action_sell).and_raise(ArgumentError)
     @first_resource.should_receive(:sleep).with(2).exactly(3).times
     lambda { @runner.converge }.should raise_error(ArgumentError)
   end
 
   it "should execute immediate actions on changed resources" do
-    notifying_resource = Chef::Resource::Cat.new("peanut", @run_context)
+    notifying_resource = Seth::Resource::Cat.new("peanut", @run_context)
     notifying_resource.action = :purr # only action that will set updated on the resource
 
     @run_context.resource_collection << notifying_resource
@@ -164,12 +164,12 @@ describe Chef::Runner do
   it "should follow a chain of actions" do
     @first_resource.action = :nothing
 
-    middle_resource = Chef::Resource::Cat.new("peanut", @run_context)
+    middle_resource = Seth::Resource::Cat.new("peanut", @run_context)
     middle_resource.action = :nothing
     @run_context.resource_collection << middle_resource
     middle_resource.notifies(:purr, @first_resource, :immediately)
 
-    last_resource = Chef::Resource::Cat.new("snuffles", @run_context)
+    last_resource = Seth::Resource::Cat.new("snuffles", @run_context)
     last_resource.action = :purr
     @run_context.resource_collection << last_resource
     last_resource.notifies(:purr, middle_resource, :immediately)
@@ -183,7 +183,7 @@ describe Chef::Runner do
 
   it "should execute delayed actions on changed resources" do
     @first_resource.action = :nothing
-    second_resource = Chef::Resource::Cat.new("peanut", @run_context)
+    second_resource = Seth::Resource::Cat.new("peanut", @run_context)
     second_resource.action = :purr
 
     @run_context.resource_collection << second_resource
@@ -194,9 +194,9 @@ describe Chef::Runner do
     @first_resource.should be_updated
   end
 
-  it "should execute delayed notifications when a failure occurs in the chef client run" do
+  it "should execute delayed notifications when a failure occurs in the seth client run" do
     @first_resource.action = :nothing
-    second_resource = Chef::Resource::Cat.new("peanut", @run_context)
+    second_resource = Seth::Resource::Cat.new("peanut", @run_context)
     second_resource.action = :purr
 
     @run_context.resource_collection << second_resource
@@ -205,14 +205,14 @@ describe Chef::Runner do
     third_resource = FailureResource.new("explode", @run_context)
     @run_context.resource_collection << third_resource
 
-    lambda {@runner.converge}.should raise_error(FailureProvider::ChefClientFail)
+    lambda {@runner.converge}.should raise_error(FailureProvider::SethClientFail)
 
     @first_resource.should be_updated
   end
 
   it "should execute delayed notifications when a failure occurs in a notification" do
     @first_resource.action = :nothing
-    second_resource = Chef::Resource::Cat.new("peanut", @run_context)
+    second_resource = Seth::Resource::Cat.new("peanut", @run_context)
     second_resource.action = :purr
 
     @run_context.resource_collection << second_resource
@@ -224,14 +224,14 @@ describe Chef::Runner do
     second_resource.notifies(:fail, third_resource, :delayed)
     second_resource.notifies(:purr, @first_resource, :delayed)
 
-    lambda {@runner.converge}.should raise_error(FailureProvider::ChefClientFail)
+    lambda {@runner.converge}.should raise_error(FailureProvider::SethClientFail)
 
     @first_resource.should be_updated
   end
 
   it "should execute delayed notifications when a failure occurs in multiple notifications" do
     @first_resource.action = :nothing
-    second_resource = Chef::Resource::Cat.new("peanut", @run_context)
+    second_resource = Seth::Resource::Cat.new("peanut", @run_context)
     second_resource.action = :purr
 
     @run_context.resource_collection << second_resource
@@ -254,12 +254,12 @@ describe Chef::Runner do
     rescue => e
       exception = e
     end
-    exception.should be_a(Chef::Exceptions::MultipleFailures)
+    exception.should be_a(Seth::Exceptions::MultipleFailures)
 
     expected_message =<<-E
 Multiple failures occurred:
-* FailureProvider::ChefClientFail occurred in delayed notification: [explode] (dynamically defined) had an error: FailureProvider::ChefClientFail: chef had an error of some sort
-* FailureProvider::ChefClientFail occurred in delayed notification: [explode again] (dynamically defined) had an error: FailureProvider::ChefClientFail: chef had an error of some sort
+* FailureProvider::SethClientFail occurred in delayed notification: [explode] (dynamically defined) had an error: FailureProvider::ChefClientFail: seth had an error of some sort
+* FailureProvider::SethClientFail occurred in delayed notification: [explode again] (dynamically defined) had an error: FailureProvider::ChefClientFail: seth had an error of some sort
 E
     exception.message.should == expected_message
 
@@ -269,18 +269,18 @@ E
   it "does not duplicate delayed notifications" do
     SnitchyProvider.clear_action_record
 
-    Chef::Platform.set(
+    Seth::Platform.set(
       :resource => :cat,
       :provider => SnitchyProvider
     )
 
     @first_resource.action = :nothing
 
-    second_resource = Chef::Resource::Cat.new("peanut", @run_context)
+    second_resource = Seth::Resource::Cat.new("peanut", @run_context)
     second_resource.action = :first_action
     @run_context.resource_collection << second_resource
 
-    third_resource = Chef::Resource::Cat.new("snickers", @run_context)
+    third_resource = Seth::Resource::Cat.new("snickers", @run_context)
     third_resource.action = :first_action
     @run_context.resource_collection << third_resource
 
@@ -301,18 +301,18 @@ E
   it "executes delayed notifications in the order they were declared" do
     SnitchyProvider.clear_action_record
 
-    Chef::Platform.set(
+    Seth::Platform.set(
       :resource => :cat,
       :provider => SnitchyProvider
     )
 
     @first_resource.action = :nothing
 
-    second_resource = Chef::Resource::Cat.new("peanut", @run_context)
+    second_resource = Seth::Resource::Cat.new("peanut", @run_context)
     second_resource.action = :first_action
     @run_context.resource_collection << second_resource
 
-    third_resource = Chef::Resource::Cat.new("snickers", @run_context)
+    third_resource = Seth::Resource::Cat.new("snickers", @run_context)
     third_resource.action = :first_action
     @run_context.resource_collection << third_resource
 
@@ -330,18 +330,18 @@ E
     # REGRESSION TEST FOR CHEF-1452
     SnitchyProvider.clear_action_record
 
-    Chef::Platform.set(
+    Seth::Platform.set(
       :resource => :cat,
       :provider => SnitchyProvider
     )
 
     @first_resource.action = :first_action
 
-    second_resource = Chef::Resource::Cat.new("peanut", @run_context)
+    second_resource = Seth::Resource::Cat.new("peanut", @run_context)
     second_resource.action = :nothing
     @run_context.resource_collection << second_resource
 
-    third_resource = Chef::Resource::Cat.new("snickers", @run_context)
+    third_resource = Seth::Resource::Cat.new("snickers", @run_context)
     third_resource.action = :nothing
     @run_context.resource_collection << third_resource
 
@@ -368,7 +368,7 @@ E
     not_if_called_times = 0
     @first_resource.not_if {not_if_called_times += 1; false}
 
-    second_resource = Chef::Resource::Cat.new("carmel", @run_context)
+    second_resource = Seth::Resource::Cat.new("carmel", @run_context)
     @run_context.resource_collection << second_resource
     second_resource.notifies(:purr, @first_resource, :delayed)
     second_resource.action = :purr
@@ -384,12 +384,12 @@ E
     @first_resource.action = :nothing
 
     lazy_resources = lambda {
-      last_resource = Chef::Resource::Cat.new("peanut", @run_context)
+      last_resource = Seth::Resource::Cat.new("peanut", @run_context)
       @run_context.resource_collection << last_resource
       last_resource.notifies(:purr, @first_resource.to_s, :delayed)
       last_resource.action = :purr
     }
-    second_resource = Chef::Resource::RubyBlock.new("myblock", @run_context)
+    second_resource = Seth::Resource::RubyBlock.new("myblock", @run_context)
     @run_context.resource_collection << second_resource
     second_resource.block { lazy_resources.call }
 

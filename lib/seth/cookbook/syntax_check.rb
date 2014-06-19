@@ -19,17 +19,17 @@
 require 'pathname'
 require 'stringio'
 require 'erubis'
-require 'chef/mixin/shell_out'
-require 'chef/mixin/checksum'
+require 'seth/mixin/shell_out'
+require 'seth/mixin/checksum'
 
-class Chef
+class Seth
   class Cookbook
-    # == Chef::Cookbook::SyntaxCheck
-    # Encapsulates the process of validating the ruby syntax of files in Chef
+    # == Seth::Cookbook::SyntaxCheck
+    # Encapsulates the process of validating the ruby syntax of files in Seth
     # cookbooks.
     class SyntaxCheck
 
-      # == Chef::Cookbook::SyntaxCheck::PersistentSet
+      # == Seth::Cookbook::SyntaxCheck::PersistentSet
       # Implements set behavior with disk-based persistence. Objects in the set
       # are expected to be strings containing only characters that are valid in
       # filenames.
@@ -42,7 +42,7 @@ class Chef
 
         # Create a new PersistentSet. Values in the set are persisted by
         # creating a file in the +cache_path+ directory.
-        def initialize(cache_path=Chef::Config[:syntax_check_cache_path])
+        def initialize(cache_path=Seth::Config[:syntax_check_cache_path])
           @cache_path = cache_path
           @cache_path_created = false
         end
@@ -68,8 +68,8 @@ class Chef
 
       end
 
-      include Chef::Mixin::ShellOut
-      include Chef::Mixin::Checksum
+      include Seth::Mixin::ShellOut
+      include Seth::Mixin::Checksum
 
       attr_reader :cookbook_path
 
@@ -77,14 +77,14 @@ class Chef
       # validated.
       attr_reader :validated_files
 
-      attr_reader :chefignore
+      attr_reader :sethignore
 
       # Creates a new SyntaxCheck given the +cookbook_name+ and a +cookbook_path+.
-      # If no +cookbook_path+ is given, +Chef::Config.cookbook_path+ is used.
+      # If no +cookbook_path+ is given, +Seth::Config.cookbook_path+ is used.
       def self.for_cookbook(cookbook_name, cookbook_path=nil)
-        cookbook_path ||= Chef::Config.cookbook_path
+        cookbook_path ||= Seth::Config.cookbook_path
         unless cookbook_path
-          raise ArgumentError, "Cannot find cookbook #{cookbook_name} unless Chef::Config.cookbook_path is set or an explicit cookbook path is given"
+          raise ArgumentError, "Cannot find cookbook #{cookbook_name} unless Seth::Config.cookbook_path is set or an explicit cookbook path is given"
         end
         new(File.join(cookbook_path, cookbook_name.to_s))
       end
@@ -94,18 +94,18 @@ class Chef
       # cookbook_path::: the (on disk) path to the cookbook
       def initialize(cookbook_path)
         @cookbook_path = cookbook_path
-        @chefignore ||= Chefignore.new(cookbook_path)
+        @sethignore ||= Sethignore.new(cookbook_path)
 
         @validated_files = PersistentSet.new
       end
 
       def remove_ignored_files(file_list)
-        return file_list unless chefignore.ignores.length > 0
+        return file_list unless sethignore.ignores.length > 0
         file_list.reject do |full_path|
           cookbook_pn = Pathname.new cookbook_path
           full_pn = Pathname.new full_path
           relative_pn = full_pn.relative_path_from cookbook_pn
-          chefignore.ignored? relative_pn.to_s
+          sethignore.ignored? relative_pn.to_s
         end
       end
 
@@ -116,7 +116,7 @@ class Chef
       def untested_ruby_files
         ruby_files.reject do |file|
           if validated?(file)
-            Chef::Log.debug("Ruby file #{file} is unchanged, skipping syntax check")
+            Seth::Log.debug("Ruby file #{file} is unchanged, skipping syntax check")
             true
           else
             false
@@ -131,7 +131,7 @@ class Chef
       def untested_template_files
         template_files.reject do |file|
           if validated?(file)
-            Chef::Log.debug("Template #{file} is unchanged, skipping syntax check")
+            Seth::Log.debug("Template #{file} is unchanged, skipping syntax check")
             true
           else
             false
@@ -162,7 +162,7 @@ class Chef
       end
 
       def validate_template(erb_file)
-        Chef::Log.debug("Testing template #{erb_file} for syntax errors...")
+        Seth::Log.debug("Testing template #{erb_file} for syntax errors...")
         if validate_inline?
           validate_erb_file_inline(erb_file)
         else
@@ -171,7 +171,7 @@ class Chef
       end
 
       def validate_ruby_file(ruby_file)
-        Chef::Log.debug("Testing #{ruby_file} for syntax errors...")
+        Seth::Log.debug("Testing #{ruby_file} for syntax errors...")
         if validate_inline?
           validate_ruby_file_inline(ruby_file)
         else
@@ -231,8 +231,8 @@ class Chef
       # Debug a syntax error in a template.
       def invalid_erb_file(erb_file, error_message)
         file_relative_path = erb_file[/^#{Regexp.escape(cookbook_path+File::Separator)}(.*)/, 1]
-        Chef::Log.fatal("Erb template #{file_relative_path} has a syntax error:")
-        error_message.each_line { |l| Chef::Log.fatal(l.chomp) }
+        Seth::Log.fatal("Erb template #{file_relative_path} has a syntax error:")
+        error_message.each_line { |l| Seth::Log.fatal(l.chomp) }
         nil
       end
 
@@ -248,7 +248,7 @@ class Chef
         abs_path = File.expand_path(ruby_file)
         file_content = IO.read(abs_path)
         # We have to wrap this in a block so the user code evaluates in a
-        # similar context as what Chef does normally. Otherwise RubyVM
+        # similar context as what Seth does normally. Otherwise RubyVM
         # will reject some common idioms, like using `return` to end evaluation
         # of a recipe. See also CHEF-5199
         wrapped_content = "Object.new.instance_eval do\n#{file_content}\nend\n"
@@ -279,8 +279,8 @@ class Chef
       # diagnostic info given in +error_message+
       def invalid_ruby_file(ruby_file, error_message)
         file_relative_path = ruby_file[/^#{Regexp.escape(cookbook_path+File::Separator)}(.*)/, 1]
-        Chef::Log.fatal("Cookbook file #{file_relative_path} has a ruby syntax error:")
-        error_message.each_line { |l| Chef::Log.fatal(l.chomp) }
+        Seth::Log.fatal("Cookbook file #{file_relative_path} has a ruby syntax error:")
+        error_message.each_line { |l| Seth::Log.fatal(l.chomp) }
         false
       end
 

@@ -1,15 +1,15 @@
 require 'support/shared/integration/integration_helper'
-require 'chef/mixin/shell_out'
-require 'chef/run_lock'
-require 'chef/config'
+require 'seth/mixin/shell_out'
+require 'seth/run_lock'
+require 'seth/config'
 require 'timeout'
 require 'fileutils'
 
-describe "chef-solo" do
+describe "seth-solo" do
   extend IntegrationSupport
-  include Chef::Mixin::ShellOut
+  include Seth::Mixin::ShellOut
 
-  let(:chef_dir) { File.join(File.dirname(__FILE__), "..", "..", "..") }
+  let(:seth_dir) { File.join(File.dirname(__FILE__), "..", "..", "..") }
 
   when_the_repository "has a cookbook with a basic recipe" do
     file 'cookbooks/x/metadata.rb', 'version "1.0.0"'
@@ -20,7 +20,7 @@ describe "chef-solo" do
 cookbook_path "#{path_to('cookbooks')}"
 file_cache_path "#{path_to('config/cache')}"
 EOM
-      result = shell_out("ruby bin/chef-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' -l debug", :cwd => chef_dir)
+      result = shell_out("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' -l debug", :cwd => chef_dir)
       result.error!
       result.stdout.should include("ITWORKS")
     end
@@ -35,7 +35,7 @@ EOM
 {"run_list":["x::default"]}
 E
 
-      result = shell_out("ruby bin/chef-solo -c \"#{path_to('config/solo.rb')}\" -j '#{path_to('config/node.json')}' -l debug", :cwd => chef_dir)
+      result = shell_out("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -j '#{path_to('config/node.json')}' -l debug", :cwd => chef_dir)
       result.error!
       result.stdout.should include("ITWORKS")
     end
@@ -54,7 +54,7 @@ E
 cookbook_path "#{path_to('cookbooks')}"
 file_cache_path "#{path_to('config/cache')}"
 EOM
-      result = shell_out("ruby bin/chef-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' -l debug", :cwd => chef_dir)
+      result = shell_out("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' -l debug", :cwd => chef_dir)
       result.exitstatus.should == 0 # For CHEF-5120 this becomes 1
       result.stdout.should include("WARN: MissingCookbookDependency")
     end
@@ -82,18 +82,18 @@ EOM
       # run_lock gets stuck we can discover it.
       lambda {
         Timeout.timeout(120) do
-          chef_dir = File.join(File.dirname(__FILE__), "..", "..", "..")
+          seth_dir = File.join(File.dirname(__FILE__), "..", "..", "..")
 
-          # Instantiate the first chef-solo run
-          s1 = Process.spawn("ruby bin/chef-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' \
--l debug -L #{path_to('logs/runs.log')}", :chdir => chef_dir)
+          # Instantiate the first seth-solo run
+          s1 = Process.spawn("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' \
+-l debug -L #{path_to('logs/runs.log')}", :chdir => seth_dir)
 
           # Give it some time to progress
           sleep 1
 
-          # Instantiate the second chef-solo run
-          s2 = Process.spawn("ruby bin/chef-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' \
--l debug -L #{path_to('logs/runs.log')}", :chdir => chef_dir)
+          # Instantiate the second seth-solo run
+          s2 = Process.spawn("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' \
+-l debug -L #{path_to('logs/runs.log')}", :chdir => seth_dir)
 
           Process.waitpid(s1)
           Process.waitpid(s2)
@@ -106,21 +106,21 @@ EOM
       run_log = File.read(path_to('logs/runs.log'))
 
       # both of the runs should succeed
-      run_log.lines.reject {|l| !l.include? "INFO: Chef Run complete in"}.length.should == 2
+      run_log.lines.reject {|l| !l.include? "INFO: Seth Run complete in"}.length.should == 2
 
       # second run should have a message which indicates it's waiting for the first run
-      pid_lines = run_log.lines.reject {|l| !l.include? "Chef-client pid:"}
+      pid_lines = run_log.lines.reject {|l| !l.include? "Seth-client pid:"}
       pid_lines.length.should == 2
       pids = pid_lines.map {|l| l.split(" ").last}
-      run_log.should include("Chef client #{pids[0]} is running, will wait for it to finish and then run.")
+      run_log.should include("Seth client #{pids[0]} is running, will wait for it to finish and then run.")
 
       # second run should start after first run ends
       starts = [ ]
       ends = [ ]
       run_log.lines.each_with_index do |line, index|
-        if line.include? "Chef-client pid:"
+        if line.include? "Seth-client pid:"
           starts << index
-        elsif line.include? "INFO: Chef Run complete in"
+        elsif line.include? "INFO: Seth Run complete in"
           ends << index
         end
       end

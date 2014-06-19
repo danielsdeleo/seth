@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,23 +18,23 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Package::Windows, :windows_only do
-  let(:node) { double('Chef::Node') }
-  let(:events) { double('Chef::Events').as_null_object }  # mock all the methods
-  let(:run_context) { double('Chef::RunContext', :node => node, :events => events) }
-  let(:new_resource) { Chef::Resource::WindowsPackage.new("calculator.msi") }
-  let(:provider) { Chef::Provider::Package::Windows.new(new_resource, run_context) }
+describe Seth::Provider::Package::Windows, :windows_only do
+  let(:node) { double('Seth::Node') }
+  let(:events) { double('Seth::Events').as_null_object }  # mock all the methods
+  let(:run_context) { double('Seth::RunContext', :node => node, :events => events) }
+  let(:new_resource) { Seth::Resource::WindowsPackage.new("calculator.msi") }
+  let(:provider) { Seth::Provider::Package::Windows.new(new_resource, run_context) }
 
   describe "load_current_resource" do
     before(:each) do
-      Chef::Util::PathHelper.stub(:validate_path)
+      Seth::Util::PathHelper.stub(:validate_path)
       provider.stub(:package_provider).and_return(double('package_provider',
           :installed_version => "1.0", :package_version => "2.0"))
     end
 
     it "creates a current resource with the name of the new resource" do
       provider.load_current_resource
-      expect(provider.current_resource).to be_a(Chef::Resource::WindowsPackage)
+      expect(provider.current_resource).to be_a(Seth::Resource::WindowsPackage)
       expect(provider.current_resource.name).to eql("calculator.msi")
     end
 
@@ -49,7 +49,7 @@ describe Chef::Provider::Package::Windows, :windows_only do
     end
 
     it "checks that the source path is valid" do
-      expect(Chef::Util::PathHelper).to receive(:validate_path)
+      expect(Seth::Util::PathHelper).to receive(:validate_path)
       provider.load_current_resource
     end
   end
@@ -57,7 +57,7 @@ describe Chef::Provider::Package::Windows, :windows_only do
   describe "package_provider" do
     it "sets the package provider to MSI if the the installer type is :msi" do
       provider.stub(:installer_type).and_return(:msi)
-      expect(provider.package_provider).to be_a(Chef::Provider::Package::Windows::MSI)
+      expect(provider.package_provider).to be_a(Seth::Provider::Package::Windows::MSI)
     end
 
     it "raises an error if the installer_type is unknown" do

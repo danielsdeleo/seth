@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Mixin
     module Securable
 
@@ -24,7 +24,7 @@ class Chef
         set_or_return(
           :owner,
           arg,
-          :regex => Chef::Config[:user_valid_regex]
+          :regex => Seth::Config[:user_valid_regex]
         )
       end
 
@@ -34,7 +34,7 @@ class Chef
         set_or_return(
           :group,
           arg,
-          :regex => Chef::Config[:group_valid_regex]
+          :regex => Seth::Config[:group_valid_regex]
         )
       end
 
@@ -49,7 +49,7 @@ class Chef
               end
 
               # Windows does not support the sticky or setuid bits
-              if Chef::Platform.windows?
+              if Seth::Platform.windows?
                 Integer(m)<=0777 && Integer(m)>=0
               else
                 Integer(m)<=07777 && Integer(m)>=0
@@ -61,7 +61,7 @@ class Chef
 
 
       #==WindowsMacros
-      # Defines methods for adding attributes to a chef resource to describe
+      # Defines methods for adding attributes to a seth resource to describe
       # Windows file security metadata.
       #
       # This module is meant to be used to extend a class (instead of
@@ -76,7 +76,7 @@ class Chef
         # Multiple rights attributes can be declared. This enables resources to
         # have multiple rights attributes with separate runtime states.
         #
-        # For example, +Chef::Resource::RemoteDirectory+ supports different
+        # For example, +Seth::Resource::RemoteDirectory+ supports different
         # rights on the directories and files by declaring separate rights
         # attributes for each (rights and files_rights).
         #

@@ -19,14 +19,14 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Group, "initialize" do
+describe Seth::Resource::Group, "initialize" do
   before(:each) do
-    @resource = Chef::Resource::Group.new("admin")
+    @resource = Seth::Resource::Group.new("admin")
   end
 
-  it "should create a new Chef::Resource::Group" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Group)
+  it "should create a new Seth::Resource::Group" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Group)
   end
 
   it "should set the resource_name to :group" do
@@ -69,9 +69,9 @@ describe Chef::Resource::Group, "initialize" do
   end
 end
 
-describe Chef::Resource::Group, "group_name" do
+describe Seth::Resource::Group, "group_name" do
   before(:each) do
-    @resource = Chef::Resource::Group.new("admin")
+    @resource = Seth::Resource::Group.new("admin")
   end
 
   it "should allow a string" do
@@ -84,9 +84,9 @@ describe Chef::Resource::Group, "group_name" do
   end
 end
 
-describe Chef::Resource::Group, "gid" do
+describe Seth::Resource::Group, "gid" do
   before(:each) do
-    @resource = Chef::Resource::Group.new("admin")
+    @resource = Seth::Resource::Group.new("admin")
   end
 
   it "should allow an integer" do
@@ -99,9 +99,9 @@ describe Chef::Resource::Group, "gid" do
   end
 end
 
-describe Chef::Resource::Group, "members" do
+describe Seth::Resource::Group, "members" do
   before(:each) do
-    @resource = Chef::Resource::Group.new("admin")
+    @resource = Seth::Resource::Group.new("admin")
   end
 
   [ :users, :members].each do |method|
@@ -121,9 +121,9 @@ describe Chef::Resource::Group, "members" do
   end
 end
 
-describe Chef::Resource::Group, "append" do
+describe Seth::Resource::Group, "append" do
   before(:each) do
-    @resource = Chef::Resource::Group.new("admin")
+    @resource = Seth::Resource::Group.new("admin")
   end
 
   it "should default to false" do

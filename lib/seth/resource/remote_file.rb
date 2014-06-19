@@ -17,14 +17,14 @@
 # limitations under the License.
 #
 
-require 'chef/resource/file'
-require 'chef/provider/remote_file'
-require 'chef/mixin/securable'
+require 'seth/resource/file'
+require 'seth/provider/remote_file'
+require 'seth/mixin/securable'
 
-class Chef
+class Seth
   class Resource
-    class RemoteFile < Chef::Resource::File
-      include Chef::Mixin::Securable
+    class RemoteFile < Seth::Resource::File
+      include Seth::Mixin::Securable
 
       provides :remote_file, :on_platforms => :all
 
@@ -37,7 +37,7 @@ class Chef
         @use_last_modified = true
         @ftp_active_mode = false
         @headers = {}
-        @provider = Chef::Provider::RemoteFile
+        @provider = Seth::Provider::RemoteFile
       end
 
       # source can take any of the following as arguments
@@ -65,9 +65,9 @@ class Chef
       def parse_source_args(args)
         if args.empty?
           nil
-        elsif args[0].is_a?(Chef::DelayedEvaluator) && args.count == 1
+        elsif args[0].is_a?(Seth::DelayedEvaluator) && args.count == 1
           args[0]
-        elsif args.any? {|a| a.is_a?(Chef::DelayedEvaluator)} && args.count > 1
+        elsif args.any? {|a| a.is_a?(Seth::DelayedEvaluator)} && args.count > 1
           raise Exceptions::InvalidRemoteFileURI, "Only 1 source argument allowed when using a lazy evaluator"
         else
           Array(args).flatten

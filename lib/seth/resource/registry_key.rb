@@ -15,13 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'chef/provider/registry_key'
-require 'chef/resource'
-require 'chef/digester'
+require 'seth/provider/registry_key'
+require 'seth/resource'
+require 'seth/digester'
 
-class Chef
+class Seth
   class Resource
-    class RegistryKey < Chef::Resource
+    class RegistryKey < Seth::Resource
 
       identity_attr :key
       state_attrs :values
@@ -29,7 +29,7 @@ class Chef
       # Some registry key data types may not be safely reported as json.
       # Example (CHEF-5323):
       #
-      # registry_key 'HKEY_CURRENT_USER\\ChefTest2014' do
+      # registry_key 'HKEY_CURRENT_USER\\SethTest2014' do
       #   values [{
       #     :name => "ValueWithBadData",
       #     :type => :binary,
@@ -54,7 +54,7 @@ class Chef
       # If we have conflicts with other resources reporting json incompatible state, we
       # may want to extend the state_attrs API with the ability to rename POST'd attrs.
       #
-      # See lib/chef/resource_reporter.rb for more information.
+      # See lib/seth/resource_reporter.rb for more information.
       attr_reader :unscrubbed_values
 
       def initialize(name, run_context=nil)
@@ -126,7 +126,7 @@ class Chef
           scrubbed_value = value.dup
           if needs_checksum?(scrubbed_value)
             data_io = StringIO.new(scrubbed_value[:data].to_s)
-            scrubbed_value[:data] = Chef::Digester.instance.generate_md5_checksum(data_io)
+            scrubbed_value[:data] = Seth::Digester.instance.generate_md5_checksum(data_io)
           end
           scrubbed << scrubbed_value
         end

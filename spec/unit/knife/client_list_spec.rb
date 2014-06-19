@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::ClientList do
+describe Seth::Knife::ClientList do
   before(:each) do
-    @knife = Chef::Knife::ClientList.new
+    @knife = Seth::Knife::ClientList.new
     @knife.name_args = [ 'adam' ]
   end
 
   describe 'run' do
     it 'should list the clients' do
-      Chef::ApiClient.should_receive(:list)
+      Seth::ApiClient.should_receive(:list)
       @knife.should_receive(:format_list_for_display)
       @knife.run
     end

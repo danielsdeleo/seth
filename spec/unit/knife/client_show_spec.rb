@@ -18,16 +18,16 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::ClientShow do
+describe Seth::Knife::ClientShow do
   before(:each) do
-    @knife = Chef::Knife::ClientShow.new
+    @knife = Seth::Knife::ClientShow.new
     @knife.name_args = [ 'adam' ]
     @client_mock = double('client_mock')
   end
 
   describe 'run' do
     it 'should list the client' do
-      Chef::ApiClient.should_receive(:load).with('adam').and_return(@client_mock)
+      Seth::ApiClient.should_receive(:load).with('adam').and_return(@client_mock)
       @knife.should_receive(:format_for_display).with(@client_mock)
       @knife.run
     end

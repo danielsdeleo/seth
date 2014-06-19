@@ -19,14 +19,14 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class CookbookMetadataFromFile < Knife
 
       deps do
-        require 'chef/cookbook/metadata'
+        require 'seth/cookbook/metadata'
       end
 
       banner "knife cookbook metadata from FILE (options)"
@@ -35,7 +35,7 @@ class Chef
         file = @name_args[0]
         cookbook = File.basename(File.dirname(file))
 
-        @metadata = Chef::Knife::CookbookMetadata.new
+        @metadata = Seth::Knife::CookbookMetadata.new
         @metadata.generate_metadata_from_file(cookbook, file)
       end
 

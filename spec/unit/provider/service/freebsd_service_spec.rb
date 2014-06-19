@@ -18,23 +18,23 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Freebsd do
+describe Seth::Provider::Service::Freebsd do
   before do
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.automatic_attrs[:command] = {:ps => "ps -ax"}
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Service.new("apache22")
+    @new_resource = Seth::Resource::Service.new("apache22")
     @new_resource.pattern("httpd")
     @new_resource.supports({:status => false})
 
-    @current_resource = Chef::Resource::Service.new("apache22")
+    @current_resource = Seth::Resource::Service.new("apache22")
 
-    @provider = Chef::Provider::Service::Freebsd.new(@new_resource,@run_context)
+    @provider = Seth::Provider::Service::Freebsd.new(@new_resource,@run_context)
     @provider.action = :start
     @init_command = "/usr/local/etc/rc.d/apache22"
-    Chef::Resource::Service.stub(:new).and_return(@current_resource)
+    Seth::Resource::Service.stub(:new).and_return(@current_resource)
   end
 
   describe "load_current_resource" do
@@ -64,7 +64,7 @@ RC_SAMPLE
     end
 
     it "should create a current resource with the name of the new resource" do
-      Chef::Resource::Service.should_receive(:new).and_return(@current_resource)
+      Seth::Resource::Service.should_receive(:new).and_return(@current_resource)
       @provider.load_current_resource
     end
 
@@ -104,11 +104,11 @@ RC_SAMPLE
 
     describe "when a status command has been specified" do
       before do
-        @new_resource.status_command("/bin/chefhasmonkeypants status")
+        @new_resource.status_command("/bin/sethhasmonkeypants status")
       end
 
       it "should run the services status command if one has been specified" do
-        @provider.should_receive(:shell_out).with("/bin/chefhasmonkeypants status").and_return(@status)
+        @provider.should_receive(:shell_out).with("/bin/sethhasmonkeypants status").and_return(@status)
         @provider.load_current_resource
       end
 
@@ -117,13 +117,13 @@ RC_SAMPLE
     it "should raise error if the node has a nil ps attribute and no other means to get status" do
       @node.automatic_attrs[:command] = {:ps => nil}
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
 
     it "should raise error if the node has an empty ps attribute and no other means to get status" do
       @node.automatic_attrs[:command] = {:ps => ""}
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
 
     describe "when executing assertions" do
@@ -141,7 +141,7 @@ RC_SAMPLE
             @provider.define_resource_requirements
             @provider.instance_variable_get("@rcd_script_found").should be_false
             @provider.action = action
-            lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+            lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
           end
         end
 
@@ -166,7 +166,7 @@ RC_SAMPLE
         @provider.instance_variable_get("@enabled_state_found").should be_false
         @provider.instance_variable_get("@rcd_script_found").should be_true
         @provider.define_resource_requirements
-        lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service,
+        lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service,
           "Could not find the service name in /usr/local/etc/rc.d/#{@current_resource.service_name} and rcvar")
       end
 
@@ -211,7 +211,7 @@ RC_SAMPLE
         @provider.stub(:shell_out!).and_raise(Mixlib::ShellOut::ShellCommandFailed)
         @provider.load_current_resource
         @provider.define_resource_requirements
-        lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+        lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
       end
     end
 
@@ -221,8 +221,8 @@ RC_SAMPLE
 
     describe "when starting the service" do
       it "should call the start command if one is specified" do
-        @new_resource.start_command("/etc/rc.d/chef startyousillysally")
-        @provider.should_receive(:shell_out!).with("/etc/rc.d/chef startyousillysally")
+        @new_resource.start_command("/etc/rc.d/seth startyousillysally")
+        @provider.should_receive(:shell_out!).with("/etc/rc.d/seth startyousillysally")
         @provider.load_current_resource
         @provider.start_service()
       end
@@ -234,10 +234,10 @@ RC_SAMPLE
       end
     end
 
-    describe Chef::Provider::Service::Init, "stop_service" do
+    describe Seth::Provider::Service::Init, "stop_service" do
       it "should call the stop command if one is specified" do
-        @new_resource.stop_command("/etc/init.d/chef itoldyoutostop")
-        @provider.should_receive(:shell_out!).with("/etc/init.d/chef itoldyoutostop")
+        @new_resource.stop_command("/etc/init.d/seth itoldyoutostop")
+        @provider.should_receive(:shell_out!).with("/etc/init.d/seth itoldyoutostop")
         @provider.load_current_resource
         @provider.stop_service()
       end
@@ -258,8 +258,8 @@ RC_SAMPLE
       end
 
       it "should call the restart_command if one has been specified" do
-        @new_resource.restart_command("/etc/init.d/chef restartinafire")
-        @provider.should_receive(:shell_out!).with("/etc/init.d/chef restartinafire")
+        @new_resource.restart_command("/etc/init.d/seth restartinafire")
+        @provider.should_receive(:shell_out!).with("/etc/init.d/seth restartinafire")
         @provider.load_current_resource
         @provider.restart_service()
       end
@@ -313,7 +313,7 @@ RCVAR_SAMPLE
             @provider.action = action
             @provider.load_current_resource
             @provider.define_resource_requirements
-            lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+            lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
           end
         end
 
@@ -330,7 +330,7 @@ RCVAR_SAMPLE
     end
   end
 
-  describe Chef::Provider::Service::Freebsd, "enable_service" do
+  describe Seth::Provider::Service::Freebsd, "enable_service" do
     before do
       @provider.current_resource = @current_resource
       @provider.stub(:service_enable_variable_name).and_return("#{@current_resource.service_name}_enable")
@@ -357,7 +357,7 @@ RCVAR_SAMPLE
     end
   end
 
-  describe Chef::Provider::Service::Freebsd, "disable_service" do
+  describe Seth::Provider::Service::Freebsd, "disable_service" do
     before do
       @provider.current_resource = @current_resource
       @provider.stub(:service_enable_variable_name).and_return("#{@current_resource.service_name}_enable")

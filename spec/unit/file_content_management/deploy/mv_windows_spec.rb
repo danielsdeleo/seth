@@ -18,8 +18,8 @@
 
 require 'spec_helper'
 
-unless Chef::Platform.windows?
-  class Chef
+unless Seth::Platform.windows?
+  class Seth
     module ReservedNames
       module Win32
         module Security
@@ -31,9 +31,9 @@ unless Chef::Platform.windows?
   end
 end
 
-require 'chef/file_content_management/deploy/mv_windows'
+require 'seth/file_content_management/deploy/mv_windows'
 
-describe Chef::FileContentManagement::Deploy::MvWindows do
+describe Seth::FileContentManagement::Deploy::MvWindows do
 
   let(:content_deployer) { described_class.new }
   let(:target_file_path) { "/etc/my_app.conf" }
@@ -59,7 +59,7 @@ describe Chef::FileContentManagement::Deploy::MvWindows do
     end
 
     before do
-      Chef::ReservedNames::Win32::Security::SecurableObject.
+      Seth::ReservedNames::Win32::Security::SecurableObject.
         stub(:new).
         with(target_file_path).
         and_return(target_file_security_object, updated_target_security_object)
@@ -68,11 +68,11 @@ describe Chef::FileContentManagement::Deploy::MvWindows do
 
     context "when run without adminstrator privileges" do
       before do
-        target_file_security_object.should_receive(:security_descriptor).and_raise(Chef::Exceptions::Win32APIError)
+        target_file_security_object.should_receive(:security_descriptor).and_raise(Seth::Exceptions::Win32APIError)
       end
 
       it "errors out with a WindowsNotAdmin error" do
-        lambda { content_deployer.deploy(staging_file_path, target_file_path)}.should raise_error(Chef::Exceptions::WindowsNotAdmin)
+        lambda { content_deployer.deploy(staging_file_path, target_file_path)}.should raise_error(Seth::Exceptions::WindowsNotAdmin)
       end
 
     end
@@ -133,7 +133,7 @@ describe Chef::FileContentManagement::Deploy::MvWindows do
           target_file_security_descriptor.stub(:dacl_inherits?).and_return(dacl_inherits?)
 
           target_file_security_descriptor.stub(:dacl).and_return(original_target_file_dacl)
-          Chef::ReservedNames::Win32::Security::ACL.
+          Seth::ReservedNames::Win32::Security::ACL.
             should_receive(:create).
             with([not_inherited_dacl_ace]).
             and_return(custom_dacl)
@@ -142,7 +142,7 @@ describe Chef::FileContentManagement::Deploy::MvWindows do
           target_file_security_descriptor.stub(:sacl_inherits?).and_return(sacl_inherits?)
 
           target_file_security_descriptor.stub(:sacl).and_return(original_target_file_sacl)
-          Chef::ReservedNames::Win32::Security::ACL.
+          Seth::ReservedNames::Win32::Security::ACL.
             should_receive(:create).
             with([not_inherited_sacl_ace]).
             and_return(custom_sacl)

@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::CookbookDelete do
+describe Seth::Knife::CookbookDelete do
   before(:each) do
-    @knife = Chef::Knife::CookbookDelete.new
+    @knife = Seth::Knife::CookbookDelete.new
     @knife.name_args = ['foobar']
     @knife.cookbook_name = 'foobar'
     @stdout = StringIO.new
@@ -75,7 +75,7 @@ describe Chef::Knife::CookbookDelete do
     it 'should delete the specific cookbook version' do
       @knife.cookbook_name = 'foobar'
       @knife.version = '1.0.0'
-      @knife.should_receive(:delete_object).with(Chef::CookbookVersion,
+      @knife.should_receive(:delete_object).with(Seth::CookbookVersion,
                                                  'foobar version 1.0.0',
                                                  'cookbook').and_yield()
       @knife.should_receive(:delete_request).with('cookbooks/foobar/1.0.0')

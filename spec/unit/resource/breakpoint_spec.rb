@@ -18,10 +18,10 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Breakpoint do
+describe Seth::Resource::Breakpoint do
 
   before do
-    @breakpoint = Chef::Resource::Breakpoint.new
+    @breakpoint = Seth::Resource::Breakpoint.new
   end
 
   it "allows the action :break" do
@@ -37,7 +37,7 @@ describe Chef::Resource::Breakpoint do
   end
 
   it "uses the breakpoint provider" do
-    @breakpoint.provider.should == Chef::Provider::Breakpoint
+    @breakpoint.provider.should == Seth::Provider::Breakpoint
   end
 
 end

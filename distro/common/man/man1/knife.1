@@ -1,4 +1,4 @@
-.TH "KNIFE" "1" "Chef 11.8.0" "" "knife"
+.TH "KNIFE" "1" "Seth 11.8.0" "" "knife"
 .SH NAME
 knife \- The man page for the knife command line tool.
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" Man page generated from reStructuredText.
 .
 .sp
-Knife is a command\-line tool that provides an interface between a local chef\-repo and the server. Knife helps users to manage:
+Knife is a command\-line tool that provides an interface between a local seth\-repo and the server. Knife helps users to manage:
 .INDENT 0.0
 .IP \(bu 2
 Nodes
@@ -46,7 +46,7 @@ Environments
 .IP \(bu 2
 Cloud resources, including provisioning
 .IP \(bu 2
-The installation of the chef\-client on management workstations
+The installation of the seth\-client on management workstations
 .IP \(bu 2
 Searching of indexed data on the server
 .UNINDENT
@@ -108,7 +108,7 @@ knife xargs
 .UNINDENT
 .SH WORKING WITH KNIFE
 .sp
-Knife runs from a management workstation and sits in\-between a server and an organization\(aqs infrastructure. Knife interacts with a server by using the same REST API that is used by a chef\-client. Role\-based authentication controls (RBAC) can be used to authorize changes when Knife is run with Hosted Chef or Private Chef. Knife is configured during workstation setup, but subsequent modifications can be made using the knife.rb configuration file.
+Knife runs from a management workstation and sits in\-between a server and an organization\(aqs infrastructure. Knife interacts with a server by using the same REST API that is used by a seth\-client. Role\-based authentication controls (RBAC) can be used to authorize changes when Knife is run with Hosted Seth or Private Chef. Knife is configured during workstation setup, but subsequent modifications can be made using the knife.rb configuration file.
 .SS JSON Data Format
 .sp
 Most data is entered using a text editor in JSON format, unless the \fB\-\-disable\-editing\fP option is entered as part of a command. (Encrypted data bags use YAML, which is a superset of JSON.) JSON is a common, language\-independent data format that provides a simple text representation of arbitrary data structures. For more information about JSON, see \fI\%http://www.json.org/\fP or \fI\%http://en.wikipedia.org/wiki/JSON\fP.

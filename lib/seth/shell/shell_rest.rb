@@ -17,7 +17,7 @@
 #
 
 module Shell
-  class ShellREST < Chef::REST
+  class ShellREST < Seth::REST
 
     alias :get    :get_rest
     alias :put    :put_rest

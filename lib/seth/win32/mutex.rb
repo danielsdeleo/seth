@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/win32/api/synchronization'
+require 'seth/win32/api/synchronization'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     class Mutex
-      include Chef::ReservedNames::Win32::API::Synchronization
+      include Seth::ReservedNames::Win32::API::Synchronization
 
       def initialize(name)
         @name = name
@@ -54,14 +54,14 @@ class Chef
           when WAIT_ABANDONED
             # Previous owner of the mutex died before it can release the
             # mutex. Log a warning and continue.
-            Chef::Log.debug "Existing owner of the mutex exited prematurely."
+            Seth::Log.debug "Existing owner of the mutex exited prematurely."
             break
           when WAIT_OBJECT_0
             # Mutex is successfully acquired.
             break
           else
-            Chef::Log.error("Failed to acquire system mutex '#{name}'. Return code: #{wait_result}")
-            Chef::ReservedNames::Win32::Error.raise!
+            Seth::Log.error("Failed to acquire system mutex '#{name}'. Return code: #{wait_result}")
+            Seth::ReservedNames::Win32::Error.raise!
           end
         end
       end
@@ -76,10 +76,10 @@ class Chef
           # Don't fail things in here if we can't release the mutex.
           # Because it will be automatically released when the owner
           # of the process goes away and this class is only being used
-          # to synchronize chef-clients runs on a node.
-          Chef::Log.error("Can not release mutex '#{name}'. This might cause issues \
+          # to synchronize seth-clients runs on a node.
+          Seth::Log.error("Can not release mutex '#{name}'. This might cause issues \
 if the mutex is attempted to be acquired by other threads.")
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
       end
 
@@ -105,8 +105,8 @@ if the mutex is attempted to be acquired by other threads.")
           # Looks like we can't create the mutex for some reason.
           # Fail early.
           if @handle == 0
-            Chef::Log.error("Failed to create system mutex with name'#{name}'")
-            Chef::ReservedNames::Win32::Error.raise!
+            Seth::Log.error("Failed to create system mutex with name'#{name}'")
+            Seth::ReservedNames::Win32::Error.raise!
           end
         end
       end

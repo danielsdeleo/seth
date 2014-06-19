@@ -18,7 +18,7 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Daemon do
+describe Seth::Daemon do
   before do
     if windows?
       mock_struct = #Struct::Passwd.new(nil, nil, 111, 111)
@@ -37,22 +37,22 @@ describe Chef::Daemon do
     describe "when the pid_file option has been set" do
 
       before do
-        Chef::Config[:pid_file] = "/var/run/chef/chef-client.pid"
+        Seth::Config[:pid_file] = "/var/run/seth/chef-client.pid"
       end
 
       it "should return the supplied value" do
-        Chef::Daemon.pid_file.should eql("/var/run/chef/chef-client.pid")
+        Seth::Daemon.pid_file.should eql("/var/run/seth/chef-client.pid")
       end
     end
 
     describe "without the pid_file option set" do
 
       before do
-        Chef::Daemon.name = "chef-client"
+        Seth::Daemon.name = "seth-client"
       end
 
       it "should return a valued based on @name" do
-        Chef::Daemon.pid_file.should eql("/tmp/chef-client.pid")
+        Seth::Daemon.pid_file.should eql("/tmp/seth-client.pid")
       end
 
     end
@@ -61,54 +61,54 @@ describe Chef::Daemon do
   describe ".pid_from_file" do
 
     before do
-      Chef::Config[:pid_file] = "/var/run/chef/chef-client.pid"
+      Seth::Config[:pid_file] = "/var/run/seth/chef-client.pid"
     end
 
     it "should suck the pid out of pid_file" do
-      File.should_receive(:read).with("/var/run/chef/chef-client.pid").and_return("1337")
-      Chef::Daemon.pid_from_file
+      File.should_receive(:read).with("/var/run/seth/chef-client.pid").and_return("1337")
+      Seth::Daemon.pid_from_file
     end
   end
 
   describe ".change_privilege" do
 
     before do
-      Chef::Application.stub(:fatal!).and_return(true)
-      Chef::Config[:user] = 'aj'
+      Seth::Application.stub(:fatal!).and_return(true)
+      Seth::Config[:user] = 'aj'
       Dir.stub(:chdir)
     end
 
     it "changes the working directory to root" do
       Dir.should_receive(:chdir).with("/").and_return(0)
-      Chef::Daemon.change_privilege
+      Seth::Daemon.change_privilege
     end
 
     describe "when the user and group options are supplied" do
 
       before do
-        Chef::Config[:group] = 'staff'
+        Seth::Config[:group] = 'staff'
       end
 
       it "should log an appropriate info message" do
-        Chef::Log.should_receive(:info).with("About to change privilege to aj:staff")
-        Chef::Daemon.change_privilege
+        Seth::Log.should_receive(:info).with("About to change privilege to aj:staff")
+        Seth::Daemon.change_privilege
       end
 
       it "should call _change_privilege with the user and group" do
-        Chef::Daemon.should_receive(:_change_privilege).with("aj", "staff")
-        Chef::Daemon.change_privilege
+        Seth::Daemon.should_receive(:_change_privilege).with("aj", "staff")
+        Seth::Daemon.change_privilege
       end
     end
 
     describe "when just the user option is supplied" do
       it "should log an appropriate info message" do
-        Chef::Log.should_receive(:info).with("About to change privilege to aj")
-        Chef::Daemon.change_privilege
+        Seth::Log.should_receive(:info).with("About to change privilege to aj")
+        Seth::Daemon.change_privilege
       end
 
       it "should call _change_privilege with just the user" do
-        Chef::Daemon.should_receive(:_change_privilege).with("aj")
-        Chef::Daemon.change_privilege
+        Seth::Daemon.should_receive(:_change_privilege).with("aj")
+        Seth::Daemon.change_privilege
       end
     end
   end
@@ -139,17 +139,17 @@ describe Chef::Daemon do
 
       it "should initialize the supplemental group list" do
         Process.should_receive(:initgroups).with("aj", 20)
-        Chef::Daemon._change_privilege("aj")
+        Seth::Daemon._change_privilege("aj")
       end
 
       it "should attempt to change the process GID" do
         Process::GID.should_receive(:change_privilege).with(20).and_return(20)
-        Chef::Daemon._change_privilege("aj")
+        Seth::Daemon._change_privilege("aj")
       end
 
       it "should attempt to change the process UID" do
         Process::UID.should_receive(:change_privilege).with(501).and_return(501)
-        Chef::Daemon._change_privilege("aj")
+        Seth::Daemon._change_privilege("aj")
       end
     end
 
@@ -165,8 +165,8 @@ describe Chef::Daemon do
         if RUBY_PLATFORM.match("solaris2") || RUBY_PLATFORM.match("aix")
           error = "Not owner"
         end
-        Chef::Application.should_receive(:fatal!).with("Permission denied when trying to change 999:999 to 501:20. #{error}")
-        Chef::Daemon._change_privilege("aj")
+        Seth::Application.should_receive(:fatal!).with("Permission denied when trying to change 999:999 to 501:20. #{error}")
+        Seth::Daemon._change_privilege("aj")
       end
     end
 

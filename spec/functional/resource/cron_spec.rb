@@ -18,11 +18,11 @@
 #
 
 require 'functional/resource/base'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
-describe Chef::Resource::Cron, :requires_root, :unix_only do
+describe Seth::Resource::Cron, :requires_root, :unix_only do
 
-  include Chef::Mixin::ShellOut
+  include Seth::Mixin::ShellOut
 
   # Platform specific validation routines.
   def cron_should_exists(cron_name, command)
@@ -47,7 +47,7 @@ describe Chef::Resource::Cron, :requires_root, :unix_only do
 
   # Actual tests
   let(:new_resource) do
-    new_resource = Chef::Resource::Cron.new("Chef functional test cron", run_context)
+    new_resource = Seth::Resource::Cron.new("Chef functional test cron", run_context)
     new_resource.user  'root'
     new_resource.minute "30"
     new_resource.command "/bin/true"
@@ -87,7 +87,7 @@ describe Chef::Resource::Cron, :requires_root, :unix_only do
   describe "create action with various attributes", :external => exclude_solaris do
     def create_and_validate_with_attribute(resource, attribute, value)
       if ohai[:platform] == 'aix'
-         expect {resource.run_action(:create)}.to raise_error(Chef::Exceptions::Cron, /Aix cron entry does not support environment variables. Please set them in script and use script in cron./)
+         expect {resource.run_action(:create)}.to raise_error(Seth::Exceptions::Cron, /Aix cron entry does not support environment variables. Please set them in script and use script in cron./)
       else
         resource.run_action(:create)
         # Verify if the cron is created successfully
@@ -107,8 +107,8 @@ describe Chef::Resource::Cron, :requires_root, :unix_only do
     end
 
     it "should create a crontab entry for mailto attribute" do
-      new_resource.mailto "cheftest@example.com"
-      create_and_validate_with_attribute(new_resource, "mailto", "cheftest@example.com")
+      new_resource.mailto "sethtest@example.com"
+      create_and_validate_with_attribute(new_resource, "mailto", "sethtest@example.com")
     end
 
     it "should create a crontab entry for path attribute" do
@@ -129,7 +129,7 @@ describe Chef::Resource::Cron, :requires_root, :unix_only do
 
   describe "negative tests for create action" do
     def cron_create_should_raise_exception
-      expect { new_resource.run_action(:create) }.to raise_error(Chef::Exceptions::Cron, /Error updating state of #{new_resource.name}, exit: 1/)
+      expect { new_resource.run_action(:create) }.to raise_error(Seth::Exceptions::Cron, /Error updating state of #{new_resource.name}, exit: 1/)
       cron_should_not_exists(new_resource.name)
     end
 

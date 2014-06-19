@@ -18,20 +18,20 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::MacportsPackage, "initialize" do
+describe Seth::Resource::MacportsPackage, "initialize" do
   before(:each) do
-    @resource = Chef::Resource::MacportsPackage.new("foo")
+    @resource = Seth::Resource::MacportsPackage.new("foo")
   end
 
-  it "should return a Chef::Resource::MacportsPackage" do
-    @resource.should be_a_kind_of(Chef::Resource::MacportsPackage)
+  it "should return a Seth::Resource::MacportsPackage" do
+    @resource.should be_a_kind_of(Seth::Resource::MacportsPackage)
   end
 
   it "should set the resource_name to :macports_package" do
     @resource.resource_name.should eql(:macports_package)
   end
 
-  it "should set the provider to Chef::Provider::Package::Macports" do
-    @resource.provider.should eql(Chef::Provider::Package::Macports)
+  it "should set the provider to Seth::Provider::Package::Macports" do
+    @resource.provider.should eql(Seth::Provider::Package::Macports)
   end
 end

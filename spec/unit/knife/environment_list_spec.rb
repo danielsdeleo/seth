@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::EnvironmentList do
+describe Seth::Knife::EnvironmentList do
   before(:each) do
-    @knife = Chef::Knife::EnvironmentList.new
+    @knife = Seth::Knife::EnvironmentList.new
     @knife.stub(:msg).and_return true
     @knife.stub(:output).and_return true
     @knife.stub(:show_usage).and_return true
@@ -30,11 +30,11 @@ describe Chef::Knife::EnvironmentList do
       "development" => "http://localhost:4000/environments/development",
       "testing" => "http://localhost:4000/environments/testing"
     }
-    Chef::Environment.stub(:list).and_return @environments
+    Seth::Environment.stub(:list).and_return @environments
   end
 
   it "should make an api call to list the environments" do
-    Chef::Environment.should_receive(:list)
+    Seth::Environment.should_receive(:list)
     @knife.run
   end
 

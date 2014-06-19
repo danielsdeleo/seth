@@ -1,7 +1,7 @@
-require 'chef/chef_fs/data_handler/data_handler_base'
+require 'seth/chef_fs/data_handler/data_handler_base'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module DataHandler
       class ContainerDataHandler < DataHandlerBase
         def normalize(container, entry)
@@ -22,7 +22,7 @@ class Chef
           end
         end
 
-        # There is no chef_class for users, nor does to_ruby work.
+        # There is no seth_class for users, nor does to_ruby work.
       end
     end
   end

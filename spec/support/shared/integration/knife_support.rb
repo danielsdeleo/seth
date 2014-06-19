@@ -15,11 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/config'
-require 'chef/knife'
-require 'chef/application/knife'
+require 'seth/config'
+require 'seth/knife'
+require 'seth/application/knife'
 require 'logger'
-require 'chef/log'
+require 'seth/log'
 
 module KnifeSupport
   DEBUG = ENV['DEBUG']
@@ -34,44 +34,44 @@ module KnifeSupport
     end
 
     # Make output stable
-    Chef::Config[:concurrency] = 1
+    Seth::Config[:concurrency] = 1
 
     # Work on machines where we can't access /var
     checksums_cache_dir = Dir.mktmpdir('checksums') do |checksums_cache_dir|
-      Chef::Config[:cache_options] = {
+      Seth::Config[:cache_options] = {
         :path => checksums_cache_dir,
         :skip_expires => true
       }
 
-      # This is Chef::Knife.run without load_commands--we'll load stuff
+      # This is Seth::Knife.run without load_commands--we'll load stuff
       # ourselves, thank you very much
       stdout = StringIO.new
       stderr = StringIO.new
-      old_loggers = Chef::Log.loggers
-      old_log_level = Chef::Log.level
+      old_loggers = Seth::Log.loggers
+      old_log_level = Seth::Log.level
       begin
         puts "knife: #{args.join(' ')}" if DEBUG
-        subcommand_class = Chef::Knife.subcommand_class_from(args)
-        subcommand_class.options = Chef::Application::Knife.options.merge(subcommand_class.options)
+        subcommand_class = Seth::Knife.subcommand_class_from(args)
+        subcommand_class.options = Seth::Application::Knife.options.merge(subcommand_class.options)
         subcommand_class.load_deps
         instance = subcommand_class.new(args)
 
         # Capture stdout/stderr
-        instance.ui = Chef::Knife::UI.new(stdout, stderr, STDIN, {})
+        instance.ui = Seth::Knife::UI.new(stdout, stderr, STDIN, {})
 
         # Don't print stuff
-        Chef::Config[:verbosity] = ( DEBUG ? 2 : 0 )
+        Seth::Config[:verbosity] = ( DEBUG ? 2 : 0 )
         instance.config[:config_file] = File.join(CHEF_SPEC_DATA, "null_config.rb")
 
 
-        # Configure chef with a (mostly) blank knife.rb
+        # Configure seth with a (mostly) blank knife.rb
         # We set a global and then mutate it in our stub knife.rb so we can be
         # extra sure that we're not loading someone's real knife.rb and then
-        # running test scenarios against a real chef server. If things don't
+        # running test scenarios against a real seth server. If things don't
         # smell right, abort.
 
         $__KNIFE_INTEGRATION_FAILSAFE_CHECK = "ole"
-        instance.configure_chef
+        instance.configure_seth
 
         unless $__KNIFE_INTEGRATION_FAILSAFE_CHECK == "ole ole"
           raise Exception, "Potential misconfiguration of integration tests detected. Aborting test."
@@ -79,9 +79,9 @@ module KnifeSupport
 
         logger = Logger.new(stderr)
         logger.formatter = proc { |severity, datetime, progname, msg| "#{severity}: #{msg}\n" }
-        Chef::Log.use_log_devices([logger])
-        Chef::Log.level = ( DEBUG ? :debug : :warn )
-        Chef::Log::Formatter.show_time = false
+        Seth::Log.use_log_devices([logger])
+        Seth::Log.level = ( DEBUG ? :debug : :warn )
+        Seth::Log::Formatter.show_time = false
 
         instance.run_with_pretty_exceptions(true)
 
@@ -91,10 +91,10 @@ module KnifeSupport
       rescue SystemExit => e
         exit_code = e.status
       ensure
-        Chef::Log.use_log_devices(old_loggers)
-        Chef::Log.level = old_log_level
-        Chef::Config.delete(:cache_options)
-        Chef::Config.delete(:concurrency)
+        Seth::Log.use_log_devices(old_loggers)
+        Seth::Log.level = old_log_level
+        Seth::Config.delete(:cache_options)
+        Seth::Config.delete(:concurrency)
       end
 
       KnifeResult.new(stdout.string, stderr.string, exit_code)
@@ -156,7 +156,7 @@ module KnifeSupport
         stderr_actual.should == expected[:stderr]
       end
       stdout_actual = @stdout
-      if Chef::Platform.windows?
+      if Seth::Platform.windows?
         stderr_actual = stderr_actual.gsub("\r\n", "\n")
         stdout_actual = stdout_actual.gsub("\r\n", "\n")
       end

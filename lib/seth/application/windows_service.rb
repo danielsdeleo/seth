@@ -16,36 +16,36 @@
 # limitations under the License.
 #
 
-require 'chef'
-require 'chef/monologger'
-require 'chef/application'
-require 'chef/client'
-require 'chef/config'
-require 'chef/handler/error_report'
-require 'chef/log'
-require 'chef/rest'
+require 'seth'
+require 'seth/monologger'
+require 'seth/application'
+require 'seth/client'
+require 'seth/config'
+require 'seth/handler/error_report'
+require 'seth/log'
+require 'seth/rest'
 require 'mixlib/cli'
 require 'socket'
 require 'win32/daemon'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Application
     class WindowsService < ::Win32::Daemon
       include Mixlib::CLI
-      include Chef::Mixin::ShellOut
+      include Seth::Mixin::ShellOut
 
       option :config_file,
         :short => "-c CONFIG",
         :long => "--config CONFIG",
-        :default => "#{ENV['SYSTEMDRIVE']}/chef/client.rb",
+        :default => "#{ENV['SYSTEMDRIVE']}/seth/client.rb",
         :description => ""
 
       option :log_location,
         :short        => "-L LOGLOCATION",
         :long         => "--logfile LOGLOCATION",
         :description  => "Set the log file location",
-        :default => "#{ENV['SYSTEMDRIVE']}/chef/client.log"
+        :default => "#{ENV['SYSTEMDRIVE']}/seth/client.log"
 
       option :splay,
         :short        => "-s SECONDS",
@@ -56,7 +56,7 @@ class Chef
       option :interval,
         :short        => "-i SECONDS",
         :long         => "--interval SECONDS",
-        :description  => "Set the number of seconds to wait between chef-client runs",
+        :description  => "Set the number of seconds to wait between seth-client runs",
         :proc         => lambda { |s| s.to_i }
 
       def service_init
@@ -64,52 +64,52 @@ class Chef
         @service_signal = ConditionVariable.new
 
         reconfigure
-        Chef::Log.info("Chef Client Service initialized")
+        Seth::Log.info("Chef Client Service initialized")
       end
 
       def service_main(*startup_parameters)
-        # Chef::Config is initialized during service_init
+        # Seth::Config is initialized during service_init
         # Set the initial timeout to splay sleep time
-        timeout = rand Chef::Config[:splay]
+        timeout = rand Seth::Config[:splay]
 
         while running? do
-          # Grab the service_action_mutex to make a chef-client run
+          # Grab the service_action_mutex to make a seth-client run
           @service_action_mutex.synchronize do
             begin
-              Chef::Log.info("Next chef-client run will happen in #{timeout} seconds")
+              Seth::Log.info("Next seth-client run will happen in #{timeout} seconds")
               @service_signal.wait(@service_action_mutex, timeout)
 
               # Continue only if service is RUNNING
               next if state != RUNNING
 
               # Reconfigure each time through to pick up any changes in the client file
-              Chef::Log.info("Reconfiguring with startup parameters")
+              Seth::Log.info("Reconfiguring with startup parameters")
               reconfigure(startup_parameters)
-              timeout = Chef::Config[:interval]
+              timeout = Seth::Config[:interval]
 
               # Honor splay sleep config
-              timeout += rand Chef::Config[:splay]
+              timeout += rand Seth::Config[:splay]
 
-              # run chef-client only if service is in RUNNING state
+              # run seth-client only if service is in RUNNING state
               next if state != RUNNING
 
-              Chef::Log.info("Chef-Client service is starting a chef-client run...")
-              run_chef_client
+              Seth::Log.info("Chef-Client service is starting a seth-client run...")
+              run_seth_client
             rescue SystemExit => e
               # Do not raise any of the errors here in order to
               # prevent service crash
-              Chef::Log.error("#{e.class}: #{e}")
+              Seth::Log.error("#{e.class}: #{e}")
             rescue Exception => e
-              Chef::Log.error("#{e.class}: #{e}")
+              Seth::Log.error("#{e.class}: #{e}")
             end
           end
         end
 
         # Daemon class needs to have all the signal callbacks return
         # before service_main returns.
-        Chef::Log.debug("Giving signal callbacks some time to exit...")
+        Seth::Log.debug("Giving signal callbacks some time to exit...")
         sleep 1
-        Chef::Log.debug("Exiting service...")
+        Seth::Log.debug("Exiting service...")
       end
 
       ################################################################################
@@ -118,7 +118,7 @@ class Chef
 
       def service_stop
         run_warning_displayed = false
-        Chef::Log.info("STOP request from operating system.")
+        Seth::Log.info("STOP request from operating system.")
         loop do
           # See if a run is in flight
           if @service_action_mutex.try_lock
@@ -128,29 +128,29 @@ class Chef
             break
           else
             unless run_warning_displayed
-              Chef::Log.info("Currently a chef run is happening on this system.")
-              Chef::Log.info("Service  will stop when run is completed.")
+              Seth::Log.info("Currently a seth run is happening on this system.")
+              Seth::Log.info("Service  will stop when run is completed.")
               run_warning_displayed = true
             end
 
-            Chef::Log.debug("Waiting for chef-client run...")
+            Seth::Log.debug("Waiting for seth-client run...")
             sleep 1
           end
         end
-        Chef::Log.info("Service is stopping....")
+        Seth::Log.info("Service is stopping....")
       end
 
       def service_pause
-        Chef::Log.info("PAUSE request from operating system.")
+        Seth::Log.info("PAUSE request from operating system.")
 
         # We don't need to wake up the service_main if it's waiting
         # since this is a PAUSE signal.
 
         if @service_action_mutex.locked?
-          Chef::Log.info("Currently a chef-client run is happening.")
-          Chef::Log.info("Service will pause once it's completed.")
+          Seth::Log.info("Currently a seth-client run is happening.")
+          Seth::Log.info("Service will pause once it's completed.")
         else
-          Chef::Log.info("Service is pausing....")
+          Seth::Log.info("Service is pausing....")
         end
       end
 
@@ -158,12 +158,12 @@ class Chef
         # We don't need to wake up the service_main if it's waiting
         # since this is a RESUME signal.
 
-        Chef::Log.info("RESUME signal received from the OS.")
-        Chef::Log.info("Service is resuming....")
+        Seth::Log.info("RESUME signal received from the OS.")
+        Seth::Log.info("Service is resuming....")
       end
 
       def service_shutdown
-        Chef::Log.info("SHUTDOWN signal received from the OS.")
+        Seth::Log.info("SHUTDOWN signal received from the OS.")
 
         # Treat shutdown similar to stop.
 
@@ -176,82 +176,82 @@ class Chef
 
       private
 
-      # Initializes Chef::Client instance and runs it
-      def run_chef_client
-        # The chef client will be started in a new process. We have used shell_out to start the chef-client.
-        # The log_location and config_file of the parent process is passed to the new chef-client process.
+      # Initializes Seth::Client instance and runs it
+      def run_seth_client
+        # The seth client will be started in a new process. We have used shell_out to start the chef-client.
+        # The log_location and config_file of the parent process is passed to the new seth-client process.
         # We need to add the --no-fork, as by default it is set to fork=true.
         begin
-          Chef::Log.info "Starting chef-client in a new process"
+          Seth::Log.info "Starting seth-client in a new process"
           # Pass config params to the new process
           config_params = " --no-fork"
-          config_params += " -c #{Chef::Config[:config_file]}" unless  Chef::Config[:config_file].nil?
-          config_params += " -L #{Chef::Config[:log_location]}" unless Chef::Config[:log_location] == STDOUT
+          config_params += " -c #{Seth::Config[:config_file]}" unless  Chef::Config[:config_file].nil?
+          config_params += " -L #{Seth::Config[:log_location]}" unless Chef::Config[:log_location] == STDOUT
           # Starts a new process and waits till the process exits
-          result = shell_out("chef-client #{config_params}")
-          Chef::Log.debug "#{result.stdout}"
-          Chef::Log.debug "#{result.stderr}"
+          result = shell_out("seth-client #{config_params}")
+          Seth::Log.debug "#{result.stdout}"
+          Seth::Log.debug "#{result.stderr}"
         rescue Mixlib::ShellOut::ShellCommandFailed => e
-          Chef::Log.warn "Not able to start chef-client in new process (#{e})"
+          Seth::Log.warn "Not able to start seth-client in new process (#{e})"
         rescue => e
-          Chef::Log.error e
+          Seth::Log.error e
         ensure
           # Once process exits, we log the current process' pid
-          Chef::Log.info "Child process exited (pid: #{Process.pid})"
+          Seth::Log.info "Child process exited (pid: #{Process.pid})"
         end
       end
 
       def apply_config(config_file_path)
-        Chef::Config.from_file(config_file_path)
-        Chef::Config.merge!(config)
+        Seth::Config.from_file(config_file_path)
+        Seth::Config.merge!(config)
       end
 
-      # Lifted from Chef::Application, with addition of optional startup parameters
+      # Lifted from Seth::Application, with addition of optional startup parameters
       # for playing nicely with Windows Services
       def reconfigure(startup_parameters=[])
-        configure_chef startup_parameters
+        configure_seth startup_parameters
         configure_logging
         configure_proxy_environment_variables
 
-        Chef::Config[:chef_server_url] = config[:chef_server_url] if config.has_key? :chef_server_url
-        unless Chef::Config[:exception_handlers].any? {|h| Chef::Handler::ErrorReport === h}
-          Chef::Config[:exception_handlers] << Chef::Handler::ErrorReport.new
+        Seth::Config[:seth_server_url] = config[:chef_server_url] if config.has_key? :chef_server_url
+        unless Seth::Config[:exception_handlers].any? {|h| Chef::Handler::ErrorReport === h}
+          Seth::Config[:exception_handlers] << Chef::Handler::ErrorReport.new
         end
 
-        Chef::Config[:interval] ||= 1800
+        Seth::Config[:interval] ||= 1800
       end
 
       # Lifted from application.rb
       # See application.rb for related comments.
 
       def configure_logging
-        Chef::Log.init(MonoLogger.new(Chef::Config[:log_location]))
+        Seth::Log.init(MonoLogger.new(Chef::Config[:log_location]))
         if want_additional_logger?
           configure_stdout_logger
         end
-        Chef::Log.level = resolve_log_level
+        Seth::Log.level = resolve_log_level
       end
 
       def configure_stdout_logger
         stdout_logger = MonoLogger.new(STDOUT)
-        stdout_logger.formatter = Chef::Log.logger.formatter
-        Chef::Log.loggers <<  stdout_logger
+        stdout_logger.formatter = Seth::Log.logger.formatter
+        Seth::Log.loggers <<  stdout_logger
       end
 
       # Based on config and whether or not STDOUT is a tty, should we setup a
       # secondary logger for stdout?
       def want_additional_logger?
-        ( Chef::Config[:log_location] != STDOUT ) && STDOUT.tty? && (!Chef::Config[:daemonize]) && (Chef::Config[:force_logger])
+        ( Seth::Config[:log_location] != STDOUT ) && STDOUT.tty? && (!Chef::Config[:daemonize]) && (Chef::Config[:force_logger])
       end
 
       # Use of output formatters is assumed if `force_formatter` is set or if
       # `force_logger` is not set and STDOUT is to a console (tty)
       def using_output_formatter?
-        Chef::Config[:force_formatter] || (!Chef::Config[:force_logger] && STDOUT.tty?)
+        Seth::Config[:force_formatter] || (!Chef::Config[:force_logger] && STDOUT.tty?)
       end
 
       def auto_log_level?
-        Chef::Config[:log_level] == :auto
+        Seth::Config[:log_level] == :auto
       end
 
       # if log_level is `:auto`, convert it to :warn (when using output formatter)
@@ -264,11 +264,11 @@ class Chef
             :info
           end
         else
-          Chef::Config[:log_level]
+          Seth::Config[:log_level]
         end
       end
 
-      def configure_chef(startup_parameters)
+      def configure_seth(startup_parameters)
         # Bit of a hack ahead:
         # It is possible to specify a service's binary_path_name with arguments, like "foo.exe -x argX".
         # It is also possible to specify startup parameters separately, either via the Services manager
@@ -279,7 +279,7 @@ class Chef
         # 'config' hash; thus, anything in startup parameters will override any command line parameters that
         # might be set via the service's binary_path_name
         #
-        # All these parameters then get layered on top of those from Chef::Config
+        # All these parameters then get layered on top of those from Seth::Config
 
         parse_options # Operates on ARGV by default
         parse_options startup_parameters
@@ -287,22 +287,22 @@ class Chef
         begin
           case config[:config_file]
           when /^(http|https):\/\//
-            Chef::REST.new("", nil, nil).fetch(config[:config_file]) { |f| apply_config(f.path) }
+            Seth::REST.new("", nil, nil).fetch(config[:config_file]) { |f| apply_config(f.path) }
           else
             ::File::open(config[:config_file]) { |f| apply_config(f.path) }
           end
         rescue Errno::ENOENT => error
-          Chef::Log.warn("*****************************************")
-          Chef::Log.warn("Did not find config file: #{config[:config_file]}, using command line options.")
-          Chef::Log.warn("*****************************************")
+          Seth::Log.warn("*****************************************")
+          Seth::Log.warn("Did not find config file: #{config[:config_file]}, using command line options.")
+          Seth::Log.warn("*****************************************")
 
-          Chef::Config.merge!(config)
+          Seth::Config.merge!(config)
         rescue SocketError => error
-          Chef::Application.fatal!("Error getting config file #{Chef::Config[:config_file]}", 2)
-        rescue Chef::Exceptions::ConfigurationError => error
-          Chef::Application.fatal!("Error processing config file #{Chef::Config[:config_file]} with error #{error.message}", 2)
+          Seth::Application.fatal!("Error getting config file #{Chef::Config[:config_file]}", 2)
+        rescue Seth::Exceptions::ConfigurationError => error
+          Seth::Application.fatal!("Error processing config file #{Chef::Config[:config_file]} with error #{error.message}", 2)
         rescue Exception => error
-          Chef::Application.fatal!("Unknown error processing config file #{Chef::Config[:config_file]} with error #{error.message}", 2)
+          Seth::Application.fatal!("Unknown error processing config file #{Chef::Config[:config_file]} with error #{error.message}", 2)
         end
       end
 
@@ -313,5 +313,5 @@ end
 # To run this file as a service, it must be called as a script from within
 # the Windows Service framework.  In that case, kick off the main loop!
 if __FILE__ == $0
-    Chef::Application::WindowsService.mainloop
+    Seth::Application::WindowsService.mainloop
 end

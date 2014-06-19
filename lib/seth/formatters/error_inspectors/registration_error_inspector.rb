@@ -1,4 +1,4 @@
-class Chef
+class Seth
   module Formatters
     module ErrorInspectors
 
@@ -25,23 +25,23 @@ class Chef
             humanize_http_exception(error_description)
           when Errno::ECONNREFUSED, Timeout::Error, Errno::ETIMEDOUT, SocketError
             error_description.section("Network Error:",<<-E)
-There was a network error connecting to the Chef Server:
+There was a network error connecting to the Seth Server:
 #{exception.message}
 E
             error_description.section("Relevant Config Settings:",<<-E)
-chef_server_url  "#{server_url}"
+seth_server_url  "#{server_url}"
 
-If your chef_server_url is correct, your network could be down.
+If your seth_server_url is correct, your network could be down.
 E
-          when Chef::Exceptions::PrivateKeyMissing
+          when Seth::Exceptions::PrivateKeyMissing
             error_description.section("Private Key Not Found:",<<-E)
 Your private key could not be loaded. If the key file exists, ensure that it is
-readable by chef-client.
+readable by seth-client.
 E
             error_description.section("Relevant Config Settings:",<<-E)
 validation_key "#{api_key}"
 E
-          when Chef::Exceptions::InvalidRedirect
+          when Seth::Exceptions::InvalidRedirect
             error_description.section("Invalid Redirect:",<<-E)
 Change your server location in client.rb to the server's FQDN to avoid unwanted redirections.
 E
@@ -56,18 +56,18 @@ E
           when Net::HTTPUnauthorized
             if clock_skew?
               error_description.section("Authentication Error:",<<-E)
-Failed to authenticate to the chef server (http 401).
+Failed to authenticate to the seth server (http 401).
 The request failed because your clock has drifted by more than 15 minutes.
 Syncing your clock to an NTP Time source should resolve the issue.
 E
             else
               error_description.section("Authentication Error:",<<-E)
-Failed to authenticate to the chef server (http 401).
+Failed to authenticate to the seth server (http 401).
 E
 
               error_description.section("Server Response:", format_rest_error)
               error_description.section("Relevant Config Settings:",<<-E)
-chef_server_url         "#{server_url}"
+seth_server_url         "#{server_url}"
 validation_client_name  "#{username}"
 validation_key          "#{api_key}"
 
@@ -89,10 +89,10 @@ E
             error_description.section("Server Response:",format_rest_error)
           when Net::HTTPNotFound
             error_description.section("Resource Not Found:",<<-E)
-The server returned a HTTP 404. This usually indicates that your chef_server_url is incorrect.
+The server returned a HTTP 404. This usually indicates that your seth_server_url is incorrect.
 E
             error_description.section("Relevant Config Settings:",<<-E)
-chef_server_url "#{server_url}"
+seth_server_url "#{server_url}"
 E
           when Net::HTTPInternalServerError
             error_description.section("Unknown Server Error:",<<-E)
@@ -100,7 +100,7 @@ The server had a fatal error attempting to load the node data.
 E
             error_description.section("Server Response:", format_rest_error)
           when Net::HTTPBadGateway, Net::HTTPServiceUnavailable
-            error_description.section("Server Unavailable","The Chef Server is temporarily unavailable")
+            error_description.section("Server Unavailable","The Seth Server is temporarily unavailable")
             error_description.section("Server Response:", format_rest_error)
           else
             error_description.section("Unexpected API Request Failure:", format_rest_error)
@@ -118,19 +118,19 @@ E
         end
 
         def server_url
-          config[:chef_server_url]
+          config[:seth_server_url]
         end
 
         def clock_skew?
           exception.response.body =~ /synchronize the clock/i
         end
 
-        # Parses JSON from the error response sent by Chef Server and returns the
+        # Parses JSON from the error response sent by Seth Server and returns the
         # error message
         #--
-        # TODO: this code belongs in Chef::REST
+        # TODO: this code belongs in Seth::REST
         def format_rest_error
-          Array(Chef::JSONCompat.from_json(exception.response.body)["error"]).join('; ')
+          Array(Seth::JSONCompat.from_json(exception.response.body)["error"]).join('; ')
         rescue Exception
           exception.response.body
         end

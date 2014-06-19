@@ -1,14 +1,14 @@
-require 'chef/chef_fs/knife'
+require 'seth/chef_fs/knife'
 
-class Chef
+class Seth
   class Knife
-    class List < Chef::ChefFS::Knife
+    class List < Seth::ChefFS::Knife
       banner "knife list [-dfR1p] [PATTERN1 ... PATTERNn]"
 
       category "path-based"
 
       deps do
-        require 'chef/chef_fs/file_system'
+        require 'seth/chef_fs/file_system'
         require 'highline'
       end
 
@@ -46,7 +46,7 @@ class Chef
         # Get the top-level matches
         args = pattern_args_from(patterns)
         all_results = parallelize(pattern_args_from(patterns)) do |pattern|
-          pattern_results = Chef::ChefFS::FileSystem.list(config[:local] ? local_fs : chef_fs, pattern).to_a
+          pattern_results = Seth::ChefFS::FileSystem.list(config[:local] ? local_fs : seth_fs, pattern).to_a
           if pattern_results.first && !pattern_results.first.exists? && pattern.exact_path
             ui.error "#{format_path(pattern_results.first)}: No such file or directory"
             self.exit_code = 1
@@ -103,7 +103,7 @@ class Chef
       def add_dir_result(result)
         begin
           children = result.children.sort_by { |child| child.name }
-        rescue Chef::ChefFS::FileSystem::NotFoundError => e
+        rescue Seth::ChefFS::FileSystem::NotFoundError => e
           ui.error "#{format_path(e.entry)}: No such file or directory"
           return []
         end

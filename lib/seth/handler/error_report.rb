@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/handler'
-require 'chef/resource/directory'
+require 'seth/handler'
+require 'seth/resource/directory'
 
-class Chef
+class Seth
   class Handler
-    class ErrorReport < ::Chef::Handler
+    class ErrorReport < ::Seth::Handler
 
       def report
-        Chef::FileCache.store("failed-run-data.json", Chef::JSONCompat.to_json_pretty(data), 0640)
-        Chef::Log.fatal("Saving node information to #{Chef::FileCache.load("failed-run-data.json", false)}")
+        Seth::FileCache.store("failed-run-data.json", Chef::JSONCompat.to_json_pretty(data), 0640)
+        Seth::Log.fatal("Saving node information to #{Chef::FileCache.load("failed-run-data.json", false)}")
       end
 
     end

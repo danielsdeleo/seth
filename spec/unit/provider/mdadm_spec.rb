@@ -19,15 +19,15 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::Mdadm do
+describe Seth::Provider::Mdadm do
 
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Mdadm.new('/dev/md1')
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Mdadm.new('/dev/md1')
     @new_resource.devices ["/dev/sdz1","/dev/sdz2","/dev/sdz3"]
-    @provider = Chef::Provider::Mdadm.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Mdadm.new(@new_resource, @run_context)
   end
 
   describe "when determining the current metadevice status" do
@@ -53,7 +53,7 @@ describe Chef::Provider::Mdadm do
 
   describe "after the metadevice status is known" do
     before(:each) do
-      @current_resource = Chef::Resource::Mdadm.new('/dev/md1')
+      @current_resource = Seth::Resource::Mdadm.new('/dev/md1')
       @new_resource.level 5
       @provider.stub(:load_current_resource).and_return(true)
       @provider.current_resource = @current_resource

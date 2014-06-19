@@ -18,7 +18,7 @@ Examples
 =====================================================
 The following examples show how to use this |knife| subcommand:
 
-**Download the entire chef-repo**
+**Download the entire seth-repo**
 
 .. include:: ../../step_knife/step_knife_download_repository.rst
 

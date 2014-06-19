@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Util
     class Editor
       attr_reader :lines

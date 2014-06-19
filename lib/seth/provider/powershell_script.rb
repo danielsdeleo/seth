@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/provider/windows_script'
+require 'seth/provider/windows_script'
 
-class Chef
+class Seth
   class Provider
-    class PowershellScript < Chef::Provider::WindowsScript
+    class PowershellScript < Seth::Provider::WindowsScript
 
       protected
       EXIT_STATUS_EXCEPTION_HANDLER = "\ntrap [Exception] {write-error -exception ($_.Exception.Message);exit 1}".freeze
@@ -45,11 +45,11 @@ class Chef
         convert_boolean_return = @new_resource.convert_boolean_return
         @code = <<EOH
 new-variable -name interpolatedexitcode -visibility private -value $#{convert_boolean_return}
-new-variable -name chefscriptresult -visibility private
-$chefscriptresult = {
+new-variable -name sethscriptresult -visibility private
+$sethscriptresult = {
 #{target_code}
 }.invokereturnasis()
-if ($interpolatedexitcode -and $chefscriptresult.gettype().name -eq 'boolean') { exit [int32](!$chefscriptresult) } else { exit 0 }
+if ($interpolatedexitcode -and $sethscriptresult.gettype().name -eq 'boolean') { exit [int32](!$chefscriptresult) } else { exit 0 }
 EOH
       end
 

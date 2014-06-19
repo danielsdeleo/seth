@@ -16,8 +16,8 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'chef/knife/serve'
-require 'chef/server_api'
+require 'seth/knife/serve'
+require 'seth/server_api'
 
 describe 'knife serve' do
   extend IntegrationSupport
@@ -37,11 +37,11 @@ describe 'knife serve' do
         end
       end
       begin
-        Chef::Config.log_level = :debug
-        Chef::Config.chef_server_url = 'http://localhost:8889'
-        Chef::Config.node_name = nil
-        Chef::Config.client_key = nil
-        api = Chef::ServerAPI.new
+        Seth::Config.log_level = :debug
+        Seth::Config.seth_server_url = 'http://localhost:8889'
+        Seth::Config.node_name = nil
+        Seth::Config.client_key = nil
+        api = Seth::ServerAPI.new
         api.get('nodes/x')['name'].should == 'x'
       rescue
         if exception

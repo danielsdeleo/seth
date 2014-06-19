@@ -18,12 +18,12 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::ConfigureClient do
+describe Seth::Knife::ConfigureClient do
   before do
-    @knife = Chef::Knife::ConfigureClient.new
-    Chef::Config[:chef_server_url] = 'https://chef.example.com'
-    Chef::Config[:validation_client_name] = 'chef-validator'
-    Chef::Config[:validation_key] = '/etc/chef/validation.pem'
+    @knife = Seth::Knife::ConfigureClient.new
+    Seth::Config[:seth_server_url] = 'https://chef.example.com'
+    Seth::Config[:validation_client_name] = 'seth-validator'
+    Seth::Config[:validation_key] = '/etc/seth/validation.pem'
 
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
@@ -40,18 +40,18 @@ describe Chef::Knife::ConfigureClient do
 
     describe 'when specifing a directory' do
       before do
-        @knife.name_args = ['/home/bob/.chef']
+        @knife.name_args = ['/home/bob/.seth']
         @client_file = StringIO.new
         @validation_file = StringIO.new
-        File.should_receive(:open).with('/home/bob/.chef/client.rb', 'w').
+        File.should_receive(:open).with('/home/bob/.seth/client.rb', 'w').
                                    and_yield(@client_file)
-        File.should_receive(:open).with('/home/bob/.chef/validation.pem', 'w').
+        File.should_receive(:open).with('/home/bob/.seth/validation.pem', 'w').
                                    and_yield(@validation_file)
         IO.should_receive(:read).and_return('foo_bar_baz')
       end
 
       it 'should recursively create the directory' do
-        FileUtils.should_receive(:mkdir_p).with('/home/bob/.chef')
+        FileUtils.should_receive(:mkdir_p).with('/home/bob/.seth')
         @knife.run
       end
 
@@ -60,8 +60,8 @@ describe Chef::Knife::ConfigureClient do
         @knife.run
         @client_file.string.should match /log_level\s+\:info/
         @client_file.string.should match /log_location\s+STDOUT/
-        @client_file.string.should match /chef_server_url\s+'https\:\/\/chef\.example\.com'/
-        @client_file.string.should match /validation_client_name\s+'chef-validator'/
+        @client_file.string.should match /seth_server_url\s+'https\:\/\/chef\.example\.com'/
+        @client_file.string.should match /validation_client_name\s+'seth-validator'/
       end
 
       it 'should write out the validation.pem file' do

@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/knife/core/text_formatter'
+require 'seth/knife/core/text_formatter'
 
-class Chef
+class Seth
   class Knife
     module Core
 
@@ -38,7 +38,7 @@ class Chef
         end
       end
 
-      #==Chef::Knife::Core::GenericPresenter
+      #==Seth::Knife::Core::GenericPresenter
       # The base presenter class for displaying structured data in knife commands.
       # This is not an abstract base class, and it is suitable for displaying
       # most kinds of objects that knife needs to display.
@@ -48,7 +48,7 @@ class Chef
         attr_reader :config
 
         # Instaniates a new GenericPresenter. This is generally handled by the
-        # Chef::Knife::UI object, though you need to match the signature of this
+        # Seth::Knife::UI object, though you need to match the signature of this
         # method if you intend to use your own presenter instead.
         def initialize(ui, config)
           @ui, @config = ui, config
@@ -78,7 +78,7 @@ class Chef
           when :text
             text_format(data)
           when :json
-            Chef::JSONCompat.to_json_pretty(data)
+            Seth::JSONCompat.to_json_pretty(data)
           when :yaml
             require 'yaml'
             YAML::dump(data)
@@ -127,7 +127,7 @@ class Chef
         end
 
         # Converts the +data+ to a String in the text format. Uses
-        # Chef::Knife::Core::TextFormatter
+        # Seth::Knife::Core::TextFormatter
         def text_format(data)
           TextFormatter.new(data, ui).formatted_data
         end
@@ -141,8 +141,8 @@ class Chef
             format_data_subset_for_display(data)
           elsif config[:id_only]
             name_or_id_for(data)
-          elsif config[:environment] && data.respond_to?(:chef_environment)
-            {"chef_environment" => data.chef_environment}
+          elsif config[:environment] && data.respond_to?(:seth_environment)
+            {"seth_environment" => data.chef_environment}
           else
             data
           end

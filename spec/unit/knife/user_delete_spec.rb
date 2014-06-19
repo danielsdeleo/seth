@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::UserDelete do
+describe Seth::Knife::UserDelete do
   before(:each) do
-    Chef::Knife::UserDelete.load_deps
-    @knife = Chef::Knife::UserDelete.new
+    Seth::Knife::UserDelete.load_deps
+    @knife = Seth::Knife::UserDelete.new
     @knife.name_args = [ 'my_user' ]
   end
 
   it 'deletes the user' do
-    @knife.should_receive(:delete_object).with(Chef::User, 'my_user')
+    @knife.should_receive(:delete_object).with(Seth::User, 'my_user')
     @knife.run
   end
 

@@ -18,36 +18,36 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Template do
+describe Seth::Resource::Template do
 
   def binread(file)
     File.open(file,"rb") {|f| f.read }
   end
 
-  include_context Chef::Resource::File
+  include_context Seth::Resource::File
 
   let(:file_base) { "template_spec" }
   let(:expected_content) { "slappiness is a warm gun" }
 
   let(:node) do
-    node = Chef::Node.new
+    node = Seth::Node.new
     node.normal[:slappiness] = "a warm gun"
     node
   end
 
   def create_resource
     cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-    Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
-    cl = Chef::CookbookLoader.new(cookbook_repo)
+    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
+    cl = Seth::CookbookLoader.new(cookbook_repo)
     cl.load_cookbooks
-    cookbook_collection = Chef::CookbookCollection.new(cl)
-    events = Chef::EventDispatch::Dispatcher.new
-    run_context = Chef::RunContext.new(node, cookbook_collection, events)
-    resource = Chef::Resource::Template.new(path, run_context)
+    cookbook_collection = Seth::CookbookCollection.new(cl)
+    events = Seth::EventDispatch::Dispatcher.new
+    run_context = Seth::RunContext.new(node, cookbook_collection, events)
+    resource = Seth::Resource::Template.new(path, run_context)
     resource.source('openldap_stuff.conf.erb')
     resource.cookbook('openldap')
 
-    # NOTE: partials rely on `cookbook_name` getting set by chef internals and
+    # NOTE: partials rely on `cookbook_name` getting set by seth internals and
     # ignore the user-set `cookbook` attribute.
     resource.cookbook_name = "openldap"
 
@@ -202,7 +202,7 @@ describe Chef::Resource::Template do
         it "output should contain platform's line endings" do
           resource.run_action(:create)
           binread(path).each_line do |line|
-            line.should end_with(Chef::Platform.windows? ? "\r\n" : "\n")
+            line.should end_with(Seth::Platform.windows? ? "\r\n" : "\n")
           end
         end
       end

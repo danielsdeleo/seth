@@ -18,29 +18,29 @@
 
 shared_context "deploying with move" do
   before do
-    Chef::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
-    Chef::Config[:file_atomic_update] = true
+    Seth::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
+    Seth::Config[:file_atomic_update] = true
   end
 end
 
 shared_context "deploying with copy" do
   before do
-    Chef::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
-    Chef::Config[:file_atomic_update] = false
+    Seth::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
+    Seth::Config[:file_atomic_update] = false
   end
 end
 
 shared_context "deploying via tmpdir" do
   before do
-    Chef::Config[:file_staging_uses_destdir] = false
-    Chef::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
+    Seth::Config[:file_staging_uses_destdir] = false
+    Seth::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
   end
 end
 
 shared_context "deploying via destdir" do
   before do
-    Chef::Config[:file_staging_uses_destdir] = true
-    Chef::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
+    Seth::Config[:file_staging_uses_destdir] = true
+    Seth::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
   end
 end
 
@@ -273,11 +273,11 @@ shared_examples_for "a file resource" do
   describe "when running under why run" do
 
     before do
-      Chef::Config[:why_run] = true
+      Seth::Config[:why_run] = true
     end
 
     after do
-      Chef::Config[:why_run] = false
+      Seth::Config[:why_run] = false
     end
 
     context "and the resource has a path with a missing intermediate directory" do
@@ -313,7 +313,7 @@ end
 shared_examples_for "file resource not pointing to a real file" do
   def symlink?(file_path)
     if windows?
-      Chef::ReservedNames::Win32::File.symlink?(file_path)
+      Seth::ReservedNames::Win32::File.symlink?(file_path)
     else
       File.symlink?(file_path)
     end
@@ -336,13 +336,13 @@ shared_examples_for "file resource not pointing to a real file" do
 
   describe "when force_unlink is set to false" do
     it ":create raises an error" do
-      lambda {resource.run_action(:create) }.should raise_error(Chef::Exceptions::FileTypeMismatch)
+      lambda {resource.run_action(:create) }.should raise_error(Seth::Exceptions::FileTypeMismatch)
     end
   end
 
   describe "when force_unlink is not set (default)" do
     it ":create raises an error" do
-      lambda {resource.run_action(:create) }.should raise_error(Chef::Exceptions::FileTypeMismatch)
+      lambda {resource.run_action(:create) }.should raise_error(Seth::Exceptions::FileTypeMismatch)
     end
   end
 end
@@ -352,7 +352,7 @@ shared_examples_for "a configured file resource" do
   include_context "diff disabled"
 
   before do
-    Chef::Log.level = :info
+    Seth::Log.level = :info
   end
 
    # note the stripping of the drive letter from the tmpdir on windows
@@ -365,7 +365,7 @@ shared_examples_for "a configured file resource" do
   # and permissions are correct.
   let(:expect_updated?) { true }
 
-  include Chef::Mixin::ShellOut
+  include Seth::Mixin::ShellOut
 
   def selinux_security_context_restored?(path)
     @restorecon_path = which("restorecon") if @restorecon_path.nil?
@@ -399,7 +399,7 @@ shared_examples_for "a configured file resource" do
         FileUtils.touch(symlink_target)
 
         if windows?
-          Chef::ReservedNames::Win32::File.symlink(symlink_target, path)
+          Seth::ReservedNames::Win32::File.symlink(symlink_target, path)
         else
           File.symlink(symlink_target, path)
         end
@@ -461,15 +461,15 @@ shared_examples_for "a configured file resource" do
         end
 
         it "raises an InvalidSymlink error" do
-          lambda { resource.run_action(:create) }.should raise_error(Chef::Exceptions::InvalidSymlink)
+          lambda { resource.run_action(:create) }.should raise_error(Seth::Exceptions::InvalidSymlink)
         end
 
         it "issues a warning/assumption in whyrun mode" do
           begin
-            Chef::Config[:why_run] = true
+            Seth::Config[:why_run] = true
             resource.run_action(:create) # should not raise
           ensure
-            Chef::Config[:why_run] = false
+            Seth::Config[:why_run] = false
           end
         end
       end
@@ -489,15 +489,15 @@ shared_examples_for "a configured file resource" do
           FileUtils.rm_rf(link_path)
         end
         it "raises an InvalidSymlink error" do
-          lambda { resource.run_action(:create) }.should raise_error(Chef::Exceptions::InvalidSymlink)
+          lambda { resource.run_action(:create) }.should raise_error(Seth::Exceptions::InvalidSymlink)
         end
 
         it "issues a warning/assumption in whyrun mode" do
           begin
-            Chef::Config[:why_run] = true
+            Seth::Config[:why_run] = true
             resource.run_action(:create) # should not raise
           ensure
-            Chef::Config[:why_run] = false
+            Seth::Config[:why_run] = false
           end
         end
       end
@@ -520,15 +520,15 @@ shared_examples_for "a configured file resource" do
         end
 
         it "raises an InvalidSymlink error" do
-          lambda { resource.run_action(:create) }.should raise_error(Chef::Exceptions::FileTypeMismatch)
+          lambda { resource.run_action(:create) }.should raise_error(Seth::Exceptions::FileTypeMismatch)
         end
 
         it "issues a warning/assumption in whyrun mode" do
           begin
-            Chef::Config[:why_run] = true
+            Seth::Config[:why_run] = true
             resource.run_action(:create) # should not raise
           ensure
-            Chef::Config[:why_run] = false
+            Seth::Config[:why_run] = false
           end
         end
       end
@@ -656,7 +656,7 @@ shared_examples_for "a configured file resource" do
 
     def symlink?(file_path)
       if windows?
-        Chef::ReservedNames::Win32::File.symlink?(file_path)
+        Seth::ReservedNames::Win32::File.symlink?(file_path)
       else
         File.symlink?(file_path)
       end
@@ -710,7 +710,7 @@ shared_examples_for "a configured file resource" do
   end
 
   context "when the target file is a blockdev",:unix_only, :requires_root, :not_supported_on_solaris do
-    include Chef::Mixin::ShellOut
+    include Seth::Mixin::ShellOut
     let(:path) do
       File.join(CHEF_SPEC_DATA, "testdev")
     end
@@ -728,7 +728,7 @@ shared_examples_for "a configured file resource" do
   end
 
   context "when the target file is a chardev",:unix_only, :requires_root, :not_supported_on_solaris do
-    include Chef::Mixin::ShellOut
+    include Seth::Mixin::ShellOut
     let(:path) do
       File.join(CHEF_SPEC_DATA, "testdev")
     end
@@ -746,7 +746,7 @@ shared_examples_for "a configured file resource" do
   end
 
   context "when the target file is a pipe",:unix_only do
-    include Chef::Mixin::ShellOut
+    include Seth::Mixin::ShellOut
     let(:path) do
       File.join(CHEF_SPEC_DATA, "testpipe")
     end
@@ -799,7 +799,7 @@ shared_examples_for "a configured file resource" do
   context "when notification is configured" do
     describe "when path is specified with normal seperator" do
       before do
-        @notified_resource = Chef::Resource.new("punk", resource.run_context)
+        @notified_resource = Seth::Resource.new("punk", resource.run_context)
         resource.notifies(:run, @notified_resource, :immediately)
         resource.run_action(:create)
       end
@@ -816,7 +816,7 @@ shared_examples_for "a configured file resource" do
       }
 
       before do
-        @notified_resource = Chef::Resource.new("punk", resource.run_context)
+        @notified_resource = Seth::Resource.new("punk", resource.run_context)
         resource.notifies(:run, @notified_resource, :immediately)
         resource.run_action(:create)
       end
@@ -947,7 +947,7 @@ shared_examples_for "a configured file resource" do
 
     describe "and the target file has the correct permissions" do
 
-      # When permissions and content are correct, chef should do nothing and
+      # When permissions and content are correct, seth should do nothing and
       # the resource should not be marked updated.
       let(:expect_updated?) { false }
 
@@ -1006,9 +1006,9 @@ shared_examples_for "a configured file resource" do
 
 end
 
-shared_context Chef::Resource::File  do
+shared_context Seth::Resource::File  do
   if windows?
-    require 'chef/win32/file'
+    require 'seth/win32/file'
   end
 
   # We create the files in a different directory than tmp to exercise

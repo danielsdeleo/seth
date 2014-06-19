@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Mixin
     module PathSanity
 
       def enforce_path_sanity(env=ENV)
-        if Chef::Config[:enforce_path_sanity]
+        if Seth::Config[:enforce_path_sanity]
           env["PATH"] = "" if env["PATH"].nil?
-          path_separator = Chef::Platform.windows? ? ';' : ':'
+          path_separator = Seth::Platform.windows? ? ';' : ':'
           existing_paths = env["PATH"].split(path_separator)
           # ensure the Ruby and Gem bindirs are included
-          # mainly for 'full-stack' Chef installs
+          # mainly for 'full-stack' Seth installs
           paths_to_add = []
           paths_to_add << ruby_bindir unless sane_paths.include?(ruby_bindir)
           paths_to_add << gem_bindir unless sane_paths.include?(gem_bindir)
@@ -47,7 +47,7 @@ class Chef
 
       def sane_paths
         @sane_paths ||= begin
-          if Chef::Platform.windows?
+          if Seth::Platform.windows?
             %w[]
           else
             %w[/usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin]

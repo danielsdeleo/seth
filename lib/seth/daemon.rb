@@ -17,11 +17,11 @@
 
 # I love you Merb (lib/merb-core/server.rb)
 
-require 'chef/config'
-require 'chef/run_lock'
+require 'seth/config'
+require 'seth/run_lock'
 require 'etc'
 
-class Chef
+class Seth
   class Daemon
     class << self
       attr_accessor :name
@@ -37,22 +37,22 @@ class Chef
         @runlock = RunLock.new(pid_file)
         if runlock.test
           # We've acquired the daemon lock. Now daemonize.
-          Chef::Log.info("Daemonizing..")
+          Seth::Log.info("Daemonizing..")
           begin
             exit if fork
             Process.setsid
             exit if fork
-            Chef::Log.info("Forked, in #{Process.pid}. Privileges: #{Process.euid} #{Process.egid}")
-            File.umask Chef::Config[:umask]
+            Seth::Log.info("Forked, in #{Process.pid}. Privileges: #{Process.euid} #{Process.egid}")
+            File.umask Seth::Config[:umask]
             $stdin.reopen("/dev/null")
             $stdout.reopen("/dev/null", "a")
             $stderr.reopen($stdout)
             runlock.save_pid
           rescue NotImplementedError => e
-            Chef::Application.fatal!("There is no fork: #{e.message}")
+            Seth::Application.fatal!("There is no fork: #{e.message}")
           end
         else
-          Chef::Application.fatal!("Chef is already running pid #{pid_from_file}")
+          Seth::Application.fatal!("Chef is already running pid #{pid_from_file}")
         end
       end
 
@@ -61,7 +61,7 @@ class Chef
       # String::
       #   Location of the pid file for @name
       def pid_file
-         Chef::Config[:pid_file] or "/tmp/#{@name}.pid"
+         Seth::Config[:pid_file] or "/tmp/#{@name}.pid"
       end
 
       # Suck the pid out of pid_file
@@ -77,17 +77,17 @@ class Chef
         nil
       end
 
-      # Change process user/group to those specified in Chef::Config
+      # Change process user/group to those specified in Seth::Config
       #
       def change_privilege
         Dir.chdir("/")
 
-        if Chef::Config[:user] and Chef::Config[:group]
-          Chef::Log.info("About to change privilege to #{Chef::Config[:user]}:#{Chef::Config[:group]}")
-          _change_privilege(Chef::Config[:user], Chef::Config[:group])
-        elsif Chef::Config[:user]
-          Chef::Log.info("About to change privilege to #{Chef::Config[:user]}")
-          _change_privilege(Chef::Config[:user])
+        if Seth::Config[:user] and Chef::Config[:group]
+          Seth::Log.info("About to change privilege to #{Chef::Config[:user]}:#{Chef::Config[:group]}")
+          _change_privilege(Seth::Config[:user], Chef::Config[:group])
+        elsif Seth::Config[:user]
+          Seth::Log.info("About to change privilege to #{Chef::Config[:user]}")
+          _change_privilege(Seth::Config[:user])
         end
       end
 
@@ -106,14 +106,14 @@ class Chef
         begin
           target_uid = Etc.getpwnam(user).uid
         rescue ArgumentError => e
-          Chef::Application.fatal!("Failed to get UID for user #{user}, does it exist? #{e.message}")
+          Seth::Application.fatal!("Failed to get UID for user #{user}, does it exist? #{e.message}")
           return false
         end
 
         begin
           target_gid = Etc.getgrnam(group).gid
         rescue ArgumentError => e
-          Chef::Application.fatal!("Failed to get GID for group #{group}, does it exist? #{e.message}")
+          Seth::Application.fatal!("Failed to get GID for group #{group}, does it exist? #{e.message}")
           return false
         end
 
@@ -124,7 +124,7 @@ class Chef
         end
         true
       rescue Errno::EPERM => e
-        Chef::Application.fatal!("Permission denied when trying to change #{uid}:#{gid} to #{target_uid}:#{target_gid}. #{e.message}")
+        Seth::Application.fatal!("Permission denied when trying to change #{uid}:#{gid} to #{target_uid}:#{target_gid}. #{e.message}")
       end
     end
   end

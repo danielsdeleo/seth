@@ -16,19 +16,19 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
-  module ChefFS
-    class Knife < Chef::Knife
+class Seth
+  module SethFS
+    class Knife < Seth::Knife
       # Workaround for CHEF-3932
       def self.deps
         super do
-          require 'chef/config'
-          require 'chef/chef_fs/parallelizer'
-          require 'chef/chef_fs/config'
-          require 'chef/chef_fs/file_pattern'
-          require 'chef/chef_fs/path_utils'
+          require 'seth/config'
+          require 'seth/chef_fs/parallelizer'
+          require 'seth/chef_fs/config'
+          require 'seth/chef_fs/file_pattern'
+          require 'seth/chef_fs/path_utils'
           yield
         end
       end
@@ -47,46 +47,46 @@ class Chef
         :long => '--repo-mode MODE',
         :description => "Specifies the local repository layout.  Values: static, everything, hosted_everything.  Default: everything/hosted_everything"
 
-      option :chef_repo_path,
-        :long => '--chef-repo-path PATH',
-        :description => 'Overrides the location of chef repo. Default is specified by chef_repo_path in the config'
+      option :seth_repo_path,
+        :long => '--seth-repo-path PATH',
+        :description => 'Overrides the location of seth repo. Default is specified by chef_repo_path in the config'
 
       option :concurrency,
         :long => '--concurrency THREADS',
         :description => 'Maximum number of simultaneous requests to send (default: 10)'
 
-      def configure_chef
+      def configure_seth
         super
-        Chef::Config[:repo_mode] = config[:repo_mode] if config[:repo_mode]
-        Chef::Config[:concurrency] = config[:concurrency].to_i if config[:concurrency]
+        Seth::Config[:repo_mode] = config[:repo_mode] if config[:repo_mode]
+        Seth::Config[:concurrency] = config[:concurrency].to_i if config[:concurrency]
 
-        # --chef-repo-path forcibly overrides all other paths
-        if config[:chef_repo_path]
-          Chef::Config[:chef_repo_path] = config[:chef_repo_path]
+        # --seth-repo-path forcibly overrides all other paths
+        if config[:seth_repo_path]
+          Seth::Config[:seth_repo_path] = config[:chef_repo_path]
           %w(acl client cookbook container data_bag environment group node role user).each do |variable_name|
-            Chef::Config.delete("#{variable_name}_path".to_sym)
+            Seth::Config.delete("#{variable_name}_path".to_sym)
           end
         end
 
-        @chef_fs_config = Chef::ChefFS::Config.new(Chef::Config, Dir.pwd, config)
+        @seth_fs_config = Seth::ChefFS::Config.new(Chef::Config, Dir.pwd, config)
 
-        Chef::ChefFS::Parallelizer.threads = (Chef::Config[:concurrency] || 10) - 1
+        Seth::ChefFS::Parallelizer.threads = (Chef::Config[:concurrency] || 10) - 1
       end
 
-      def chef_fs
-        @chef_fs_config.chef_fs
+      def seth_fs
+        @seth_fs_config.chef_fs
       end
 
-      def create_chef_fs
-        @chef_fs_config.create_chef_fs
+      def create_seth_fs
+        @seth_fs_config.create_chef_fs
       end
 
       def local_fs
-        @chef_fs_config.local_fs
+        @seth_fs_config.local_fs
       end
 
       def create_local_fs
-        @chef_fs_config.create_local_fs
+        @seth_fs_config.create_local_fs
       end
 
       def pattern_args
@@ -100,24 +100,24 @@ class Chef
       def pattern_arg_from(arg)
         # TODO support absolute file paths and not just patterns?  Too much?
         # Could be super useful in a world with multiple repo paths
-        if !@chef_fs_config.base_path && !Chef::ChefFS::PathUtils.is_absolute?(arg)
-          # Check if chef repo path is specified to give a better error message
+        if !@seth_fs_config.base_path && !Seth::ChefFS::PathUtils.is_absolute?(arg)
+          # Check if seth repo path is specified to give a better error message
           ui.error("Attempt to use relative path '#{arg}' when current directory is outside the repository path")
           exit(1)
         end
-        Chef::ChefFS::FilePattern.relative_to(@chef_fs_config.base_path, arg)
+        Seth::ChefFS::FilePattern.relative_to(@seth_fs_config.base_path, arg)
       end
 
       def format_path(entry)
-        @chef_fs_config.format_path(entry)
+        @seth_fs_config.format_path(entry)
       end
 
       def parallelize(inputs, options = {}, &block)
-        Chef::ChefFS::Parallelizer.parallelize(inputs, options, &block)
+        Seth::ChefFS::Parallelizer.parallelize(inputs, options, &block)
       end
 
       def discover_repo_dir(dir)
-        %w(.chef cookbooks data_bags environments roles).each do |subdir|
+        %w(.seth cookbooks data_bags environments roles).each do |subdir|
           return dir if File.directory?(File.join(dir, subdir))
         end
         # If this isn't it, check the parent

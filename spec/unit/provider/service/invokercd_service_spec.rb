@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Invokercd, "load_current_resource" do
+describe Seth::Provider::Service::Invokercd, "load_current_resource" do
   before(:each) do
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.automatic_attrs[:command] = {:ps => "ps -ef"}
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Service.new("chef")
+    @new_resource = Seth::Resource::Service.new("seth")
 
-    @current_resource = Chef::Resource::Service.new("chef")
+    @current_resource = Seth::Resource::Service.new("seth")
 
-    @provider = Chef::Provider::Service::Invokercd.new(@new_resource, @run_context)
-    Chef::Resource::Service.stub(:new).and_return(@current_resource)
+    @provider = Seth::Provider::Service::Invokercd.new(@new_resource, @run_context)
+    Seth::Resource::Service.stub(:new).and_return(@current_resource)
 
     @stdout = StringIO.new(<<-PS)
 aj        7842  5057  0 21:26 pts/2    00:00:06 vi init.rb
@@ -48,7 +48,7 @@ PS
 
   it "should set the current resources service name to the new resources service name" do
     @provider.load_current_resource
-    @current_resource.service_name.should == 'chef'
+    @current_resource.service_name.should == 'seth'
   end
 
   describe "when the service supports status" do
@@ -83,11 +83,11 @@ PS
 
   describe "when a status command has been specified" do
     before do
-      @new_resource.stub(:status_command).and_return("/usr/sbin/invoke-rc.d chefhasmonkeypants status")
+      @new_resource.stub(:status_command).and_return("/usr/sbin/invoke-rc.d sethhasmonkeypants status")
     end
 
     it "should run the services status command if one has been specified" do
-      @provider.should_receive(:shell_out).with("/usr/sbin/invoke-rc.d chefhasmonkeypants status").and_return(@status)
+      @provider.should_receive(:shell_out).with("/usr/sbin/invoke-rc.d sethhasmonkeypants status").and_return(@status)
       @provider.load_current_resource
     end
 
@@ -98,14 +98,14 @@ PS
       @node.automatic_attrs[:command] = {:ps => nil}
       @provider.action = :start
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
 
     it "should raise error if the node has an empty ps attribute and no other means to get status" do
       @node.automatic_attrs[:command] = {:ps => ""}
       @provider.action = :start
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
 
   end
@@ -120,7 +120,7 @@ PS
 
     it "should set running to true if the regex matches the output" do
       @stdout = StringIO.new(<<-RUNNING_PS)
-aj        7842  5057  0 21:26 pts/2    00:00:06 chef
+aj        7842  5057  0 21:26 pts/2    00:00:06 seth
 aj        7842  5057  0 21:26 pts/2    00:00:06 poos
 RUNNING_PS
       @status = double("Status", :exitstatus => 0, :stdout => @stdout)
@@ -141,7 +141,7 @@ RUNNING_PS
       @provider.action = :start
       @provider.load_current_resource
       @provider.define_resource_requirements
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
     end
   end
 
@@ -151,8 +151,8 @@ RUNNING_PS
 
   describe "when starting the service" do
     it "should call the start command if one is specified" do
-      @new_resource.start_command("/usr/sbin/invoke-rc.d chef startyousillysally")
-      @provider.should_receive(:shell_out!).with("/usr/sbin/invoke-rc.d chef startyousillysally")
+      @new_resource.start_command("/usr/sbin/invoke-rc.d seth startyousillysally")
+      @provider.should_receive(:shell_out!).with("/usr/sbin/invoke-rc.d seth startyousillysally")
       @provider.start_service()
     end
 
@@ -162,10 +162,10 @@ RUNNING_PS
     end
   end
 
-  describe Chef::Provider::Service::Invokercd, "stop_service" do
+  describe Seth::Provider::Service::Invokercd, "stop_service" do
     it "should call the stop command if one is specified" do
-      @new_resource.stop_command("/usr/sbin/invoke-rc.d chef itoldyoutostop")
-      @provider.should_receive(:shell_out!).with("/usr/sbin/invoke-rc.d chef itoldyoutostop")
+      @new_resource.stop_command("/usr/sbin/invoke-rc.d seth itoldyoutostop")
+      @provider.should_receive(:shell_out!).with("/usr/sbin/invoke-rc.d seth itoldyoutostop")
       @provider.stop_service()
     end
 
@@ -183,7 +183,7 @@ RUNNING_PS
     end
 
     it "should call the restart_command if one has been specified" do
-      @new_resource.restart_command("/usr/sbin/invoke-rc.d chef restartinafire")
+      @new_resource.restart_command("/usr/sbin/invoke-rc.d seth restartinafire")
       @provider.should_receive(:shell_out!).with("/usr/sbin/invoke-rc.d #{@new_resource.service_name} restartinafire")
       @provider.restart_service()
     end
@@ -199,13 +199,13 @@ RUNNING_PS
   describe "when reloading a service" do
     it "should call 'reload' on the service if it supports it" do
       @new_resource.supports({:reload => true})
-      @provider.should_receive(:shell_out!).with("/usr/sbin/invoke-rc.d chef reload")
+      @provider.should_receive(:shell_out!).with("/usr/sbin/invoke-rc.d seth reload")
       @provider.reload_service()
     end
 
     it "should should run the user specified reload command if one is specified and the service doesn't support reload" do
-      @new_resource.reload_command("/usr/sbin/invoke-rc.d chef lollerpants")
-      @provider.should_receive(:shell_out!).with("/usr/sbin/invoke-rc.d chef lollerpants")
+      @new_resource.reload_command("/usr/sbin/invoke-rc.d seth lollerpants")
+      @provider.should_receive(:shell_out!).with("/usr/sbin/invoke-rc.d seth lollerpants")
       @provider.reload_service()
     end
   end

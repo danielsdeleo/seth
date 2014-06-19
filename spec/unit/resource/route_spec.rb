@@ -19,15 +19,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Route do
+describe Seth::Resource::Route do
 
   before(:each) do
-    @resource = Chef::Resource::Route.new("10.0.0.10")
+    @resource = Seth::Resource::Route.new("10.0.0.10")
   end
 
-  it "should create a new Chef::Resource::Route" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Route)
+  it "should create a new Seth::Resource::Route" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Route)
   end
 
   it "should have a name" do

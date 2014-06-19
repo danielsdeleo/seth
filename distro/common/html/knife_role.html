@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>knife role &mdash; chef-client Man Pages</title>
+    <title>knife role &mdash; seth-client Man Pages</title>
     
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="shortcut icon" href="_static/chef.ico"/>
+    <link rel="shortcut icon" href="_static/seth.ico"/>
 
 
   </head>
   <body>
 <div style="background-color: #212c35; text-align: left; padding: 0px 0px 0px 0px">
-<a href="http://docs.opscode.com/"><img src="_static/chef_html_logo.png" border="0" alt="Chef"/></a>
+<a href="http://docs.opscode.com/"><img src="_static/seth_html_logo.png" border="0" alt="Seth"/></a>
 </div>
 
 
@@ -42,8 +42,8 @@
             
   <div class="section" id="knife-role">
 <h1>knife role<a class="headerlink" href="#knife-role" title="Permalink to this headline">¶</a></h1>
-<p>A role is a way to define certain patterns and processes that exist across nodes in an organization as belonging to a single job function. Each role consists of zero (or more) attributes and a run list. Each node can have zero (or more) roles assigned to it. When a role is run against a node, the configuration details of that node are compared against the attributes of the role, and then the contents of that role&#8217;s run list are applied to the node&#8217;s configuration details. When a chef-client runs, it merges its own attributes and run lists with those contained within each assigned role.</p>
-<p>The <strong>knife role</strong> subcommand is used to manage the roles that are associated with one or more nodes on a Chef server.</p>
+<p>A role is a way to define certain patterns and processes that exist across nodes in an organization as belonging to a single job function. Each role consists of zero (or more) attributes and a run list. Each node can have zero (or more) roles assigned to it. When a role is run against a node, the configuration details of that node are compared against the attributes of the role, and then the contents of that role&#8217;s run list are applied to the node&#8217;s configuration details. When a seth-client runs, it merges its own attributes and run lists with those contained within each assigned role.</p>
+<p>The <strong>knife role</strong> subcommand is used to manage the roles that are associated with one or more nodes on a Seth server.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">To add a role to a node and then build out the run-list for that node, use the <a class="reference internal" href="knife_node.html"><em>knife node</em></a> sub-command and its <tt class="docutils literal"><span class="pre">run_list</span> <span class="pre">add</span></tt> argument.</p>
@@ -78,7 +78,7 @@
 </div>
 <div class="section" id="create">
 <h2>create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add a role to the Chef server. Role data is saved as JSON on the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add a role to the Seth server. Role data is saved as JSON on the Chef server.</p>
 <div class="section" id="id1">
 <h3>Syntax<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -91,7 +91,7 @@
 <p>This argument has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">-d</span> <span class="pre">DESCRIPTION</span></tt>, <tt class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></tt></dt>
-<dd>The description of the role. This value will populate the description field for the role on the Chef server.</dd>
+<dd>The description of the role. This value will populate the description field for the role on the Seth server.</dd>
 </dl>
 </div>
 <div class="section" id="id3">
@@ -108,12 +108,12 @@
    &quot;name&quot;: &quot;role1&quot;,
    &quot;default_attributes&quot;: {
    },
-   &quot;json_class&quot;: &quot;Chef::Role&quot;,
+   &quot;json_class&quot;: &quot;Seth::Role&quot;,
    &quot;run_list&quot;: [&#39;recipe[cookbook_name::recipe_name],
                  role[role_name]&#39;
    ],
    &quot;description&quot;: &quot;&quot;,
-   &quot;chef_type&quot;: &quot;role&quot;,
+   &quot;seth_type&quot;: &quot;role&quot;,
    &quot;override_attributes&quot;: {
    }
 }
@@ -124,7 +124,7 @@
 </div>
 <div class="section" id="delete">
 <h2>delete<a class="headerlink" href="#delete" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">delete</span></tt> argument is used to delete a role from the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">delete</span></tt> argument is used to delete a role from the Seth server.</p>
 <div class="section" id="id4">
 <h3>Syntax<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -148,7 +148,7 @@
 </div>
 <div class="section" id="edit">
 <h2>edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit role details on the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit role details on the Seth server.</p>
 <div class="section" id="id7">
 <h3>Syntax<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -174,12 +174,12 @@
    &quot;name&quot;: &quot;role1&quot;,
    &quot;default_attributes&quot;: {
    },
-   &quot;json_class&quot;: &quot;Chef::Role&quot;,
+   &quot;json_class&quot;: &quot;Seth::Role&quot;,
    &quot;run_list&quot;: [&#39;recipe[cookbook_name::recipe_name],
                  role[role_name]&#39;
    ],
    &quot;description&quot;: &quot;This is the description for the role1 role.&quot;,
-   &quot;chef_type&quot;: &quot;role&quot;,
+   &quot;seth_type&quot;: &quot;role&quot;,
    &quot;override_attributes&quot;: {
    }
 }
@@ -214,7 +214,7 @@
 </div>
 <div class="section" id="list">
 <h2>list<a class="headerlink" href="#list" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">list</span></tt> argument is used to view a list of roles that are currently available on the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">list</span></tt> argument is used to view a list of roles that are currently available on the Seth server.</p>
 <div class="section" id="id13">
 <h3>Syntax<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -234,7 +234,7 @@
 <h3>Examples<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
 <p>The following examples show how to use this Knife subcommand:</p>
 <p><strong>View a list of roles</strong></p>
-<p>To view a list of roles on the Chef server and display the URI for each role returned, enter:</p>
+<p>To view a list of roles on the Seth server and display the URI for each role returned, enter:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role list -w
 </pre></div>
 </div>

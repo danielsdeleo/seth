@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/acl_dir'
-require 'chef/chef_fs/file_system/acl_entry'
+require 'seth/chef_fs/file_system/acl_dir'
+require 'seth/chef_fs/file_system/acl_entry'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class CookbooksAclDir < AclDir
         # If versioned_cookbooks is on, the list of cookbooks will have versions

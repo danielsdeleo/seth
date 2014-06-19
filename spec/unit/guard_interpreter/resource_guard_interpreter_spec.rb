@@ -1,6 +1,6 @@
 #
-# Author:: Adam Edwards (<adamed@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Adam Edwards (<adamed@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,16 @@
 
 require 'spec_helper'
 
-describe Chef::GuardInterpreter::ResourceGuardInterpreter do
+describe Seth::GuardInterpreter::ResourceGuardInterpreter do
   before(:each) do
-    node = Chef::Node.new
+    node = Seth::Node.new
 
     node.default["kernel"] = Hash.new
     node.default["kernel"][:machine] = :x86_64.to_s
 
-    run_context = Chef::RunContext.new(node, nil, nil)
+    run_context = Seth::RunContext.new(node, nil, nil)
 
-    @resource = Chef::Resource.new("powershell_unit_test", run_context)
+    @resource = Seth::Resource.new("powershell_unit_test", run_context)
     @resource.stub(:run_action)
     @resource.stub(:updated).and_return(true)
   end
@@ -35,19 +35,19 @@ describe Chef::GuardInterpreter::ResourceGuardInterpreter do
   describe "when evaluating a guard resource" do
     let(:resource) { @resource }
 
-    it "should allow guard interpreter to be set to Chef::Resource::Script" do
+    it "should allow guard interpreter to be set to Seth::Resource::Script" do
       resource.guard_interpreter(:script)
-      allow_any_instance_of(Chef::GuardInterpreter::ResourceGuardInterpreter).to receive(:evaluate_action).and_return(false)
+      allow_any_instance_of(Seth::GuardInterpreter::ResourceGuardInterpreter).to receive(:evaluate_action).and_return(false)
       resource.only_if("echo hi")
     end
     
-    it "should allow guard interpreter to be set to Chef::Resource::PowershellScript derived indirectly from Chef::Resource::Script" do
+    it "should allow guard interpreter to be set to Seth::Resource::PowershellScript derived indirectly from Chef::Resource::Script" do
       resource.guard_interpreter(:powershell_script)
-      allow_any_instance_of(Chef::GuardInterpreter::ResourceGuardInterpreter).to receive(:evaluate_action).and_return(false)
+      allow_any_instance_of(Seth::GuardInterpreter::ResourceGuardInterpreter).to receive(:evaluate_action).and_return(false)
       resource.only_if("echo hi")
     end
     
-    it "should raise an exception if guard_interpreter is set to a resource not derived from Chef::Resource::Script" do
+    it "should raise an exception if guard_interpreter is set to a resource not derived from Seth::Resource::Script" do
       resource.guard_interpreter(:file)
       expect { resource.only_if("echo hi") }.to raise_error ArgumentError
     end

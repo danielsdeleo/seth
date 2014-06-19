@@ -14,4 +14,4 @@ normal[:something] = "else"
 ##
 run_list "operations-master", "operations-monitoring"
 
-chef_environment "dev"
+seth_environment "dev"

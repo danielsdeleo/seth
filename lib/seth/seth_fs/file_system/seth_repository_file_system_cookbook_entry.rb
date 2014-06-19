@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/chef_repository_file_system_entry'
-require 'chef/chef_fs/file_system/chef_repository_file_system_cookbooks_dir'
-require 'chef/chef_fs/file_system/not_found_error'
+require 'seth/chef_fs/file_system/chef_repository_file_system_entry'
+require 'seth/chef_fs/file_system/chef_repository_file_system_cookbooks_dir'
+require 'seth/chef_fs/file_system/not_found_error'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
-      class ChefRepositoryFileSystemCookbookEntry < ChefRepositoryFileSystemEntry
+      class SethRepositoryFileSystemCookbookEntry < ChefRepositoryFileSystemEntry
         def initialize(name, parent, file_path = nil, ruby_only = false, recursive = false)
           super(name, parent, file_path)
           @ruby_only = ruby_only
@@ -40,7 +40,7 @@ class Chef
                 map { |child_name| make_child(child_name) }.
                 select { |entry| !(entry.dir? && entry.children.size == 0) }
           rescue Errno::ENOENT
-            raise Chef::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 
@@ -51,10 +51,10 @@ class Chef
             return false if name[-3..-1] != '.rb'
           end
 
-          # Check chefignore
+          # Check sethignore
           ignorer = parent
           begin
-            if ignorer.is_a?(ChefRepositoryFileSystemCookbooksDir)
+            if ignorer.is_a?(SethRepositoryFileSystemCookbooksDir)
               # Grab the path from entry to child
               path_to_child = name
               child = self
@@ -63,7 +63,7 @@ class Chef
                 child = child.parent
               end
               # Check whether that relative path is ignored
-              return !ignorer.chefignore || !ignorer.chefignore.ignored?(path_to_child)
+              return !ignorer.sethignore || !ignorer.chefignore.ignored?(path_to_child)
             end
             ignorer = ignorer.parent
           end while ignorer
@@ -78,7 +78,7 @@ class Chef
         protected
 
         def make_child(child_name)
-          ChefRepositoryFileSystemCookbookEntry.new(child_name, self, nil, ruby_only, recursive)
+          SethRepositoryFileSystemCookbookEntry.new(child_name, self, nil, ruby_only, recursive)
         end
       end
     end

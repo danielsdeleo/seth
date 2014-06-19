@@ -17,14 +17,14 @@
 #
 
 require 'functional/resource/base'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
 # Run the test only for AIX platform.
-describe Chef::Resource::BffPackage, :external => ohai[:platform] != 'aix' do
-  include Chef::Mixin::ShellOut
+describe Seth::Resource::BffPackage, :external => ohai[:platform] != 'aix' do
+  include Seth::Mixin::ShellOut
 
   let(:new_resource) do
-    new_resource = Chef::Resource::BffPackage.new(@pkg_name, run_context)
+    new_resource = Seth::Resource::BffPackage.new(@pkg_name, run_context)
     new_resource.source @pkg_path
     new_resource
   end

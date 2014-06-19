@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
-    class RubyBlock < Chef::Resource
+    class RubyBlock < Seth::Resource
 
       identity_attr :block_name
 

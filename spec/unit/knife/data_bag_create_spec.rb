@@ -20,8 +20,8 @@
 require 'spec_helper'
 require 'tempfile'
 
-module ChefSpecs
-  class ChefRest
+module SethSpecs
+  class SethRest
     attr_reader :args_received
     def initialize
       @args_received = []
@@ -34,11 +34,11 @@ module ChefSpecs
 end
 
 
-describe Chef::Knife::DataBagCreate do
+describe Seth::Knife::DataBagCreate do
   before do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::DataBagCreate.new
-    @rest = ChefSpecs::ChefRest.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::DataBagCreate.new
+    @rest = SethSpecs::ChefRest.new
     @knife.stub(:rest).and_return(@rest)
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
@@ -63,7 +63,7 @@ describe Chef::Knife::DataBagCreate do
   it "creates a data bag item when given two arguments" do
     @knife.name_args = ['sudoing_admins', 'ME']
     user_supplied_hash = {"login_name" => "alphaomega", "id" => "ME"}
-    data_bag_item = Chef::DataBagItem.from_hash(user_supplied_hash)
+    data_bag_item = Seth::DataBagItem.from_hash(user_supplied_hash)
     data_bag_item.data_bag("sudoing_admins")
     @knife.should_receive(:create_object).and_yield(user_supplied_hash)
     @rest.should_receive(:post_rest).with("data", {'name' => 'sudoing_admins'}).ordered
@@ -76,16 +76,16 @@ describe Chef::Knife::DataBagCreate do
     before(:each) do
       @secret = "abc123SECRET"
       @plain_data = {"login_name" => "alphaomega", "id" => "ME"}
-      @enc_data = Chef::EncryptedDataBagItem.encrypt_data_bag_item(@plain_data,
+      @enc_data = Seth::EncryptedDataBagItem.encrypt_data_bag_item(@plain_data,
                                                                    @secret)
       @knife.name_args = ['sudoing_admins', 'ME']
       @knife.should_receive(:create_object).and_yield(@plain_data)
-      data_bag_item = Chef::DataBagItem.from_hash(@enc_data)
+      data_bag_item = Seth::DataBagItem.from_hash(@enc_data)
       data_bag_item.data_bag("sudoing_admins")
 
       # Random IV is used each time the data bag item is encrypted, so values
       # will not be equal if we re-encrypt.
-      Chef::EncryptedDataBagItem.should_receive(:encrypt_data_bag_item).and_return(@enc_data)
+      Seth::EncryptedDataBagItem.should_receive(:encrypt_data_bag_item).and_return(@enc_data)
 
       @rest.should_receive(:post_rest).with("data", {'name' => 'sudoing_admins'}).ordered
       @rest.should_receive(:post_rest).with("data/sudoing_admins", data_bag_item).ordered

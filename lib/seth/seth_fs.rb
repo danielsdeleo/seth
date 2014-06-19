@@ -1,9 +1,9 @@
-require 'chef/platform'
+require 'seth/platform'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     def self.windows?
-      Chef::Platform.windows?
+      Seth::Platform.windows?
     end
   end
 end

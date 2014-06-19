@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-XARGS" "1" "Chef 11.12.0" "" "knife xargs"
+.TH "KNIFE-XARGS" "1" "Seth 11.12.0" "" "knife xargs"
 .SH NAME
 knife-xargs \- The man page for the knife xargs subcommand.
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife xargs\fP subcommand is used to build and execute command lines against objects on a Chef server using standard input.
+The \fBknife xargs\fP subcommand is used to build and execute command lines against objects on a Seth server using standard input.
 .sp
 \fBSyntax\fP
 .sp
@@ -55,8 +55,8 @@ This subcommand has the following options:
 .B \fB\-0\fP
 Indicates that a \fBNULL\fP character (\fB\e0\fP) will be used as a separator, instead of white space. Default: \fBfalse\fP\&.
 .TP
-.B \fB\-\-chef\-repo\-path PATH\fP
-The path to the chef\-repo\&. This setting will override the default path to the chef\-repo\&. Default: same as specified by \fBchef_repo_path\fP in config.rb.
+.B \fB\-\-seth\-repo\-path PATH\fP
+The path to the seth\-repo\&. This setting will override the default path to the chef\-repo\&. Default: same as specified by \fBchef_repo_path\fP in config.rb.
 .TP
 .B \fB\-\-concurrency\fP
 The number of allowed concurrent connections. Default: \fB10\fP\&.
@@ -65,7 +65,7 @@ The number of allowed concurrent connections. Default: \fB10\fP\&.
 Use to show a diff when a file changes. Default: \fB\-\-diff\fP\&.
 .TP
 .B \fB\-\-dry\-run\fP
-Use to prevent changes from being uploaded to the Chef server\&. Default: \fBfalse\fP\&.
+Use to prevent changes from being uploaded to the Seth server\&. Default: \fBfalse\fP\&.
 .TP
 .B \fB\-\-[no\-]force\fP
 Use to force the upload of files even if they haven\(aqt been changed. Default: \fB\-\-no\-force\fP\&.
@@ -86,7 +86,7 @@ The maximum number of arguments per command line. Default: \fBnil\fP\&.
 One (or more) patterns for a command line. If this option is not specified, a list of patterns may be expected on standard input. Default: \fBnil\fP\&.
 .TP
 .B \fB\-\-repo\-mode MODE\fP
-The layout of the local chef\-repo\&. Possible values: \fBstatic\fP, \fBeverything\fP, or \fBhosted_everything\fP\&. Use \fBstatic\fP for just roles, environments, cookbooks, and data bags. By default, \fBeverything\fP and \fBhosted_everything\fP are dynamically selected depending on the server type. Default value: \fBdefault\fP\&.
+The layout of the local seth\-repo\&. Possible values: \fBstatic\fP, \fBeverything\fP, or \fBhosted_everything\fP\&. Use \fBstatic\fP for just roles, environments, cookbooks, and data bags. By default, \fBeverything\fP and \fBhosted_everything\fP are dynamically selected depending on the server type. Default value: \fBdefault\fP\&.
 .TP
 .B \fB\-s LENGTH\fP, \fB\-\-max\-chars LENGTH\fP
 The maximum size (in characters) for a command line. Default: \fBnil\fP\&.
@@ -97,8 +97,8 @@ Indicates that the print command will be run on the command line. Default: \fBni
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-d\fP, \fB\-\-disable\-editing\fP
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
@@ -119,7 +119,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -128,13 +128,13 @@ Indicates whether colored output will be used.
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -143,7 +143,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -158,6 +158,6 @@ $ knife deps nodes/*.json | xargs knife upload
 .UNINDENT
 .UNINDENT
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

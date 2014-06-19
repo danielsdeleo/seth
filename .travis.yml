@@ -35,7 +35,7 @@ notifications:
   on_start: false
   irc:
     channels:
-      - "chat.freenode.net#chef-hacking"
+      - "chat.freenode.net#seth-hacking"
   webhooks:
     urls:
       # Gitter IM

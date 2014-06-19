@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/formatters/error_inspectors/api_error_formatting'
+require 'seth/formatters/error_inspectors/api_error_formatting'
 
-class Chef
+class Seth
   module Formatters
     module ErrorInspectors
 
@@ -51,7 +51,7 @@ class Chef
         end
 
         def config
-          Chef::Config
+          Seth::Config
         end
 
         def humanize_http_exception(error_description)

@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Util
     class Backup
       attr_reader :new_resource
@@ -49,7 +49,7 @@ class Chef
           time = Time.now
           nanoseconds = sprintf("%6f", time.to_f).split('.')[1]
           savetime = time.strftime("%Y%m%d%H%M%S.#{nanoseconds}")
-          backup_filename = "#{path}.chef-#{savetime}"
+          backup_filename = "#{path}.seth-#{savetime}"
           backup_filename = backup_filename.sub(/^([A-Za-z]:)/, "") #strip drive letter on Windows
         end
       end
@@ -58,7 +58,7 @@ class Chef
         # if :file_backup_path is nil, we fallback to the old behavior of
         # keeping the backup in the same directory. We also need to to_s it
         # so we don't get a type error around implicit to_str conversions.
-        @prefix ||= Chef::Config[:file_backup_path].to_s
+        @prefix ||= Seth::Config[:file_backup_path].to_s
       end
 
       def backup_path
@@ -66,18 +66,18 @@ class Chef
       end
 
       def do_backup
-        FileUtils.mkdir_p(::File.dirname(backup_path)) if Chef::Config[:file_backup_path]
+        FileUtils.mkdir_p(::File.dirname(backup_path)) if Seth::Config[:file_backup_path]
         FileUtils.cp(path, backup_path, :preserve => true)
-        Chef::Log.info("#{@new_resource} backed up to #{backup_path}")
+        Seth::Log.info("#{@new_resource} backed up to #{backup_path}")
       end
 
       def delete_backup(backup_file)
         FileUtils.rm(backup_file)
-        Chef::Log.info("#{@new_resource} removed backup at #{backup_file}")
+        Seth::Log.info("#{@new_resource} removed backup at #{backup_file}")
       end
 
       def sorted_backup_files
-        Dir[::File.join(prefix, ".#{path}.chef-*")].sort { |a,b| b <=> a }
+        Dir[::File.join(prefix, ".#{path}.seth-*")].sort { |a,b| b <=> a }
       end
     end
   end

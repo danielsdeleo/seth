@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/provider'
-require 'chef/mixin/command'
+require 'seth/provider'
+require 'seth/mixin/command'
 require 'etc'
 
-class Chef
+class Seth
   class Provider
-    class Group < Chef::Provider
-      include Chef::Mixin::Command
+    class Group < Seth::Provider
+      include Seth::Mixin::Command
       attr_accessor :group_exists
       attr_accessor :change_desc
 
@@ -37,7 +37,7 @@ class Chef
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::Group.new(@new_resource.name)
+        @current_resource = Seth::Resource::Group.new(@new_resource.name)
         @current_resource.group_name(@new_resource.group_name)
 
         group_info = nil
@@ -45,7 +45,7 @@ class Chef
           group_info = Etc.getgrnam(@new_resource.group_name)
         rescue ArgumentError => e
           @group_exists = false
-          Chef::Log.debug("#{@new_resource} group does not exist")
+          Seth::Log.debug("#{@new_resource} group does not exist")
         end
 
         if group_info
@@ -60,7 +60,7 @@ class Chef
       def define_resource_requirements
         requirements.assert(:modify) do |a|
           a.assertion { @group_exists }
-          a.failure_message(Chef::Exceptions::Group, "Cannot modify #{@new_resource} - group does not exist!")
+          a.failure_message(Seth::Exceptions::Group, "Cannot modify #{@new_resource} - group does not exist!")
           a.whyrun("Group #{@new_resource} does not exist. Unless it would have been created earlier in this run, this attempt to modify it would fail.")
         end
 
@@ -70,7 +70,7 @@ class Chef
           if !@new_resource.members.nil? && !@new_resource.excluded_members.nil?
             common_members = @new_resource.members & @new_resource.excluded_members
             a.assertion { common_members.empty? }
-            a.failure_message(Chef::Exceptions::ConflictingMembersInGroup, "Attempting to both add and remove users from a group: '#{common_members.join(', ')}'")
+            a.failure_message(Seth::Exceptions::ConflictingMembersInGroup, "Attempting to both add and remove users from a group: '#{common_members.join(', ')}'")
             # No why-run alternative
           end
         end
@@ -125,13 +125,13 @@ class Chef
         when false
           converge_by("create #{@new_resource}") do
             create_group
-            Chef::Log.info("#{@new_resource} created")
+            Seth::Log.info("#{@new_resource} created")
           end
         else
           if compare_group
             converge_by(["alter group #{@new_resource}"] + change_desc) do
               manage_group
-              Chef::Log.info("#{@new_resource} altered")
+              Seth::Log.info("#{@new_resource} altered")
             end
           end
         end
@@ -141,7 +141,7 @@ class Chef
         if @group_exists
           converge_by("remove group #{@new_resource}") do
             remove_group
-            Chef::Log.info("#{@new_resource} removed")
+            Seth::Log.info("#{@new_resource} removed")
           end
         end
       end
@@ -150,7 +150,7 @@ class Chef
         if @group_exists && compare_group
           converge_by(["manage group #{@new_resource}"] + change_desc) do
             manage_group
-            Chef::Log.info("#{@new_resource} managed")
+            Seth::Log.info("#{@new_resource} managed")
           end
         end
       end
@@ -159,21 +159,21 @@ class Chef
         if compare_group
           converge_by(["modify group #{@new_resource}"] + change_desc) do
             manage_group
-            Chef::Log.info("#{@new_resource} modified")
+            Seth::Log.info("#{@new_resource} modified")
           end
         end
       end
 
       def create_group
-        raise NotImplementedError, "subclasses of Chef::Provider::Group should define #create_group"
+        raise NotImplementedError, "subclasses of Seth::Provider::Group should define #create_group"
       end
 
       def manage_group
-        raise NotImplementedError, "subclasses of Chef::Provider::Group should define #manage_group"
+        raise NotImplementedError, "subclasses of Seth::Provider::Group should define #manage_group"
       end
 
       def remove_group
-        raise NotImplementedError, "subclasses of Chef::Provider::Group should define #remove_group"
+        raise NotImplementedError, "subclasses of Seth::Provider::Group should define #remove_group"
       end
 
     end

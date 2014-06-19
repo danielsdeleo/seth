@@ -19,10 +19,10 @@
 require 'spec_helper'
 require 'tiny_server'
 
-describe Chef::Knife::Ssh do
+describe Seth::Knife::Ssh do
 
   before(:all) do
-    Chef::Knife::Ssh.load_deps
+    Seth::Knife::Ssh.load_deps
     @server = TinyServer::Manager.new
     @server.start
   end
@@ -35,7 +35,7 @@ describe Chef::Knife::Ssh do
     context "when knife[:ssh_identity_file] is set" do
       before do
         setup_knife(['*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_identity_file] = "~/.ssh/aws.rsa"
+        Seth::Config[:knife][:ssh_identity_file] = "~/.ssh/aws.rsa"
       end
 
       it "uses the ssh_identity_file" do
@@ -47,7 +47,7 @@ describe Chef::Knife::Ssh do
     context "when knife[:ssh_identity_file] is set and frozen" do
       before do
         setup_knife(['*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_identity_file] = "~/.ssh/aws.rsa".freeze
+        Seth::Config[:knife][:ssh_identity_file] = "~/.ssh/aws.rsa".freeze
       end
 
       it "uses the ssh_identity_file" do
@@ -59,7 +59,7 @@ describe Chef::Knife::Ssh do
     context "when -i is provided" do
       before do
         setup_knife(['-i ~/.ssh/aws.rsa', '*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_identity_file] = nil
+        Seth::Config[:knife][:ssh_identity_file] = nil
       end
 
       it "should use the value on the command line" do
@@ -68,7 +68,7 @@ describe Chef::Knife::Ssh do
       end
 
       it "should override what is set in knife.rb" do
-        Chef::Config[:knife][:ssh_identity_file] = "~/.ssh/other.rsa"
+        Seth::Config[:knife][:ssh_identity_file] = "~/.ssh/other.rsa"
         @knife.run
         @knife.config[:identity_file].should == "~/.ssh/aws.rsa"
       end
@@ -77,7 +77,7 @@ describe Chef::Knife::Ssh do
     context "when knife[:ssh_identity_file] is not provided]" do
       before do
         setup_knife(['*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_identity_file] = nil
+        Seth::Config[:knife][:ssh_identity_file] = nil
       end
 
       it "uses the default" do
@@ -104,7 +104,7 @@ describe Chef::Knife::Ssh do
     context "when knife[:ssh_user] is set" do
       before do
         setup_knife(['*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_user] = "ubuntu"
+        Seth::Config[:knife][:ssh_user] = "ubuntu"
       end
 
       it "uses the ssh_user" do
@@ -116,7 +116,7 @@ describe Chef::Knife::Ssh do
     context "when knife[:ssh_user] is set and frozen" do
       before do
         setup_knife(['*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_user] = "ubuntu".freeze
+        Seth::Config[:knife][:ssh_user] = "ubuntu".freeze
       end
 
       it "uses the ssh_user" do
@@ -128,7 +128,7 @@ describe Chef::Knife::Ssh do
     context "when -x is provided" do
       before do
         setup_knife(['-x ubuntu', '*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_user] = nil
+        Seth::Config[:knife][:ssh_user] = nil
       end
 
       it "should use the value on the command line" do
@@ -137,7 +137,7 @@ describe Chef::Knife::Ssh do
       end
 
       it "should override what is set in knife.rb" do
-        Chef::Config[:knife][:ssh_user] = "root"
+        Seth::Config[:knife][:ssh_user] = "root"
         @knife.run
         @knife.config[:ssh_user].should == "ubuntu"
       end
@@ -146,7 +146,7 @@ describe Chef::Knife::Ssh do
     context "when knife[:ssh_user] is not provided]" do
       before do
         setup_knife(['*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_user] = nil
+        Seth::Config[:knife][:ssh_user] = nil
       end
 
       it "uses the default (current user)" do
@@ -160,7 +160,7 @@ describe Chef::Knife::Ssh do
     context "when knife[:ssh_attribute] is set" do
       before do
         setup_knife(['*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_attribute] = "ec2.public_hostname"
+        Seth::Config[:knife][:ssh_attribute] = "ec2.public_hostname"
       end
 
       it "uses the ssh_attribute" do
@@ -172,7 +172,7 @@ describe Chef::Knife::Ssh do
     context "when knife[:ssh_attribute] is not provided]" do
       before do
         setup_knife(['*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_attribute] = nil
+        Seth::Config[:knife][:ssh_attribute] = nil
       end
 
       it "uses the default" do
@@ -184,7 +184,7 @@ describe Chef::Knife::Ssh do
     context "when -a ec2.public_ipv4 is provided" do
       before do
         setup_knife(['-a ec2.public_hostname', '*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_attribute] = nil
+        Seth::Config[:knife][:ssh_attribute] = nil
       end
 
       it "should use the value on the command line" do
@@ -194,7 +194,7 @@ describe Chef::Knife::Ssh do
 
       it "should override what is set in knife.rb" do
         # This is the setting imported from knife.rb
-        Chef::Config[:knife][:ssh_attribute] = "fqdn"
+        Seth::Config[:knife][:ssh_attribute] = "fqdn"
         # Then we run knife with the -a flag, which sets the above variable
         setup_knife(['-a ec2.public_hostname', '*:*', 'uptime'])
         @knife.run
@@ -207,7 +207,7 @@ describe Chef::Knife::Ssh do
     context "when knife[:ssh_gateway] is set" do
       before do
         setup_knife(['*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_gateway] = "user@ec2.public_hostname"
+        Seth::Config[:knife][:ssh_gateway] = "user@ec2.public_hostname"
       end
 
       it "uses the ssh_gateway" do
@@ -220,7 +220,7 @@ describe Chef::Knife::Ssh do
     context "when -G user@ec2.public_hostname is provided" do
       before do
         setup_knife(['-G user@ec2.public_hostname', '*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_gateway] = nil
+        Seth::Config[:knife][:ssh_gateway] = nil
       end
 
       it "uses the ssh_gateway" do
@@ -233,7 +233,7 @@ describe Chef::Knife::Ssh do
     context "when the gateway requires a password" do
       before do
         setup_knife(['-G user@ec2.public_hostname', '*:*', 'uptime'])
-        Chef::Config[:knife][:ssh_gateway] = nil
+        Seth::Config[:knife][:ssh_gateway] = nil
         @knife.session.stub(:via) do |host, user, options|
           raise Net::SSH::AuthenticationFailed unless options[:password]
         end
@@ -247,21 +247,21 @@ describe Chef::Knife::Ssh do
   end
 
   def setup_knife(params=[])
-    @knife = Chef::Knife::Ssh.new(params)
-    # We explicitly avoid running #configure_chef, which would read a knife.rb
-    # if available, but #merge_configs (which is called by #configure_chef) is
+    @knife = Seth::Knife::Ssh.new(params)
+    # We explicitly avoid running #configure_seth, which would read a knife.rb
+    # if available, but #merge_configs (which is called by #configure_seth) is
     # necessary to have default options merged in.
     @knife.merge_configs
     @knife.stub(:ssh_command).and_return { 0 }
     @api = TinyServer::API.instance
     @api.clear
 
-    Chef::Config[:node_name] = nil
-    Chef::Config[:client_key] = nil
-    Chef::Config[:chef_server_url] = 'http://localhost:9000'
+    Seth::Config[:node_name] = nil
+    Seth::Config[:client_key] = nil
+    Seth::Config[:seth_server_url] = 'http://localhost:9000'
 
     @api.get("/search/node?q=*:*&sort=X_CHEF_id_CHEF_X%20asc&start=0&rows=1000", 200) {
-      %({"total":1, "start":0, "rows":[{"name":"i-xxxxxxxx", "json_class":"Chef::Node", "automatic":{"fqdn":"the.fqdn", "ec2":{"public_hostname":"the_public_hostname"}},"recipes":[]}]})
+      %({"total":1, "start":0, "rows":[{"name":"i-xxxxxxxx", "json_class":"Seth::Node", "automatic":{"fqdn":"the.fqdn", "ec2":{"public_hostname":"the_public_hostname"}},"recipes":[]}]})
     }
   end
 

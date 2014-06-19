@@ -18,9 +18,9 @@
 # limitations under the License.
 #
 
-require 'chef/log'
+require 'seth/log'
 
-class Chef
+class Seth
   class FileAccessControl
     module Unix
       UINT = (1 << 32)
@@ -67,18 +67,18 @@ class Chef
       def should_update_owner?
         if target_uid.nil?
           # the user has not specified a permission on the new resource, so we never manage it with FAC
-          Chef::Log.debug("found target_uid == nil, so no owner was specified on resource, not managing owner")
+          Seth::Log.debug("found target_uid == nil, so no owner was specified on resource, not managing owner")
           return false
         elsif current_uid.nil?
           # the user has specified a permission, and we are creating a file, so always enforce permissions
-          Chef::Log.debug("found current_uid == nil, so we are creating a new file, updating owner")
+          Seth::Log.debug("found current_uid == nil, so we are creating a new file, updating owner")
           return true
         elsif target_uid != current_uid
           # the user has specified a permission, and it does not match the file, so fix the permission
-          Chef::Log.debug("found target_uid != current_uid, updating owner")
+          Seth::Log.debug("found target_uid != current_uid, updating owner")
           return true
         else
-          Chef::Log.debug("found target_uid == current_uid, not updating owner")
+          Seth::Log.debug("found target_uid == current_uid, not updating owner")
           # the user has specified a permission, but it matches the file, so behave idempotently
           return false
         end
@@ -87,7 +87,7 @@ class Chef
       def set_owner!
         unless target_uid.nil?
           chown(target_uid, nil, file)
-          Chef::Log.info("#{log_string} owner changed to #{target_uid}")
+          Seth::Log.info("#{log_string} owner changed to #{target_uid}")
           modified
         end
       end
@@ -111,13 +111,13 @@ class Chef
         elsif resource.group.kind_of?(Integer)
           resource.group
         else
-          Chef::Log.error("The `group` parameter of the #@resource resource is set to an invalid value (#{resource.owner.inspect})")
+          Seth::Log.error("The `group` parameter of the #@resource resource is set to an invalid value (#{resource.owner.inspect})")
           raise ArgumentError, "cannot resolve #{resource.group.inspect} to gid, group must be a string or integer"
         end
       rescue ArgumentError
         provider.requirements.assert(:create, :create_if_missing, :touch) do |a|
           a.assertion { false }
-          a.failure_message(Chef::Exceptions::GroupIDNotFound, "cannot determine group id for '#{resource.group}', does the group exist on this system?")
+          a.failure_message(Seth::Exceptions::GroupIDNotFound, "cannot determine group id for '#{resource.group}', does the group exist on this system?")
           a.whyrun("Assuming group #{resource.group} would have been created")
         end
         return nil
@@ -126,18 +126,18 @@ class Chef
       def should_update_group?
         if target_gid.nil?
           # the user has not specified a permission on the new resource, so we never manage it with FAC
-          Chef::Log.debug("found target_gid == nil, so no group was specified on resource, not managing group")
+          Seth::Log.debug("found target_gid == nil, so no group was specified on resource, not managing group")
           return false
         elsif current_gid.nil?
           # the user has specified a permission, and we are creating a file, so always enforce permissions
-          Chef::Log.debug("found current_gid == nil, so we are creating a new file, updating group")
+          Seth::Log.debug("found current_gid == nil, so we are creating a new file, updating group")
           return true
         elsif target_gid != current_gid
           # the user has specified a permission, and it does not match the file, so fix the permission
-          Chef::Log.debug("found target_gid != current_gid, updating group")
+          Seth::Log.debug("found target_gid != current_gid, updating group")
           return true
         else
-          Chef::Log.debug("found target_gid == current_gid, not updating group")
+          Seth::Log.debug("found target_gid == current_gid, not updating group")
           # the user has specified a permission, but it matches the file, so behave idempotently
           return false
         end
@@ -146,7 +146,7 @@ class Chef
       def set_group!
         unless target_gid.nil?
           chown(nil, target_gid, file)
-          Chef::Log.info("#{log_string} group changed to #{target_gid}")
+          Seth::Log.info("#{log_string} group changed to #{target_gid}")
           modified
         end
       end
@@ -175,18 +175,18 @@ class Chef
       def should_update_mode?
         if target_mode.nil?
           # the user has not specified a permission on the new resource, so we never manage it with FAC
-          Chef::Log.debug("found target_mode == nil, so no mode was specified on resource, not managing mode")
+          Seth::Log.debug("found target_mode == nil, so no mode was specified on resource, not managing mode")
           return false
         elsif current_mode.nil?
           # the user has specified a permission, and we are creating a file, so always enforce permissions
-          Chef::Log.debug("found current_mode == nil, so we are creating a new file, updating mode")
+          Seth::Log.debug("found current_mode == nil, so we are creating a new file, updating mode")
           return true
         elsif target_mode != current_mode
           # the user has specified a permission, and it does not match the file, so fix the permission
-          Chef::Log.debug("found target_mode != current_mode, updating mode")
+          Seth::Log.debug("found target_mode != current_mode, updating mode")
           return true
         else
-          Chef::Log.debug("found target_mode == current_mode, not updating mode")
+          Seth::Log.debug("found target_mode == current_mode, not updating mode")
           # the user has specified a permission, but it matches the file, so behave idempotently
           return false
         end
@@ -195,7 +195,7 @@ class Chef
       def set_mode!
         unless target_mode.nil?
           chmod(target_mode, file)
-          Chef::Log.info("#{log_string} mode changed to #{target_mode.to_s(8)}")
+          Seth::Log.info("#{log_string} mode changed to #{target_mode.to_s(8)}")
           modified
         end
       end
@@ -223,7 +223,7 @@ class Chef
           begin
             File.lchmod(mode, file)
           rescue NotImplementedError
-            Chef::Log.warn("#{file} mode not changed: File.lchmod is unimplemented on this OS and Ruby version")
+            Seth::Log.warn("#{file} mode not changed: File.lchmod is unimplemented on this OS and Ruby version")
           end
         else
           File.chmod(mode, file)
@@ -256,13 +256,13 @@ class Chef
         elsif resource.owner.kind_of?(Integer)
           resource.owner
         else
-          Chef::Log.error("The `owner` parameter of the #@resource resource is set to an invalid value (#{resource.owner.inspect})")
+          Seth::Log.error("The `owner` parameter of the #@resource resource is set to an invalid value (#{resource.owner.inspect})")
           raise ArgumentError, "cannot resolve #{resource.owner.inspect} to uid, owner must be a string or integer"
         end
       rescue ArgumentError
         provider.requirements.assert(:create, :create_if_missing, :touch) do |a|
           a.assertion { false }
-          a.failure_message(Chef::Exceptions::UserIDNotFound, "cannot determine user id for '#{resource.owner}', does the user exist on this system?")
+          a.failure_message(Seth::Exceptions::UserIDNotFound, "cannot determine user id for '#{resource.owner}', does the user exist on this system?")
           a.whyrun("Assuming user #{resource.owner} would have been created")
         end
         return nil

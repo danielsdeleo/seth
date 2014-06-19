@@ -16,22 +16,22 @@
 # limitations under the License.
 #
 
-require 'chef/provider/file'
-require 'chef/provider/directory'
-require 'chef/resource/directory'
-require 'chef/resource/remote_file'
-require 'chef/mixin/file_class'
-require 'chef/platform'
+require 'seth/provider/file'
+require 'seth/provider/directory'
+require 'seth/resource/directory'
+require 'seth/resource/remote_file'
+require 'seth/mixin/file_class'
+require 'seth/platform'
 require 'uri'
 require 'tempfile'
 require 'net/https'
 require 'set'
 
-class Chef
+class Seth
   class Provider
-    class RemoteDirectory < Chef::Provider::Directory
+    class RemoteDirectory < Seth::Provider::Directory
 
-      include Chef::Mixin::FileClass
+      include Seth::Mixin::FileClass
 
       def action_create
         super
@@ -65,18 +65,18 @@ class Chef
       def purge_unmanaged_files(unmanaged_files)
         if @new_resource.purge
           unmanaged_files.sort.reverse.each do |f|
-            # file_class comes from Chef::Mixin::FileClass
-            if ::File.directory?(f) && !Chef::Platform.windows? && !file_class.symlink?(f.dup)
+            # file_class comes from Seth::Mixin::FileClass
+            if ::File.directory?(f) && !Seth::Platform.windows? && !file_class.symlink?(f.dup)
               # Linux treats directory symlinks as files
               # Remove a directory as a directory when not on windows if it is not a symlink
               purge_directory(f)
-            elsif ::File.directory?(f) && Chef::Platform.windows?
+            elsif ::File.directory?(f) && Seth::Platform.windows?
               # Windows treats directory symlinks as directories so we delete them here
               purge_directory(f)
             else
               converge_by("delete unmanaged file #{f}") do
                 ::File.delete(f)
-                Chef::Log.debug("#{@new_resource} deleted file #{f}")
+                Seth::Log.debug("#{@new_resource} deleted file #{f}")
               end
             end
           end
@@ -86,7 +86,7 @@ class Chef
       def purge_directory(dir)
         converge_by("delete unmanaged directory #{dir}") do
           Dir::rmdir(dir)
-          Chef::Log.debug("#{@new_resource} removed directory #{dir}")
+          Seth::Log.debug("#{@new_resource} removed directory #{dir}")
         end
       end
 
@@ -125,10 +125,10 @@ class Chef
       end
 
       def cookbook_file_resource(target_path, relative_source_path)
-        cookbook_file = Chef::Resource::CookbookFile.new(target_path, run_context)
+        cookbook_file = Seth::Resource::CookbookFile.new(target_path, run_context)
         cookbook_file.cookbook_name = @new_resource.cookbook || @new_resource.cookbook_name
         cookbook_file.source(::File.join(@new_resource.source, relative_source_path))
-        if Chef::Platform.windows? && @new_resource.files_rights
+        if Seth::Platform.windows? && @new_resource.files_rights
           @new_resource.files_rights.each_pair do |permission, *args|
             cookbook_file.rights(permission, *args)
           end
@@ -150,9 +150,9 @@ class Chef
       end
 
       def resource_for_directory(path)
-        dir = Chef::Resource::Directory.new(path, run_context)
+        dir = Seth::Resource::Directory.new(path, run_context)
         dir.cookbook_name = @new_resource.cookbook || @new_resource.cookbook_name
-        if Chef::Platform.windows? && @new_resource.rights
+        if Seth::Platform.windows? && @new_resource.rights
           # rights are only meant to be applied to the toppest-level directory;
           # Windows will handle inheritance.
           if path == @new_resource.path

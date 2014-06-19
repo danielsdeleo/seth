@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/command'
-require 'chef/log'
-require 'chef/file_cache'
-require 'chef/platform'
+require 'seth/mixin/command'
+require 'seth/log'
+require 'seth/file_cache'
+require 'seth/platform'
 
-class Chef
+class Seth
   class Provider
-    class Package < Chef::Provider
+    class Package < Seth::Provider
 
-      include Chef::Mixin::Command
+      include Seth::Mixin::Command
 
       attr_accessor :candidate_version
       def initialize(new_resource, run_context)
@@ -44,14 +44,14 @@ class Chef
         requirements.assert(:install) do |a|
           a.assertion { ((@new_resource.version != nil) && !(target_version_already_installed?)) \
             || !(@current_resource.version.nil? && candidate_version.nil?)  }
-          a.failure_message(Chef::Exceptions::Package, "No version specified, and no candidate version available for #{@new_resource.package_name}")
+          a.failure_message(Seth::Exceptions::Package, "No version specified, and no candidate version available for #{@new_resource.package_name}")
           a.whyrun("Assuming a repository that offers #{@new_resource.package_name} would have been configured")
         end
 
         requirements.assert(:upgrade) do |a|
           # Can't upgrade what we don't have
           a.assertion  { !(@current_resource.version.nil? && candidate_version.nil?) }
-          a.failure_message(Chef::Exceptions::Package, "No candidate version available for #{@new_resource.package_name}")
+          a.failure_message(Seth::Exceptions::Package, "No candidate version available for #{@new_resource.package_name}")
           a.whyrun("Assuming a repository that offers #{@new_resource.package_name} would have been configured")
         end
       end
@@ -64,7 +64,7 @@ class Chef
         elsif @current_resource.version.nil?
           install_version = candidate_version
         else
-          Chef::Log.debug("#{@new_resource} is already installed - nothing to do")
+          Seth::Log.debug("#{@new_resource} is already installed - nothing to do")
           return
         end
 
@@ -85,15 +85,15 @@ class Chef
 
       def action_upgrade
         if candidate_version.nil?
-          Chef::Log.debug("#{@new_resource} no candidate version - nothing to do")
+          Seth::Log.debug("#{@new_resource} no candidate version - nothing to do")
         elsif @current_resource.version == candidate_version
-          Chef::Log.debug("#{@new_resource} is at the latest version - nothing to do")
+          Seth::Log.debug("#{@new_resource} is at the latest version - nothing to do")
         else
           @new_resource.version(candidate_version)
           orig_version = @current_resource.version || "uninstalled"
           converge_by("upgrade package #{@new_resource.package_name} from #{orig_version} to #{candidate_version}") do
             upgrade_package(@new_resource.package_name, candidate_version)
-            Chef::Log.info("#{@new_resource} upgraded from #{orig_version} to #{candidate_version}")
+            Seth::Log.info("#{@new_resource} upgraded from #{orig_version} to #{candidate_version}")
           end
         end
       end
@@ -103,10 +103,10 @@ class Chef
           description = @new_resource.version ? "version #{@new_resource.version} of " :  ""
           converge_by("remove #{description} package #{@current_resource.package_name}") do
             remove_package(@current_resource.package_name, @new_resource.version)
-            Chef::Log.info("#{@new_resource} removed")
+            Seth::Log.info("#{@new_resource} removed")
           end
         else
-          Chef::Log.debug("#{@new_resource} package does not exist - nothing to do")
+          Seth::Log.debug("#{@new_resource} package does not exist - nothing to do")
         end
       end
 
@@ -127,19 +127,19 @@ class Chef
           description = @new_resource.version ? "version #{@new_resource.version} of" : ""
           converge_by("purge #{description} package #{@current_resource.package_name}") do
             purge_package(@current_resource.package_name, @new_resource.version)
-            Chef::Log.info("#{@new_resource} purged")
+            Seth::Log.info("#{@new_resource} purged")
           end
         end
       end
 
       def action_reconfig
         if @current_resource.version == nil then
-          Chef::Log.debug("#{@new_resource} is NOT installed - nothing to do")
+          Seth::Log.debug("#{@new_resource} is NOT installed - nothing to do")
           return
         end
 
         unless @new_resource.response_file then
-          Chef::Log.debug("#{@new_resource} no response_file provided - nothing to do")
+          Seth::Log.debug("#{@new_resource} no response_file provided - nothing to do")
           return
         end
 
@@ -147,41 +147,41 @@ class Chef
           converge_by("reconfigure package #{@new_resource.package_name}") do
             preseed_package(preseed_file)
             reconfig_package(@new_resource.package_name, @current_resource.version)
-            Chef::Log.info("#{@new_resource} reconfigured")
+            Seth::Log.info("#{@new_resource} reconfigured")
           end
         else
-          Chef::Log.debug("#{@new_resource} preseeding has not changed - nothing to do")
+          Seth::Log.debug("#{@new_resource} preseeding has not changed - nothing to do")
         end
       end
 
       def install_package(name, version)
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :install"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :install"
       end
 
       def upgrade_package(name, version)
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :upgrade"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :upgrade"
       end
 
       def remove_package(name, version)
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :remove"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :remove"
       end
 
       def purge_package(name, version)
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :purge"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :purge"
       end
 
       def preseed_package(file)
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support pre-seeding package install/upgrade instructions"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support pre-seeding package install/upgrade instructions"
       end
 
       def reconfig_package(name, version)
-        raise( Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :reconfig" )
+        raise( Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :reconfig" )
       end
 
       def get_preseed_file(name, version)
         resource = preseed_resource(name, version)
         resource.run_action(:create)
-        Chef::Log.debug("#{@new_resource} fetched preseed file to #{resource.path}")
+        Seth::Log.debug("#{@new_resource} fetched preseed file to #{resource.path}")
 
         if resource.updated_by_last_action?
           resource.path
@@ -192,23 +192,23 @@ class Chef
 
       def preseed_resource(name, version)
         # A directory in our cache to store this cookbook's preseed files in
-        file_cache_dir = Chef::FileCache.create_cache_path("preseed/#{@new_resource.cookbook_name}")
+        file_cache_dir = Seth::FileCache.create_cache_path("preseed/#{@new_resource.cookbook_name}")
         # The full path where the preseed file will be stored
         cache_seed_to = "#{file_cache_dir}/#{name}-#{version}.seed"
 
-        Chef::Log.debug("#{@new_resource} fetching preseed file to #{cache_seed_to}")
+        Seth::Log.debug("#{@new_resource} fetching preseed file to #{cache_seed_to}")
 
 
         if template_available?(@new_resource.response_file)
-          Chef::Log.debug("#{@new_resource} fetching preseed file via Template")
-          remote_file = Chef::Resource::Template.new(cache_seed_to, run_context)
+          Seth::Log.debug("#{@new_resource} fetching preseed file via Template")
+          remote_file = Seth::Resource::Template.new(cache_seed_to, run_context)
           remote_file.variables(@new_resource.response_file_variables)
         elsif cookbook_file_available?(@new_resource.response_file)
-          Chef::Log.debug("#{@new_resource} fetching preseed file via cookbook_file")
-          remote_file = Chef::Resource::CookbookFile.new(cache_seed_to, run_context)
+          Seth::Log.debug("#{@new_resource} fetching preseed file via cookbook_file")
+          remote_file = Seth::Resource::CookbookFile.new(cache_seed_to, run_context)
         else
           message = "No template or cookbook file found for response file #{@new_resource.response_file}"
-          raise Chef::Exceptions::FileNotFound, message
+          raise Seth::Exceptions::FileNotFound, message
         end
 
         remote_file.cookbook_name = @new_resource.cookbook_name

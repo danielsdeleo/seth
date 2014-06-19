@@ -18,7 +18,7 @@ Examples
 =====================================================
 The following examples show how to use this |knife| subcommand:
 
-**Upload the entire chef-repo**
+**Upload the entire seth-repo**
 
 .. include:: ../../step_knife/step_knife_upload_repository.rst
 

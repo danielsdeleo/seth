@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/base_fs_object'
-require 'chef/http/simple'
+require 'seth/chef_fs/file_system/base_fs_object'
+require 'seth/http/simple'
 require 'digest/md5'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class CookbookFile < BaseFSObject
         def initialize(name, parent, file)
@@ -39,9 +39,9 @@ class Chef
           begin
             tmpfile = rest.streaming_request(file[:url])
           rescue Timeout::Error => e
-            raise Chef::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading #{file[:url]}: #{e}"
+            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading #{file[:url]}: #{e}"
           rescue Net::HTTPServerException => e
-            raise Chef::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "#{e.message} retrieving #{file[:url]}"
+            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "#{e.message} retrieving #{file[:url]}"
           end
 
           begin
@@ -63,7 +63,7 @@ class Chef
           else
             begin
               other_value = other.read
-            rescue Chef::ChefFS::FileSystem::NotFoundError
+            rescue Seth::ChefFS::FileSystem::NotFoundError
               return [ false, nil, :none ]
             end
             other_checksum = calc_checksum(other_value)

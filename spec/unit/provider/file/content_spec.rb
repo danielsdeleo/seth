@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::File::Content do
+describe Seth::Provider::File::Content do
 
   #
   # mock setup
   #
 
   let(:current_resource) do
-    double("Chef::Provider::File::Resource (current)")
+    double("Seth::Provider::File::Resource (current)")
   end
 
   let(:enclosing_directory) {
@@ -36,18 +36,18 @@ describe Chef::Provider::File::Content do
   }
 
   let(:new_resource) do
-    double("Chef::Provider::File::Resource (new)", :name => "seattle.txt", :path => resource_path)
+    double("Seth::Provider::File::Resource (new)", :name => "seattle.txt", :path => resource_path)
   end
 
   let(:run_context) do
-    double("Chef::RunContext")
+    double("Seth::RunContext")
   end
 
   #
   # subject
   #
   let(:content) do
-    Chef::Provider::File::Content.new(new_resource, current_resource, run_context)
+    Seth::Provider::File::Content.new(new_resource, current_resource, run_context)
   end
 
   describe "when the resource has a content attribute set" do
@@ -65,13 +65,13 @@ describe Chef::Provider::File::Content do
     end
 
     it "returns a tempfile in the tempdir when :file_staging_uses_destdir is not set" do
-      Chef::Config[:file_staging_uses_destdir] = false
+      Seth::Config[:file_staging_uses_destdir] = false
       content.tempfile.path.start_with?(Dir::tmpdir).should be_true
       canonicalize_path(content.tempfile.path).start_with?(enclosing_directory).should be_false
     end
 
     it "returns a tempfile in the destdir when :file_desployment_uses_destdir is not set" do
-      Chef::Config[:file_staging_uses_destdir] = true
+      Seth::Config[:file_staging_uses_destdir] = true
       content.tempfile.path.start_with?(Dir::tmpdir).should be_false
       canonicalize_path(content.tempfile.path).start_with?(enclosing_directory).should be_true
     end

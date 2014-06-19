@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Mixin
     module Command
       module Unix
         # This is taken directly from Ara T Howard's Open4 library, and then
-        # modified to suit the needs of Chef.  Any bugs here are most likely
+        # modified to suit the needs of Seth.  Any bugs here are most likely
         # my own, and not Ara's.
         #
         # The original appears in external/open4.rb in its unmodified form.

@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,20 +18,20 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::WindowsPackage, "initialize", :windows_only do
+describe Seth::Resource::WindowsPackage, "initialize", :windows_only do
 
-  let(:resource) { Chef::Resource::WindowsPackage.new("solitaire.msi") }
+  let(:resource) { Seth::Resource::WindowsPackage.new("solitaire.msi") }
 
-  it "returns a Chef::Resource::WindowsPackage" do
-    expect(resource).to be_a_kind_of(Chef::Resource::WindowsPackage)
+  it "returns a Seth::Resource::WindowsPackage" do
+    expect(resource).to be_a_kind_of(Seth::Resource::WindowsPackage)
   end
 
   it "sets the resource_name to :windows_package" do
     expect(resource.resource_name).to eql(:windows_package)
   end
 
-  it "sets the provider to Chef::Provider::Package::Windows" do
-    expect(resource.provider).to eql(Chef::Provider::Package::Windows)
+  it "sets the provider to Seth::Provider::Package::Windows" do
+    expect(resource.provider).to eql(Seth::Provider::Package::Windows)
   end
 
   it "supports setting installer_type" do

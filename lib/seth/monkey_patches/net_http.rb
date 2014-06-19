@@ -1,23 +1,23 @@
 
 # Module gets mixed in to Net::HTTP exception classes so we can attach our
 # RESTRequest object to them and get the request parameters back out later.
-module ChefNetHTTPExceptionExtensions
-  attr_accessor :chef_rest_request
+module SethNetHTTPExceptionExtensions
+  attr_accessor :seth_rest_request
 end
 
 require 'net/http'
 module Net
   class HTTPError
-    include ChefNetHTTPExceptionExtensions
+    include SethNetHTTPExceptionExtensions
   end
   class HTTPRetriableError
-    include ChefNetHTTPExceptionExtensions
+    include SethNetHTTPExceptionExtensions
   end
   class HTTPServerException
-    include ChefNetHTTPExceptionExtensions
+    include SethNetHTTPExceptionExtensions
   end
   class HTTPFatalError
-    include ChefNetHTTPExceptionExtensions
+    include SethNetHTTPExceptionExtensions
   end
 end
 

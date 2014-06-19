@@ -1,6 +1,6 @@
 #
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright 2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,18 +17,18 @@
 #
 
 require 'spec_helper'
-require 'chef/policy_builder'
+require 'seth/policy_builder'
 
-describe Chef::PolicyBuilder::ExpandNodeObject do
+describe Seth::PolicyBuilder::ExpandNodeObject do
 
   let(:node_name) { "joe_node" }
   let(:ohai_data) { {"platform" => "ubuntu", "platform_version" => "13.04", "fqdn" => "joenode.example.com"} }
   let(:json_attribs) { {"run_list" => []} }
   let(:override_runlist) { "recipe[foo::default]" }
-  let(:events) { Chef::EventDispatch::Dispatcher.new }
-  let(:policy_builder) { Chef::PolicyBuilder::ExpandNodeObject.new(node_name, ohai_data, json_attribs, override_runlist, events) }
+  let(:events) { Seth::EventDispatch::Dispatcher.new }
+  let(:policy_builder) { Seth::PolicyBuilder::ExpandNodeObject.new(node_name, ohai_data, json_attribs, override_runlist, events) }
 
-  # All methods that Chef::Client calls on this class.
+  # All methods that Seth::Client calls on this class.
   describe "Public API" do
     it "implements a node method" do
       expect(policy_builder).to respond_to(:node)
@@ -65,10 +65,10 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
 
     describe "loading the node" do
 
-      context "on chef-solo" do
+      context "on seth-solo" do
 
         before do
-          Chef::Config[:solo] = true
+          Seth::Config[:solo] = true
         end
 
         it "creates a new in-memory node object with the given name" do
@@ -78,12 +78,12 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
 
       end
 
-      context "on chef-client" do
+      context "on seth-client" do
 
-        let(:node) { Chef::Node.new.tap { |n| n.name(node_name) } }
+        let(:node) { Seth::Node.new.tap { |n| n.name(node_name) } }
 
         it "loads or creates a node on the server" do
-          Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+          Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
           policy_builder.load_node
           policy_builder.node.should == node
         end
@@ -93,7 +93,7 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
 
     describe "building the node" do
 
-      # XXX: Chef::Client just needs to be able to call this, it doesn't depend on the return value.
+      # XXX: Seth::Client just needs to be able to call this, it doesn't depend on the return value.
       it "builds the node and returns the updated node object" do
         pending
       end
@@ -126,20 +126,20 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
 
   context "once the node has been loaded" do
     let(:node) do
-      node = Chef::Node.new
+      node = Seth::Node.new
       node.name(node_name)
       node.run_list(["recipe[a::default]", "recipe[b::server]"])
       node
     end
 
     before do
-      Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+      Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
       policy_builder.load_node
     end
 
     it "expands the run_list" do
-      expect(policy_builder.expand_run_list).to be_a(Chef::RunList::RunListExpansion)
-      expect(policy_builder.run_list_expansion).to be_a(Chef::RunList::RunListExpansion)
+      expect(policy_builder.expand_run_list).to be_a(Seth::RunList::RunListExpansion)
+      expect(policy_builder.run_list_expansion).to be_a(Seth::RunList::RunListExpansion)
       expect(policy_builder.run_list_expansion.recipes).to eq(["a::default", "b::server"])
     end
 
@@ -157,7 +157,7 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
     let(:original_override_attrs) { {"override_key" => "override_value"} }
 
     let(:node) do
-      node = Chef::Node.new
+      node = Seth::Node.new
       node.name(node_name)
       node.default_attrs = original_default_attrs
       node.override_attrs = original_override_attrs
@@ -166,8 +166,8 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
     end
 
     before do
-      Chef::Config[:environment] = configured_environment
-      Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+      Seth::Config[:environment] = configured_environment
+      Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
       policy_builder.load_node
       policy_builder.build_node
     end
@@ -191,20 +191,20 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
 
     describe "when the given run list is not in expanded form" do
 
-      # NOTE: for chef-client, the behavior is always to expand the run list,
+      # NOTE: for seth-client, the behavior is always to expand the run list,
       # but this operation is a no-op when none of the run list items are
       # roles. Because of the amount of mocking required to make this work in
       # tests, this test is isolated from the others.
 
       let(:primary_runlist) { ["role[some_role]"] }
       let(:expansion) do
-        recipe_list = Chef::RunList::VersionedRecipeList.new
+        recipe_list = Seth::RunList::VersionedRecipeList.new
         recipe_list.add_recipe("recipe[from_role::default", "1.0.2")
         double("RunListExpansion", :recipes => recipe_list)
       end
 
       let(:node) do
-        node = Chef::Node.new
+        node = Seth::Node.new
         node.name(node_name)
         node.default_attrs = original_default_attrs
         node.override_attrs = original_override_attrs
@@ -256,7 +256,7 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
     context "when no environment is specified" do
 
       it "does not set the environment" do
-        expect(node.chef_environment).to eq("_default")
+        expect(node.seth_environment).to eq("_default")
       end
 
     end
@@ -266,13 +266,13 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
       let(:configured_environment) { environment.name }
 
       let(:environment) do
-        environment = Chef::Environment.new.tap {|e| e.name("prod") }
-        Chef::Environment.should_receive(:load).with("prod").and_return(environment)
+        environment = Seth::Environment.new.tap {|e| e.name("prod") }
+        Seth::Environment.should_receive(:load).with("prod").and_return(environment)
         environment
       end
 
       it "sets the environment as configured" do
-        expect(node.chef_environment).to eq(environment.name)
+        expect(node.seth_environment).to eq(environment.name)
       end
     end
 
@@ -283,15 +283,15 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
     let(:override_runlist) { nil }
 
     let(:node) do
-      node = Chef::Node.new
+      node = Seth::Node.new
       node.name(node_name)
       node.run_list("recipe[first::default]", "recipe[second::default]")
       node
     end
 
-    let(:chef_http) { double("Chef::REST") }
+    let(:seth_http) { double("Seth::REST") }
 
-    let(:cookbook_resolve_url) { "environments/#{node.chef_environment}/cookbook_versions" }
+    let(:cookbook_resolve_url) { "environments/#{node.seth_environment}/cookbook_versions" }
     let(:cookbook_resolve_post_data) { {:run_list=>["first::default", "second::default"]} }
 
     # cookbook_hash is just a hash, but since we're passing it between mock
@@ -302,32 +302,32 @@ describe Chef::PolicyBuilder::ExpandNodeObject do
     let(:cookbook_synchronizer) { double("CookbookSynchronizer") }
 
     before do
-      Chef::Node.should_receive(:find_or_create).with(node_name).and_return(node)
+      Seth::Node.should_receive(:find_or_create).with(node_name).and_return(node)
 
-      policy_builder.stub(:api_service).and_return(chef_http)
+      policy_builder.stub(:api_service).and_return(seth_http)
 
       policy_builder.load_node
       policy_builder.build_node
 
       run_list_expansion = policy_builder.run_list_expansion
 
-      chef_http.should_receive(:post).with(cookbook_resolve_url, cookbook_resolve_post_data).and_return(cookbook_hash)
-      Chef::CookbookSynchronizer.should_receive(:new).with(cookbook_hash, events).and_return(cookbook_synchronizer)
+      seth_http.should_receive(:post).with(cookbook_resolve_url, cookbook_resolve_post_data).and_return(cookbook_hash)
+      Seth::CookbookSynchronizer.should_receive(:new).with(cookbook_hash, events).and_return(cookbook_synchronizer)
       cookbook_synchronizer.should_receive(:sync_cookbooks)
 
-      Chef::RunContext.any_instance.should_receive(:load).with(run_list_expansion)
+      Seth::RunContext.any_instance.should_receive(:load).with(run_list_expansion)
 
       policy_builder.setup_run_context
     end
 
     it "configures FileVendor to fetch files remotely" do
       manifest = double("cookbook manifest")
-      Chef::Cookbook::RemoteFileVendor.should_receive(:new).with(manifest, chef_http)
-      Chef::Cookbook::FileVendor.create_from_manifest(manifest)
+      Seth::Cookbook::RemoteFileVendor.should_receive(:new).with(manifest, seth_http)
+      Seth::Cookbook::FileVendor.create_from_manifest(manifest)
     end
 
     it "triggers cookbook compilation in the run_context" do
-      # Test condition already covered by `Chef::RunContext.any_instance.should_receive(:load).with(run_list_expansion)`
+      # Test condition already covered by `Seth::RunContext.any_instance.should_receive(:load).with(run_list_expansion)`
     end
 
   end

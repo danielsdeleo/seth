@@ -1,5 +1,5 @@
 #
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,17 +16,17 @@
 #
 
 require 'spec_helper'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
-describe Chef::Application do
-  include Chef::Mixin::ShellOut
+describe Seth::Application do
+  include Seth::Mixin::ShellOut
 
   before do
     @original_argv = ARGV.dup
     ARGV.clear
     @original_env = ENV.to_hash
     ENV.clear
-    @app = Chef::Application.new
+    @app = Seth::Application.new
   end
 
   after do
@@ -37,10 +37,10 @@ describe Chef::Application do
 
   describe "when proxy options are set in config" do
     before do
-      Chef::Config[:http_proxy] = "http://proxy.example.org:8080"
-      Chef::Config[:https_proxy] = nil
-      Chef::Config[:ftp_proxy] = nil
-      Chef::Config[:no_proxy] = nil
+      Seth::Config[:http_proxy] = "http://proxy.example.org:8080"
+      Seth::Config[:https_proxy] = nil
+      Seth::Config[:ftp_proxy] = nil
+      Seth::Config[:no_proxy] = nil
 
       @app.configure_proxy_environment_variables
     end

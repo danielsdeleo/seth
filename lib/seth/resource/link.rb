@@ -17,13 +17,13 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
-require 'chef/mixin/securable'
+require 'seth/resource'
+require 'seth/mixin/securable'
 
-class Chef
+class Seth
   class Resource
-    class Link < Chef::Resource
-      include Chef::Mixin::Securable
+    class Link < Seth::Resource
+      include Seth::Mixin::Securable
 
       provides :link, :on_platform  => :all
 
@@ -40,7 +40,7 @@ class Chef
         @link_type = :symbolic
         @target_file = name
         @allowed_actions.push(:create, :delete)
-        @provider = Chef::Provider::Link
+        @provider = Seth::Provider::Link
       end
 
       def to(arg=nil)
@@ -72,7 +72,7 @@ class Chef
         set_or_return(
           :group,
           arg,
-          :regex => Chef::Config[:group_valid_regex]
+          :regex => Seth::Config[:group_valid_regex]
         )
       end
 
@@ -80,7 +80,7 @@ class Chef
         set_or_return(
           :owner,
           arg,
-          :regex => Chef::Config[:user_valid_regex]
+          :regex => Seth::Config[:user_valid_regex]
         )
       end
 
@@ -94,12 +94,12 @@ class Chef
         # On certain versions of windows links are not supported. Make
         # sure we are not on such a platform.
 
-        if Chef::Platform.windows?
-          require 'chef/win32/file'
+        if Seth::Platform.windows?
+          require 'seth/win32/file'
           begin
-            Chef::ReservedNames::Win32::File.verify_links_supported!
-          rescue Chef::Exceptions::Win32APIFunctionNotImplemented => e
-            Chef::Log.fatal("Link resource is not supported on this version of Windows")
+            Seth::ReservedNames::Win32::File.verify_links_supported!
+          rescue Seth::Exceptions::Win32APIFunctionNotImplemented => e
+            Seth::Log.fatal("Link resource is not supported on this version of Windows")
             raise e
           end
         end

@@ -16,33 +16,33 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/resource/gem_package'
+require 'seth/resource/package'
+require 'seth/resource/gem_package'
 
-class Chef
+class Seth
   class Resource
-    class ChefGem < Chef::Resource::Package::GemPackage
+    class SethGem < Chef::Resource::Package::GemPackage
 
-      provides :chef_gem, :on_platforms => :all
+      provides :seth_gem, :on_platforms => :all
 
       def initialize(name, run_context=nil)
         super
-        @resource_name = :chef_gem
+        @resource_name = :seth_gem
         @gem_binary = RbConfig::CONFIG['bindir'] + "/gem"
-        @provider = Chef::Provider::Package::Rubygems
+        @provider = Seth::Provider::Package::Rubygems
       end
 
-      # The chef_gem resources is for installing gems to the current gem environment only for use by Chef cookbooks.
+      # The seth_gem resources is for installing gems to the current gem environment only for use by Seth cookbooks.
       def gem_binary(arg=nil)
         if arg
-          raise ArgumentError, "The chef_gem resource is restricted to the current gem environment, use gem_package to install to other environments."
+          raise ArgumentError, "The seth_gem resource is restricted to the current gem environment, use gem_package to install to other environments."
         end
 
         @gem_binary
       end
 
       def after_created
-        # Chef::Resource.run_action: Caveat: this skips Chef::Runner.run_action, where notifications are handled
+        # Seth::Resource.run_action: Caveat: this skips Chef::Runner.run_action, where notifications are handled
         # Action could be an array of symbols, but probably won't (think install + enable for a package)
         Array(@action).each do |action|
           self.run_action(action)

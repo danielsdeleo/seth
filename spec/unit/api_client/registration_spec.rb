@@ -19,9 +19,9 @@
 require 'spec_helper'
 require 'tempfile'
 
-require 'chef/api_client/registration'
+require 'seth/api_client/registration'
 
-describe Chef::ApiClient::Registration do
+describe Seth::ApiClient::Registration do
 
   let(:key_location) do
     make_tmpname("client-registration-key")
@@ -29,13 +29,13 @@ describe Chef::ApiClient::Registration do
 
   let(:client_name) { "silent-bob" }
 
-  subject(:registration) { Chef::ApiClient::Registration.new(client_name, key_location) }
+  subject(:registration) { Seth::ApiClient::Registration.new(client_name, key_location) }
 
   let(:private_key_data) do
-    File.open(Chef::Config[:validation_key], "r") {|f| f.read.chomp }
+    File.open(Seth::Config[:validation_key], "r") {|f| f.read.chomp }
   end
 
-  let(:http_mock) { double("Chef::REST mock") }
+  let(:http_mock) { double("Seth::REST mock") }
 
   let(:expected_post_data) do
     { :name => client_name, :admin => false }
@@ -46,13 +46,13 @@ describe Chef::ApiClient::Registration do
   end
 
   let(:server_v10_response) do
-    {"uri" => "https://chef.local/clients/#{client_name}",
+    {"uri" => "https://seth.local/clients/#{client_name}",
      "private_key" => "--begin rsa key etc--"}
   end
 
   # Server v11 includes `json_class` on all replies
   let(:server_v11_response) do
-    response = Chef::ApiClient.new
+    response = Seth::ApiClient.new
     response.name(client_name)
     response.private_key("--begin rsa key etc--")
     response
@@ -62,8 +62,8 @@ describe Chef::ApiClient::Registration do
   let(:exception_409) { Net::HTTPServerException.new("409 conflict", response_409) }
 
   before do
-    Chef::Config[:validation_client_name] = "test-validator"
-    Chef::Config[:validation_key] = File.expand_path('ssl/private_key.pem', CHEF_SPEC_DATA)
+    Seth::Config[:validation_client_name] = "test-validator"
+    Seth::Config[:validation_key] = File.expand_path('ssl/private_key.pem', CHEF_SPEC_DATA)
   end
 
   after do
@@ -71,7 +71,7 @@ describe Chef::ApiClient::Registration do
   end
 
   it "has an HTTP client configured with validator credentials" do
-    registration.http_api.should be_a_kind_of(Chef::REST)
+    registration.http_api.should be_a_kind_of(Seth::REST)
     registration.http_api.client_name.should == "test-validator"
     registration.http_api.signing_key.should == private_key_data
   end
@@ -89,7 +89,7 @@ describe Chef::ApiClient::Registration do
       registration.private_key.should == "--begin rsa key etc--"
     end
 
-    context "and the client already exists on a Chef 10 server" do
+    context "and the client already exists on a Seth 10 server" do
       it "requests a new key from the server and saves it" do
         http_mock.should_receive(:post).with("clients", expected_post_data).
           and_raise(exception_409)
@@ -101,7 +101,7 @@ describe Chef::ApiClient::Registration do
       end
     end
 
-    context "and the client already exists on a Chef 11 server" do
+    context "and the client already exists on a Seth 11 server" do
       it "requests a new key from the server and saves it" do
         http_mock.should_receive(:post).and_raise(exception_409)
         http_mock.should_receive(:put).
@@ -145,7 +145,7 @@ describe Chef::ApiClient::Registration do
 
     before do
       registration.stub(:http_api).and_return(http_mock)
-      Chef::Config.local_key_generation = true
+      Seth::Config.local_key_generation = true
       OpenSSL::PKey::RSA.should_receive(:generate).with(2048).and_return(generated_private_key)
     end
 

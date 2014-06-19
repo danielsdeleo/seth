@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/http/cookie_jar'
+require 'seth/http/cookie_jar'
 
-class Chef
+class Seth
   class HTTP
 
     # An HTTP middleware to manage storing/sending cookies in HTTP requests.
-    # Most HTTP communication in Chef does not need cookies, it was originally
+    # Most HTTP communication in Seth does not need cookies, it was originally
     # implemented to support OpenID, but it's not known who might be relying on
-    # it, so it's included with Chef::REST
+    # it, so it's included with Seth::REST
     class CookieManager
 
       def initialize(options={})

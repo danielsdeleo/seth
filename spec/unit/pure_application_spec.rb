@@ -1,6 +1,6 @@
 #
-# Author:: Serdar Sutay (<serdar@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Inc.
+# Author:: Serdar Sutay (<serdar@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,13 @@
 # limitations under the License.
 
 # This spec file intentionally doesn't include spec_helper.rb to
-# be able to test only Chef::Application.
+# be able to test only Seth::Application.
 # Regression test for CHEF-5169
 
-require 'chef/application'
+require 'seth/application'
 
-describe "Chef::Application" do
-  let(:app) { Chef::Application.new }
+describe "Seth::Application" do
+  let(:app) { Seth::Application.new }
 
   describe "load_config_file" do
     it "calls ConfigFetcher successfully without NameError" do

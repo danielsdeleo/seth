@@ -1,6 +1,6 @@
 #
 # Author:: Sander van Harmelen <svanharmelen@schubergphilis.com>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Env::Windows, :windows_only do
+describe Seth::Provider::Env::Windows, :windows_only do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Env.new("CHEF_WINDOWS_ENV_TEST")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Env.new("CHEF_WINDOWS_ENV_TEST")
     @new_resource.value("foo")
-    @provider = Chef::Provider::Env::Windows.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Env::Windows.new(@new_resource, @run_context)
     @provider.stub(:env_obj).and_return(double('null object').as_null_object)
   end
 

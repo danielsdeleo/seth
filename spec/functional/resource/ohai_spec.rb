@@ -18,20 +18,20 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Ohai do
+describe Seth::Resource::Ohai do
   let(:ohai) {
     o = Ohai::System.new
     o.all_plugins
     o
   }
 
-  let(:node) { Chef::Node.new }
+  let(:node) { Seth::Node.new }
 
   let(:run_context) {
     node.default[:platform] = ohai[:platform]
     node.default[:platform_version] = ohai[:platform_version]
-    events = Chef::EventDispatch::Dispatcher.new
-    Chef::RunContext.new(node, {}, events)
+    events = Seth::EventDispatch::Dispatcher.new
+    Seth::RunContext.new(node, {}, events)
   }
 
   shared_examples_for "reloaded :uptime" do
@@ -47,14 +47,14 @@ describe Chef::Resource::Ohai do
   end
 
   describe "when reloading all plugins" do
-    let(:ohai_resource) { Chef::Resource::Ohai.new("reload all", run_context)}
+    let(:ohai_resource) { Seth::Resource::Ohai.new("reload all", run_context)}
 
     it_behaves_like "reloaded :uptime"
   end
 
   describe "when reloading only uptime" do
     let(:ohai_resource) {
-      r = Chef::Resource::Ohai.new("reload all", run_context)
+      r = Seth::Resource::Ohai.new("reload all", run_context)
       r.plugin("uptime")
       r
     }

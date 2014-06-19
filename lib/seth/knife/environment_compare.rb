@@ -16,14 +16,14 @@
 # limitations under the License.
 #
  
-require 'chef/knife'
+require 'seth/knife'
  
-class Chef
+class Seth
   class Knife
     class EnvironmentCompare < Knife
  
       deps do
-        require 'chef/environment'
+        require 'seth/environment'
       end
  
       banner "knife environment compare [ENVIRONMENT..] (options)"
@@ -75,7 +75,7 @@ class Chef
         unless @name_args.nil? || @name_args.empty?
           @name_args.each { |name| environments << name }
         else
-          environments = Chef::Environment.list
+          environments = Seth::Environment.list
         end
       end 
 
@@ -84,7 +84,7 @@ class Chef
         environments.each do |env,url|
           # Because you cannot modify the default environment I filter it out here.
           unless env == "_default"
-            envdata = Chef::Environment.load(env)
+            envdata = Seth::Environment.load(env)
             ver = envdata.cookbook_versions
             constraints[env] = ver
           end

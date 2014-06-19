@@ -22,10 +22,10 @@
 #
 require 'uri'
 require 'net/http'
-require 'chef/http/ssl_policies'
-require 'chef/http/http_request'
+require 'seth/http/ssl_policies'
+require 'seth/http/http_request'
 
-class Chef
+class Seth
   class HTTP
     class BasicClient
 
@@ -56,20 +56,20 @@ class Chef
 
       def request(method, url, req_body, base_headers={})
         http_request = HTTPRequest.new(method, url, req_body, base_headers).http_request
-        Chef::Log.debug("Initiating #{method} to #{url}")
-        Chef::Log.debug("---- HTTP Request Header Data: ----")
+        Seth::Log.debug("Initiating #{method} to #{url}")
+        Seth::Log.debug("---- HTTP Request Header Data: ----")
         base_headers.each do |name, value|
-          Chef::Log.debug("#{name}: #{value}")
+          Seth::Log.debug("#{name}: #{value}")
         end
-        Chef::Log.debug("---- End HTTP Request Header Data ----")
+        Seth::Log.debug("---- End HTTP Request Header Data ----")
         http_client.request(http_request) do |response|
-          Chef::Log.debug("---- HTTP Status and Header Data: ----")
-          Chef::Log.debug("HTTP #{response.http_version} #{response.code} #{response.msg}")
+          Seth::Log.debug("---- HTTP Status and Header Data: ----")
+          Seth::Log.debug("HTTP #{response.http_version} #{response.code} #{response.msg}")
 
           response.each do |header, value|
-            Chef::Log.debug("#{header}: #{value}")
+            Seth::Log.debug("#{header}: #{value}")
           end
-          Chef::Log.debug("---- End HTTP Status/Header Data ----")
+          Seth::Log.debug("---- End HTTP Status/Header Data ----")
 
           yield response if block_given?
           # http_client.request may not have the return signature we want, so
@@ -77,15 +77,15 @@ class Chef
           return [http_request, response]
         end
       rescue OpenSSL::SSL::SSLError => e
-        Chef::Log.error("SSL Validation failure connecting to host: #{host} - #{e.message}")
+        Seth::Log.error("SSL Validation failure connecting to host: #{host} - #{e.message}")
         raise
       end
 
       #adapted from buildr/lib/buildr/core/transports.rb
       def proxy_uri
-        proxy = Chef::Config["#{url.scheme}_proxy"]
+        proxy = Seth::Config["#{url.scheme}_proxy"]
         proxy = URI.parse(proxy) if String === proxy
-        excludes = Chef::Config[:no_proxy].to_s.split(/\s*,\s*/).compact
+        excludes = Seth::Config[:no_proxy].to_s.split(/\s*,\s*/).compact
         excludes = excludes.map { |exclude| exclude =~ /:\d+$/ ? exclude : "#{exclude}:*" }
         return proxy unless excludes.any? { |exclude| File.fnmatch(exclude, "#{host}:#{port}") }
       end
@@ -103,7 +103,7 @@ class Chef
       end
 
       def config
-        Chef::Config
+        Seth::Config
       end
 
       def http_client_builder
@@ -111,9 +111,9 @@ class Chef
         if http_proxy.nil?
           Net::HTTP
         else
-          Chef::Log.debug("Using #{http_proxy.host}:#{http_proxy.port} for proxy")
-          user = Chef::Config["#{url.scheme}_proxy_user"]
-          pass = Chef::Config["#{url.scheme}_proxy_pass"]
+          Seth::Log.debug("Using #{http_proxy.host}:#{http_proxy.port} for proxy")
+          user = Seth::Config["#{url.scheme}_proxy_user"]
+          pass = Seth::Config["#{url.scheme}_proxy_pass"]
           Net::HTTP.Proxy(http_proxy.host, http_proxy.port, user, pass)
         end
       end

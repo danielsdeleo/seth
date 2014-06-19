@@ -16,21 +16,21 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class NodeRunListRemove < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife node run_list remove [NODE] [ENTRIES] (options)"
 
       def run
-        node = Chef::Node.load(@name_args[0])
+        node = Seth::Node.load(@name_args[0])
         entries = @name_args[1].split(',')
 
         entries.each { |e| node.run_list.remove(e) }

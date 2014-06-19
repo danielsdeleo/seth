@@ -15,25 +15,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/mixin/create_path'
+require 'seth/mixin/create_path'
 require 'fcntl'
-if Chef::Platform.windows?
-  require 'chef/win32/mutex'
+if Seth::Platform.windows?
+  require 'seth/win32/mutex'
 end
-require 'chef/config'
-require 'chef/exceptions'
+require 'seth/config'
+require 'seth/exceptions'
 require 'timeout'
 
-class Chef
+class Seth
 
-  # == Chef::RunLock
+  # == Seth::RunLock
   # Provides an interface for acquiring and releasing a system-wide exclusive
   # lock.
   #
-  # Used by Chef::Client to ensure only one instance of chef-client (or solo)
+  # Used by Seth::Client to ensure only one instance of seth-client (or solo)
   # is modifying the system at a time.
   class RunLock
-    include Chef::Mixin::CreatePath
+    include Seth::Mixin::CreatePath
 
     attr_reader :runlock
     attr_reader :mutex
@@ -50,8 +50,8 @@ class Chef
     end
 
     # Acquire the system-wide lock. Will block indefinitely if another process
-    # already has the lock and Chef::Config[:run_lock_timeout] is
-    # not set. Otherwise will block for Chef::Config[:run_lock_timeout]
+    # already has the lock and Seth::Config[:run_lock_timeout] is
+    # not set. Otherwise will block for Seth::Config[:run_lock_timeout]
     # seconds and exit if the lock is not acquired.
     #
     # Each call to acquire should have a corresponding call to #release.
@@ -91,7 +91,7 @@ class Chef
       create_path(File.dirname(runlock_file))
       @runlock = File.open(runlock_file,'a+')
 
-      if Chef::Platform.windows?
+      if Seth::Platform.windows?
         acquire_win32_mutex
       else
         # If we support FD_CLOEXEC, then use it.
@@ -114,8 +114,8 @@ class Chef
     # Waits until acquiring the system-wide lock.
     #
     def wait
-      Chef::Log.warn("Chef client #{runpid} is running, will wait for it to finish and then run.")
-      if Chef::Platform.windows?
+      Seth::Log.warn("Chef client #{runpid} is running, will wait for it to finish and then run.")
+      if Seth::Platform.windows?
         mutex.wait
       else
         runlock.flock(File::LOCK_EX)
@@ -134,13 +134,13 @@ class Chef
     # Release the system-wide lock.
     def release
       if runlock
-        if Chef::Platform.windows?
+        if Seth::Platform.windows?
           mutex.release
         else
           runlock.flock(File::LOCK_UN)
         end
         runlock.close
-        # Don't unlink the pid file, if another chef-client was waiting, it
+        # Don't unlink the pid file, if another seth-client was waiting, it
         # won't be recreated. Better to leave a "dead" pid file than not have
         # it available if you need to break the lock.
         reset
@@ -158,12 +158,12 @@ class Chef
     # Since flock mechanism doesn't exist on windows we are using
     # platform Mutex.
     # We are creating a "Global" mutex here so that non-admin
-    # users can not DoS chef-client by creating the same named
+    # users can not DoS seth-client by creating the same named
     # mutex we are using locally.
     # Mutex name is case-sensitive contrary to other things in
     # windows. "\" is the only invalid character.
     def acquire_win32_mutex
-      @mutex = Chef::ReservedNames::Win32::Mutex.new("Global\\#{runlock_file.gsub(/[\\]/, "/").downcase}")
+      @mutex = Seth::ReservedNames::Win32::Mutex.new("Global\\#{runlock_file.gsub(/[\\]/, "/").downcase}")
       mutex.test
     end
 
@@ -176,13 +176,13 @@ class Chef
     end
 
     def time_to_wait
-      Chef::Config[:run_lock_timeout]
+      Seth::Config[:run_lock_timeout]
     end
 
     def exit_from_timeout
       rp = runpid
       release # Just to be on the safe side...
-      raise Chef::Exceptions::RunLockTimeout.new(time_to_wait, rp)
+      raise Seth::Exceptions::RunLockTimeout.new(time_to_wait, rp)
     end
   end
 end

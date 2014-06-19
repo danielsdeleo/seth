@@ -19,20 +19,20 @@
 require 'spec_helper'
 require 'tiny_server'
 
-describe Chef::Knife::Exec do
+describe Seth::Knife::Exec do
   before(:all) do
     @server = TinyServer::Manager.new#(:debug => true)
     @server.start
   end
 
   before(:each) do
-    @knife = Chef::Knife::Exec.new
+    @knife = Seth::Knife::Exec.new
     @api = TinyServer::API.instance
     @api.clear
 
-    Chef::Config[:node_name] = nil
-    Chef::Config[:client_key] = nil
-    Chef::Config[:chef_server_url] = 'http://localhost:9000'
+    Seth::Config[:node_name] = nil
+    Seth::Config[:client_key] = nil
+    Seth::Config[:seth_server_url] = 'http://localhost:9000'
 
     $output = StringIO.new
   end
@@ -41,10 +41,10 @@ describe Chef::Knife::Exec do
     @server.stop
   end
 
-  pending "executes a script in the context of the chef-shell main context", :ruby_18_only
+  pending "executes a script in the context of the seth-shell main context", :ruby_18_only
 
-  it "executes a script in the context of the chef-shell main context", :ruby_gte_19_only do
-    @node = Chef::Node.new
+  it "executes a script in the context of the seth-shell main context", :ruby_gte_19_only do
+    @node = Seth::Node.new
     @node.name("ohai-world")
     response = {"rows" => [@node],"start" => 0,"total" => 1}
     @api.get(%r{^/search/node}, 200, response.to_json)

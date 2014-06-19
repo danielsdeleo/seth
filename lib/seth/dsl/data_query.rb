@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/search/query'
-require 'chef/data_bag'
-require 'chef/data_bag_item'
-require 'chef/encrypted_data_bag_item'
+require 'seth/search/query'
+require 'seth/data_bag'
+require 'seth/data_bag_item'
+require 'seth/encrypted_data_bag_item'
 
-class Chef
+class Seth
   module DSL
 
-    # ==Chef::DSL::DataQuery
-    # Provides DSL for querying data from the chef-server via search or data
+    # ==Seth::DSL::DataQuery
+    # Provides DSL for querying data from the seth-server via search or data
     # bag.
     module DataQuery
 
@@ -34,10 +34,10 @@ class Chef
         #
         # Otherwise, do the iteration for the end user
         if Kernel.block_given? || args.length >= 4
-          Chef::Search::Query.new.search(*args, &block)
+          Seth::Search::Query.new.search(*args, &block)
         else
           results = Array.new
-          Chef::Search::Query.new.search(*args) do |o|
+          Seth::Search::Query.new.search(*args) do |o|
             results << o
           end
           results
@@ -66,6 +66,6 @@ class Chef
 end
 
 # **DEPRECATED**
-# This used to be part of chef/mixin/language. Load the file to activate the deprecation code.
-require 'chef/mixin/language'
+# This used to be part of seth/mixin/language. Load the file to activate the deprecation code.
+require 'seth/mixin/language'
 

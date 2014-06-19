@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/provider'
-require 'chef/mixin/command'
+require 'seth/provider'
+require 'seth/mixin/command'
 require 'etc'
 
-class Chef
+class Seth
   class Provider
-    class User < Chef::Provider
+    class User < Seth::Provider
 
-      include Chef::Mixin::Command
+      include Seth::Mixin::Command
 
       attr_accessor :user_exists, :locked
 
@@ -49,14 +49,14 @@ class Chef
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::User.new(@new_resource.name)
+        @current_resource = Seth::Resource::User.new(@new_resource.name)
         @current_resource.username(@new_resource.username)
 
         begin
           user_info = Etc.getpwnam(@new_resource.username)
         rescue ArgumentError => e
           @user_exists = false
-          Chef::Log.debug("#{@new_resource} user does not exist")
+          Seth::Log.debug("#{@new_resource} user does not exist")
           user_info = nil
         end
 
@@ -92,18 +92,18 @@ class Chef
       def define_resource_requirements
         requirements.assert(:all_actions) do |a|
           a.assertion { @group_name_resolved }
-          a.failure_message Chef::Exceptions::User, "Couldn't lookup integer GID for group name #{@new_resource.gid}"
+          a.failure_message Seth::Exceptions::User, "Couldn't lookup integer GID for group name #{@new_resource.gid}"
           a.whyrun "group name #{@new_resource.gid} does not exist.  This will cause group assignment to fail.  Assuming this group will have been created previously."
         end
         requirements.assert(:all_actions) do |a|
           a.assertion { @shadow_lib_ok }
-          a.failure_message Chef::Exceptions::MissingLibrary, "You must have ruby-shadow installed for password support!"
+          a.failure_message Seth::Exceptions::MissingLibrary, "You must have ruby-shadow installed for password support!"
           a.whyrun "ruby-shadow is not installed. Attempts to set user password will cause failure.  Assuming that this gem will have been previously installed." +
                    "Note that user update converge may report false-positive on the basis of mismatched password. "
         end
         requirements.assert(:modify, :lock, :unlock) do |a|
           a.assertion { @user_exists }
-          a.failure_message(Chef::Exceptions::User, "Cannot modify user #{@new_resource.username} - does not exist!")
+          a.failure_message(Seth::Exceptions::User, "Cannot modify user #{@new_resource.username} - does not exist!")
           a.whyrun("Assuming user #{@new_resource.username} would have been created")
         end
       end
@@ -130,12 +130,12 @@ class Chef
         if !@user_exists
           converge_by("create user #{@new_resource.username}") do
             create_user
-            Chef::Log.info("#{@new_resource} created")
+            Seth::Log.info("#{@new_resource} created")
           end
         elsif compare_user
           converge_by("alter user #{@new_resource.username}") do
             manage_user
-            Chef::Log.info("#{@new_resource} altered")
+            Seth::Log.info("#{@new_resource} altered")
           end
         end
       end
@@ -144,7 +144,7 @@ class Chef
         if @user_exists
           converge_by("remove user #{@new_resource.username}") do
             remove_user
-            Chef::Log.info("#{@new_resource} removed")
+            Seth::Log.info("#{@new_resource} removed")
           end
         end
       end
@@ -157,7 +157,7 @@ class Chef
         if @user_exists && compare_user
           converge_by("manage user #{@new_resource.username}") do
             manage_user
-            Chef::Log.info("#{@new_resource} managed")
+            Seth::Log.info("#{@new_resource} managed")
           end
         end
       end
@@ -170,7 +170,7 @@ class Chef
         if compare_user
           converge_by("modify user #{@new_resource.username}") do
             manage_user
-            Chef::Log.info("#{@new_resource} modified")
+            Seth::Log.info("#{@new_resource} modified")
           end
         end
       end
@@ -179,10 +179,10 @@ class Chef
         if check_lock() == false
           converge_by("lock the user #{@new_resource.username}") do
             lock_user
-            Chef::Log.info("#{@new_resource} locked")
+            Seth::Log.info("#{@new_resource} locked")
           end
          else
-          Chef::Log.debug("#{@new_resource} already locked - nothing to do")
+          Seth::Log.debug("#{@new_resource} already locked - nothing to do")
         end
       end
 
@@ -198,10 +198,10 @@ class Chef
         if check_lock() == true
           converge_by("unlock user #{@new_resource.username}") do
             unlock_user
-            Chef::Log.info("#{@new_resource} unlocked")
+            Seth::Log.info("#{@new_resource} unlocked")
           end
         else
-          Chef::Log.debug("#{@new_resource} already unlocked - nothing to do")
+          Seth::Log.debug("#{@new_resource} already unlocked - nothing to do")
         end
       end
 

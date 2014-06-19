@@ -17,8 +17,8 @@
 
 require 'spec_helper'
 
-describe Chef::ResourceCollection::StepableIterator do
-  CRSI = Chef::ResourceCollection::StepableIterator
+describe Seth::ResourceCollection::StepableIterator do
+  CRSI = Seth::ResourceCollection::StepableIterator
 
   it "has an empty array for its collection by default" do
     CRSI.new.collection.should == []

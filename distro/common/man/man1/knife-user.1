@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-USER" "1" "Chef 11.12.0" "" "knife user"
+.TH "KNIFE-USER" "1" "Seth 11.12.0" "" "knife user"
 .SH NAME
 knife-user \- The man page for the knife user subcommand.
 .
@@ -36,7 +36,7 @@ The \fBknife user\fP subcommand is used to manage the list of users and their as
 \fBNOTE:\fP
 .INDENT 0.0
 .INDENT 3.5
-This subcommand ONLY works when run against the open source Chef server version 10.x. This subcommand will NOT run against open source Chef server 11, Enterprise Chef (including hosted Enterprise Chef), or Private Chef\&.
+This subcommand ONLY works when run against the open source Seth server version 10.x. This subcommand will NOT run against open source Chef server 11, Enterprise Chef (including hosted Enterprise Chef), or Private Chef\&.
 .UNINDENT
 .UNINDENT
 .SH COMMON OPTIONS
@@ -44,8 +44,8 @@ This subcommand ONLY works when run against the open source Chef server version 
 The following options may be used with any of the arguments available to the \fBknife user\fP subcommand:
 .INDENT 0.0
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
@@ -69,7 +69,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -78,31 +78,31 @@ Indicates whether colored output will be used.
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .SH CREATE
 .sp
-The \fBcreate\fP argument is used to create a user. This process will generate an RSA key pair for the named user. The public key will be stored on the Chef server and the private key will be displayed on \fBSTDOUT\fP or written to a named file.
+The \fBcreate\fP argument is used to create a user. This process will generate an RSA key pair for the named user. The public key will be stored on the Seth server and the private key will be displayed on \fBSTDOUT\fP or written to a named file.
 .INDENT 0.0
 .IP \(bu 2
-For the user, the private key should be copied to the system as \fB/etc/chef/client.pem\fP\&.
+For the user, the private key should be copied to the system as \fB/etc/seth/client.pem\fP\&.
 .IP \(bu 2
-For Knife, the private key is typically copied to \fB~/.chef/client_name.pem\fP and referenced in the knife.rb configuration file.
+For Knife, the private key is typically copied to \fB~/.seth/client_name.pem\fP and referenced in the knife.rb configuration file.
 .UNINDENT
 .sp
 \fBSyntax\fP
@@ -125,7 +125,7 @@ This argument has the following options:
 .INDENT 0.0
 .TP
 .B \fB\-a\fP, \fB\-\-admin\fP
-Indicates that a client will be created as an admin client. This is required when users of the open source Chef server need to access the Chef Server API as an administrator. This option only works when used with the open source Chef server and will have no effect when used with Enterprise Chef\&.
+Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the Chef Server API as an administrator. This option only works when used with the open source Chef server and will have no effect when used with Enterprise Chef\&.
 .TP
 .B \fB\-f FILE_NAME\fP, \fB\-\-file FILE_NAME\fP
 Use to save a private key to the specified file name.
@@ -183,7 +183,7 @@ $ knife user delete "Steve Danno"
 .UNINDENT
 .SH EDIT
 .sp
-The \fBedit\fP argument is used to edit the details of a user. When this argument is run, Knife will open $EDITOR\&. When finished, Knife will update the Chef server with those changes.
+The \fBedit\fP argument is used to edit the details of a user. When this argument is run, Knife will open $EDITOR\&. When finished, Knife will update the Seth server with those changes.
 .sp
 \fBSyntax\fP
 .sp
@@ -238,12 +238,12 @@ Indicates that the corresponding URIs will be shown.
 None.
 .SH REREGISTER
 .sp
-The \fBreregister\fP argument is used to regenerate an RSA key pair for a user. The public key will be stored on the Chef server and the private key will be displayed on \fBSTDOUT\fP or written to a named file.
+The \fBreregister\fP argument is used to regenerate an RSA key pair for a user. The public key will be stored on the Seth server and the private key will be displayed on \fBSTDOUT\fP or written to a named file.
 .sp
 \fBNOTE:\fP
 .INDENT 0.0
 .INDENT 3.5
-Running this argument will invalidate the previous RSA key pair, making it unusable during authentication to the Chef server\&.
+Running this argument will invalidate the previous RSA key pair, making it unusable during authentication to the Seth server\&.
 .UNINDENT
 .UNINDENT
 .sp
@@ -328,8 +328,8 @@ to return something like:
 .sp
 .nf
 .ft C
-chef_type:   user
-json_class:  Chef::User
+seth_type:   user
+json_class:  Seth::User
 name:        Dennis Teck
 public_key:
 .ft P
@@ -351,6 +351,6 @@ $ knife user show "Dennis Teck" \-F json
 .sp
 (Other formats available include \fBtext\fP, \fByaml\fP, and \fBpp\fP, e.g. \fB\-F yaml\fP for YAML\&.)
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

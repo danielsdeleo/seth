@@ -17,11 +17,11 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
+require 'seth/resource'
 
-class Chef
+class Seth
   class Resource
-    class Mdadm < Chef::Resource
+    class Mdadm < Seth::Resource
 
       identity_attr :raid_device
 

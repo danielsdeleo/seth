@@ -17,15 +17,15 @@
 #
 
 require 'spec_helper'
-require 'chef/http/ssl_policies'
+require 'seth/http/ssl_policies'
 
 describe "HTTP SSL Policy" do
 
   before do
-    Chef::Config[:ssl_client_cert] = nil
-    Chef::Config[:ssl_client_key]  = nil
-    Chef::Config[:ssl_ca_path]     = nil
-    Chef::Config[:ssl_ca_file]     = nil
+    Seth::Config[:ssl_client_cert] = nil
+    Seth::Config[:ssl_client_key]  = nil
+    Seth::Config[:ssl_ca_path]     = nil
+    Seth::Config[:ssl_ca_file]     = nil
   end
 
   let(:unconfigured_http_client) { Net::HTTP.new("example.com", 443) }
@@ -35,13 +35,13 @@ describe "HTTP SSL Policy" do
     unconfigured_http_client
   end
 
-  describe Chef::HTTP::DefaultSSLPolicy do
+  describe Seth::HTTP::DefaultSSLPolicy do
 
-    let(:ssl_policy) { Chef::HTTP::DefaultSSLPolicy.new(unconfigured_http_client) }
+    let(:ssl_policy) { Seth::HTTP::DefaultSSLPolicy.new(unconfigured_http_client) }
 
     describe "when configured with :ssl_verify_mode set to :verify peer" do
       before do
-        Chef::Config[:ssl_verify_mode] = :verify_peer
+        Seth::Config[:ssl_verify_mode] = :verify_peer
       end
 
       it "configures the HTTP client to use SSL when given a URL with the https protocol" do
@@ -53,30 +53,30 @@ describe "HTTP SSL Policy" do
       end
 
       it "raises a ConfigurationError if :ssl_ca_path is set to a path that doesn't exist" do
-        Chef::Config[:ssl_ca_path] = "/dev/null/nothing_here"
-        lambda {http_client}.should raise_error(Chef::Exceptions::ConfigurationError)
+        Seth::Config[:ssl_ca_path] = "/dev/null/nothing_here"
+        lambda {http_client}.should raise_error(Seth::Exceptions::ConfigurationError)
       end
 
       it "should set the CA path if that is set in the configuration" do
-        Chef::Config[:ssl_ca_path] = File.join(CHEF_SPEC_DATA, "ssl")
+        Seth::Config[:ssl_ca_path] = File.join(CHEF_SPEC_DATA, "ssl")
         http_client.ca_path.should == File.join(CHEF_SPEC_DATA, "ssl")
       end
 
       it "raises a ConfigurationError if :ssl_ca_file is set to a file that does not exist" do
-        Chef::Config[:ssl_ca_file] = "/dev/null/nothing_here"
-        lambda {http_client}.should raise_error(Chef::Exceptions::ConfigurationError)
+        Seth::Config[:ssl_ca_file] = "/dev/null/nothing_here"
+        lambda {http_client}.should raise_error(Seth::Exceptions::ConfigurationError)
       end
 
       it "should set the CA file if that is set in the configuration" do
-        Chef::Config[:ssl_ca_file] = CHEF_SPEC_DATA + '/ssl/5e707473.0'
+        Seth::Config[:ssl_ca_file] = CHEF_SPEC_DATA + '/ssl/5e707473.0'
         http_client.ca_file.should == CHEF_SPEC_DATA + '/ssl/5e707473.0'
       end
     end
 
     describe "when configured with :ssl_verify_mode set to :verify peer" do
       before do
-        @url = URI.parse("https://chef.example.com:4443/")
-        Chef::Config[:ssl_verify_mode] = :verify_none
+        @url = URI.parse("https://seth.example.com:4443/")
+        Seth::Config[:ssl_verify_mode] = :verify_none
       end
 
       it "sets the OpenSSL verify mode to :verify_none" do
@@ -85,31 +85,31 @@ describe "HTTP SSL Policy" do
     end
 
     describe "when configured with a client certificate" do
-      before {@url = URI.parse("https://chef.example.com:4443/")}
+      before {@url = URI.parse("https://seth.example.com:4443/")}
 
       it "raises ConfigurationError if the certificate file doesn't exist" do
-        Chef::Config[:ssl_client_cert] = "/dev/null/nothing_here"
-        Chef::Config[:ssl_client_key]  = CHEF_SPEC_DATA + '/ssl/chef-rspec.key'
-        lambda {http_client}.should raise_error(Chef::Exceptions::ConfigurationError)
+        Seth::Config[:ssl_client_cert] = "/dev/null/nothing_here"
+        Seth::Config[:ssl_client_key]  = CHEF_SPEC_DATA + '/ssl/seth-rspec.key'
+        lambda {http_client}.should raise_error(Seth::Exceptions::ConfigurationError)
       end
 
       it "raises ConfigurationError if the certificate file doesn't exist" do
-        Chef::Config[:ssl_client_cert] = CHEF_SPEC_DATA + '/ssl/chef-rspec.cert'
-        Chef::Config[:ssl_client_key]  = "/dev/null/nothing_here"
-        lambda {http_client}.should raise_error(Chef::Exceptions::ConfigurationError)
+        Seth::Config[:ssl_client_cert] = CHEF_SPEC_DATA + '/ssl/seth-rspec.cert'
+        Seth::Config[:ssl_client_key]  = "/dev/null/nothing_here"
+        lambda {http_client}.should raise_error(Seth::Exceptions::ConfigurationError)
       end
 
       it "raises a ConfigurationError if one of :ssl_client_cert and :ssl_client_key is set but not both" do
-        Chef::Config[:ssl_client_cert] = "/dev/null/nothing_here"
-        Chef::Config[:ssl_client_key]  = nil
-        lambda {http_client}.should raise_error(Chef::Exceptions::ConfigurationError)
+        Seth::Config[:ssl_client_cert] = "/dev/null/nothing_here"
+        Seth::Config[:ssl_client_key]  = nil
+        lambda {http_client}.should raise_error(Seth::Exceptions::ConfigurationError)
       end
 
       it "configures the HTTP client's cert and private key" do
-        Chef::Config[:ssl_client_cert] = CHEF_SPEC_DATA + '/ssl/chef-rspec.cert'
-        Chef::Config[:ssl_client_key]  = CHEF_SPEC_DATA + '/ssl/chef-rspec.key'
-        http_client.cert.to_s.should == OpenSSL::X509::Certificate.new(IO.read(CHEF_SPEC_DATA + '/ssl/chef-rspec.cert')).to_s
-        http_client.key.to_s.should  == IO.read(CHEF_SPEC_DATA + '/ssl/chef-rspec.key')
+        Seth::Config[:ssl_client_cert] = CHEF_SPEC_DATA + '/ssl/seth-rspec.cert'
+        Seth::Config[:ssl_client_key]  = CHEF_SPEC_DATA + '/ssl/seth-rspec.key'
+        http_client.cert.to_s.should == OpenSSL::X509::Certificate.new(IO.read(CHEF_SPEC_DATA + '/ssl/seth-rspec.cert')).to_s
+        http_client.key.to_s.should  == IO.read(CHEF_SPEC_DATA + '/ssl/seth-rspec.key')
       end
     end
 
@@ -121,7 +121,7 @@ describe "HTTP SSL Policy" do
       let(:additional_pem) { OpenSSL::X509::Certificate.new(File.read(additional_pem_path)) }
 
       before do
-        Chef::Config.trusted_certs_dir = File.join(CHEF_SPEC_DATA, "trusted_certs")
+        Seth::Config.trusted_certs_dir = File.join(CHEF_SPEC_DATA, "trusted_certs")
       end
 
       it "enables verification of self-signed certificates" do
@@ -151,13 +151,13 @@ describe "HTTP SSL Policy" do
     end
   end
 
-  describe Chef::HTTP::APISSLPolicy do
+  describe Seth::HTTP::APISSLPolicy do
 
-    let(:ssl_policy) { Chef::HTTP::APISSLPolicy.new(unconfigured_http_client) }
+    let(:ssl_policy) { Seth::HTTP::APISSLPolicy.new(unconfigured_http_client) }
 
     context "when verify_api_cert is set" do
       before do
-        Chef::Config[:verify_api_cert] = true
+        Seth::Config[:verify_api_cert] = true
       end
 
       it "sets the OpenSSL verify mode to verify_peer" do

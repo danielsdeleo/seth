@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/rest_list_dir'
-require 'chef/chef_fs/file_system/data_bag_dir'
+require 'seth/chef_fs/file_system/rest_list_dir'
+require 'seth/chef_fs/file_system/data_bag_dir'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class DataBagsDir < RestListDir
         def initialize(parent)
@@ -38,12 +38,12 @@ class Chef
               DataBagDir.new(entry, self, true)
             end
           rescue Timeout::Error => e
-            raise Chef::ChefFS::FileSystem::OperationFailedError.new(:children, self, e), "Timeout getting children: #{e}"
+            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:children, self, e), "Timeout getting children: #{e}"
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
-              raise Chef::ChefFS::FileSystem::NotFoundError.new(self, e)
+              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, e)
             else
-              raise Chef::ChefFS::FileSystem::OperationFailedError.new(:children, self, e), "HTTP error getting children: #{e}"
+              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:children, self, e), "HTTP error getting children: #{e}"
             end
           end
         end
@@ -56,12 +56,12 @@ class Chef
           begin
             rest.post(api_path, { 'name' => name })
           rescue Timeout::Error => e
-            raise Chef::ChefFS::FileSystem::OperationFailedError.new(:create_child, self, e), "Timeout creating child '#{name}': #{e}"
+            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:create_child, self, e), "Timeout creating child '#{name}': #{e}"
           rescue Net::HTTPServerException => e
             if e.response.code == "409"
-              raise Chef::ChefFS::FileSystem::AlreadyExistsError.new(:create_child, self, e), "Cannot create #{name} under #{path}: already exists"
+              raise Seth::ChefFS::FileSystem::AlreadyExistsError.new(:create_child, self, e), "Cannot create #{name} under #{path}: already exists"
             else
-              raise Chef::ChefFS::FileSystem::OperationFailedError.new(:create_child, self, e), "HTTP error creating child '#{name}': #{e}"
+              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:create_child, self, e), "HTTP error creating child '#{name}': #{e}"
             end
           end
           @children = nil

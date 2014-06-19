@@ -17,14 +17,14 @@
 # limitations under the License.
 #
 
-require 'chef/resource/directory'
-require 'chef/provider/remote_directory'
-require 'chef/mixin/securable'
+require 'seth/resource/directory'
+require 'seth/provider/remote_directory'
+require 'seth/mixin/securable'
 
-class Chef
+class Seth
   class Resource
-    class RemoteDirectory < Chef::Resource::Directory
-      include Chef::Mixin::Securable
+    class RemoteDirectory < Seth::Resource::Directory
+      include Seth::Mixin::Securable
 
       provides :remote_directory, :on_platforms => :all
 
@@ -44,14 +44,14 @@ class Chef
         @files_backup = 5
         @files_owner = nil
         @files_group = nil
-        @files_mode = 0644 unless Chef::Platform.windows?
+        @files_mode = 0644 unless Seth::Platform.windows?
         @overwrite = true
         @allowed_actions.push(:create, :create_if_missing, :delete)
         @cookbook = nil
-        @provider = Chef::Provider::RemoteDirectory
+        @provider = Seth::Provider::RemoteDirectory
       end
 
-      if Chef::Platform.windows?
+      if Seth::Platform.windows?
         # create a second instance of the 'rights' attribute
         rights_attribute(:files_rights)
       end
@@ -85,7 +85,7 @@ class Chef
         set_or_return(
           :files_group,
           arg,
-          :regex => Chef::Config[:group_valid_regex]
+          :regex => Seth::Config[:group_valid_regex]
         )
       end
 
@@ -101,7 +101,7 @@ class Chef
         set_or_return(
           :files_owner,
           arg,
-          :regex => Chef::Config[:user_valid_regex]
+          :regex => Seth::Config[:user_valid_regex]
         )
       end
 

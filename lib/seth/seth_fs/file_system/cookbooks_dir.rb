@@ -16,21 +16,21 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/rest_list_dir'
-require 'chef/chef_fs/file_system/cookbook_dir'
-require 'chef/chef_fs/file_system/operation_failed_error'
-require 'chef/chef_fs/file_system/cookbook_frozen_error'
-require 'chef/chef_fs/file_system/chef_repository_file_system_cookbook_dir'
-require 'chef/mixin/file_class'
+require 'seth/chef_fs/file_system/rest_list_dir'
+require 'seth/chef_fs/file_system/cookbook_dir'
+require 'seth/chef_fs/file_system/operation_failed_error'
+require 'seth/chef_fs/file_system/cookbook_frozen_error'
+require 'seth/chef_fs/file_system/chef_repository_file_system_cookbook_dir'
+require 'seth/mixin/file_class'
 
 require 'tmpdir'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class CookbooksDir < RestListDir
 
-        include Chef::Mixin::FileClass
+        include Seth::Mixin::FileClass
 
         def initialize(parent)
           super("cookbooks", parent)
@@ -51,7 +51,7 @@ class Chef
 
         def children
           @children ||= begin
-            if Chef::Config[:versioned_cookbooks]
+            if Seth::Config[:versioned_cookbooks]
               result = []
               root.get_json("#{api_path}/?num_versions=all").each_pair do |cookbook_name, cookbooks|
                 cookbooks['versions'].each do |cookbook_version|
@@ -71,18 +71,18 @@ class Chef
         end
 
         def upload_cookbook_from(other, options = {})
-          Chef::Config[:versioned_cookbooks] ? upload_versioned_cookbook(other, options) : upload_unversioned_cookbook(other, options)
+          Seth::Config[:versioned_cookbooks] ? upload_versioned_cookbook(other, options) : upload_unversioned_cookbook(other, options)
         rescue Timeout::Error => e
-          raise Chef::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
+          raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
         rescue Net::HTTPServerException => e
           case e.response.code
           when "409"
-            raise Chef::ChefFS::FileSystem::CookbookFrozenError.new(:write, self, e), "Cookbook #{other.name} is frozen"
+            raise Seth::ChefFS::FileSystem::CookbookFrozenError.new(:write, self, e), "Cookbook #{other.name} is frozen"
           else
-            raise Chef::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
+            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
           end
-        rescue Chef::Exceptions::CookbookFrozen => e
-          raise Chef::ChefFS::FileSystem::CookbookFrozenError.new(:write, self, e), "Cookbook #{other.name} is frozen"
+        rescue Seth::Exceptions::CookbookFrozen => e
+          raise Seth::ChefFS::FileSystem::CookbookFrozenError.new(:write, self, e), "Cookbook #{other.name} is frozen"
         end
 
         # Knife currently does not understand versioned cookbooks
@@ -90,7 +90,7 @@ class Chef
         # to make this work. So instead, we make a temporary cookbook
         # symlinking back to real cookbook, and upload the proxy.
         def upload_versioned_cookbook(other, options)
-          cookbook_name = Chef::ChefFS::FileSystem::ChefRepositoryFileSystemCookbookDir.canonical_cookbook_name(other.name)
+          cookbook_name = Seth::ChefFS::FileSystem::ChefRepositoryFileSystemCookbookDir.canonical_cookbook_name(other.name)
 
           Dir.mktmpdir do |temp_cookbooks_path|
             proxy_cookbook_path = "#{temp_cookbooks_path}/#{cookbook_name}"
@@ -99,14 +99,14 @@ class Chef
             file_class.symlink other.file_path, proxy_cookbook_path
 
             # Instantiate a proxy loader using the temporary symlink
-            proxy_loader = Chef::Cookbook::CookbookVersionLoader.new(proxy_cookbook_path, other.parent.chefignore)
+            proxy_loader = Seth::Cookbook::CookbookVersionLoader.new(proxy_cookbook_path, other.parent.sethignore)
             proxy_loader.load_cookbooks
 
             cookbook_to_upload = proxy_loader.cookbook_version
             cookbook_to_upload.freeze_version if options[:freeze]
 
             # Instantiate a new uploader based on the proxy loader
-            uploader = Chef::CookbookUploader.new(cookbook_to_upload, proxy_cookbook_path, :force => options[:force], :rest => root.chef_rest)
+            uploader = Seth::CookbookUploader.new(cookbook_to_upload, proxy_cookbook_path, :force => options[:force], :rest => root.seth_rest)
 
             with_actual_cookbooks_dir(temp_cookbooks_path) do
               upload_cookbook!(uploader)
@@ -119,30 +119,30 @@ class Chef
             # the symlink without removing the original contents if we
             # are running on windows
             #
-            if Chef::Platform.windows?
+            if Seth::Platform.windows?
               Dir.rmdir proxy_cookbook_path
             end
           end
         end
 
         def upload_unversioned_cookbook(other, options)
-          cookbook_to_upload = other.chef_object
+          cookbook_to_upload = other.seth_object
           cookbook_to_upload.freeze_version if options[:freeze]
-          uploader = Chef::CookbookUploader.new(cookbook_to_upload, other.parent.file_path, :force => options[:force], :rest => root.chef_rest)
+          uploader = Seth::CookbookUploader.new(cookbook_to_upload, other.parent.file_path, :force => options[:force], :rest => root.seth_rest)
 
           with_actual_cookbooks_dir(other.parent.file_path) do
             upload_cookbook!(uploader)
           end
         end
 
-        # Work around the fact that CookbookUploader doesn't understand chef_repo_path (yet)
+        # Work around the fact that CookbookUploader doesn't understand seth_repo_path (yet)
         def with_actual_cookbooks_dir(actual_cookbook_path)
-          old_cookbook_path = Chef::Config.cookbook_path
-          Chef::Config.cookbook_path = actual_cookbook_path if !Chef::Config.cookbook_path
+          old_cookbook_path = Seth::Config.cookbook_path
+          Seth::Config.cookbook_path = actual_cookbook_path if !Chef::Config.cookbook_path
 
           yield
         ensure
-          Chef::Config.cookbook_path = old_cookbook_path
+          Seth::Config.cookbook_path = old_cookbook_path
         end
 
         def upload_cookbook!(uploader, options = {})
@@ -155,7 +155,7 @@ class Chef
 
         def can_have_child?(name, is_dir)
           return false if !is_dir
-          return false if Chef::Config[:versioned_cookbooks] && name !~ Chef::ChefFS::FileSystem::CookbookDir::VALID_VERSIONED_COOKBOOK_NAME
+          return false if Seth::Config[:versioned_cookbooks] && name !~ Chef::ChefFS::FileSystem::CookbookDir::VALID_VERSIONED_COOKBOOK_NAME
           return true
         end
       end

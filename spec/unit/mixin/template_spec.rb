@@ -19,12 +19,12 @@
 require 'spec_helper'
 
 require 'cgi'
-describe Chef::Mixin::Template, "render_template" do
+describe Seth::Mixin::Template, "render_template" do
 
-  let(:sep) { Chef::Platform.windows? ? "\r\n" : "\n" }
+  let(:sep) { Seth::Platform.windows? ? "\r\n" : "\n" }
 
   before :each do
-    @context = Chef::Mixin::Template::TemplateContext.new({})
+    @context = Seth::Mixin::Template::TemplateContext.new({})
   end
 
   it "should render the template evaluated in the given context" do
@@ -39,7 +39,7 @@ describe Chef::Mixin::Template, "render_template" do
 
   describe "when running on windows" do
     before do
-      Chef::Platform.stub(:windows?).and_return(true)
+      Seth::Platform.stub(:windows?).and_return(true)
     end
 
     it "should render the templates with windows line endings" do
@@ -54,7 +54,7 @@ describe Chef::Mixin::Template, "render_template" do
 
   describe "when running on unix" do
     before do
-      Chef::Platform.stub(:windows?).and_return(false)
+      Seth::Platform.stub(:windows?).and_return(false)
     end
 
     it "should render the templates with unix line endings" do
@@ -76,26 +76,26 @@ describe Chef::Mixin::Template, "render_template" do
   describe "with a template resource" do
     before :each do
       @cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-      Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
+      Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
 
-      @node = Chef::Node.new
-      cl = Chef::CookbookLoader.new(@cookbook_repo)
+      @node = Seth::Node.new
+      cl = Seth::CookbookLoader.new(@cookbook_repo)
       cl.load_cookbooks
-      @cookbook_collection = Chef::CookbookCollection.new(cl)
-      @events = Chef::EventDispatch::Dispatcher.new
-      @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
+      @cookbook_collection = Seth::CookbookCollection.new(cl)
+      @events = Seth::EventDispatch::Dispatcher.new
+      @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
 
       @rendered_file_location = Dir.tmpdir + '/openldap_stuff.conf'
 
-      @resource = Chef::Resource::Template.new(@rendered_file_location)
+      @resource = Seth::Resource::Template.new(@rendered_file_location)
       @resource.cookbook_name = 'openldap'
       @current_resource = @resource.dup
 
-      @content_provider = Chef::Provider::Template::Content.new(@resource, @current_resource, @run_context)
+      @content_provider = Seth::Provider::Template::Content.new(@resource, @current_resource, @run_context)
 
-      @template_context = Chef::Mixin::Template::TemplateContext.new({})
+      @template_context = Seth::Mixin::Template::TemplateContext.new({})
       @template_context[:node] = @node
-      @template_context[:template_finder] = Chef::Provider::TemplateFinder.new(@run_context, @resource.cookbook_name, @node)
+      @template_context[:template_finder] = Seth::Provider::TemplateFinder.new(@run_context, @resource.cookbook_name, @node)
     end
 
     it "should provide a render method" do
@@ -117,7 +117,7 @@ describe Chef::Mixin::Template, "render_template" do
     end
 
     it "should render partials from a different cookbook" do
-      @template_context[:template_finder] = Chef::Provider::TemplateFinder.new(@run_context, 'apache2', @node)
+      @template_context[:template_finder] = Seth::Provider::TemplateFinder.new(@run_context, 'apache2', @node)
 
       output = @template_context.render_template_from_string("before {<%= render('test.erb', :cookbook => 'openldap').strip %>} after")
       output.should == "before {We could be diving for pearls!} after"
@@ -202,7 +202,7 @@ describe Chef::Mixin::Template, "render_template" do
           end
         end
         ['node', 'render', 'render_template', 'render_template_from_string'].each do |method_name|
-          Chef::Log.should_receive(:warn).with(/^Core template method `#{method_name}' overridden by extension module/)
+          Seth::Log.should_receive(:warn).with(/^Core template method `#{method_name}' overridden by extension module/)
         end
         @template_context._extend_modules([mod])
       end
@@ -216,18 +216,18 @@ describe Chef::Mixin::Template, "render_template" do
     end
 
     it "should catch and re-raise the exception as a TemplateError" do
-      lambda { do_raise }.should raise_error(Chef::Mixin::Template::TemplateError)
+      lambda { do_raise }.should raise_error(Seth::Mixin::Template::TemplateError)
     end
 
     it "should raise an error if an attempt is made to access node but it is nil" do
-      lambda {@context.render_template_from_string("<%= node %>") {|r| r}}.should raise_error(Chef::Mixin::Template::TemplateError)
+      lambda {@context.render_template_from_string("<%= node %>") {|r| r}}.should raise_error(Seth::Mixin::Template::TemplateError)
     end
 
     describe "the raised TemplateError" do
       before :each do
         begin
           do_raise
-        rescue Chef::Mixin::Template::TemplateError => e
+        rescue Seth::Mixin::Template::TemplateError => e
           @exception = e
         end
       end
@@ -258,7 +258,7 @@ describe Chef::Mixin::Template, "render_template" do
       end
 
       it "should create a pretty output for the terminal" do
-        @exception.to_s.should =~ /Chef::Mixin::Template::TemplateError/
+        @exception.to_s.should =~ /Seth::Mixin::Template::TemplateError/
         @exception.to_s.should =~ /undefined local variable or method `this_is_not_defined'/
         @exception.to_s.should include("  2: bar\n  3: baz\n  4: <%= this_is_not_defined %>\n  5: quin\n  6: qunx")
         @exception.to_s.should include(@exception.original_exception.backtrace.first)

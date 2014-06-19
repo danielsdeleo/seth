@@ -1,6 +1,6 @@
 #
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,9 @@
 #
 
 require 'spec_helper'
-require 'chef/knife/ssl_fetch'
+require 'seth/knife/ssl_fetch'
 
-describe Chef::Knife::SslFetch do
+describe Seth::Knife::SslFetch do
 
   let(:name_args) { [] }
   let(:stdout_io) { StringIO.new }
@@ -34,7 +34,7 @@ describe Chef::Knife::SslFetch do
   end
 
   subject(:ssl_fetch) do
-    s = Chef::Knife::SslFetch.new
+    s = Seth::Knife::SslFetch.new
     s.name_args = name_args
     s.ui.stub(:stdout).and_return(stdout_io)
     s.ui.stub(:stderr).and_return(stderr_io)
@@ -44,10 +44,10 @@ describe Chef::Knife::SslFetch do
   context "when no arguments are given" do
 
     before do
-      Chef::Config.chef_server_url = "https://example.com:8443/chef-server"
+      Seth::Config.seth_server_url = "https://example.com:8443/chef-server"
     end
 
-    it "uses the chef_server_url as the host to fetch" do
+    it "uses the seth_server_url as the host to fetch" do
       expect(ssl_fetch.host).to eq("example.com")
       expect(ssl_fetch.port).to eq(8443)
     end
@@ -129,7 +129,7 @@ E
     end
 
     before do
-      Chef::Config.trusted_certs_dir = trusted_certs_dir
+      Seth::Config.trusted_certs_dir = trusted_certs_dir
 
       TCPSocket.should_receive(:new).with("foo.example.com", 8443).and_return(tcp_socket)
       OpenSSL::SSL::SSLSocket.should_receive(:new).with(tcp_socket, ssl_fetch.noverify_peer_ssl_context).and_return(ssl_socket)

@@ -19,22 +19,22 @@
 require 'spec_helper'
 require 'tempfile'
 
-describe Chef::Knife::DataBagEdit do
+describe Seth::Knife::DataBagEdit do
   before do
     @plain_data = {"login_name" => "alphaomega", "id" => "item_name"}
     @edited_data = {
       "login_name" => "rho", "id" => "item_name",
       "new_key" => "new_value" }
 
-    Chef::Config[:node_name]  = "webmonkey.example.com"
+    Seth::Config[:node_name]  = "webmonkey.example.com"
 
-    @knife = Chef::Knife::DataBagEdit.new
-    @rest = double('chef-rest-mock')
+    @knife = Seth::Knife::DataBagEdit.new
+    @rest = double('seth-rest-mock')
     @knife.stub(:rest).and_return(@rest)
 
     @stdout = StringIO.new
     @knife.stub(:stdout).and_return(@stdout)
-    @log = Chef::Log
+    @log = Seth::Log
     @knife.name_args = ['bag_name', 'item_name']
   end
 
@@ -45,7 +45,7 @@ describe Chef::Knife::DataBagEdit do
   end
 
   it "saves edits on a data bag item" do
-    Chef::DataBagItem.stub(:load).with('bag_name', 'item_name').and_return(@plain_data)
+    Seth::DataBagItem.stub(:load).with('bag_name', 'item_name').and_return(@plain_data)
     @knife.should_receive(:edit_data).with(@plain_data).and_return(@edited_data)
     @rest.should_receive(:put_rest).with("data/bag_name/item_name", @edited_data).ordered
     @knife.run
@@ -54,15 +54,15 @@ describe Chef::Knife::DataBagEdit do
   describe "encrypted data bag items" do
     before(:each) do
       @secret = "abc123SECRET"
-      @enc_data = Chef::EncryptedDataBagItem.encrypt_data_bag_item(@plain_data,
+      @enc_data = Seth::EncryptedDataBagItem.encrypt_data_bag_item(@plain_data,
                                                                    @secret)
-      @enc_edited_data = Chef::EncryptedDataBagItem.encrypt_data_bag_item(@edited_data,
+      @enc_edited_data = Seth::EncryptedDataBagItem.encrypt_data_bag_item(@edited_data,
                                                                           @secret)
-      Chef::DataBagItem.stub(:load).with('bag_name', 'item_name').and_return(@enc_data)
+      Seth::DataBagItem.stub(:load).with('bag_name', 'item_name').and_return(@enc_data)
 
       # Random IV is used each time the data bag item is encrypted, so values
       # will not be equal if we encrypt same value twice.
-      Chef::EncryptedDataBagItem.should_receive(:encrypt_data_bag_item).and_return(@enc_edited_data)
+      Seth::EncryptedDataBagItem.should_receive(:encrypt_data_bag_item).and_return(@enc_edited_data)
 
       @secret_file = Tempfile.new("encrypted_data_bag_secret_file_test")
       @secret_file.puts(@secret)

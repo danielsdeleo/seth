@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-daemon_bin="/usr/bin/chef-solr"
+daemon_bin="/usr/bin/seth-solr"
 daemon_name=$(basename $daemon_bin)
 PIDF="/var/run/$daemon_name.pid"
 

@@ -19,9 +19,9 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::CookbookFile do
+describe Seth::Resource::CookbookFile do
   before do
-    @cookbook_file = Chef::Resource::CookbookFile.new('sourcecode_tarball.tgz')
+    @cookbook_file = Seth::Resource::CookbookFile.new('sourcecode_tarball.tgz')
   end
 
   it "uses the name parameter for the source parameter" do
@@ -42,13 +42,13 @@ describe Chef::Resource::CookbookFile do
     @cookbook_file.cookbook.should == 'munin'
   end
 
-  it "sets the provider to Chef::Provider::CookbookFile" do
-    @cookbook_file.provider.should == Chef::Provider::CookbookFile
+  it "sets the provider to Seth::Provider::CookbookFile" do
+    @cookbook_file.provider.should == Seth::Provider::CookbookFile
   end
 
   describe "when it has a backup number, group, mode, owner, source, checksum, and cookbook on nix or path, rights, deny_rights, checksum on windows" do
     before do
-       if Chef::Platform.windows?
+       if Seth::Platform.windows?
          @cookbook_file.path("C:/temp/origin/file.txt")
          @cookbook_file.rights(:read, "Everyone")
          @cookbook_file.deny_rights(:full_control, "Clumsy_Sam")
@@ -66,7 +66,7 @@ describe Chef::Resource::CookbookFile do
 
     it "describes the state" do
       state = @cookbook_file.state
-      if Chef::Platform.windows?
+      if Seth::Platform.windows?
         puts state
         state[:rights].should == [{:permissions => :read, :principals => "Everyone"}]
         state[:deny_rights].should == [{:permissions => :full_control, :principals => "Clumsy_Sam"}]
@@ -79,7 +79,7 @@ describe Chef::Resource::CookbookFile do
     end
 
     it "returns the path as its identity" do
-      if Chef::Platform.windows?
+      if Seth::Platform.windows?
         @cookbook_file.identity.should == "C:/temp/origin/file.txt"
       else
         @cookbook_file.identity.should == "/tmp/origin/file.txt"

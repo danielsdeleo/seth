@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::RegistryKey, "initialize" do
+describe Seth::Resource::RegistryKey, "initialize" do
   before(:each) do
-    @resource = Chef::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
+    @resource = Seth::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
   end
 
-  it "should create a new Chef::Resource::RegistryKey" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::RegistryKey)
+  it "should create a new Seth::Resource::RegistryKey" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::RegistryKey)
   end
 
   it "should set the resource_name to :registry_key" do
@@ -55,9 +55,9 @@ describe Chef::Resource::RegistryKey, "initialize" do
   end
 end
 
-describe Chef::Resource::RegistryKey, "key" do
+describe Seth::Resource::RegistryKey, "key" do
   before(:each) do
-    @resource = Chef::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
+    @resource = Seth::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
   end
 
   it "should allow a string" do
@@ -74,9 +74,9 @@ describe Chef::Resource::RegistryKey, "key" do
   end
 end
 
-describe Chef::Resource::RegistryKey, "values" do
+describe Seth::Resource::RegistryKey, "values" do
   before(:each) do
-    @resource = Chef::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
+    @resource = Seth::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
   end
 
   it "should allow a single proper hash of registry values" do
@@ -119,9 +119,9 @@ describe Chef::Resource::RegistryKey, "values" do
   end
 end
 
-describe Chef::Resource::RegistryKey, "recursive" do
+describe Seth::Resource::RegistryKey, "recursive" do
   before(:each) do
-    @resource = Chef::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
+    @resource = Seth::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
   end
 
   it "should allow a boolean" do
@@ -146,9 +146,9 @@ describe Chef::Resource::RegistryKey, "recursive" do
   end
 end
 
-describe Chef::Resource::RegistryKey, "architecture" do
+describe Seth::Resource::RegistryKey, "architecture" do
   before(:each) do
-    @resource = Chef::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
+    @resource = Seth::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
   end
 
   [ :i386, :x86_64, :machine ].each do |arch|
@@ -175,9 +175,9 @@ describe Chef::Resource::RegistryKey, "architecture" do
   end
 end
 
-describe Chef::Resource::RegistryKey, ":unscrubbed_values" do
+describe Seth::Resource::RegistryKey, ":unscrubbed_values" do
   before(:each) do
-    @resource = Chef::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
+    @resource = Seth::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
   end
 
   it "should return unsafe data as-is" do
@@ -187,9 +187,9 @@ describe Chef::Resource::RegistryKey, ":unscrubbed_values" do
   end
 end
 
-describe Chef::Resource::RegistryKey, "state" do
+describe Seth::Resource::RegistryKey, "state" do
   before(:each) do
-    @resource = Chef::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
+    @resource = Seth::Resource::RegistryKey.new('HKCU\Software\Raxicoricofallapatorius')
   end
 
   it "should return scrubbed values" do

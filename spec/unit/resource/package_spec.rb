@@ -19,15 +19,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Package do
+describe Seth::Resource::Package do
 
   before(:each) do
-    @resource = Chef::Resource::Package.new("emacs")
+    @resource = Seth::Resource::Package.new("emacs")
   end
 
-  it "should create a new Chef::Resource::Package" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Package)
+  it "should create a new Seth::Resource::Package" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Package)
   end
 
   it "should set the package_name to the first argument to new" do

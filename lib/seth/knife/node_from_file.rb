@@ -16,22 +16,22 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class NodeFromFile < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
-        require 'chef/knife/core/object_loader'
+        require 'seth/node'
+        require 'seth/json_compat'
+        require 'seth/knife/core/object_loader'
       end
 
       banner "knife node from file FILE (options)"
 
       def loader
-        @loader ||= Knife::Core::ObjectLoader.new(Chef::Node, ui)
+        @loader ||= Knife::Core::ObjectLoader.new(Seth::Node, ui)
       end
 
       def run

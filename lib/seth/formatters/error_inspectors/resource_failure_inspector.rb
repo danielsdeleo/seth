@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Formatters
     module ErrorInspectors
       class ResourceFailureInspector
@@ -51,11 +51,11 @@ class Chef
             error_description.section("Template Context:", "#{exception.source_location}\n#{exception.source_listing}")
           end
 
-          if Chef::Platform.windows?
-            require 'chef/win32/security'
+          if Seth::Platform.windows?
+            require 'seth/win32/security'
 
-            if !Chef::ReservedNames::Win32::Security.has_admin_privileges?
-              error_description.section("Missing Windows Admin Privileges", "chef-client doesn't have administrator privileges. This can be a possible reason for the resource failure.")
+            if !Seth::ReservedNames::Win32::Security.has_admin_privileges?
+              error_description.section("Missing Windows Admin Privileges", "seth-client doesn't have administrator privileges. This can be a possible reason for the resource failure.")
             end
           end
         end
@@ -99,7 +99,7 @@ class Chef
         end
 
         def filtered_bt
-          filters = Array(Chef::Config.cookbook_path).map {|p| /^#{Regexp.escape(p)}/ }
+          filters = Array(Seth::Config.cookbook_path).map {|p| /^#{Regexp.escape(p)}/ }
           exception.backtrace.select {|line| filters.any? {|filter| line =~ filter }}
         end
 

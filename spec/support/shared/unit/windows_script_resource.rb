@@ -23,20 +23,20 @@ require 'support/shared/unit/script_resource'
 
 shared_examples_for "a Windows script resource" do
   before(:each) do
-    node = Chef::Node.new
+    node = Seth::Node.new
 
     node.default["kernel"] = Hash.new
     node.default["kernel"][:machine] = :x86_64.to_s
 
-    run_context = Chef::RunContext.new(node, nil, nil)
+    run_context = Seth::RunContext.new(node, nil, nil)
 
     @resource = resource_instance
 
   end
 
-  it "should be a kind of Chef::Resource::WindowsScript" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::WindowsScript)
+  it "should be a kind of Seth::Resource::WindowsScript" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::WindowsScript)
   end
 
   context "script" do

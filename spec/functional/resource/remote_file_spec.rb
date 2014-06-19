@@ -20,30 +20,30 @@ require 'spec_helper'
 require 'tiny_server'
 require 'support/shared/functional/http'
 
-describe Chef::Resource::RemoteFile do
-  include ChefHTTPShared
+describe Seth::Resource::RemoteFile do
+  include SethHTTPShared
 
   let(:file_cache_path) { Dir.mktmpdir }
 
   before(:each) do
-    @old_file_cache = Chef::Config[:file_cache_path]
-    Chef::Config[:file_cache_path] = file_cache_path
+    @old_file_cache = Seth::Config[:file_cache_path]
+    Seth::Config[:file_cache_path] = file_cache_path
   end
 
   after(:each) do
-    Chef::Config[:file_cache_path] = @old_file_cache
+    Seth::Config[:file_cache_path] = @old_file_cache
     FileUtils.rm_rf(file_cache_path)
   end
 
-  include_context Chef::Resource::File
+  include_context Seth::Resource::File
 
   let(:file_base) { "remote_file_spec" }
 
   def create_resource
-    node = Chef::Node.new
-    events = Chef::EventDispatch::Dispatcher.new
-    run_context = Chef::RunContext.new(node, {}, events)
-    resource = Chef::Resource::RemoteFile.new(path, run_context)
+    node = Seth::Node.new
+    events = Seth::EventDispatch::Dispatcher.new
+    run_context = Seth::RunContext.new(node, {}, events)
+    resource = Seth::Resource::RemoteFile.new(path, run_context)
     resource.source(source)
     resource
   end
@@ -99,9 +99,9 @@ describe Chef::Resource::RemoteFile do
   context "when fetching files over HTTPS" do
 
     before(:all) do
-      cert_text = File.read(File.expand_path("ssl/chef-rspec.cert", CHEF_SPEC_DATA))
+      cert_text = File.read(File.expand_path("ssl/seth-rspec.cert", CHEF_SPEC_DATA))
       cert = OpenSSL::X509::Certificate.new(cert_text)
-      key_text = File.read(File.expand_path("ssl/chef-rspec.key", CHEF_SPEC_DATA))
+      key_text = File.read(File.expand_path("ssl/seth-rspec.key", CHEF_SPEC_DATA))
       key = OpenSSL::PKey::RSA.new(key_text)
 
       server_opts = { :SSLEnable => true,
@@ -185,7 +185,7 @@ describe Chef::Resource::RemoteFile do
       end
 
       it "should raise ContentLengthMismatch" do
-        lambda { resource.run_action(:create) }.should raise_error(Chef::Exceptions::ContentLengthMismatch)
+        lambda { resource.run_action(:create) }.should raise_error(Seth::Exceptions::ContentLengthMismatch)
         #File.should_not exist(path) # XXX: CHEF-5081
       end
     end
@@ -198,7 +198,7 @@ describe Chef::Resource::RemoteFile do
       end
 
       it "should raise ContentLengthMismatch" do
-        lambda { resource.run_action(:create) }.should raise_error(Chef::Exceptions::ContentLengthMismatch)
+        lambda { resource.run_action(:create) }.should raise_error(Seth::Exceptions::ContentLengthMismatch)
         #File.should_not exist(path) # XXX: CHEF-5081
       end
     end

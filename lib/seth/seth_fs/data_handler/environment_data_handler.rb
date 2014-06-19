@@ -1,8 +1,8 @@
-require 'chef/chef_fs/data_handler/data_handler_base'
-require 'chef/environment'
+require 'seth/chef_fs/data_handler/data_handler_base'
+require 'seth/environment'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module DataHandler
       class EnvironmentDataHandler < DataHandlerBase
         def normalize(environment, entry)
@@ -12,8 +12,8 @@ class Chef
             'cookbook_versions' => {},
             'default_attributes' => {},
             'override_attributes' => {},
-            'json_class' => 'Chef::Environment',
-            'chef_type' => 'environment'
+            'json_class' => 'Seth::Environment',
+            'seth_type' => 'environment'
           })
         end
 
@@ -21,8 +21,8 @@ class Chef
           return key == 'name'
         end
 
-        def chef_class
-          Chef::Environment
+        def seth_class
+          Seth::Environment
         end
 
         def to_ruby(object)

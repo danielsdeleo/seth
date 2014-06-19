@@ -16,19 +16,19 @@
 # limitations under the License.
 #
 
-require 'chef/file_access_control'
+require 'seth/file_access_control'
 
-class Chef
+class Seth
   module Mixin
     module EnforceOwnershipAndPermissions
 
       def access_controls
-        @access_controls ||= Chef::FileAccessControl.new(current_resource, new_resource, self)
+        @access_controls ||= Seth::FileAccessControl.new(current_resource, new_resource, self)
       end
 
       # will set the proper user, group and
       # permissions using a platform specific
-      # version of Chef::FileAccessControl
+      # version of Seth::FileAccessControl
       def enforce_ownership_and_permissions
         access_controls.set_all
         new_resource.updated_by_last_action(true) if access_controls.modified?

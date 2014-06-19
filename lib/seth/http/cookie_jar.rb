@@ -22,7 +22,7 @@
 #
 require 'singleton'
 
-class Chef
+class Seth
   class HTTP
     class CookieJar < Hash
       include Singleton

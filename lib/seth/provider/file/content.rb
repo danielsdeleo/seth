@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/file_content_management/content_base'
-require 'chef/file_content_management/tempfile'
+require 'seth/file_content_management/content_base'
+require 'seth/file_content_management/tempfile'
 
-class Chef
+class Seth
   class Provider
     class File
-      class Content < Chef::FileContentManagement::ContentBase
+      class Content < Seth::FileContentManagement::ContentBase
         def file_for_provider
           if @new_resource.content
-            tempfile = Chef::FileContentManagement::Tempfile.new(@new_resource).tempfile
+            tempfile = Seth::FileContentManagement::Tempfile.new(@new_resource).tempfile
             tempfile.write(@new_resource.content)
             tempfile.close
             tempfile

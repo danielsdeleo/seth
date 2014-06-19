@@ -1,16 +1,16 @@
-require 'chef/chef_fs/data_handler/data_handler_base'
-require 'chef/data_bag_item'
+require 'seth/chef_fs/data_handler/data_handler_base'
+require 'seth/data_bag_item'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module DataHandler
       class DataBagItemDataHandler < DataHandlerBase
         def normalize(data_bag_item, entry)
           # If it's wrapped with raw_data, unwrap it.
-          if data_bag_item['json_class'] == 'Chef::DataBagItem' && data_bag_item['raw_data']
+          if data_bag_item['json_class'] == 'Seth::DataBagItem' && data_bag_item['raw_data']
             data_bag_item = data_bag_item['raw_data']
           end
-          # chef_type and data_bag come back in PUT and POST results, but we don't
+          # seth_type and data_bag come back in PUT and POST results, but we don't
           # use those in knife-essentials.
           normalize_hash(data_bag_item, {
             'id' => remove_dot_json(entry.name)
@@ -18,13 +18,13 @@ class Chef
         end
 
         def normalize_for_post(data_bag_item, entry)
-          if data_bag_item['json_class'] == 'Chef::DataBagItem' && data_bag_item['raw_data']
+          if data_bag_item['json_class'] == 'Seth::DataBagItem' && data_bag_item['raw_data']
             data_bag_item = data_bag_item['raw_data']
           end
           {
             "name" => "data_bag_item_#{entry.parent.name}_#{remove_dot_json(entry.name)}",
-            "json_class" => "Chef::DataBagItem",
-            "chef_type" => "data_bag_item",
+            "json_class" => "Seth::DataBagItem",
+            "seth_type" => "data_bag_item",
             "data_bag" => entry.parent.name,
             "raw_data" => normalize(data_bag_item, entry)
           }
@@ -38,8 +38,8 @@ class Chef
           return key == 'id'
         end
 
-        def chef_class
-          Chef::DataBagItem
+        def seth_class
+          Seth::DataBagItem
         end
 
         def verify_integrity(object, entry, &on_error)

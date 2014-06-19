@@ -22,40 +22,40 @@ require 'net/http'
 require 'mixlib/authentication/signedheaderauth'
 require 'openssl'
 
-class Chef
-  # == Chef::CookbookSiteStreamingUploader
+class Seth
+  # == Seth::CookbookSiteStreamingUploader
   # A streaming multipart HTTP upload implementation. Used to upload cookbooks
   # (in tarball form) to http://cookbooks.opscode.com
   #
   # inspired by http://stanislavvitvitskiy.blogspot.com/2008/12/multipart-post-in-ruby.html
   class CookbookSiteStreamingUploader
 
-    DefaultHeaders = { 'accept' => 'application/json', 'x-chef-version' => ::Chef::VERSION }
+    DefaultHeaders = { 'accept' => 'application/json', 'x-seth-version' => ::Seth::VERSION }
 
     class << self
 
        def create_build_dir(cookbook)
-         tmp_cookbook_path = Tempfile.new("chef-#{cookbook.name}-build")
+         tmp_cookbook_path = Tempfile.new("seth-#{cookbook.name}-build")
          tmp_cookbook_path.close
          tmp_cookbook_dir = tmp_cookbook_path.path
          File.unlink(tmp_cookbook_dir)
          FileUtils.mkdir_p(tmp_cookbook_dir)
-         Chef::Log.debug("Staging at #{tmp_cookbook_dir}")
+         Seth::Log.debug("Staging at #{tmp_cookbook_dir}")
          checksums_to_on_disk_paths = cookbook.checksums
-         Chef::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
+         Seth::CookbookVersion::COOKBOOK_SEGMENTS.each do |segment|
            cookbook.manifest[segment].each do |manifest_record|
              path_in_cookbook = manifest_record[:path]
              on_disk_path = checksums_to_on_disk_paths[manifest_record[:checksum]]
              dest = File.join(tmp_cookbook_dir, cookbook.name.to_s, path_in_cookbook)
              FileUtils.mkdir_p(File.dirname(dest))
-             Chef::Log.debug("Staging #{on_disk_path} to #{dest}")
+             Seth::Log.debug("Staging #{on_disk_path} to #{dest}")
              FileUtils.cp(on_disk_path, dest)
           end
         end
 
         # First, generate metadata
-        Chef::Log.debug("Generating metadata")
-        kcm = Chef::Knife::CookbookMetadata.new
+        Seth::Log.debug("Generating metadata")
+        kcm = Seth::Knife::CookbookMetadata.new
         kcm.config[:cookbook_path] = [ tmp_cookbook_dir ]
         kcm.name_args = [ cookbook.name.to_s ]
         kcm.run
@@ -105,7 +105,7 @@ class Chef
 
         url = URI.parse(to_url)
 
-        Chef::Log.logger.debug("Signing: method: #{http_verb}, path: #{url.path}, file: #{content_file}, User-id: #{user_id}, Timestamp: #{timestamp}")
+        Seth::Log.logger.debug("Signing: method: #{http_verb}, path: #{url.path}, file: #{content_file}, User-id: #{user_id}, Timestamp: #{timestamp}")
 
         # We use the body for signing the request if the file parameter
         # wasn't a valid file or wasn't included. Extract the body (with

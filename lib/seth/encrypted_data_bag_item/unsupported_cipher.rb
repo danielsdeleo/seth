@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-class Chef::EncryptedDataBagItem
+class Seth::EncryptedDataBagItem
   class UnsupportedCipher < StandardError
   end
 end

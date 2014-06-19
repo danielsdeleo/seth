@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
+require 'seth/resource/package'
 
-class Chef
+class Seth
   class Resource
-    class PacmanPackage < Chef::Resource::Package
+    class PacmanPackage < Seth::Resource::Package
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :pacman_package
-        @provider = Chef::Provider::Package::Pacman
+        @provider = Seth::Provider::Package::Pacman
       end
 
     end

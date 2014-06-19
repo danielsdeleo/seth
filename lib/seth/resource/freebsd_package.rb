@@ -18,16 +18,16 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/provider/package/freebsd/port'
-require 'chef/provider/package/freebsd/pkg'
-require 'chef/provider/package/freebsd/pkgng'
-require 'chef/mixin/shell_out'
+require 'seth/resource/package'
+require 'seth/provider/package/freebsd/port'
+require 'seth/provider/package/freebsd/pkg'
+require 'seth/provider/package/freebsd/pkgng'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Resource
-    class FreebsdPackage < Chef::Resource::Package
-      include Chef::Mixin::ShellOut
+    class FreebsdPackage < Seth::Resource::Package
+      include Seth::Mixin::ShellOut
 
       provides :package, :on_platforms => ["freebsd"]
 
@@ -47,11 +47,11 @@ class Chef
 
       def assign_provider
         @provider = if @source.to_s =~ /^ports$/i
-                      Chef::Provider::Package::Freebsd::Port
+                      Seth::Provider::Package::Freebsd::Port
                     elsif ships_with_pkgng? || supports_pkgng?
-                      Chef::Provider::Package::Freebsd::Pkgng
+                      Seth::Provider::Package::Freebsd::Pkgng
                     else
-                      Chef::Provider::Package::Freebsd::Pkg
+                      Seth::Provider::Package::Freebsd::Pkg
                     end
       end
 

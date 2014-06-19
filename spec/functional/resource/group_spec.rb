@@ -20,18 +20,18 @@
 require 'spec_helper'
 require 'functional/resource/base'
 
-# Chef::Resource::Group are turned off on Mac OS X 10.6 due to caching
+# Seth::Resource::Group are turned off on Mac OS X 10.6 due to caching
 # issues around Etc.getgrnam() not picking up the group membership
 # changes that are done on the system. Etc.endgrent is not functioning
 # correctly on certain 10.6 boxes.
-describe Chef::Resource::Group, :requires_root_or_running_windows, :not_supported_on_mac_osx_106 do
+describe Seth::Resource::Group, :requires_root_or_running_windows, :not_supported_on_mac_osx_106 do
   def group_should_exist(group)
     case ohai[:platform_family]
     when "debian", "fedora", "rhel", "suse", "gentoo", "slackware", "arch"
       expect { Etc::getgrnam(group) }.to_not raise_error(ArgumentError, "can't find group for #{group}")
       expect(group).to eq(Etc::getgrnam(group).name)
     when "windows"
-      expect { Chef::Util::Windows::NetGroup.new(group).local_get_members }.to_not raise_error(ArgumentError, "The group name could not be found.")
+      expect { Seth::Util::Windows::NetGroup.new(group).local_get_members }.to_not raise_error(ArgumentError, "The group name could not be found.")
     end
   end
 
@@ -39,7 +39,7 @@ describe Chef::Resource::Group, :requires_root_or_running_windows, :not_supporte
     case ohai[:platform_family]
     when "windows"
       user_sid = sid_string_from_user(user)
-      user_sid.nil? ? false : Chef::Util::Windows::NetGroup.new(group_name).local_get_members.include?(user_sid)
+      user_sid.nil? ? false : Seth::Util::Windows::NetGroup.new(group_name).local_get_members.include?(user_sid)
     else
       Etc::getgrnam(group_name).mem.include?(user)
     end
@@ -50,7 +50,7 @@ describe Chef::Resource::Group, :requires_root_or_running_windows, :not_supporte
     when "debian", "fedora", "rhel", "suse", "gentoo", "slackware", "arch"
       expect { Etc::getgrnam(group) }.to raise_error(ArgumentError, "can't find group for #{group}")
     when "windows"
-      expect { Chef::Util::Windows::NetGroup.new(group).local_get_members }.to raise_error(ArgumentError, "The group name could not be found.")
+      expect { Seth::Util::Windows::NetGroup.new(group).local_get_members }.to raise_error(ArgumentError, "The group name could not be found.")
     end
   end
 
@@ -60,8 +60,8 @@ describe Chef::Resource::Group, :requires_root_or_running_windows, :not_supporte
 
   def sid_string_from_user(user)
     begin
-      sid = Chef::ReservedNames::Win32::Security.lookup_account_name(user)
-    rescue Chef::Exceptions::Win32APIError
+      sid = Seth::ReservedNames::Win32::Security.lookup_account_name(user)
+    rescue Seth::Exceptions::Win32APIError
       sid = nil
     end
 
@@ -78,7 +78,7 @@ describe Chef::Resource::Group, :requires_root_or_running_windows, :not_supporte
   end
 
   def user(username)
-    usr = Chef::Resource::User.new("#{username}", run_context)
+    usr = Seth::Resource::User.new("#{username}", run_context)
     if ohai[:platform_family] == "windows"
       usr.password("ComplexPass11!")
     end
@@ -226,33 +226,33 @@ describe Chef::Resource::Group, :requires_root_or_running_windows, :not_supporte
     describe "when updating membership" do
       it "raises an error for a non well-formed domain name" do
         group_resource.members [invalid_domain_user_name]
-        lambda { group_resource.run_action(tested_action) }.should raise_error Chef::Exceptions::Win32APIError
+        lambda { group_resource.run_action(tested_action) }.should raise_error Seth::Exceptions::Win32APIError
       end
 
       it "raises an error for a nonexistent domain" do
         group_resource.members [nonexistent_domain_user_name]
-        lambda { group_resource.run_action(tested_action) }.should raise_error Chef::Exceptions::Win32APIError
+        lambda { group_resource.run_action(tested_action) }.should raise_error Seth::Exceptions::Win32APIError
       end
     end
 
     describe "when removing members" do
       it "raises an error for a non well-formed domain name" do
         group_resource.excluded_members [invalid_domain_user_name]
-        lambda { group_resource.run_action(tested_action) }.should raise_error Chef::Exceptions::Win32APIError
+        lambda { group_resource.run_action(tested_action) }.should raise_error Seth::Exceptions::Win32APIError
       end
 
       it "raises an error for a nonexistent domain" do
         group_resource.excluded_members [nonexistent_domain_user_name]
-        lambda { group_resource.run_action(tested_action) }.should raise_error Chef::Exceptions::Win32APIError
+        lambda { group_resource.run_action(tested_action) }.should raise_error Seth::Exceptions::Win32APIError
       end
     end
   end
 
-  let(:group_name) { "cheftest-#{SecureRandom.random_number(9999)}" }
+  let(:group_name) { "sethtest-#{SecureRandom.random_number(9999)}" }
   let(:included_members) { nil }
   let(:excluded_members) { nil }
   let(:group_resource) {
-    group = Chef::Resource::Group.new(group_name, run_context)
+    group = Seth::Resource::Group.new(group_name, run_context)
     group.members(included_members)
     group.excluded_members(excluded_members)
     group
@@ -303,7 +303,7 @@ downthestreetalwayshadagoodsmileonhisfacetheoldmanwalkingdownthestreeQQQQQQ" }
         invalid_resource = group_resource.dup
         invalid_resource.members(["Jack"])
         invalid_resource.excluded_members(["Jack"])
-        lambda { invalid_resource.run_action(:create)}.should raise_error(Chef::Exceptions::ConflictingMembersInGroup)
+        lambda { invalid_resource.run_action(:create)}.should raise_error(Seth::Exceptions::ConflictingMembersInGroup)
       end
     end
   end

@@ -18,10 +18,10 @@
 
 #simple wrapper around Volume APIs. might be possible with WMI, but possibly more complex.
 
-require 'chef/util/windows'
+require 'seth/util/windows'
 require 'windows/volume'
 
-class Chef::Util::Windows::Volume < Chef::Util::Windows
+class Seth::Util::Windows::Volume < Chef::Util::Windows
 
   private
   include Windows::Volume

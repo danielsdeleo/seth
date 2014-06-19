@@ -1,8 +1,8 @@
 #
 # Author:: Hugo Fichter
-# Author:: Lamont Granquist (<lamont@getchef.com>)
-# Author:: Joshua Timberman (<joshua@getchef.com>)
-# Copyright:: Copyright (c) 2009-2014 Chef Software, Inc
+# Author:: Lamont Granquist (<lamont@getseth.com>)
+# Author:: Joshua Timberman (<joshua@getseth.com>)
+# Copyright:: Copyright (c) 2009-2014 Seth Software, Inc
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,16 @@
 # limitations under the License.
 #
 
-require 'chef/provider/mount'
-require 'chef/log'
-require 'chef/mixin/shell_out'
+require 'seth/provider/mount'
+require 'seth/log'
+require 'seth/mixin/shell_out'
 require 'forwardable'
 
-class Chef
+class Seth
   class Provider
     class Mount
-      class Solaris < Chef::Provider::Mount
-        include Chef::Mixin::ShellOut
+      class Solaris < Seth::Provider::Mount
+        include Seth::Mixin::ShellOut
         extend Forwardable
 
         VFSTAB = "/etc/vfstab".freeze
@@ -41,7 +41,7 @@ class Chef
         def_delegator :@new_resource, :pass, :pass
 
         def load_current_resource
-          @current_resource = Chef::Resource::Mount.new(new_resource.name)
+          @current_resource = Seth::Resource::Mount.new(new_resource.name)
           current_resource.mount_point(mount_point)
           current_resource.device(device)
           current_resource.device_type(device_type)
@@ -51,13 +51,13 @@ class Chef
         def define_resource_requirements
           requirements.assert(:mount, :remount) do |a|
             a.assertion { !device_should_exist? || ::File.exist?(device) }
-            a.failure_message(Chef::Exceptions::Mount, "Device #{device} does not exist")
+            a.failure_message(Seth::Exceptions::Mount, "Device #{device} does not exist")
             a.whyrun("Assuming device #{device} would have been created")
           end
 
           requirements.assert(:mount, :remount) do |a|
             a.assertion { ::File.exist?(mount_point) }
-            a.failure_message(Chef::Exceptions::Mount, "Mount point #{mount_point} does not exist")
+            a.failure_message(Seth::Exceptions::Mount, "Mount point #{mount_point} does not exist")
             a.whyrun("Assuming mount point #{mount_point} would have been created")
           end
         end
@@ -102,7 +102,7 @@ class Chef
             f.puts("\n#{device}\t-\t#{mount_point}\t#{fstype}\t#{passstr}\t#{autostr}\t#{optstr}")
             f.close
             # move, preserving modes of destination file
-            mover = Chef::FileContentManagement::Deploy.strategy(true)
+            mover = Seth::FileContentManagement::Deploy.strategy(true)
             mover.deploy(f.path, VFSTAB)
           end
 
@@ -115,7 +115,7 @@ class Chef
           ::File.readlines(VFSTAB).reverse_each do |line|
             if !found && line =~ /^#{device_regex}\s+\S+\s+#{Regexp.escape(mount_point)}/
               found = true
-              Chef::Log.debug("#{new_resource} is removed from vfstab")
+              Seth::Log.debug("#{new_resource} is removed from vfstab")
               next
             end
             contents << line
@@ -126,13 +126,13 @@ class Chef
               f.write(contents.reverse.join(''))
               f.close
               # move, preserving modes of destination file
-              mover = Chef::FileContentManagement::Deploy.strategy(true)
+              mover = Seth::FileContentManagement::Deploy.strategy(true)
               mover.deploy(f.path, VFSTAB)
             end
           else
             # this is likely some kind of internal error, since we should only call disable_fs when there
             # the filesystem we want to disable is enabled.
-            Chef::Log.warn("#{new_resource} did not find the mountpoint to disable in the vfstab")
+            Seth::Log.warn("#{new_resource} did not find the mountpoint to disable in the vfstab")
           end
         end
 
@@ -167,10 +167,10 @@ class Chef
             # /dev/dsk/c1t0d0s0 on / type ufs read/write/setuid/devices/intr/largefiles/logging/xattr/onerror=panic/dev=700040 on Tue May  1 11:33:55 2012
             case line
             when /^#{device_regex}\s+on\s+#{Regexp.escape(mount_point)}\s+/
-              Chef::Log.debug("Special device #{device} is mounted as #{mount_point}")
+              Seth::Log.debug("Special device #{device} is mounted as #{mount_point}")
               mounted = true
             when /^([\/\w]+)\son\s#{Regexp.escape(mount_point)}\s+/
-              Chef::Log.debug("Special device #{$1} is mounted as #{mount_point}")
+              Seth::Log.debug("Special device #{$1} is mounted as #{mount_point}")
               mounted = false
             end
           end
@@ -204,12 +204,12 @@ class Chef
                 end
               end
               pass = ( $2 == "-" ) ? 0 : $2.to_i
-              Chef::Log.debug("Found mount #{device} to #{mount_point} in #{VFSTAB}")
+              Seth::Log.debug("Found mount #{device} to #{mount_point} in #{VFSTAB}")
               next
             when /^[-\/\w]+\s+[-\/\w]+\s+#{Regexp.escape(mount_point)}\s+/
               # if we find a mountpoint on top of our mountpoint, then we are not enabled
               enabled = false
-              Chef::Log.debug("Found conflicting mount point #{mount_point} in #{VFSTAB}")
+              Seth::Log.debug("Found conflicting mount point #{mount_point} in #{VFSTAB}")
             end
           end
           [ enabled, fstype, options, pass ]

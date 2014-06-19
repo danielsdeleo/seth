@@ -18,22 +18,22 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::EnvironmentShow do
+describe Seth::Knife::EnvironmentShow do
   before(:each) do
-    @knife = Chef::Knife::EnvironmentShow.new
+    @knife = Seth::Knife::EnvironmentShow.new
     @knife.stub(:msg).and_return true
     @knife.stub(:output).and_return true
     @knife.stub(:show_usage).and_return true
     @knife.name_args = [ "production" ]
 
-    @environment = Chef::Environment.new
+    @environment = Seth::Environment.new
     @environment.name("production")
     @environment.description("Look at me!")
-    Chef::Environment.stub(:load).and_return @environment
+    Seth::Environment.stub(:load).and_return @environment
   end
 
   it "should load the environment" do
-    Chef::Environment.should_receive(:load).with("production")
+    Seth::Environment.should_receive(:load).with("production")
     @knife.run
   end
 

@@ -1,7 +1,7 @@
-require 'chef/chef_fs/data_handler/data_handler_base'
+require 'seth/chef_fs/data_handler/data_handler_base'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module DataHandler
       class AclDataHandler < DataHandlerBase
         def normalize(node, entry)

@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-EXEC" "1" "Chef 11.12.0" "" "knife exec"
+.TH "KNIFE-EXEC" "1" "Seth 11.12.0" "" "knife exec"
 .SH NAME
 knife-exec \- The man page for the knife exec subcommand.
 .
@@ -31,11 +31,11 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife exec\fP subcommand uses the Knife configuration file to execute Ruby scripts in the context of a fully configured chef\-client\&. This subcommand is most often used to run scripts that will only access Chef server one time (or otherwise very infrequently). Use this subcommand any time that an operation does not warrant full usage of the Knife subcommand library.
+The \fBknife exec\fP subcommand uses the Knife configuration file to execute Ruby scripts in the context of a fully configured seth\-client\&. This subcommand is most often used to run scripts that will only access Seth server one time (or otherwise very infrequently). Use this subcommand any time that an operation does not warrant full usage of the Knife subcommand library.
 .sp
 \fBAuthenticated API Requests\fP
 .sp
-The \fBknife exec\fP subcommand can be used to make authenticated API requests to the Chef server using the following methods:
+The \fBknife exec\fP subcommand can be used to make authenticated API requests to the Seth server using the following methods:
 .TS
 center;
 |l|l|.
@@ -49,30 +49,30 @@ _
 T{
 \fBapi.delete\fP
 T}	T{
-Use to delete an object from the Chef server\&.
+Use to delete an object from the Seth server\&.
 T}
 _
 T{
 \fBapi.get\fP
 T}	T{
-Use to get the details of an object on the Chef server\&.
+Use to get the details of an object on the Seth server\&.
 T}
 _
 T{
 \fBapi.post\fP
 T}	T{
-Use to add an object to the Chef server\&.
+Use to add an object to the Seth server\&.
 T}
 _
 T{
 \fBapi.put\fP
 T}	T{
-Use to update an object on the Chef server\&.
+Use to update an object on the Seth server\&.
 T}
 _
 .TE
 .sp
-These methods are used with the \fB\-E\fP option, which executes that string locally on the workstation using chef\-shell\&. These methods have the following syntax:
+These methods are used with the \fB\-E\fP option, which executes that string locally on the workstation using seth\-shell\&. These methods have the following syntax:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -89,7 +89,7 @@ where:
 .IP \(bu 2
 \fBapi.method\fP is the corresponding authentication method \-\-\- \fBapi.delete\fP, \fBapi.get\fP, \fBapi.post\fP, or \fBapi.put\fP
 .IP \(bu 2
-\fB/endpoint\fP is an endpoint in the Chef Server API
+\fB/endpoint\fP is an endpoint in the Seth Server API
 .UNINDENT
 .sp
 For example, to get the data for a node named "Example_Node":
@@ -158,8 +158,8 @@ This subcommand has the following options:
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -186,7 +186,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-p PATH:PATH\fP, \fB\-\-script\-path PATH:PATH\fP
 A colon\-separated path at which Ruby scripts are located.
@@ -195,13 +195,13 @@ A colon\-separated path at which Ruby scripts are located.
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -210,7 +210,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -357,6 +357,6 @@ Your attributes: ipaddress fqdn
 .UNINDENT
 .UNINDENT
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

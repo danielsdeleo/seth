@@ -9,12 +9,12 @@
 require 'net/http'
 require 'mixlib/authentication/signedheaderauth'
 require 'openssl'
-require 'chef/version'
+require 'seth/version'
 
-class Chef
+class Seth
   class StreamingCookbookUploader
 
-    DefaultHeaders = { 'accept' => 'application/json', 'x-chef-version' => ::Chef::VERSION }
+    DefaultHeaders = { 'accept' => 'application/json', 'x-seth-version' => ::Seth::VERSION }
 
     class << self
 
@@ -27,7 +27,7 @@ class Chef
       end
 
       def make_request(http_verb, to_url, user_id, secret_key_filename, params = {}, headers = {})
-        Chef::Log.warn('[DEPRECATED] StreamingCookbookUploader class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader instead.')
+        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader instead.')
         boundary = '----RubyMultipartClient' + rand(1000000).to_s + 'ZZZZZ'
         parts = []
         content_file = nil
@@ -61,7 +61,7 @@ class Chef
 
         url = URI.parse(to_url)
 
-        Chef::Log.logger.debug("Signing: method: #{http_verb}, path: #{url.path}, file: #{content_file}, User-id: #{user_id}, Timestamp: #{timestamp}")
+        Seth::Log.logger.debug("Signing: method: #{http_verb}, path: #{url.path}, file: #{content_file}, User-id: #{user_id}, Timestamp: #{timestamp}")
 
         # We use the body for signing the request if the file parameter
         # wasn't a valid file or wasn't included. Extract the body (with
@@ -125,7 +125,7 @@ class Chef
 
     class StreamPart
       def initialize(stream, size)
-        Chef::Log.warn('[DEPRECATED] StreamingCookbookUploader::StreamPart class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader::StreamPart instead.')
+        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader::StreamPart class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader::StreamPart instead.')
         @stream, @size = stream, size
       end
 
@@ -141,7 +141,7 @@ class Chef
 
     class StringPart
       def initialize(str)
-        Chef::Log.warn('[DEPRECATED] StreamingCookbookUploader::StringPart class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader::StringPart instead.')
+        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader::StringPart class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader::StringPart instead.')
         @str = str
       end
 
@@ -157,7 +157,7 @@ class Chef
 
     class MultipartStream
       def initialize(parts)
-        Chef::Log.warn('[DEPRECATED] StreamingCookbookUploader::MultipartStream class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader::MultipartStream instead.')
+        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader::MultipartStream class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader::MultipartStream instead.')
         @parts = parts
         @part_no = 0
         @part_offset = 0

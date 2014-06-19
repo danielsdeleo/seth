@@ -17,18 +17,18 @@
 #
 
 
-require 'chef/resource'
+require 'seth/resource'
 
-class Chef
+class Seth
   class Resource
-    class Breakpoint < Chef::Resource
+    class Breakpoint < Seth::Resource
 
       def initialize(action="break", *args)
         @name = caller.first
         super(@name, *args)
         @action = "break"
         @allowed_actions << :break
-        @provider = Chef::Provider::Breakpoint
+        @provider = Seth::Provider::Breakpoint
       end
     end
   end

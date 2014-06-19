@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/provider/package/ips'
+require 'seth/resource/package'
+require 'seth/provider/package/ips'
 
-class Chef
+class Seth
   class Resource
-    class IpsPackage < ::Chef::Resource::Package
+    class IpsPackage < ::Seth::Resource::Package
       def initialize(name, run_context = nil)
         super(name, run_context)
         @resource_name = :ips_package
-        @provider      = Chef::Provider::Package::Ips
+        @provider      = Seth::Provider::Package::Ips
         @allowed_actions = [ :install, :remove, :upgrade ]
         @accept_license = false
       end

@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
-require 'chef/json_compat'
+require 'seth/knife'
+require 'seth/json_compat'
 
-class Chef
+class Seth
   class Resource
-    class ZenMaster < Chef::Resource
+    class ZenMaster < Seth::Resource
       attr_reader :peace
 
       def initialize(name, run_context=nil)

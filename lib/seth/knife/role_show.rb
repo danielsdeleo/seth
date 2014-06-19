@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class RoleShow < Knife
 
       include Knife::Core::MultiAttributeReturnOption
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife role show ROLE (options)"
@@ -41,7 +41,7 @@ class Chef
           exit 1
         end
 
-        role = Chef::Role.load(@role_name)
+        role = Seth::Role.load(@role_name)
         output(format_for_display(config[:environment] ? role.environment(config[:environment]) : role))
       end
 

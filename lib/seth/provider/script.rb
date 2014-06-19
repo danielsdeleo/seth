@@ -17,11 +17,11 @@
 #
 
 require 'tempfile'
-require 'chef/provider/execute'
+require 'seth/provider/execute'
 
-class Chef
+class Seth
   class Provider
-    class Script < Chef::Provider::Execute
+    class Script < Seth::Provider::Execute
 
       def initialize(new_resource, run_context)
         super
@@ -50,7 +50,7 @@ class Chef
       end
 
       def script_file
-        @script_file ||= Tempfile.open("chef-script")
+        @script_file ||= Tempfile.open("seth-script")
       end
 
       def unlink_script_file

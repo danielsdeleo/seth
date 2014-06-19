@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Mixin
     module WhyRun
 
@@ -30,7 +30,7 @@ class Chef
       # the block is called, but the message is not printed.
       #
       # In general, this class should be accessed through the API provided by
-      # Chef::Provider.
+      # Seth::Provider.
       class ConvergeActions
         attr_reader :actions
 
@@ -48,7 +48,7 @@ class Chef
         # block/proc that implements the action.
         def add_action(descriptions, &block)
           @actions << [descriptions, block]
-          if !Chef::Config[:why_run]
+          if !Seth::Config[:why_run]
             block.call
           end
           events.resource_update_applied(@resource, @action, descriptions)
@@ -68,15 +68,15 @@ class Chef
       #
       # For example, consider a recipe that consists of a package resource and
       # a service resource. If the service's init script is installed by the
-      # package, and Chef is running in why run mode, then the service resource
+      # package, and Seth is running in why run mode, then the service resource
       # would fail when attempting to run `/etc/init.d/software-name status`.
       # In order to provide a more useful approximation of what would happen in
-      # a real chef run, we want to instead assume that the service was created
+      # a real seth run, we want to instead assume that the service was created
       # but isn't running. The logic would look like this:
       #
       #     # Hypothetical service provider demonstrating why run assumption logic.
       #     # This isn't the actual API, it just shows the logic.
-      #     class HypotheticalServiceProvider < Chef::Provider
+      #     class HypotheticalServiceProvider < Seth::Provider
       #
       #       def load_current_resource
       #         # Make sure we have the init script available:
@@ -159,7 +159,7 @@ class Chef
           #     # In practice you should only call this once per Assertion.
           #
           #     # Set the Exception class explicitly
-          #     a.failure_message(Chef::Exceptions::MissingRequiredFile, "File /tmp/foo doesn't exist")
+          #     a.failure_message(Seth::Exceptions::MissingRequiredFile, "File /tmp/foo doesn't exist")
           #     # Fallback to the default error class (AssertionFailure)
           #     a.failure_message("File /tmp/foo" doesn't exist")
           #   end
@@ -175,7 +175,7 @@ class Chef
           end
 
           # Defines a message and optionally provides a code block to execute
-          # when the requirement is not met and Chef is executing in why run
+          # when the requirement is not met and Seth is executing in why run
           # mode
           #
           # If no failure_message is provided (above), then execution
@@ -225,13 +225,13 @@ class Chef
 
           # Runs the assertion/assumption logic. Will raise an Exception of the
           # type specified in #failure_message (or AssertionFailure by default)
-          # if the requirement is not met and Chef is not running in why run
+          # if the requirement is not met and Seth is not running in why run
           # mode. An exception will also be raised if running in why run mode
           # and no why run message or block has been declared.
           def run(action, events, resource)
             if !@assertion_proc || !@assertion_proc.call
               @assertion_failed = true
-              if Chef::Config[:why_run] && @whyrun_message
+              if Seth::Config[:why_run] && @whyrun_message
                 events.provider_requirement_failed(action, resource, @exception_type, @failure_message)
                 events.whyrun_assumption(action, resource, @whyrun_message) if @whyrun_message
                 @resource_modifier.call if @resource_modifier
@@ -300,7 +300,7 @@ class Chef
         # whyrun mode if the template source is not available.
         #   assert(:create, :create_if_missing) do |a|
         #     a.assertion { File::exist?(@new_resource.source) }
-        #     a.failure_message Chef::Exceptions::TemplateError, "Template #{@new_resource.source} could not be found exist."
+        #     a.failure_message Seth::Exceptions::TemplateError, "Template #{@new_resource.source} could not be found exist."
         #     a.whyrun "Template source #{@new_resource.source} does not exist. Assuming it would have been created."
         #     a.block_action!
         #   end

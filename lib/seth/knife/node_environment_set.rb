@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class NodeEnvironmentSet < Knife
 
       deps do
-        require 'chef/node'
+        require 'seth/node'
       end
 
       banner "knife node environment set NODE ENVIRONMENT"
@@ -38,13 +38,13 @@ class Chef
           @environment = @name_args[1]
         end
 
-        node = Chef::Node.load(@node_name)
+        node = Seth::Node.load(@node_name)
 
-        node.chef_environment = @environment
+        node.seth_environment = @environment
 
         node.save
 
-        config[:attribute] = "chef_environment"
+        config[:attribute] = "seth_environment"
 
         output(format_for_display(node))   
       end

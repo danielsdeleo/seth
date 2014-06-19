@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system'
-require 'chef/chef_fs/file_system/operation_failed_error'
-require 'chef/chef_fs/file_system/operation_not_allowed_error'
-require 'chef/util/diff'
+require 'seth/chef_fs/file_system'
+require 'seth/chef_fs/file_system/operation_failed_error'
+require 'seth/chef_fs/file_system/operation_not_allowed_error'
+require 'seth/util/diff'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module CommandLine
 
       def self.diff_print(pattern, a_root, b_root, recurse_depth, output_mode, format_path = nil, diff_filter = nil, ui = nil)
@@ -111,10 +111,10 @@ class Chef
           when :same
             # Skip these silently
           when :error
-            if error.is_a?(Chef::ChefFS::FileSystem::OperationFailedError)
+            if error.is_a?(Seth::ChefFS::FileSystem::OperationFailedError)
               ui.error "#{format_path.call(error.entry)} failed to #{error.operation}: #{error.message}" if ui
               error = true
-            elsif error.is_a?(Chef::ChefFS::FileSystem::OperationNotAllowedError)
+            elsif error.is_a?(Seth::ChefFS::FileSystem::OperationNotAllowedError)
               ui.error "#{format_path.call(error.entry)} #{error.reason}." if ui
             else
               raise error
@@ -129,7 +129,7 @@ class Chef
       end
 
       def self.diff(pattern, old_root, new_root, recurse_depth, get_content)
-        Chef::ChefFS::Parallelizer.parallelize(Chef::ChefFS::FileSystem.list_pairs(pattern, old_root, new_root)) do |old_entry, new_entry|
+        Seth::ChefFS::Parallelizer.parallelize(Chef::ChefFS::FileSystem.list_pairs(pattern, old_root, new_root)) do |old_entry, new_entry|
           diff_entries(old_entry, new_entry, recurse_depth, get_content)
         end.flatten(1)
       end
@@ -142,8 +142,8 @@ class Chef
             if recurse_depth == 0
               return [ [ :common_subdirectories, old_entry, new_entry ] ]
             else
-              return Chef::ChefFS::Parallelizer.parallelize(Chef::ChefFS::FileSystem.child_pairs(old_entry, new_entry)) do |old_child, new_child|
-                Chef::ChefFS::CommandLine.diff_entries(old_child, new_child, recurse_depth ? recurse_depth - 1 : nil, get_content)
+              return Seth::ChefFS::Parallelizer.parallelize(Chef::ChefFS::FileSystem.child_pairs(old_entry, new_entry)) do |old_child, new_child|
+                Seth::ChefFS::CommandLine.diff_entries(old_child, new_child, recurse_depth ? recurse_depth - 1 : nil, get_content)
               end.flatten(1)
             end
 
@@ -176,7 +176,7 @@ class Chef
 
         # Neither is a directory, so they are diffable with file diff
         else
-          are_same, old_value, new_value = Chef::ChefFS::FileSystem.compare(old_entry, new_entry)
+          are_same, old_value, new_value = Seth::ChefFS::FileSystem.compare(old_entry, new_entry)
           if are_same
             if old_value == :none
               return [ [ :both_nonexistent, old_entry, new_entry ] ]
@@ -213,12 +213,12 @@ class Chef
               # If we haven't read the values yet, get them now so that they can be diffed
               begin
                 old_value = old_entry.read if old_value.nil?
-              rescue Chef::ChefFS::FileSystem::NotFoundError
+              rescue Seth::ChefFS::FileSystem::NotFoundError
                 old_value = :none
               end
               begin
                 new_value = new_entry.read if new_value.nil?
-              rescue Chef::ChefFS::FileSystem::NotFoundError
+              rescue Seth::ChefFS::FileSystem::NotFoundError
                 new_value = :none
               end
             end
@@ -232,7 +232,7 @@ class Chef
             end
           end
         end
-      rescue Chef::ChefFS::FileSystem::FileSystemError => e
+      rescue Seth::ChefFS::FileSystem::FileSystemError => e
         return [ [ :error, old_entry, new_entry, nil, nil, e ] ]
       end
 
@@ -269,7 +269,7 @@ class Chef
             old_tempfile.write(old_value)
             old_tempfile.close
 
-            result = Chef::Util::Diff.new.udiff(old_tempfile.path, new_tempfile.path)
+            result = Seth::Util::Diff.new.udiff(old_tempfile.path, new_tempfile.path)
             result = result.gsub(/^--- #{old_tempfile.path}/, "--- #{old_path}")
             result = result.gsub(/^\+\+\+ #{new_tempfile.path}/, "+++ #{new_path}")
             result

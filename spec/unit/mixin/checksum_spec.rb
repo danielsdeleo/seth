@@ -17,17 +17,17 @@
 #
 
 require 'spec_helper'
-require 'chef/mixin/checksum'
+require 'seth/mixin/checksum'
 require 'stringio'
 
-class Chef::CMCCheck
-  include Chef::Mixin::Checksum
+class Seth::CMCCheck
+  include Seth::Mixin::Checksum
 end
 
-describe Chef::Mixin::Checksum do
+describe Seth::Mixin::Checksum do
   before(:each) do
-    @checksum_user = Chef::CMCCheck.new
-    @cache = Chef::Digester.instance
+    @checksum_user = Seth::CMCCheck.new
+    @cache = Seth::Digester.instance
     @file = CHEF_SPEC_DATA + "/checksum/random.txt"
     @stat = double("File::Stat", { :mtime => Time.at(0) })
     File.stub(:stat).and_return(@stat)

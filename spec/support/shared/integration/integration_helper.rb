@@ -19,24 +19,24 @@
 
 require 'tmpdir'
 require 'fileutils'
-require 'chef/config'
-require 'chef_zero/rspec'
+require 'seth/config'
+require 'seth_zero/rspec'
 require 'json'
 require 'support/shared/integration/knife_support'
 require 'support/shared/integration/app_server_support'
 require 'spec_helper'
 
 module IntegrationSupport
-  include ChefZero::RSpec
+  include SethZero::RSpec
 
   def when_the_repository(description, *args, &block)
     context "When the local repository #{description}", *args do
       before :each do
         raise "Can only create one directory per test" if @repository_dir
-        @repository_dir = Dir.mktmpdir('chef_repo')
-        Chef::Config.chef_repo_path = @repository_dir
+        @repository_dir = Dir.mktmpdir('seth_repo')
+        Seth::Config.seth_repo_path = @repository_dir
         %w(client cookbook data_bag environment node role user).each do |object_name|
-          Chef::Config.delete("#{object_name}_path".to_sym)
+          Seth::Config.delete("#{object_name}_path".to_sym)
         end
       end
 
@@ -44,9 +44,9 @@ module IntegrationSupport
         if @repository_dir
           begin
             %w(client cookbook data_bag environment node role user).each do |object_name|
-              Chef::Config.delete("#{object_name}_path".to_sym)
+              Seth::Config.delete("#{object_name}_path".to_sym)
             end
-            Chef::Config.delete(:chef_repo_path)
+            Seth::Config.delete(:seth_repo_path)
             FileUtils.remove_entry_secure(@repository_dir)
           ensure
             @repository_dir = nil
@@ -132,8 +132,8 @@ module IntegrationSupport
   def with_versioned_cookbooks(_metadata = {}, &block)
     _m = { :versioned_cookbooks => true }.merge(_metadata)
     context 'with versioned cookbooks', _m do
-      before(:each) { Chef::Config[:versioned_cookbooks] = true }
-      after(:each)  { Chef::Config.delete(:versioned_cookbooks) }
+      before(:each) { Seth::Config[:versioned_cookbooks] = true }
+      after(:each)  { Seth::Config.delete(:versioned_cookbooks) }
       instance_eval(&block)
     end
   end
@@ -142,8 +142,8 @@ module IntegrationSupport
     _m = { :versioned_cookbooks => false }.merge(_metadata)
     context 'with versioned cookbooks', _m do
       # Just make sure this goes back to default
-      before(:each) { Chef::Config[:versioned_cookbooks] = false }
-      after(:each)  { Chef::Config.delete(:versioned_cookbooks) }
+      before(:each) { Seth::Config[:versioned_cookbooks] = false }
+      after(:each)  { Seth::Config.delete(:versioned_cookbooks) }
       instance_eval(&block)
     end
   end

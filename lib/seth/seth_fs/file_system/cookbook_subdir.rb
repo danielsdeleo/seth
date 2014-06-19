@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/base_fs_dir'
+require 'seth/chef_fs/file_system/base_fs_dir'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class CookbookSubdir < BaseFSDir
         def initialize(name, parent, ruby_only, recursive)

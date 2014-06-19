@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/provider/package/windows'
-require 'chef/win32/error' if RUBY_PLATFORM =~ /mswin|mingw|windows/
+require 'seth/resource/package'
+require 'seth/provider/package/windows'
+require 'seth/win32/error' if RUBY_PLATFORM =~ /mswin|mingw|windows/
 
-class Chef
+class Seth
   class Resource
-    class WindowsPackage < Chef::Resource::Package
+    class WindowsPackage < Seth::Resource::Package
 
       provides :package, :on_platforms => ["windows"]
 
       def initialize(name, run_context=nil)
         super
         @allowed_actions = [ :install, :remove ]
-        @provider = Chef::Provider::Package::Windows
+        @provider = Seth::Provider::Package::Windows
         @resource_name = :windows_package
         @source ||= source(@package_name)
 
@@ -69,7 +69,7 @@ class Chef
           @source
         else
           raise ArgumentError, "Bad type for WindowsPackage resource, use a String" unless arg.is_a?(String)
-          Chef::Log.debug("#{package_name}: sanitizing source path '#{arg}'")
+          Seth::Log.debug("#{package_name}: sanitizing source path '#{arg}'")
           @source = ::File.absolute_path(arg).gsub(::File::SEPARATOR, ::File::ALT_SEPARATOR)
         end
       end

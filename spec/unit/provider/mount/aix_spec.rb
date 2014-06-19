@@ -19,7 +19,7 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::Mount::Aix do
+describe Seth::Provider::Mount::Aix do
 
   before(:all) do
     @mounted_output = <<-MOUNT
@@ -47,18 +47,18 @@ ENABLED
   end
 
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Mount.new("/tmp/foo")
+    @new_resource = Seth::Resource::Mount.new("/tmp/foo")
     @new_resource.device      "/dev/sdz1"
     @new_resource.device_type :device
     @new_resource.fstype      "jfs2"
 
     @new_resource.supports :remount => false
 
-    @provider = Chef::Provider::Mount::Aix.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Mount::Aix.new(@new_resource, @run_context)
 
     ::File.stub(:exists?).with("/dev/sdz1").and_return true
     ::File.stub(:exists?).with("/tmp/foo").and_return true

@@ -18,8 +18,8 @@
 
 require 'spec_helper'
 
-describe Chef do
+describe Seth do
   it "should have a version defined" do
-    Chef::VERSION.should match(/(\d+)\.(\d+)\.(\d+)/)
+    Seth::VERSION.should match(/(\d+)\.(\d+)\.(\d+)/)
   end
 end

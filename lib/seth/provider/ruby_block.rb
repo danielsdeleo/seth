@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Provider
-    class RubyBlock < Chef::Provider
+    class RubyBlock < Seth::Provider
       def whyrun_supported?
         true
       end
@@ -31,7 +31,7 @@ class Chef
       def action_run
         converge_by("execute the ruby block #{@new_resource.name}") do
           @new_resource.block.call
-          Chef::Log.info("#{@new_resource} called")
+          Seth::Log.info("#{@new_resource} called")
         end
       end
 

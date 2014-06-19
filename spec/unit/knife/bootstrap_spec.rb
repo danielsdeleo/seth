@@ -18,13 +18,13 @@
 
 require 'spec_helper'
 
-Chef::Knife::Bootstrap.load_deps
+Seth::Knife::Bootstrap.load_deps
 require 'net/ssh'
 
-describe Chef::Knife::Bootstrap do
+describe Seth::Knife::Bootstrap do
   before(:each) do
-    Chef::Log.logger = Logger.new(StringIO.new)
-    @knife = Chef::Knife::Bootstrap.new
+    Seth::Log.logger = Logger.new(StringIO.new)
+    @knife = Seth::Knife::Bootstrap.new
     # Merge default settings in.
     @knife.merge_configs
     @knife.config[:template_file] = File.expand_path(File.join(CHEF_SPEC_DATA, "bootstrap", "test.erb"))
@@ -63,7 +63,7 @@ describe Chef::Knife::Bootstrap do
 
   it "should load the specified template from a Ruby gem" do
     @knife.config[:template_file] = false
-    Gem.stub(:find_files).and_return(["/Users/schisamo/.rvm/gems/ruby-1.9.2-p180@chef-0.10/gems/knife-windows-0.5.4/lib/chef/knife/bootstrap/fake-bootstrap-template.erb"])
+    Gem.stub(:find_files).and_return(["/Users/schisamo/.rvm/gems/ruby-1.9.2-p180@seth-0.10/gems/knife-windows-0.5.4/lib/chef/knife/bootstrap/fake-bootstrap-template.erb"])
     File.stub(:exists?).and_return(true)
     IO.stub(:read).and_return('random content')
     @knife.config[:distro] = 'fake-bootstrap-template'
@@ -104,7 +104,7 @@ describe Chef::Knife::Bootstrap do
     @knife.instance_variable_set("@template_file", @knife.config[:template_file])
     template_string = @knife.read_template
     @knife.parse_options(["--hint", "openstack"])
-    @knife.render_template(template_string).should match /\/etc\/chef\/ohai\/hints\/openstack.json/
+    @knife.render_template(template_string).should match /\/etc\/seth\/ohai\/hints\/openstack.json/
   end
 
   it "should populate a hint file with JSON when given a file to read" do
@@ -133,7 +133,7 @@ describe Chef::Knife::Bootstrap do
     end
 
     # Include a data bag secret in the options to prevent Bootstrap from
-    # attempting to access /etc/chef/encrypted_data_bag_secret, which
+    # attempting to access /etc/seth/encrypted_data_bag_secret, which
     # can fail when the file exists but can't be accessed by the user
     # running the tests.
     let(:options){ ["--bootstrap-no-proxy", setting, "-s", "foo"] }
@@ -181,7 +181,7 @@ describe Chef::Knife::Bootstrap do
       end
 
       it "renders the client.rb with an encrypted_data_bag_secret entry" do
-        rendered_template.should match(%r{encrypted_data_bag_secret\s*"/etc/chef/encrypted_data_bag_secret"})
+        rendered_template.should match(%r{encrypted_data_bag_secret\s*"/etc/seth/encrypted_data_bag_secret"})
       end
     end
 
@@ -194,12 +194,12 @@ describe Chef::Knife::Bootstrap do
       end
 
       it "renders the client.rb with an encrypted_data_bag_secret entry" do
-        rendered_template.should match(%r{encrypted_data_bag_secret\s*"/etc/chef/encrypted_data_bag_secret"})
+        rendered_template.should match(%r{encrypted_data_bag_secret\s*"/etc/seth/encrypted_data_bag_secret"})
       end
     end
 
-    context "via Chef::Config[:encrypted_data_bag_secret]" do
-      before(:each) { Chef::Config[:encrypted_data_bag_secret] = secret_file }
+    context "via Seth::Config[:encrypted_data_bag_secret]" do
+      before(:each) { Seth::Config[:encrypted_data_bag_secret] = secret_file }
       let(:secret) { IO.read(secret_file) }
 
       it "creates a secret file" do
@@ -207,7 +207,7 @@ describe Chef::Knife::Bootstrap do
       end
 
       it "renders the client.rb with an encrypted_data_bag_secret entry" do
-        rendered_template.should match(%r{encrypted_data_bag_secret\s*"/etc/chef/encrypted_data_bag_secret"})
+        rendered_template.should match(%r{encrypted_data_bag_secret\s*"/etc/seth/encrypted_data_bag_secret"})
       end
     end
   end
@@ -219,8 +219,8 @@ describe Chef::Knife::Bootstrap do
         @knife.config[:ssh_user]      = "rooty"
         @knife.config[:ssh_port]      = "4001"
         @knife.config[:ssh_password]  = "open_sesame"
-        Chef::Config[:knife][:ssh_user] = nil
-        Chef::Config[:knife][:ssh_port] = nil
+        Seth::Config[:knife][:ssh_user] = nil
+        Seth::Config[:knife][:ssh_port] = nil
         @knife.config[:forward_agent] = true
         @knife.config[:identity_file] = "~/.ssh/me.rsa"
         @knife.stub(:read_template).and_return("")
@@ -285,12 +285,12 @@ describe Chef::Knife::Bootstrap do
         @knife.config[:forward_agent] = nil
         @knife.config[:identity_file] = nil
         @knife.config[:host_key_verify] = nil
-        Chef::Config[:knife][:ssh_user] = "curiosity"
-        Chef::Config[:knife][:ssh_port] = "2430"
-        Chef::Config[:knife][:forward_agent] = true
-        Chef::Config[:knife][:identity_file] = "~/.ssh/you.rsa"
-        Chef::Config[:knife][:ssh_gateway] = "towel.blinkenlights.nl"
-        Chef::Config[:knife][:host_key_verify] = true
+        Seth::Config[:knife][:ssh_user] = "curiosity"
+        Seth::Config[:knife][:ssh_port] = "2430"
+        Seth::Config[:knife][:forward_agent] = true
+        Seth::Config[:knife][:identity_file] = "~/.ssh/you.rsa"
+        Seth::Config[:knife][:ssh_gateway] = "towel.blinkenlights.nl"
+        Seth::Config[:knife][:host_key_verify] = true
         @knife.stub(:read_template).and_return("")
         @knife_ssh = @knife.knife_ssh
       end
@@ -382,9 +382,9 @@ describe Chef::Knife::Bootstrap do
       lambda { @knife.run }.should raise_error(Net::SSH::AuthenticationFailed)
     end
 
-    context "Chef::Config[:encrypted_data_bag_secret] is set" do
+    context "Seth::Config[:encrypted_data_bag_secret] is set" do
       let(:secret_file) { File.join(CHEF_SPEC_DATA, 'bootstrap', 'encrypted_data_bag_secret') }
-      before { Chef::Config[:encrypted_data_bag_secret] = secret_file }
+      before { Seth::Config[:encrypted_data_bag_secret] = secret_file }
 
       it "warns the configuration option is deprecated" do
         @knife_ssh.should_receive(:run)

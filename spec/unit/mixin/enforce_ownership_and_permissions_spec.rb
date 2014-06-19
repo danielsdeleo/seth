@@ -20,18 +20,18 @@ require 'spec_helper'
 require 'etc'
 require 'ostruct'
 
-describe Chef::Mixin::EnforceOwnershipAndPermissions do
+describe Seth::Mixin::EnforceOwnershipAndPermissions do
 
   before(:each) do
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.name "make_believe"
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
     @tmpdir = Dir.mktmpdir
-    @resource = Chef::Resource::File.new("#{@tmpdir}/madeup.txt")
+    @resource = Seth::Resource::File.new("#{@tmpdir}/madeup.txt")
     FileUtils.touch @resource.path
     @resource.owner "adam"
-    @provider = Chef::Provider::File.new(@resource, @run_context)
+    @provider = Seth::Provider::File.new(@resource, @run_context)
     @provider.current_resource = @resource
   end
 
@@ -40,15 +40,15 @@ describe Chef::Mixin::EnforceOwnershipAndPermissions do
   end
 
   it "should call set_all on the file access control object" do
-    Chef::FileAccessControl.any_instance.should_receive(:set_all)
+    Seth::FileAccessControl.any_instance.should_receive(:set_all)
     @provider.enforce_ownership_and_permissions
   end
 
   context "when nothing was updated" do
     before do
-      Chef::FileAccessControl.any_instance.stub(:uid_from_resource).and_return(0)
-      Chef::FileAccessControl.any_instance.stub(:requires_changes?).and_return(false)
-      Chef::FileAccessControl.any_instance.stub(:define_resource_requirements)
+      Seth::FileAccessControl.any_instance.stub(:uid_from_resource).and_return(0)
+      Seth::FileAccessControl.any_instance.stub(:requires_changes?).and_return(false)
+      Seth::FileAccessControl.any_instance.stub(:define_resource_requirements)
 
       passwd_struct = if windows?
                         Struct::Passwd.new("root", "x", 0, 0, "/root", "/bin/bash")
@@ -63,7 +63,7 @@ describe Chef::Mixin::EnforceOwnershipAndPermissions do
     it "does not set updated_by_last_action on the new resource" do
       @provider.new_resource.should_not_receive(:updated_by_last_action)
 
-      Chef::FileAccessControl.any_instance.stub(:set_all)
+      Seth::FileAccessControl.any_instance.stub(:set_all)
       @provider.run_action(:create)
     end
 
@@ -71,8 +71,8 @@ describe Chef::Mixin::EnforceOwnershipAndPermissions do
 
   context "when something was modified" do
     before do
-      Chef::FileAccessControl.any_instance.stub(:requires_changes?).and_return(true)
-      Chef::FileAccessControl.any_instance.stub(:uid_from_resource).and_return(0)
+      Seth::FileAccessControl.any_instance.stub(:requires_changes?).and_return(true)
+      Seth::FileAccessControl.any_instance.stub(:uid_from_resource).and_return(0)
 
       passwd_struct = if windows?
                         Struct::Passwd.new("root", "x", 0, 0, "/root", "/bin/bash")
@@ -88,7 +88,7 @@ describe Chef::Mixin::EnforceOwnershipAndPermissions do
       @provider.new_resource.owner(0) # CHEF-3557 hack - Set these because we don't for windows
       @provider.new_resource.group(0) # CHEF-3557 hack - Set these because we don't for windows
       @provider.new_resource.should_receive(:updated_by_last_action)
-      Chef::FileAccessControl.any_instance.stub(:set_all)
+      Seth::FileAccessControl.any_instance.stub(:set_all)
       @provider.run_action(:create)
     end
   end

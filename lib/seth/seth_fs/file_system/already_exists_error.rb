@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/operation_failed_error'
+require 'seth/chef_fs/file_system/operation_failed_error'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class AlreadyExistsError < OperationFailedError
         def initialize(operation, entry, cause = nil)

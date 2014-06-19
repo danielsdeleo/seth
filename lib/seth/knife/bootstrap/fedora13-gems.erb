@@ -6,39 +6,39 @@ yum install -y ruby ruby-devel gcc gcc-c++ automake autoconf rubygems make
 gem update --system
 gem update
 gem install ohai --no-rdoc --no-ri --verbose
-gem install chef --no-rdoc --no-ri --verbose <%= bootstrap_version_string %>
+gem install seth --no-rdoc --no-ri --verbose <%= bootstrap_version_string %>
 
-mkdir -p /etc/chef
+mkdir -p /etc/seth
 
-cat > /etc/chef/validation.pem <<'EOP'
+cat > /etc/seth/validation.pem <<'EOP'
 <%= validation_key %>
 EOP
-chmod 0600 /etc/chef/validation.pem
+chmod 0600 /etc/seth/validation.pem
 
 <% if encrypted_data_bag_secret -%>
-cat > /etc/chef/encrypted_data_bag_secret <<'EOP'
+cat > /etc/seth/encrypted_data_bag_secret <<'EOP'
 <%= encrypted_data_bag_secret %>
 EOP
-chmod 0600 /etc/chef/encrypted_data_bag_secret
+chmod 0600 /etc/seth/encrypted_data_bag_secret
 <% end -%>
 
 <%# Generate Ohai Hints -%>
-<% unless @chef_config[:knife][:hints].nil? || @chef_config[:knife][:hints].empty? -%>
-mkdir -p /etc/chef/ohai/hints
+<% unless @seth_config[:knife][:hints].nil? || @chef_config[:knife][:hints].empty? -%>
+mkdir -p /etc/seth/ohai/hints
 
-<% @chef_config[:knife][:hints].each do |name, hash| -%>
-cat > /etc/chef/ohai/hints/<%= name %>.json <<'EOP'
+<% @seth_config[:knife][:hints].each do |name, hash| -%>
+cat > /etc/seth/ohai/hints/<%= name %>.json <<'EOP'
 <%= hash.to_json %>
 EOP
 <% end -%>
 <% end -%>
 
-cat > /etc/chef/client.rb <<'EOP'
+cat > /etc/seth/client.rb <<'EOP'
 <%= config_content %>
 EOP
 
-cat > /etc/chef/first-boot.json <<'EOP'
+cat > /etc/seth/first-boot.json <<'EOP'
 <%= first_boot.to_json %>
 EOP
 
-<%= start_chef %>'
+<%= start_seth %>'

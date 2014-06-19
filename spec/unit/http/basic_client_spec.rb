@@ -16,12 +16,12 @@
 #
 
 require 'spec_helper'
-require 'chef/http/basic_client'
+require 'seth/http/basic_client'
 
 describe "HTTP Connection" do
 
   let(:uri) { URI("https://example.com:4443") }
-  subject { Chef::HTTP::BasicClient.new(uri) }
+  subject { Seth::HTTP::BasicClient.new(uri) }
 
   describe ".new" do
     it "creates an instance" do

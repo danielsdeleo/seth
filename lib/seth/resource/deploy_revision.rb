@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
 
     # Convenience class for using the deploy resource with the revision
     # deployment strategy (provider)
-    class DeployRevision < Chef::Resource::Deploy
+    class DeployRevision < Seth::Resource::Deploy
       def initialize(*args, &block)
         super
         @resource_name = :deploy_revision
-        @provider = Chef::Provider::Deploy::Revision
+        @provider = Seth::Provider::Deploy::Revision
       end
     end
 
-    class DeployBranch < Chef::Resource::DeployRevision
+    class DeployBranch < Seth::Resource::DeployRevision
       def initialize(*args, &block)
         super
         @resource_name = :deploy_branch

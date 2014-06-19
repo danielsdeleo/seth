@@ -18,11 +18,11 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe Chef::Knife::CookbookSiteDownload do
+describe Seth::Knife::CookbookSiteDownload do
 
   describe 'run' do
     before do
-      @knife            = Chef::Knife::CookbookSiteDownload.new
+      @knife            = Seth::Knife::CookbookSiteDownload.new
       @knife.name_args  = ['apache2']
       @noauth_rest      = double('no auth rest')
       @stdout           = StringIO.new
@@ -100,7 +100,7 @@ describe Chef::Knife::CookbookSiteDownload do
 
         context 'with -f or --file' do
           before do
-            @file = '/opt/chef/cookbooks/apache2.tar.gz'
+            @file = '/opt/seth/cookbooks/apache2.tar.gz'
             @knife.config[:file] = @file
             FileUtils.should_receive(:cp).with(@temp_file.path, @file)
           end

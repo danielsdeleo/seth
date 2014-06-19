@@ -1,18 +1,18 @@
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
-    class Raw < Chef::Knife
+    class Raw < Seth::Knife
       banner "knife raw REQUEST_PATH"
 
       deps do
-        require 'chef/json_compat'
-        require 'chef/config'
-        require 'chef/http'
-        require 'chef/http/authenticator'
-        require 'chef/http/cookie_manager'
-        require 'chef/http/decompressor'
-        require 'chef/http/json_output'
+        require 'seth/json_compat'
+        require 'seth/config'
+        require 'seth/http'
+        require 'seth/http/authenticator'
+        require 'seth/http/cookie_manager'
+        require 'seth/http/decompressor'
+        require 'seth/http/json_output'
       end
 
       option :method,
@@ -32,17 +32,17 @@ class Chef
         :short => '-i FILE',
         :description => "Name of file to use for PUT or POST"
 
-      class RawInputServerAPI < Chef::HTTP
+      class RawInputServerAPI < Seth::HTTP
         def initialize(options = {})
-          options[:client_name] ||= Chef::Config[:node_name]
-          options[:signing_key_filename] ||= Chef::Config[:client_key]
-          super(Chef::Config[:chef_server_url], options)
+          options[:client_name] ||= Seth::Config[:node_name]
+          options[:signing_key_filename] ||= Seth::Config[:client_key]
+          super(Seth::Config[:seth_server_url], options)
         end
-        use Chef::HTTP::JSONOutput
-        use Chef::HTTP::CookieManager
-        use Chef::HTTP::Decompressor
-        use Chef::HTTP::Authenticator
-        use Chef::HTTP::RemoteRequestID
+        use Seth::HTTP::JSONOutput
+        use Seth::HTTP::CookieManager
+        use Seth::HTTP::Decompressor
+        use Seth::HTTP::Authenticator
+        use Seth::HTTP::RemoteRequestID
       end
 
       def run
@@ -65,14 +65,14 @@ class Chef
           method = config[:method].to_sym
 
           if config[:pretty]
-            chef_rest = RawInputServerAPI.new
-            result = chef_rest.request(method, name_args[0], {'Content-Type' => 'application/json'}, data)
+            seth_rest = RawInputServerAPI.new
+            result = seth_rest.request(method, name_args[0], {'Content-Type' => 'application/json'}, data)
             unless result.is_a?(String)
-              result = Chef::JSONCompat.to_json_pretty(result)
+              result = Seth::JSONCompat.to_json_pretty(result)
             end
           else
-            chef_rest = RawInputServerAPI.new(:raw_output => true)
-            result = chef_rest.request(method, name_args[0], {'Content-Type' => 'application/json'}, data)
+            seth_rest = RawInputServerAPI.new(:raw_output => true)
+            result = seth_rest.request(method, name_args[0], {'Content-Type' => 'application/json'}, data)
           end
           output result
         rescue Timeout::Error => e

@@ -16,29 +16,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef'
-require 'chef/application'
-require 'chef/client'
-require 'chef/config'
-require 'chef/daemon'
-require 'chef/log'
-require 'chef/rest'
-require 'chef/config_fetcher'
+require 'seth'
+require 'seth/application'
+require 'seth/client'
+require 'seth/config'
+require 'seth/daemon'
+require 'seth/log'
+require 'seth/rest'
+require 'seth/config_fetcher'
 require 'fileutils'
 
-class Chef::Application::Solo < Chef::Application
+class Seth::Application::Solo < Chef::Application
 
   option :config_file,
     :short => "-c CONFIG",
     :long  => "--config CONFIG",
-    :default => Chef::Config.platform_specific_path('/etc/chef/solo.rb'),
+    :default => Seth::Config.platform_specific_path('/etc/seth/solo.rb'),
     :description => "The configuration file to use"
 
   option :formatter,
     :short        => "-F FORMATTER",
     :long         => "--format FORMATTER",
     :description  => "output format to use",
-    :proc         => lambda { |format| Chef::Config.add_formatter(format) }
+    :proc         => lambda { |format| Seth::Config.add_formatter(format) }
 
   option :force_logger,
     :long         => "--force-logger",
@@ -55,7 +55,7 @@ class Chef::Application::Solo < Chef::Application
   option :color,
     :long         => '--[no-]color',
     :boolean      => true,
-    :default      => !Chef::Platform.windows?,
+    :default      => !Seth::Platform.windows?,
     :description  => "Use colored output, defaults to enabled"
 
   option :log_level,
@@ -91,7 +91,7 @@ class Chef::Application::Solo < Chef::Application
     :description => "Group to set privilege to",
     :proc => nil
 
-  unless Chef::Platform.windows?
+  unless Seth::Platform.windows?
     option :daemonize,
       :short => "-d",
       :long => "--daemonize",
@@ -102,7 +102,7 @@ class Chef::Application::Solo < Chef::Application
   option :interval,
     :short => "-i SECONDS",
     :long => "--interval SECONDS",
-    :description => "Run chef-client periodically, in seconds",
+    :description => "Run seth-client periodically, in seconds",
     :proc => lambda { |s| s.to_i }
 
   option :json_attribs,
@@ -132,9 +132,9 @@ class Chef::Application::Solo < Chef::Application
   option :version,
     :short        => "-v",
     :long         => "--version",
-    :description  => "Show chef version",
+    :description  => "Show seth version",
     :boolean      => true,
-    :proc         => lambda {|v| puts "Chef: #{::Chef::VERSION}"},
+    :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
     :exit         => 0
 
   option :override_runlist,
@@ -144,7 +144,7 @@ class Chef::Application::Solo < Chef::Application
     :proc         => lambda{|items|
       items = items.split(',')
       items.compact.map{|item|
-        Chef::RunList::RunListItem.new(item)
+        Seth::RunList::RunListItem.new(item)
       }
     }
 
@@ -163,14 +163,14 @@ class Chef::Application::Solo < Chef::Application
   option :environment,
     :short        => '-E ENVIRONMENT',
     :long         => '--environment ENVIRONMENT',
-    :description  => 'Set the Chef Environment on the node'
+    :description  => 'Set the Seth Environment on the node'
 
   option :run_lock_timeout,
     :long         => "--run-lock-timeout SECONDS",
     :description  => "Set maximum duration to wait for another client run to finish, default is indefinitely.",
     :proc         => lambda { |s| s.to_i }
 
-  attr_reader :chef_client_json
+  attr_reader :seth_client_json
 
   def initialize
     super
@@ -179,68 +179,68 @@ class Chef::Application::Solo < Chef::Application
   def reconfigure
     super
 
-    Chef::Config[:solo] = true
+    Seth::Config[:solo] = true
 
-    if Chef::Config[:daemonize]
-      Chef::Config[:interval] ||= 1800
+    if Seth::Config[:daemonize]
+      Seth::Config[:interval] ||= 1800
     end
 
-    if Chef::Config[:json_attribs]
-      config_fetcher = Chef::ConfigFetcher.new(Chef::Config[:json_attribs])
-      @chef_client_json = config_fetcher.fetch_json
+    if Seth::Config[:json_attribs]
+      config_fetcher = Seth::ConfigFetcher.new(Chef::Config[:json_attribs])
+      @seth_client_json = config_fetcher.fetch_json
     end
 
-    if Chef::Config[:recipe_url]
-      cookbooks_path = Array(Chef::Config[:cookbook_path]).detect{|e| e =~ /\/cookbooks\/*$/ }
+    if Seth::Config[:recipe_url]
+      cookbooks_path = Array(Seth::Config[:cookbook_path]).detect{|e| e =~ /\/cookbooks\/*$/ }
       recipes_path = File.expand_path(File.join(cookbooks_path, '..'))
 
-      Chef::Log.debug "Creating path #{recipes_path} to extract recipes into"
+      Seth::Log.debug "Creating path #{recipes_path} to extract recipes into"
       FileUtils.mkdir_p recipes_path
       path = File.join(recipes_path, 'recipes.tgz')
       File.open(path, 'wb') do |f|
-        open(Chef::Config[:recipe_url]) do |r|
+        open(Seth::Config[:recipe_url]) do |r|
           f.write(r.read)
         end
       end
-      Chef::Mixin::Command.run_command(:command => "tar zxvf #{path} -C #{recipes_path}")
+      Seth::Mixin::Command.run_command(:command => "tar zxvf #{path} -C #{recipes_path}")
     end
   end
 
   def setup_application
-    Chef::Daemon.change_privilege
+    Seth::Daemon.change_privilege
   end
 
   def run_application
-    if Chef::Config[:daemonize]
-      Chef::Daemon.daemonize("chef-client")
+    if Seth::Config[:daemonize]
+      Seth::Daemon.daemonize("seth-client")
     end
 
     loop do
       begin
-        if Chef::Config[:splay]
-          splay = rand Chef::Config[:splay]
-          Chef::Log.debug("Splay sleep #{splay} seconds")
+        if Seth::Config[:splay]
+          splay = rand Seth::Config[:splay]
+          Seth::Log.debug("Splay sleep #{splay} seconds")
           sleep splay
         end
 
-        run_chef_client
-        if Chef::Config[:interval]
-          Chef::Log.debug("Sleeping for #{Chef::Config[:interval]} seconds")
-          sleep Chef::Config[:interval]
+        run_seth_client
+        if Seth::Config[:interval]
+          Seth::Log.debug("Sleeping for #{Chef::Config[:interval]} seconds")
+          sleep Seth::Config[:interval]
         else
-          Chef::Application.exit! "Exiting", 0
+          Seth::Application.exit! "Exiting", 0
         end
       rescue SystemExit => e
         raise
       rescue Exception => e
-        if Chef::Config[:interval]
-          Chef::Log.error("#{e.class}: #{e}")
-          Chef::Log.debug("#{e.class}: #{e}\n#{e.backtrace.join("\n")}")
-          Chef::Log.fatal("Sleeping for #{Chef::Config[:interval]} seconds before trying again")
-          sleep Chef::Config[:interval]
+        if Seth::Config[:interval]
+          Seth::Log.error("#{e.class}: #{e}")
+          Seth::Log.debug("#{e.class}: #{e}\n#{e.backtrace.join("\n")}")
+          Seth::Log.fatal("Sleeping for #{Chef::Config[:interval]} seconds before trying again")
+          sleep Seth::Config[:interval]
           retry
         else
-          Chef::Application.fatal!("#{e.class}: #{e.message}", 1)
+          Seth::Application.fatal!("#{e.class}: #{e.message}", 1)
         end
       end
     end

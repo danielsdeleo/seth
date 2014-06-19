@@ -2,8 +2,8 @@
 # Author:: Adam Jacob (<adam@opscode.com>)
 # Author:: Tim Hinderliter (<tim@opscode.com>)
 # Author:: Christopher Walters (<cw@opscode.com>)
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright 2008-2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright 2008-2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,13 +19,13 @@
 # limitations under the License.
 #
 
-require 'chef/log'
-require 'chef/rest'
-require 'chef/run_context'
-require 'chef/config'
-require 'chef/node'
+require 'seth/log'
+require 'seth/rest'
+require 'seth/run_context'
+require 'seth/config'
+require 'seth/node'
 
-class Chef
+class Seth
   module PolicyBuilder
 
     # Policyfile is an experimental policy builder implementation that gets run
@@ -35,7 +35,7 @@ class Chef
     # This implementation is experimental. It may be changed in incompatible
     # ways in minor or even patch releases, or even abandoned altogether. If
     # using this with other tools, you may be forced to upgrade those tools in
-    # lockstep with chef-client because of incompatible behavior changes.
+    # lockstep with seth-client because of incompatible behavior changes.
     #
     # == Unsupported Options:
     # * override_runlist:: This could potentially be integrated into the
@@ -43,7 +43,7 @@ class Chef
     # semantics.
     # * specific_recipes:: put more design thought into this use case.
     # * run_list in json_attribs:: would be ignored anyway, so it raises an error.
-    # * chef-solo:: not currently supported. Need more design thought around
+    # * seth-solo:: not currently supported. Need more design thought around
     # how this should work.
     class Policyfile
 
@@ -68,10 +68,10 @@ class Chef
 
         @node = nil
 
-        Chef::Log.warn("Using experimental Policyfile feature")
+        Seth::Log.warn("Using experimental Policyfile feature")
 
-        if Chef::Config[:solo]
-          raise UnsupportedFeature, "Policyfile does not support chef-solo at this time."
+        if Seth::Config[:solo]
+          raise UnsupportedFeature, "Policyfile does not support seth-solo at this time."
         end
 
         if override_runlist
@@ -82,8 +82,8 @@ class Chef
           raise UnsupportedFeature, "Policyfile does not support setting the run_list in json data at this time"
         end
 
-        if Chef::Config[:environment] && !Chef::Config[:environment].chomp.empty?
-          raise UnsupportedFeature, "Policyfile does not work with Chef Environments"
+        if Seth::Config[:environment] && !Chef::Config[:environment].chomp.empty?
+          raise UnsupportedFeature, "Policyfile does not work with Seth Environments"
         end
       end
 
@@ -114,14 +114,14 @@ class Chef
 
       # Loads the node state from the server.
       def load_node
-        events.node_load_start(node_name, Chef::Config)
-        Chef::Log.debug("Building node object for #{node_name}")
+        events.node_load_start(node_name, Seth::Config)
+        Seth::Log.debug("Building node object for #{node_name}")
 
-        @node = Chef::Node.find_or_create(node_name)
+        @node = Seth::Node.find_or_create(node_name)
         validate_policyfile
         node
       rescue Exception => e
-        events.node_load_failed(node_name, e, Chef::Config)
+        events.node_load_failed(node_name, e, Seth::Config)
         raise
       end
 
@@ -129,7 +129,7 @@ class Chef
       # the node, Then expands the run_list.
       #
       # === Returns
-      # node<Chef::Node>:: The modified node object. node is modified in place.
+      # node<Seth::Node>:: The modified node object. node is modified in place.
       def build_node
         # consume_external_attrs may add items to the run_list. Save the
         # expanded run_list, which we will pass to the server later to
@@ -141,15 +141,15 @@ class Chef
         expand_run_list
         apply_policyfile_attributes
 
-        Chef::Log.info("Run List is [#{run_list}]")
-        Chef::Log.info("Run List expands to [#{run_list_with_versions_for_display.join(', ')}]")
+        Seth::Log.info("Run List is [#{run_list}]")
+        Seth::Log.info("Run List expands to [#{run_list_with_versions_for_display.join(', ')}]")
 
 
-        events.node_load_completed(node, run_list_with_versions_for_display, Chef::Config)
+        events.node_load_completed(node, run_list_with_versions_for_display, Seth::Config)
 
         node
       rescue Exception => e
-        events.node_load_failed(node_name, e, Chef::Config)
+        events.node_load_failed(node_name, e, Seth::Config)
         raise
       end
 
@@ -157,10 +157,10 @@ class Chef
         # TODO: This file vendor stuff is duplicated and initializing it with a
         # block traps a reference to this object in a global context which will
         # prevent it from getting GC'd. Simplify it.
-        Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::RemoteFileVendor.new(manifest, api_service) }
+        Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::RemoteFileVendor.new(manifest, api_service) }
         sync_cookbooks
-        cookbook_collection = Chef::CookbookCollection.new(cookbooks_to_sync)
-        run_context = Chef::RunContext.new(node, cookbook_collection, events)
+        cookbook_collection = Seth::CookbookCollection.new(cookbooks_to_sync)
+        run_context = Seth::RunContext.new(node, cookbook_collection, events)
 
         run_context.load(run_list_expansion_ish)
 
@@ -176,12 +176,12 @@ class Chef
 
 
       def sync_cookbooks
-        Chef::Log.debug("Synchronizing cookbooks")
-        synchronizer = Chef::CookbookSynchronizer.new(cookbooks_to_sync, events)
+        Seth::Log.debug("Synchronizing cookbooks")
+        synchronizer = Seth::CookbookSynchronizer.new(cookbooks_to_sync, events)
         synchronizer.sync_cookbooks
 
         # register the file cache path in the cookbook path so that CookbookLoader actually picks up the synced cookbooks
-        Chef::Config[:cookbook_path] = File.join(Chef::Config[:file_cache_path], "cookbooks")
+        Seth::Config[:cookbook_path] = File.join(Chef::Config[:file_cache_path], "cookbooks")
 
         cookbooks_to_sync
       end
@@ -280,14 +280,14 @@ class Chef
       class ConfigurationError < StandardError; end
 
       def deployment_group
-        Chef::Config[:deployment_group] or
+        Seth::Config[:deployment_group] or
           raise ConfigurationError, "Setting `deployment_group` is not configured."
       end
 
       # Builds a 'cookbook_hash' map of the form
       #   "COOKBOOK_NAME" => "IDENTIFIER"
       #
-      # This can be passed to a Chef::CookbookSynchronizer object to
+      # This can be passed to a Seth::CookbookSynchronizer object to
       # synchronize the cookbooks.
       #
       # TODO: Currently this makes N API calls to the server to get the
@@ -313,7 +313,7 @@ class Chef
 
       # Fetches the CookbookVersion object for the given name and identifer
       # specified in the lock_data.
-      # TODO: This only implements Chef 11 compatibility mode, which means that
+      # TODO: This only implements Seth 11 compatibility mode, which means that
       # cookbooks are fetched by the "dotted_decimal_identifier": a
       # representation of a SHA1 in the traditional x.y.z version format.
       def manifest_for(cookbook_name, lock_data)
@@ -321,7 +321,7 @@ class Chef
         http_api.get("cookbooks/#{cookbook_name}/#{xyz_version}")
       rescue Exception => e
         message = "Error loading cookbook #{cookbook_name} at version #{xyz_version}: #{e.class} - #{e.message}"
-        err = Chef::Exceptions::CookbookNotFound.new(message)
+        err = Seth::Exceptions::CookbookNotFound.new(message)
         err.set_backtrace(e.backtrace)
         raise err
       end
@@ -331,11 +331,11 @@ class Chef
       end
 
       def http_api
-        @api_service ||= Chef::REST.new(config[:chef_server_url])
+        @api_service ||= Seth::REST.new(config[:seth_server_url])
       end
 
       def config
-        Chef::Config
+        Seth::Config
       end
 
     end

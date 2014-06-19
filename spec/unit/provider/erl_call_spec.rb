@@ -18,18 +18,18 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::ErlCall do
+describe Seth::Provider::ErlCall do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::ErlCall.new("test", @node)
+    @new_resource = Seth::Resource::ErlCall.new("test", @node)
     @new_resource.code("io:format(\"burritos\", []).")
-    @new_resource.node_name("chef@localhost")
+    @new_resource.node_name("seth@localhost")
     @new_resource.name("test")
 
-    @provider = Chef::Provider::ErlCall.new(@new_resource, @run_context)
+    @provider = Seth::Provider::ErlCall.new(@new_resource, @run_context)
 
     @provider.stub(:popen4).and_return(@status)
     @stdin = StringIO.new
@@ -38,9 +38,9 @@ describe Chef::Provider::ErlCall do
     @pid = 2342999
   end
 
-  it "should return a Chef::Provider::ErlCall object" do
-    provider = Chef::Provider::ErlCall.new(@new_resource, @run_context)
-    provider.should be_a_kind_of(Chef::Provider::ErlCall)
+  it "should return a Seth::Provider::ErlCall object" do
+    provider = Seth::Provider::ErlCall.new(@new_resource, @run_context)
+    provider.should be_a_kind_of(Seth::Provider::ErlCall)
   end
 
   it "should return true" do
@@ -55,7 +55,7 @@ describe Chef::Provider::ErlCall do
     end
 
     it "should write to stdin of the erl_call command" do
-      expected_cmd = "erl_call -e -s -sname chef@localhost -c nomnomnom"
+      expected_cmd = "erl_call -e -s -sname seth@localhost -c nomnomnom"
       @provider.should_receive(:popen4).with(expected_cmd, :waitlast => true).and_return([@pid, @stdin, @stdout, @stderr])
       Process.should_receive(:wait).with(@pid)
 
@@ -73,7 +73,7 @@ describe Chef::Provider::ErlCall do
     end
 
     it "should write to stdin of the erl_call command" do
-      @provider.should_receive(:popen4).with("erl_call -e  -name chef@localhost ", :waitlast => true).and_return([@pid, @stdin, @stdout, @stderr])
+      @provider.should_receive(:popen4).with("erl_call -e  -name seth@localhost ", :waitlast => true).and_return([@pid, @stdin, @stdout, @stderr])
       Process.should_receive(:wait).with(@pid)
 
       @provider.action_run

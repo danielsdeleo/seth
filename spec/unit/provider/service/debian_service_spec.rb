@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Debian do
+describe Seth::Provider::Service::Debian do
   before(:each) do
-    @node = Chef::Node.new
+    @node = Seth::Node.new
     @node.automatic_attrs[:command] = {:ps => 'fuuuu'}
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Service.new("chef")
-    @provider = Chef::Provider::Service::Debian.new(@new_resource, @run_context)
+    @new_resource = Seth::Resource::Service.new("seth")
+    @provider = Seth::Provider::Service::Debian.new(@new_resource, @run_context)
 
-    @current_resource = Chef::Resource::Service.new("chef")
+    @current_resource = Seth::Resource::Service.new("seth")
     @provider.current_resource = @current_resource
 
     @pid, @stdin, @stdout, @stderr = nil, nil, nil, nil
@@ -41,7 +41,7 @@ describe Chef::Provider::Service::Debian do
       @provider.define_resource_requirements
       lambda {
         @provider.process_resource_requirements
-      }.should raise_error(Chef::Exceptions::Service)
+      }.should raise_error(Seth::Exceptions::Service)
     end
 
     context "when update-rc.d shows init linked to rc*.d/" do
@@ -49,14 +49,14 @@ describe Chef::Provider::Service::Debian do
         @provider.stub(:assert_update_rcd_available)
 
         result = <<-UPDATE_RC_D_SUCCESS
-  Removing any system startup links for /etc/init.d/chef ...
-    /etc/rc0.d/K20chef
-    /etc/rc1.d/K20chef
-    /etc/rc2.d/S20chef
-    /etc/rc3.d/S20chef
-    /etc/rc4.d/S20chef
-    /etc/rc5.d/S20chef
-    /etc/rc6.d/K20chef
+  Removing any system startup links for /etc/init.d/seth ...
+    /etc/rc0.d/K20seth
+    /etc/rc1.d/K20seth
+    /etc/rc2.d/S20seth
+    /etc/rc3.d/S20seth
+    /etc/rc4.d/S20seth
+    /etc/rc5.d/S20seth
+    /etc/rc6.d/K20seth
         UPDATE_RC_D_SUCCESS
 
         @stdout = StringIO.new(result)
@@ -71,7 +71,7 @@ describe Chef::Provider::Service::Debian do
       end
 
       it "stores the 'enabled' state" do
-        Chef::Resource::Service.stub(:new).and_return(@current_resource)
+        Seth::Resource::Service.stub(:new).and_return(@current_resource)
         @provider.load_current_resource.should equal(@current_resource)
         @current_resource.enabled.should be_true
       end
@@ -82,7 +82,7 @@ describe Chef::Provider::Service::Debian do
         @provider.stub(:assert_update_rcd_available)
         @status = double("Status", :exitstatus => 0)
         @stdout = StringIO.new(
-          " Removing any system startup links for /etc/init.d/chef ...")
+          " Removing any system startup links for /etc/init.d/seth ...")
         @stderr = StringIO.new
         @status = double("Status", :exitstatus => 0, :stdout => @stdout)
         @provider.stub(:shell_out!).and_return(@status)
@@ -94,7 +94,7 @@ describe Chef::Provider::Service::Debian do
       end
 
       it "stores the 'disabled' state" do
-        Chef::Resource::Service.stub(:new).and_return(@current_resource)
+        Seth::Resource::Service.stub(:new).and_return(@current_resource)
         @provider.load_current_resource.should equal(@current_resource)
         @current_resource.enabled.should be_false
       end
@@ -110,21 +110,21 @@ describe Chef::Provider::Service::Debian do
         @provider.define_resource_requirements
         lambda {
           @provider.process_resource_requirements
-        }.should raise_error(Chef::Exceptions::Service)
+        }.should raise_error(Seth::Exceptions::Service)
       end
     end
 
     {"Debian/Lenny and older" => {
         "linked" => {
           "stdout" => <<-STDOUT,
- Removing any system startup links for /etc/init.d/chef ...
-     /etc/rc0.d/K20chef
-     /etc/rc1.d/K20chef
-     /etc/rc2.d/S20chef
-     /etc/rc3.d/S20chef
-     /etc/rc4.d/S20chef
-     /etc/rc5.d/S20chef
-     /etc/rc6.d/K20chef
+ Removing any system startup links for /etc/init.d/seth ...
+     /etc/rc0.d/K20seth
+     /etc/rc1.d/K20seth
+     /etc/rc2.d/S20seth
+     /etc/rc3.d/S20seth
+     /etc/rc4.d/S20seth
+     /etc/rc5.d/S20seth
+     /etc/rc6.d/K20seth
           STDOUT
           "stderr" => "",
           "priorities" => {
@@ -138,7 +138,7 @@ describe Chef::Provider::Service::Debian do
           }
         },
         "not linked" => {
-          "stdout" => " Removing any system startup links for /etc/init.d/chef ...",
+          "stdout" => " Removing any system startup links for /etc/init.d/seth ...",
           "stderr" => ""
         },
       },
@@ -146,13 +146,13 @@ describe Chef::Provider::Service::Debian do
         "linked" => {
           "stdout" => "update-rc.d: using dependency based boot sequencing",
           "stderr" => <<-STDERR,
-insserv: remove service /etc/init.d/../rc0.d/K20chef-client
-  insserv: remove service /etc/init.d/../rc1.d/K20chef-client
-  insserv: remove service /etc/init.d/../rc2.d/S20chef-client
-  insserv: remove service /etc/init.d/../rc3.d/S20chef-client
-  insserv: remove service /etc/init.d/../rc4.d/S20chef-client
-  insserv: remove service /etc/init.d/../rc5.d/S20chef-client
-  insserv: remove service /etc/init.d/../rc6.d/K20chef-client
+insserv: remove service /etc/init.d/../rc0.d/K20seth-client
+  insserv: remove service /etc/init.d/../rc1.d/K20seth-client
+  insserv: remove service /etc/init.d/../rc2.d/S20seth-client
+  insserv: remove service /etc/init.d/../rc3.d/S20seth-client
+  insserv: remove service /etc/init.d/../rc4.d/S20seth-client
+  insserv: remove service /etc/init.d/../rc5.d/S20seth-client
+  insserv: remove service /etc/init.d/../rc6.d/K20seth-client
   insserv: dryrun, not creating .depend.boot, .depend.start, and .depend.stop
           STDERR
           "priorities" => {
@@ -210,7 +210,7 @@ insserv: dryrun, not creating .depend.boot, .depend.start, and .depend.stop
           end
 
           it "stores the 'enabled' state" do
-            Chef::Resource::Service.stub(:new).and_return(@current_resource)
+            Seth::Resource::Service.stub(:new).and_return(@current_resource)
             @provider.load_current_resource.should equal(@current_resource)
             @current_resource.enabled.should be_true
           end
@@ -236,7 +236,7 @@ insserv: dryrun, not creating .depend.boot, .depend.start, and .depend.stop
           end
 
           it "stores the 'disabled' state" do
-            Chef::Resource::Service.stub(:new).and_return(@current_resource)
+            Seth::Resource::Service.stub(:new).and_return(@current_resource)
             @provider.load_current_resource.should equal(@current_resource)
             @current_resource.enabled.should be_false
           end

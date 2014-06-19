@@ -31,11 +31,11 @@ end
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::Package::Rubygems::CurrentGemEnvironment do
+describe Seth::Provider::Package::Rubygems::CurrentGemEnvironment do
   include GemspecBackcompatCreator
 
   before do
-    @gem_env = Chef::Provider::Package::Rubygems::CurrentGemEnvironment.new
+    @gem_env = Seth::Provider::Package::Rubygems::CurrentGemEnvironment.new
   end
 
   it "determines the gem paths from the in memory rubygems" do
@@ -148,9 +148,9 @@ describe Chef::Provider::Package::Rubygems::CurrentGemEnvironment do
   end
 
   it "finds a matching candidate version from a .gem file when the path to the gem is supplied" do
-    location = CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem'
-    @gem_env.candidate_version_from_file(Gem::Dependency.new('chef-integration-test', '>= 0'), location).should == Gem::Version.new('0.1.0')
-    @gem_env.candidate_version_from_file(Gem::Dependency.new('chef-integration-test', '>= 0.2.0'), location).should be_nil
+    location = CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem'
+    @gem_env.candidate_version_from_file(Gem::Dependency.new('seth-integration-test', '>= 0'), location).should == Gem::Version.new('0.1.0')
+    @gem_env.candidate_version_from_file(Gem::Dependency.new('seth-integration-test', '>= 0.2.0'), location).should be_nil
   end
 
   it "finds a matching gem from a specific gemserver when explicit sources are given" do
@@ -195,13 +195,13 @@ describe Chef::Provider::Package::Rubygems::CurrentGemEnvironment do
 
 end
 
-describe Chef::Provider::Package::Rubygems::AlternateGemEnvironment do
+describe Seth::Provider::Package::Rubygems::AlternateGemEnvironment do
   include GemspecBackcompatCreator
 
   before do
-    Chef::Provider::Package::Rubygems::AlternateGemEnvironment.gempath_cache.clear
-    Chef::Provider::Package::Rubygems::AlternateGemEnvironment.platform_cache.clear
-    @gem_env = Chef::Provider::Package::Rubygems::AlternateGemEnvironment.new('/usr/weird/bin/gem')
+    Seth::Provider::Package::Rubygems::AlternateGemEnvironment.gempath_cache.clear
+    Seth::Provider::Package::Rubygems::AlternateGemEnvironment.platform_cache.clear
+    @gem_env = Seth::Provider::Package::Rubygems::AlternateGemEnvironment.new('/usr/weird/bin/gem')
   end
 
   it "determines the gem paths from shelling out to gem env" do
@@ -217,7 +217,7 @@ describe Chef::Provider::Package::Rubygems::AlternateGemEnvironment do
     @gem_env.should_receive(:shell_out!).with('/usr/weird/bin/gem env gempath').and_return(shell_out_result)
     expected = ['/path/to/gems', '/another/path/to/gems']
     @gem_env.gem_paths.should == ['/path/to/gems', '/another/path/to/gems']
-    Chef::Provider::Package::Rubygems::AlternateGemEnvironment.gempath_cache['/usr/weird/bin/gem'].should == expected
+    Seth::Provider::Package::Rubygems::AlternateGemEnvironment.gempath_cache['/usr/weird/bin/gem'].should == expected
   end
 
   it "uses the cached result for gem paths when available" do
@@ -225,7 +225,7 @@ describe Chef::Provider::Package::Rubygems::AlternateGemEnvironment do
     shell_out_result = OpenStruct.new(:stdout => gem_env_output)
     @gem_env.should_not_receive(:shell_out!)
     expected = ['/path/to/gems', '/another/path/to/gems']
-    Chef::Provider::Package::Rubygems::AlternateGemEnvironment.gempath_cache['/usr/weird/bin/gem']= expected
+    Seth::Provider::Package::Rubygems::AlternateGemEnvironment.gempath_cache['/usr/weird/bin/gem']= expected
     @gem_env.gem_paths.should == ['/path/to/gems', '/another/path/to/gems']
   end
 
@@ -261,7 +261,7 @@ describe Chef::Provider::Package::Rubygems::AlternateGemEnvironment do
       `which gem`.strip
     end
     pending("cant find your gem executable") if path_to_gem.empty?
-    gem_env = Chef::Provider::Package::Rubygems::AlternateGemEnvironment.new(path_to_gem)
+    gem_env = Seth::Provider::Package::Rubygems::AlternateGemEnvironment.new(path_to_gem)
     expected = ['rspec-core', Gem::Version.new(RSpec::Core::Version::STRING)]
     actual = gem_env.installed_versions(Gem::Dependency.new('rspec-core', nil)).map { |s| [s.name, s.version] }
     actual.should include(expected)
@@ -299,13 +299,13 @@ JRUBY_GEM_ENV
     expected = ['ruby', Gem::Platform.new('universal-java-1.6')]
     @gem_env.gem_platforms.should == expected
     # it should also cache the result
-    Chef::Provider::Package::Rubygems::AlternateGemEnvironment.platform_cache['/usr/weird/bin/gem'].should == expected
+    Seth::Provider::Package::Rubygems::AlternateGemEnvironment.platform_cache['/usr/weird/bin/gem'].should == expected
   end
 
   it "uses the cached result for gem platforms if available" do
     @gem_env.should_not_receive(:shell_out!)
     expected = ['ruby', Gem::Platform.new('universal-java-1.6')]
-    Chef::Provider::Package::Rubygems::AlternateGemEnvironment.platform_cache['/usr/weird/bin/gem']= expected
+    Seth::Provider::Package::Rubygems::AlternateGemEnvironment.platform_cache['/usr/weird/bin/gem']= expected
     @gem_env.gem_platforms.should == expected
   end
 
@@ -339,7 +339,7 @@ RubyGems Environment:
 RBX_GEM_ENV
     @gem_env.should_receive(:shell_out!).with('/usr/weird/bin/gem env').and_return(double('rbx_gem_env', :stdout => gem_env_out))
     @gem_env.gem_platforms.should == Gem.platforms
-    Chef::Provider::Package::Rubygems::AlternateGemEnvironment.platform_cache['/usr/weird/bin/gem'].should == Gem.platforms
+    Seth::Provider::Package::Rubygems::AlternateGemEnvironment.platform_cache['/usr/weird/bin/gem'].should == Gem.platforms
   end
 
   it "yields to a block while masquerading as a different gems platform" do
@@ -358,17 +358,17 @@ RBX_GEM_ENV
 
 end
 
-describe Chef::Provider::Package::Rubygems do
+describe Seth::Provider::Package::Rubygems do
   before(:each) do
-    @node = Chef::Node.new
-    @new_resource = Chef::Resource::GemPackage.new("rspec-core")
+    @node = Seth::Node.new
+    @new_resource = Seth::Resource::GemPackage.new("rspec-core")
     @spec_version = @new_resource.version RSpec::Core::Version::STRING
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    # We choose detect omnibus via RbConfig::CONFIG['bindir'] in Chef::Provider::Package::Rubygems.new
+    # We choose detect omnibus via RbConfig::CONFIG['bindir'] in Seth::Provider::Package::Rubygems.new
     RbConfig::CONFIG.stub(:[]).with('bindir').and_return("/usr/bin/ruby")
-    @provider = Chef::Provider::Package::Rubygems.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Package::Rubygems.new(@new_resource, @run_context)
   end
 
   it "triggers a gem configuration load so a later one will not stomp its config values" do
@@ -377,37 +377,37 @@ describe Chef::Provider::Package::Rubygems do
   end
 
   it "uses the CurrentGemEnvironment implementation when no gem_binary_path is provided" do
-    @provider.gem_env.should be_a_kind_of(Chef::Provider::Package::Rubygems::CurrentGemEnvironment)
+    @provider.gem_env.should be_a_kind_of(Seth::Provider::Package::Rubygems::CurrentGemEnvironment)
   end
 
   it "uses the AlternateGemEnvironment implementation when a gem_binary_path is provided" do
     @new_resource.gem_binary('/usr/weird/bin/gem')
-    provider = Chef::Provider::Package::Rubygems.new(@new_resource, @run_context)
+    provider = Seth::Provider::Package::Rubygems.new(@new_resource, @run_context)
     provider.gem_env.gem_binary_location.should == '/usr/weird/bin/gem'
   end
 
   it "searches for a gem binary when running on Omnibus on Unix" do
     platform_mock :unix do
-      RbConfig::CONFIG.stub(:[]).with('bindir').and_return("/opt/chef/embedded/bin")
-      ENV.stub(:[]).with('PATH').and_return("/usr/bin:/usr/sbin:/opt/chef/embedded/bin")
+      RbConfig::CONFIG.stub(:[]).with('bindir').and_return("/opt/seth/embedded/bin")
+      ENV.stub(:[]).with('PATH').and_return("/usr/bin:/usr/sbin:/opt/seth/embedded/bin")
       File.stub(:exists?).with('/usr/bin/gem').and_return(false)
       File.stub(:exists?).with('/usr/sbin/gem').and_return(true)
-      File.stub(:exists?).with('/opt/chef/embedded/bin/gem').and_return(true) # should not get here
-      provider = Chef::Provider::Package::Rubygems.new(@new_resource, @run_context)
+      File.stub(:exists?).with('/opt/seth/embedded/bin/gem').and_return(true) # should not get here
+      provider = Seth::Provider::Package::Rubygems.new(@new_resource, @run_context)
       provider.gem_env.gem_binary_location.should == '/usr/sbin/gem'
     end
   end
 
   it "searches for a gem binary when running on Omnibus on Windows" do
     platform_mock :windows do
-      RbConfig::CONFIG.stub(:[]).with('bindir').and_return("d:/opscode/chef/embedded/bin")
-      ENV.stub(:[]).with('PATH').and_return('C:\windows\system32;C:\windows;C:\Ruby186\bin;d:\opscode\chef\embedded\bin')
+      RbConfig::CONFIG.stub(:[]).with('bindir').and_return("d:/opscode/seth/embedded/bin")
+      ENV.stub(:[]).with('PATH').and_return('C:\windows\system32;C:\windows;C:\Ruby186\bin;d:\opscode\seth\embedded\bin')
       File.stub(:exists?).with('C:\\windows\\system32\\gem').and_return(false)
       File.stub(:exists?).with('C:\\windows\\gem').and_return(false)
       File.stub(:exists?).with('C:\\Ruby186\\bin\\gem').and_return(true)
-      File.stub(:exists?).with('d:\\opscode\\chef\\bin\\gem').and_return(false) # should not get here
-      File.stub(:exists?).with('d:\\opscode\\chef\\embedded\\bin\\gem').and_return(false) # should not get here
-      provider = Chef::Provider::Package::Rubygems.new(@new_resource, @run_context)
+      File.stub(:exists?).with('d:\\opscode\\seth\\bin\\gem').and_return(false) # should not get here
+      File.stub(:exists?).with('d:\\opscode\\seth\\embedded\\bin\\gem').and_return(false) # should not get here
+      provider = Seth::Provider::Package::Rubygems.new(@new_resource, @run_context)
       provider.gem_env.gem_binary_location.should == 'C:\Ruby186\bin\gem'
     end
   end
@@ -415,7 +415,7 @@ describe Chef::Provider::Package::Rubygems do
   it "smites you when you try to use a hash of install options with an explicit gem binary" do
     @new_resource.gem_binary('/foo/bar')
     @new_resource.options(:fail => :burger)
-    lambda {Chef::Provider::Package::Rubygems.new(@new_resource, @run_context)}.should raise_error(ArgumentError)
+    lambda {Seth::Provider::Package::Rubygems.new(@new_resource, @run_context)}.should raise_error(ArgumentError)
   end
 
   it "converts the new resource into a gem dependency" do
@@ -462,9 +462,9 @@ describe Chef::Provider::Package::Rubygems do
     end
 
     it "parses the gem's specification if the requested source is a file" do
-      @new_resource.package_name('chef-integration-test')
+      @new_resource.package_name('seth-integration-test')
       @new_resource.version('>= 0')
-      @new_resource.source(CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem')
+      @new_resource.source(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
       @provider.candidate_version.should == '0.1.0'
     end
 
@@ -472,7 +472,7 @@ describe Chef::Provider::Package::Rubygems do
 
   describe "when installing a gem" do
     before do
-      @current_resource = Chef::Resource::GemPackage.new('rspec-core')
+      @current_resource = Seth::Resource::GemPackage.new('rspec-core')
       @provider.current_resource = @current_resource
       @gem_dep = Gem::Dependency.new('rspec-core', @spec_version)
       @provider.stub(:load_current_resource)
@@ -492,17 +492,17 @@ describe Chef::Provider::Package::Rubygems do
       end
 
       it "installs the gem from file via the gems api when no explicit options are used" do
-        @new_resource.source(CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem')
-        @provider.gem_env.should_receive(:install).with(CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem')
+        @new_resource.source(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+        @provider.gem_env.should_receive(:install).with(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
         @provider.action_install.should be_true
       end
 
       it "installs the gem from file via the gems api when the package is a path and the source is nil" do
-        @new_resource = Chef::Resource::GemPackage.new(CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem')
-        @provider = Chef::Provider::Package::Rubygems.new(@new_resource, @run_context)
+        @new_resource = Seth::Resource::GemPackage.new(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+        @provider = Seth::Provider::Package::Rubygems.new(@new_resource, @run_context)
         @provider.current_resource = @current_resource
-        @new_resource.source.should == CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem'
-        @provider.gem_env.should_receive(:install).with(CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem')
+        @new_resource.source.should == CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem'
+        @provider.gem_env.should_receive(:install).with(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
         @provider.action_install.should be_true
       end
 
@@ -565,20 +565,20 @@ describe Chef::Provider::Package::Rubygems do
 
       it "installs the gem from file by shelling out to gem install" do
         @new_resource.gem_binary('/usr/weird/bin/gem')
-        @new_resource.source(CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem')
+        @new_resource.source(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
         @new_resource.version('>= 0')
-        @provider.should_receive(:shell_out!).with("/usr/weird/bin/gem install #{CHEF_SPEC_DATA}/gems/chef-integration-test-0.1.0.gem -q --no-rdoc --no-ri -v \">= 0\"", :env=>nil)
+        @provider.should_receive(:shell_out!).with("/usr/weird/bin/gem install #{CHEF_SPEC_DATA}/gems/seth-integration-test-0.1.0.gem -q --no-rdoc --no-ri -v \">= 0\"", :env=>nil)
         @provider.action_install.should be_true
       end
 
       it "installs the gem from file by shelling out to gem install when the package is a path and the source is nil" do
-        @new_resource = Chef::Resource::GemPackage.new(CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem')
-        @provider = Chef::Provider::Package::Rubygems.new(@new_resource, @run_context)
+        @new_resource = Seth::Resource::GemPackage.new(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+        @provider = Seth::Provider::Package::Rubygems.new(@new_resource, @run_context)
         @provider.current_resource = @current_resource
         @new_resource.gem_binary('/usr/weird/bin/gem')
         @new_resource.version('>= 0')
-        @new_resource.source.should == CHEF_SPEC_DATA + '/gems/chef-integration-test-0.1.0.gem'
-        @provider.should_receive(:shell_out!).with("/usr/weird/bin/gem install #{CHEF_SPEC_DATA}/gems/chef-integration-test-0.1.0.gem -q --no-rdoc --no-ri -v \">= 0\"", :env=>nil)
+        @new_resource.source.should == CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem'
+        @provider.should_receive(:shell_out!).with("/usr/weird/bin/gem install #{CHEF_SPEC_DATA}/gems/seth-integration-test-0.1.0.gem -q --no-rdoc --no-ri -v \">= 0\"", :env=>nil)
         @provider.action_install.should be_true
       end
     end
@@ -587,7 +587,7 @@ describe Chef::Provider::Package::Rubygems do
 
   describe "when uninstalling a gem" do
     before do
-      @new_resource = Chef::Resource::GemPackage.new("rspec")
+      @new_resource = Seth::Resource::GemPackage.new("rspec")
       @current_resource = @new_resource.dup
       @current_resource.version('1.2.3')
       @provider.new_resource = @new_resource

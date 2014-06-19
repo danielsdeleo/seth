@@ -17,11 +17,11 @@
 #
 
 
-require 'chef/resource'
+require 'seth/resource'
 
-class Chef
+class Seth
   class Resource
-    class Scm < Chef::Resource
+    class Scm < Seth::Resource
 
       identity_attr :destination
 

@@ -20,15 +20,15 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
+describe Seth::Provider::Package::Freebsd::Pkg, "load_current_resource" do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource     = Chef::Resource::Package.new("zsh")
-    @current_resource = Chef::Resource::Package.new("zsh")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource     = Seth::Resource::Package.new("zsh")
+    @current_resource = Seth::Resource::Package.new("zsh")
 
-    @provider = Chef::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
     @provider.current_resource = @current_resource
     ::File.stub(:exist?).with('/usr/ports/Makefile').and_return(false)
   end
@@ -39,7 +39,7 @@ describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
     end
 
     it "should create a current resource with the name of the new_resource" do
-      current_resource = Chef::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context).current_resource
+      current_resource = Seth::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context).current_resource
       current_resource.name.should == "zsh"
     end
 
@@ -64,9 +64,9 @@ describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
 
   describe "when querying for package state and attributes" do
     before do
-      #@new_resource = Chef::Resource::Package.new("zsh")
+      #@new_resource = Seth::Resource::Package.new("zsh")
 
-      #@provider = Chef::Provider::Package::Freebsd::Pkg.new(@node, @new_resource)
+      #@provider = Seth::Provider::Package::Freebsd::Pkg.new(@node, @new_resource)
 
       #@status = double("Status", :exitstatus => 0)
       #@stdin = double("STDIN", :null_object => true)
@@ -116,7 +116,7 @@ describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
     end
   end
 
-  describe Chef::Provider::Package::Freebsd::Pkg, "install_package" do
+  describe Seth::Provider::Package::Freebsd::Pkg, "install_package" do
     before(:each) do
       @cmd_result = OpenStruct.new(:status => true)
 
@@ -132,12 +132,12 @@ describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
     end
   end
 
-  describe Chef::Provider::Package::Freebsd::Pkg, "port path" do
+  describe Seth::Provider::Package::Freebsd::Pkg, "port path" do
     before do
-      #@node = Chef::Node.new
-      @new_resource = Chef::Resource::Package.new("zsh")
+      #@node = Seth::Node.new
+      @new_resource = Seth::Resource::Package.new("zsh")
       @new_resource.cookbook_name = "adventureclub"
-      @provider = Chef::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
     end
 
     it "should figure out the port path from the package_name using whereis" do
@@ -147,28 +147,28 @@ describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
     end
 
     it "should use the package_name as the port path when it starts with /" do
-      new_resource = Chef::Resource::Package.new("/usr/ports/www/wordpress")
-      provider = Chef::Provider::Package::Freebsd::Pkg.new(new_resource, @run_context)
+      new_resource = Seth::Resource::Package.new("/usr/ports/www/wordpress")
+      provider = Seth::Provider::Package::Freebsd::Pkg.new(new_resource, @run_context)
       provider.should_not_receive(:popen4)
       provider.port_path.should == "/usr/ports/www/wordpress"
     end
 
     it "should use the package_name as a relative path from /usr/ports when it contains / but doesn't start with it" do
-      # @new_resource = double( "Chef::Resource::Package",
+      # @new_resource = double( "Seth::Resource::Package",
       #                       :package_name => "www/wordpress",
       #                       :cookbook_name => "xenoparadox")
-      new_resource = Chef::Resource::Package.new("www/wordpress")
-      provider = Chef::Provider::Package::Freebsd::Pkg.new(new_resource, @run_context)
+      new_resource = Seth::Resource::Package.new("www/wordpress")
+      provider = Seth::Provider::Package::Freebsd::Pkg.new(new_resource, @run_context)
       provider.should_not_receive(:popen4)
       provider.port_path.should == "/usr/ports/www/wordpress"
     end
   end
 
-  describe Chef::Provider::Package::Freebsd::Pkg, "ruby-iconv (package with a dash in the name)" do
+  describe Seth::Provider::Package::Freebsd::Pkg, "ruby-iconv (package with a dash in the name)" do
     before(:each) do
-      @new_resource     = Chef::Resource::Package.new("ruby-iconv")
-      @current_resource = Chef::Resource::Package.new("ruby-iconv")
-      @provider = Chef::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
+      @new_resource     = Seth::Resource::Package.new("ruby-iconv")
+      @current_resource = Seth::Resource::Package.new("ruby-iconv")
+      @provider = Seth::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
       @provider.current_resource = @current_resource
       @provider.stub(:port_path).and_return("/usr/ports/converters/ruby-iconv")
       @provider.stub(:package_name).and_return("ruby18-iconv")
@@ -183,7 +183,7 @@ describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
     end
   end
 
-  describe Chef::Provider::Package::Freebsd::Pkg, "remove_package" do
+  describe Seth::Provider::Package::Freebsd::Pkg, "remove_package" do
     before(:each) do
       @pkg_delete = OpenStruct.new(:status => true)
       @new_resource.version "4.3.6_7"
@@ -203,11 +203,11 @@ describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
   # version of a package is currently installed and to get the port_path.
   #  Example package name: bonnie++
 
-  describe Chef::Provider::Package::Freebsd::Pkg, "bonnie++ (package with a plus in the name :: CHEF-4371)" do
+  describe Seth::Provider::Package::Freebsd::Pkg, "bonnie++ (package with a plus in the name :: CHEF-4371)" do
     before(:each) do
-      @new_resource     = Chef::Resource::Package.new("bonnie++")
-      @current_resource = Chef::Resource::Package.new("bonnie++")
-      @provider = Chef::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
+      @new_resource     = Seth::Resource::Package.new("bonnie++")
+      @current_resource = Seth::Resource::Package.new("bonnie++")
+      @provider = Seth::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
       @provider.current_resource = @current_resource
     end
 
@@ -243,11 +243,11 @@ describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
   # The variable LATEST_LINK is named that way because the directory that "pkg_add -r" downloads from is called "Latest" and
   # contains the "latest" versions of package as symbolic links to the files in the "All" directory.
 
-  describe Chef::Provider::Package::Freebsd::Pkg, "install_package latest link fixes" do
+  describe Seth::Provider::Package::Freebsd::Pkg, "install_package latest link fixes" do
     it "should install the perl binary package with the correct name" do
-      @new_resource = Chef::Resource::Package.new("perl5.8")
-      @current_resource = Chef::Resource::Package.new("perl5.8")
-      @provider = Chef::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
+      @new_resource = Seth::Resource::Package.new("perl5.8")
+      @current_resource = Seth::Resource::Package.new("perl5.8")
+      @provider = Seth::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
       @provider.current_resource = @current_resource
       @provider.stub(:package_name).and_return("perl")
       @provider.stub(:latest_link_name).and_return("perl")
@@ -259,9 +259,9 @@ describe Chef::Provider::Package::Freebsd::Pkg, "load_current_resource" do
 
     it "should install the mysql50-server binary package with the correct name" do
 
-      @new_resource     = Chef::Resource::Package.new("mysql50-server")
-      @current_resource = Chef::Resource::Package.new("mysql50-server")
-      @provider = Chef::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
+      @new_resource     = Seth::Resource::Package.new("mysql50-server")
+      @current_resource = Seth::Resource::Package.new("mysql50-server")
+      @provider = Seth::Provider::Package::Freebsd::Pkg.new(@new_resource, @run_context)
       @provider.current_resource = @current_resource
       @provider.stub(:package_name).and_return("mysql-server")
       @provider.stub(:latest_link_name).and_return("mysql50-server")

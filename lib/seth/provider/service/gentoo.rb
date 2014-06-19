@@ -17,10 +17,10 @@
 # limitations under the License.
 #
 
-require 'chef/provider/service/init'
-require 'chef/mixin/command'
+require 'seth/provider/service/init'
+require 'seth/mixin/command'
 
-class Chef::Provider::Service::Gentoo < Chef::Provider::Service::Init
+class Seth::Provider::Service::Gentoo < Chef::Provider::Service::Init
   def load_current_resource
 
     @new_resource.supports[:status] = true
@@ -33,11 +33,11 @@ class Chef::Provider::Service::Gentoo < Chef::Provider::Service::Init
         @found_script = true
         exists = ::File.exists? file
         readable = ::File.readable? file
-        Chef::Log.debug "#{@new_resource} exists: #{exists}, readable: #{readable}"
+        Seth::Log.debug "#{@new_resource} exists: #{exists}, readable: #{readable}"
         exists and readable
       end
     )
-    Chef::Log.debug "#{@new_resource} enabled: #{@current_resource.enabled}"
+    Seth::Log.debug "#{@new_resource} enabled: #{@current_resource.enabled}"
 
     @current_resource
   end
@@ -45,9 +45,9 @@ class Chef::Provider::Service::Gentoo < Chef::Provider::Service::Init
   def define_resource_requirements
     requirements.assert(:all_actions) do |a|
       a.assertion { ::File.exists?("/sbin/rc-update") }
-      a.failure_message Chef::Exceptions::Service, "/sbin/rc-update does not exist"
+      a.failure_message Seth::Exceptions::Service, "/sbin/rc-update does not exist"
       # no whyrun recovery -t his is a core component whose presence is
-      # unlikely to be affected by what we do in the course of a chef run
+      # unlikely to be affected by what we do in the course of a seth run
     end
 
     requirements.assert(:all_actions) do |a|

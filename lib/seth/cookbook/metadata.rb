@@ -18,19 +18,19 @@
 # limitations under the License.
 #
 
-require 'chef/mash'
-require 'chef/mixin/from_file'
-require 'chef/mixin/params_validate'
-require 'chef/log'
-require 'chef/version_class'
-require 'chef/version_constraint'
+require 'seth/mash'
+require 'seth/mixin/from_file'
+require 'seth/mixin/params_validate'
+require 'seth/log'
+require 'seth/version_class'
+require 'seth/version_constraint'
 
-class Chef
+class Seth
   class Cookbook
 
-    # == Chef::Cookbook::Metadata
-    # Chef::Cookbook::Metadata provides a convenient DSL for declaring metadata
-    # about Chef Cookbooks.
+    # == Seth::Cookbook::Metadata
+    # Seth::Cookbook::Metadata provides a convenient DSL for declaring metadata
+    # about Seth Cookbooks.
     class Metadata
 
       NAME              = 'name'.freeze
@@ -63,8 +63,8 @@ class Chef
                              :provides    => PROVIDING,
                              :replaces    => REPLACING }
 
-      include Chef::Mixin::ParamsValidate
-      include Chef::Mixin::FromFile
+      include Seth::Mixin::ParamsValidate
+      include Seth::Mixin::FromFile
 
       attr_reader   :cookbook,
                     :platforms,
@@ -79,7 +79,7 @@ class Chef
                     :recipes,
                     :version
 
-      # Builds a new Chef::Cookbook::Metadata object.
+      # Builds a new Seth::Cookbook::Metadata object.
       #
       # === Parameters
       # cookbook<String>:: An optional cookbook object
@@ -88,7 +88,7 @@ class Chef
       # license<String>::An optional license. Default is Apache v2.0
       #
       # === Returns
-      # metadata<Chef::Cookbook::Metadata>
+      # metadata<Seth::Cookbook::Metadata>
       def initialize(cookbook=nil, maintainer='YOUR_COMPANY_NAME', maintainer_email='YOUR_EMAIL', license='none')
         @cookbook = cookbook
         @name = cookbook ? cookbook.name : ""
@@ -209,7 +209,7 @@ class Chef
       # version<String>:: Returns the current version
       def version(arg=nil)
         if arg
-          @version = Chef::Version.new(arg)
+          @version = Seth::Version.new(arg)
         end
 
         @version.to_s
@@ -472,12 +472,12 @@ class Chef
       end
 
       def self.from_json(string)
-        o = Chef::JSONCompat.from_json(string)
+        o = Seth::JSONCompat.from_json(string)
         self.from_hash(o)
       end
 
       def self.validate_json(json_str)
-        o = Chef::JSONCompat.from_json(json_str)
+        o = Seth::JSONCompat.from_json(json_str)
         metadata = new()
         VERSION_CONSTRAINTS.each do |method_name, hash_key|
           if constraints = o[hash_key]
@@ -490,7 +490,7 @@ class Chef
       end
 
       def from_json(string)
-        o = Chef::JSONCompat.from_json(string)
+        o = Seth::JSONCompat.from_json(string)
         from_hash(o)
       end
 
@@ -505,7 +505,7 @@ class Chef
           msg=<<-OBSOLETED
 The dependency specification syntax you are using is no longer valid. You may not
 specify more than one version constraint for a particular cookbook.
-Consult http://wiki.opscode.com/display/chef/Metadata for the updated syntax.
+Consult http://wiki.opscode.com/display/seth/Metadata for the updated syntax.
 
 Called by: #{caller_name} '#{dep_name}', #{version_constraints.map {|vc| vc.inspect}.join(", ")}
 Called from:
@@ -516,15 +516,15 @@ OBSOLETED
       end
 
       def validate_version_constraint(caller_name, dep_name, constraint_str)
-        Chef::VersionConstraint.new(constraint_str)
-      rescue Chef::Exceptions::InvalidVersionConstraint => e
+        Seth::VersionConstraint.new(constraint_str)
+      rescue Seth::Exceptions::InvalidVersionConstraint => e
         Log.debug(e)
 
         msg=<<-INVALID
 The version constraint syntax you are using is not valid. If you recently
-upgraded to Chef 0.10.0, be aware that you no may longer use "<<" and ">>" for
+upgraded to Seth 0.10.0, be aware that you no may longer use "<<" and ">>" for
 'less than' and 'greater than'; use '<' and '>' instead.
-Consult http://wiki.opscode.com/display/chef/Metadata for more information.
+Consult http://wiki.opscode.com/display/seth/Metadata for more information.
 
 Called by: #{caller_name} '#{dep_name}', '#{constraint_str}'
 Called from:
@@ -641,9 +641,9 @@ INVALID
 
     end
 
-    #== Chef::Cookbook::MinimalMetadata
+    #== Seth::Cookbook::MinimalMetadata
     # MinimalMetadata is a duck type of Cookbook::Metadata, used
-    # internally by Chef Server when determining the optimal set of
+    # internally by Seth Server when determining the optimal set of
     # cookbooks for a node.
     #
     # MinimalMetadata objects typically contain only enough information

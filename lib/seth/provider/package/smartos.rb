@@ -19,22 +19,22 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package'
-require 'chef/mixin/shell_out'
-require 'chef/resource/package'
-require 'chef/mixin/get_source_from_package'
+require 'seth/provider/package'
+require 'seth/mixin/shell_out'
+require 'seth/resource/package'
+require 'seth/mixin/get_source_from_package'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class SmartOS < Chef::Provider::Package
-        include Chef::Mixin::ShellOut
+      class SmartOS < Seth::Provider::Package
+        include Seth::Mixin::ShellOut
         attr_accessor :is_virtual_package
 
 
         def load_current_resource
-          Chef::Log.debug("#{@new_resource} loading current resource")
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          Seth::Log.debug("#{@new_resource} loading current resource")
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
           @current_resource.version(nil)
           check_package_state(@new_resource.package_name)
@@ -42,7 +42,7 @@ class Chef
         end
 
         def check_package_state(name)
-          Chef::Log.debug("#{@new_resource} checking package #{name}")
+          Seth::Log.debug("#{@new_resource} checking package #{name}")
           version = nil
           info = shell_out!("/opt/local/sbin/pkg_info -E \"#{name}*\"", :env => nil, :returns => [0,1])
 
@@ -73,18 +73,18 @@ class Chef
         end
 
         def install_package(name, version)
-          Chef::Log.debug("#{@new_resource} installing package #{name} version #{version}")
+          Seth::Log.debug("#{@new_resource} installing package #{name} version #{version}")
           package = "#{name}-#{version}"
           out = shell_out!("/opt/local/bin/pkgin -y install #{package}", :env => nil)
         end
 
         def upgrade_package(name, version)
-          Chef::Log.debug("#{@new_resource} upgrading package #{name} version #{version}")
+          Seth::Log.debug("#{@new_resource} upgrading package #{name} version #{version}")
           install_package(name, version)
         end
 
         def remove_package(name, version)
-          Chef::Log.debug("#{@new_resource} removing package #{name} version #{version}")
+          Seth::Log.debug("#{@new_resource} removing package #{name} version #{version}")
           package = "#{name}"
           out = shell_out!("/opt/local/bin/pkgin -y remove #{package}", :env => nil)
         end

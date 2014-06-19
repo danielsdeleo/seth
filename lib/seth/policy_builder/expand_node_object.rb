@@ -2,8 +2,8 @@
 # Author:: Adam Jacob (<adam@opscode.com>)
 # Author:: Tim Hinderliter (<tim@opscode.com>)
 # Author:: Christopher Walters (<cw@opscode.com>)
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright 2008-2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright 2008-2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,17 +19,17 @@
 # limitations under the License.
 #
 
-require 'chef/log'
-require 'chef/rest'
-require 'chef/run_context'
-require 'chef/config'
-require 'chef/node'
+require 'seth/log'
+require 'seth/rest'
+require 'seth/run_context'
+require 'seth/config'
+require 'seth/node'
 
-class Chef
+class Seth
   module PolicyBuilder
 
     # ExpandNodeObject is the "classic" policy builder implementation. It
-    # expands the run_list on a node object and then queries the chef-server
+    # expands the run_list on a node object and then queries the seth-server
     # to find the correct set of cookbooks, given version constraints of the
     # node's environment.
     class ExpandNodeObject
@@ -55,17 +55,17 @@ class Chef
       end
 
       def setup_run_context(specific_recipes=nil)
-        if Chef::Config[:solo]
-          Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, Chef::Config[:cookbook_path]) }
-          cl = Chef::CookbookLoader.new(Chef::Config[:cookbook_path])
+        if Seth::Config[:solo]
+          Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, Chef::Config[:cookbook_path]) }
+          cl = Seth::CookbookLoader.new(Chef::Config[:cookbook_path])
           cl.load_cookbooks
-          cookbook_collection = Chef::CookbookCollection.new(cl)
-          run_context = Chef::RunContext.new(node, cookbook_collection, @events)
+          cookbook_collection = Seth::CookbookCollection.new(cl)
+          run_context = Seth::RunContext.new(node, cookbook_collection, @events)
         else
-          Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::RemoteFileVendor.new(manifest, api_service) }
+          Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::RemoteFileVendor.new(manifest, api_service) }
           cookbook_hash = sync_cookbooks
-          cookbook_collection = Chef::CookbookCollection.new(cookbook_hash)
-          run_context = Chef::RunContext.new(node, cookbook_collection, @events)
+          cookbook_collection = Seth::CookbookCollection.new(cookbook_hash)
+          run_context = Seth::RunContext.new(node, cookbook_collection, @events)
         end
 
         # TODO: this is not the place for this. It should be in Runner or
@@ -81,20 +81,20 @@ class Chef
 
 
       # In client-server operation, loads the node state from the server. In
-      # chef-solo operation, builds a new node object.
+      # seth-solo operation, builds a new node object.
       def load_node
-        events.node_load_start(node_name, Chef::Config)
-        Chef::Log.debug("Building node object for #{node_name}")
+        events.node_load_start(node_name, Seth::Config)
+        Seth::Log.debug("Building node object for #{node_name}")
 
-        if Chef::Config[:solo]
-          @node = Chef::Node.build(node_name)
+        if Seth::Config[:solo]
+          @node = Seth::Node.build(node_name)
         else
-          @node = Chef::Node.find_or_create(node_name)
+          @node = Seth::Node.find_or_create(node_name)
         end
       rescue Exception => e
         # TODO: wrap this exception so useful error info can be given to the
         # user.
-        events.node_load_failed(node_name, e, Chef::Config)
+        events.node_load_failed(node_name, e, Seth::Config)
         raise
       end
 
@@ -103,12 +103,12 @@ class Chef
       # the node, Then expands the run_list.
       #
       # === Returns
-      # node<Chef::Node>:: The modified node object. node is modified in place.
+      # node<Seth::Node>:: The modified node object. node is modified in place.
       def build_node
         # Allow user to override the environment of a node by specifying
         # a config parameter.
-        if Chef::Config[:environment] && !Chef::Config[:environment].chomp.empty?
-          node.chef_environment(Chef::Config[:environment])
+        if Seth::Config[:environment] && !Chef::Config[:environment].chomp.empty?
+          node.seth_environment(Seth::Config[:environment])
         end
 
         # consume_external_attrs may add items to the run_list. Save the
@@ -121,17 +121,17 @@ class Chef
 
         expand_run_list
 
-        Chef::Log.info("Run List is [#{node.run_list}]")
-        Chef::Log.info("Run List expands to [#{@expanded_run_list_with_versions.join(', ')}]")
+        Seth::Log.info("Run List is [#{node.run_list}]")
+        Seth::Log.info("Run List expands to [#{@expanded_run_list_with_versions.join(', ')}]")
 
-        events.node_load_completed(node, @expanded_run_list_with_versions, Chef::Config)
+        events.node_load_completed(node, @expanded_run_list_with_versions, Seth::Config)
 
         node
       end
 
       # Expands the node's run list. Stores the run_list_expansion object for later use.
       def expand_run_list
-        @run_list_expansion = if Chef::Config[:solo]
+        @run_list_expansion = if Seth::Config[:solo]
           node.expand!('disk')
         else
           node.expand!('server')
@@ -141,7 +141,7 @@ class Chef
         #
         # Convert @expanded_run_list, which is an
         # Array of Hashes of the form
-        #   {:name => NAME, :version_constraint => Chef::VersionConstraint },
+        #   {:name => NAME, :version_constraint => Seth::VersionConstraint },
         # into @expanded_run_list_with_versions, an
         # Array of Strings of the form
         #   "#{NAME}@#{VERSION}"
@@ -155,17 +155,17 @@ class Chef
 
       # Sync_cookbooks eagerly loads all files except files and
       # templates.  It returns the cookbook_hash -- the return result
-      # from /environments/#{node.chef_environment}/cookbook_versions,
+      # from /environments/#{node.seth_environment}/cookbook_versions,
       # which we will use for our run_context.
       #
       # === Returns
       # Hash:: The hash of cookbooks with download URLs as given by the server
       def sync_cookbooks
-        Chef::Log.debug("Synchronizing cookbooks")
+        Seth::Log.debug("Synchronizing cookbooks")
 
         begin
           events.cookbook_resolution_start(@expanded_run_list_with_versions)
-          cookbook_hash = api_service.post("environments/#{node.chef_environment}/cookbook_versions",
+          cookbook_hash = api_service.post("environments/#{node.seth_environment}/cookbook_versions",
                                          {:run_list => @expanded_run_list_with_versions})
         rescue Exception => e
           # TODO: wrap/munge exception to provide helpful error output
@@ -175,17 +175,17 @@ class Chef
           events.cookbook_resolution_complete(cookbook_hash)
         end
 
-        synchronizer = Chef::CookbookSynchronizer.new(cookbook_hash, events)
+        synchronizer = Seth::CookbookSynchronizer.new(cookbook_hash, events)
         synchronizer.sync_cookbooks
 
         # register the file cache path in the cookbook path so that CookbookLoader actually picks up the synced cookbooks
-        Chef::Config[:cookbook_path] = File.join(Chef::Config[:file_cache_path], "cookbooks")
+        Seth::Config[:cookbook_path] = File.join(Chef::Config[:file_cache_path], "cookbooks")
 
         cookbook_hash
       end
 
       # Indicates whether the policy is temporary, which means an
-      # override_runlist was provided. Chef::Client uses this to decide whether
+      # override_runlist was provided. Seth::Client uses this to decide whether
       # to do the final node save at the end of the run or not.
       def temporary_policy?
         !node.override_runlist.empty?
@@ -199,9 +199,9 @@ class Chef
         runlist_override_sanity_check!
         unless(override_runlist.empty?)
           node.override_runlist(*override_runlist)
-          Chef::Log.warn "Run List override has been provided."
-          Chef::Log.warn "Original Run List: [#{node.primary_runlist}]"
-          Chef::Log.warn "Overridden Run List: [#{node.run_list}]"
+          Seth::Log.warn "Run List override has been provided."
+          Seth::Log.warn "Original Run List: [#{node.primary_runlist}]"
+          Seth::Log.warn "Overridden Run List: [#{node.run_list}]"
         end
       end
 
@@ -213,20 +213,20 @@ class Chef
         end
         @override_runlist = [override_runlist].flatten.compact
         override_runlist.map! do |item|
-          if(item.is_a?(Chef::RunList::RunListItem))
+          if(item.is_a?(Seth::RunList::RunListItem))
             item
           else
-            Chef::RunList::RunListItem.new(item)
+            Seth::RunList::RunListItem.new(item)
           end
         end
       end
 
       def api_service
-        @api_service ||= Chef::REST.new(config[:chef_server_url])
+        @api_service ||= Seth::REST.new(config[:seth_server_url])
       end
 
       def config
-        Chef::Config
+        Seth::Config
       end
 
     end

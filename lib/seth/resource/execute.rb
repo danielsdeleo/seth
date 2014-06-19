@@ -17,11 +17,11 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
+require 'seth/resource'
 
-class Chef
+class Seth
   class Resource
-    class Execute < Chef::Resource
+    class Execute < Seth::Resource
 
       identity_attr :command
 

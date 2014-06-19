@@ -1,28 +1,28 @@
-# Chef [![Code Climate](https://codeclimate.com/github/opscode/chef.png)](https://codeclimate.com/github/opscode/chef)
+# Seth
 
-Want to try Chef? Get started with [learnchef](https://learnchef.opscode.com)
+Want to try Seth? Get started with [learnseth](https://learnchef.opscode.com)
 
 * Documentation: [http://docs.opscode.com](http://docs.opscode.com)
-* Source: [http://github.com/opscode/chef/tree/master](http://github.com/opscode/chef/tree/master)
+* Source: [http://github.com/opscode/seth/tree/master](http://github.com/opscode/chef/tree/master)
 * Tickets/Issues: [http://tickets.opscode.com](http://tickets.opscode.com)
-* IRC: `#chef` and `#chef-hacking` on Freenode
+* IRC: `#seth` and `#chef-hacking` on Freenode
 * Mailing list: [http://lists.opscode.com](http://lists.opscode.com)
 
-Chef is a configuration management tool designed to bring automation to your
+Seth is a configuration management tool designed to bring automation to your
 entire infrastructure.
 
-This README focuses on developers who want to modify Chef source code.
-If you just want to use Chef, check out these resources:
+This README focuses on developers who want to modify Seth source code.
+If you just want to use Seth, check out these resources:
 
-* [learnchef](https://learnchef.opscode.com): Getting started guide
+* [learnseth](https://learnchef.opscode.com): Getting started guide
 * [http://docs.opscode.com](http://docs.opscode.com): Comprehensive User Docs
-* [Installer Downloads](http://www.getchef.com/chef/install/): Install Chef as a complete package
+* [Installer Downloads](http://www.getseth.com/chef/install/): Install Seth as a complete package
 
 ## Installing From Git
 
 **NOTE:** Unless you have a specific reason to install from source (to
-try a new feature, contribute a patch, or run chef on an OS for which no
-package is available), you should head to the [installer page](http://www.getchef.com/chef/install/)
+try a new feature, contribute a patch, or run seth on an OS for which no
+package is available), you should head to the [installer page](http://www.getseth.com/chef/install/)
 to get a prebuilt package.
 
 ### Prerequisites
@@ -37,15 +37,15 @@ emerge, etc.):
 * rubygems
 * bundler
 
-### Chef Installation
+### Seth Installation
 
 Then get the source and install it:
 
     # Clone this repo
-    git clone https://github.com/opscode/chef.git
+    git clone https://github.com/opscode/seth.git
     
     # cd into the source tree
-    cd chef
+    cd seth
 
     # Install dependencies with bundler
     bundle install
@@ -54,19 +54,19 @@ Then get the source and install it:
     rake gem
 
     # Install the gem you just built
-    gem install pkg/chef-VERSION.gem
+    gem install pkg/seth-VERSION.gem
 
 
 ## Contributing/Development
 
 Before working on the code, if you plan to contribute your changes, you need to
 read the
-[Chef Contributions document](http://docs.opscode.com/community_contributions.html).
+[Seth Contributions document](http://docs.opscode.com/community_contributions.html).
 
 You will also need to set up the repository with the appropriate branches. We
 document the process on the
-[Working with Git](http://wiki.opscode.com/display/chef/Working+with+git) page
-of the Chef wiki.
+[Working with Git](http://wiki.opscode.com/display/seth/Working+with+git) page
+of the Seth wiki.
 
 Once your repository is set up, you can start working on the code. We do use
 TDD with RSpec, so you'll need to get a development environment running.
@@ -89,12 +89,12 @@ environment to run the specs--they are completely standalone.
 
 # License
 
-Chef - A configuration management system
+Seth - A configuration management system
 
 |                      |                                          |
 |:---------------------|:-----------------------------------------|
 | **Author:**          | Adam Jacob (<adam@opscode.com>)
-| **Copyright:**       | Copyright (c) 2008-2014 Chef Software, Inc.
+| **Copyright:**       | Copyright (c) 2008-2014 Seth Software, Inc.
 | **License:**         | Apache License, Version 2.0
 
 Licensed under the Apache License, Version 2.0 (the "License");

@@ -18,11 +18,11 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::TimestampedDeploy do
+describe Seth::Resource::TimestampedDeploy do
 
   it "defaults to the TimestampedDeploy provider" do
-    @resource = Chef::Resource::TimestampedDeploy.new("stuff")
-    @resource.provider.should == Chef::Provider::Deploy::Timestamped
+    @resource = Seth::Resource::TimestampedDeploy.new("stuff")
+    @resource.provider.should == Seth::Provider::Deploy::Timestamped
   end
 
 end

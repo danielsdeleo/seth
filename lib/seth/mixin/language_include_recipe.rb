@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/dsl/include_recipe'
-require 'chef/mixin/deprecation'
+require 'seth/dsl/include_recipe'
+require 'seth/mixin/deprecation'
 
-class Chef
+class Seth
   module Mixin
 
-    deprecate_constant(:LanguageIncludeRecipe, Chef::DSL::IncludeRecipe, <<-EOM)
-Chef::Mixin::LanguageIncludeRecipe is deprecated, use Chef::DSL::IncludeRecipe
+    deprecate_constant(:LanguageIncludeRecipe, Seth::DSL::IncludeRecipe, <<-EOM)
+Seth::Mixin::LanguageIncludeRecipe is deprecated, use Chef::DSL::IncludeRecipe
 instead.
 EOM
 

@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,48 +18,48 @@
 
 # TODO: Allow @new_resource.source to be a Product Code as a GUID for uninstall / network install
 
-require 'chef/mixin/shell_out'
-require 'chef/win32/api/installer' if RUBY_PLATFORM =~ /mswin|mingw32|windows/
+require 'seth/mixin/shell_out'
+require 'seth/win32/api/installer' if RUBY_PLATFORM =~ /mswin|mingw32|windows/
 
-class Chef
+class Seth
   class Provider
     class Package
       class Windows
         class MSI
-          include Chef::ReservedNames::Win32::API::Installer if RUBY_PLATFORM =~ /mswin|mingw32|windows/
-          include Chef::Mixin::ShellOut
+          include Seth::ReservedNames::Win32::API::Installer if RUBY_PLATFORM =~ /mswin|mingw32|windows/
+          include Seth::Mixin::ShellOut
 
           def initialize(resource)
             @new_resource = resource
           end
 
-          # From Chef::Provider::Package
+          # From Seth::Provider::Package
           def expand_options(options)
             options ? " #{options}" : ""
           end
 
           # Returns a version if the package is installed or nil if it is not.
           def installed_version
-            Chef::Log.debug("#{@new_resource} getting product code for package at #{@new_resource.source}")
+            Seth::Log.debug("#{@new_resource} getting product code for package at #{@new_resource.source}")
             product_code = get_product_property(@new_resource.source, "ProductCode")
-            Chef::Log.debug("#{@new_resource} checking package status and verion for #{product_code}")
+            Seth::Log.debug("#{@new_resource} checking package status and verion for #{product_code}")
             get_installed_version(product_code)
           end
 
           def package_version
-            Chef::Log.debug("#{@new_resource} getting product version for package at #{@new_resource.source}")
+            Seth::Log.debug("#{@new_resource} getting product version for package at #{@new_resource.source}")
             get_product_property(@new_resource.source, "ProductVersion")
           end
 
           def install_package(name, version)
             # We could use MsiConfigureProduct here, but we'll start off with msiexec
-            Chef::Log.debug("#{@new_resource} installing MSI package '#{@new_resource.source}'")
+            Seth::Log.debug("#{@new_resource} installing MSI package '#{@new_resource.source}'")
             shell_out!("msiexec /qn /i \"#{@new_resource.source}\" #{expand_options(@new_resource.options)}", {:timeout => @new_resource.timeout, :returns => @new_resource.returns})
           end
   
           def remove_package(name, version)
             # We could use MsiConfigureProduct here, but we'll start off with msiexec
-            Chef::Log.debug("#{@new_resource} removing MSI package '#{@new_resource.source}'")
+            Seth::Log.debug("#{@new_resource} removing MSI package '#{@new_resource.source}'")
             shell_out!("msiexec /qn /x \"#{@new_resource.source}\" #{expand_options(@new_resource.options)}", {:timeout => @new_resource.timeout, :returns => @new_resource.returns})
           end
         end

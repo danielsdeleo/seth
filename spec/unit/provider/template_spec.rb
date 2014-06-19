@@ -24,10 +24,10 @@ require 'ostruct'
 require 'support/shared/unit/provider/file'
 
 
-describe Chef::Provider::Template do
-  let(:node) { double('Chef::Node') }
-  let(:events) { double('Chef::Events').as_null_object }  # mock all the methods
-  let(:run_context) { double('Chef::RunContext', :node => node, :events => events) }
+describe Seth::Provider::Template do
+  let(:node) { double('Seth::Node') }
+  let(:events) { double('Seth::Events').as_null_object }  # mock all the methods
+  let(:run_context) { double('Seth::RunContext', :node => node, :events => events) }
   let(:enclosing_directory) {
     canonicalize_path(File.expand_path(File.join(CHEF_SPEC_DATA, "templates")))
   }
@@ -44,24 +44,24 @@ describe Chef::Provider::Template do
   end
 
   let(:resource) do
-    resource = Chef::Resource::Template.new("seattle", @run_context)
+    resource = Seth::Resource::Template.new("seattle", @run_context)
     resource.path(resource_path)
     resource
   end
 
   let(:content) do
-    content = double('Chef::Provider::File::Content::Template', :template_location => "/foo/bar/baz")
+    content = double('Seth::Provider::File::Content::Template', :template_location => "/foo/bar/baz")
     File.stub(:exists?).with("/foo/bar/baz").and_return(true)
     content
   end
 
-  it_behaves_like Chef::Provider::File
+  it_behaves_like Seth::Provider::File
 
   context "when creating the template" do
 
-    let(:node) { double('Chef::Node') }
-    let(:events) { double('Chef::Events').as_null_object }  # mock all the methods
-    let(:run_context) { double('Chef::RunContext', :node => node, :events => events) }
+    let(:node) { double('Seth::Node') }
+    let(:events) { double('Seth::Events').as_null_object }  # mock all the methods
+    let(:run_context) { double('Seth::RunContext', :node => node, :events => events) }
     let(:enclosing_directory) {
       canonicalize_path(File.expand_path(File.join(CHEF_SPEC_DATA, "templates")))
     }
@@ -81,7 +81,7 @@ describe Chef::Provider::Template do
       setup_normal_file
       content.stub(:template_location).and_return("/baz/bar/foo")
       File.stub(:exists?).with("/baz/bar/foo").and_return(false)
-      lambda { provider.run_action(:create) }.should raise_error Chef::Mixin::WhyRun::ResourceRequirements::Assertion::AssertionFailure
+      lambda { provider.run_action(:create) }.should raise_error Seth::Mixin::WhyRun::ResourceRequirements::Assertion::AssertionFailure
     end
 
   end

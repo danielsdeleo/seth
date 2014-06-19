@@ -17,14 +17,14 @@
 # limitations under the License.
 #
 
-require File.dirname(__FILE__) + '/lib/chef/version'
+require File.dirname(__FILE__) + '/lib/seth/version'
 
 require 'rubygems'
 require 'rubygems/package_task'
 require 'rdoc/task'
 require './tasks/rspec.rb'
 
-GEM_NAME = "chef"
+GEM_NAME = "seth"
 
 Dir[File.expand_path("../*gemspec", __FILE__)].reverse.each do |gemspec_path|
   gemspec = eval(IO.read(gemspec_path))
@@ -32,16 +32,16 @@ Dir[File.expand_path("../*gemspec", __FILE__)].reverse.each do |gemspec_path|
 end
 
 task :install => :package do
-  sh %{gem install pkg/#{GEM_NAME}-#{Chef::VERSION}.gem --no-rdoc --no-ri}
+  sh %{gem install pkg/#{GEM_NAME}-#{Seth::VERSION}.gem --no-rdoc --no-ri}
 end
 
 task :uninstall do
-  sh %{gem uninstall #{GEM_NAME} -x -v #{Chef::VERSION} }
+  sh %{gem uninstall #{GEM_NAME} -x -v #{Seth::VERSION} }
 end
 
 desc "Build it, tag it and ship it"
 task :ship => :gem do
-  sh("git tag #{Chef::VERSION}")
+  sh("git tag #{Seth::VERSION}")
   sh("git push opscode --tags")
   Dir[File.expand_path("../pkg/*.gem", __FILE__)].reverse.each do |built_gem|
     sh("gem push #{built_gem}")

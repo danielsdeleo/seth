@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class DataBagList < Knife
 
       deps do
-        require 'chef/data_bag'
+        require 'seth/data_bag'
       end
 
       banner "knife data bag list (options)"
@@ -35,7 +35,7 @@ class Chef
         :description => "Show corresponding URIs"
 
       def run
-        output(format_list_for_display(Chef::DataBag.list))
+        output(format_list_for_display(Seth::DataBag.list))
       end
     end
   end

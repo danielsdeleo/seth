@@ -18,28 +18,28 @@
 #
 
 require 'spec_helper'
-require 'chef/win32/registry'
+require 'seth/win32/registry'
 
-describe Chef::Resource::RegistryKey, :unix_only do
+describe Seth::Resource::RegistryKey, :unix_only do
   before(:all) do
-    events = Chef::EventDispatch::Dispatcher.new
-    node = Chef::Node.new
+    events = Seth::EventDispatch::Dispatcher.new
+    node = Seth::Node.new
     ohai = Ohai::System.new
     ohai.all_plugins
     node.consume_external_attrs(ohai.data,{})
-    run_context = Chef::RunContext.new(node, {}, events)
-    @resource = Chef::Resource::RegistryKey.new("HKCU\\Software", run_context)
+    run_context = Seth::RunContext.new(node, {}, events)
+    @resource = Seth::Resource::RegistryKey.new("HKCU\\Software", run_context)
   end
   context "when load_current_resource is run on a non-windows node" do
     it "throws an exception because you don't have a windows registry (derp)" do
       @resource.key("HKCU\\Software\\Opscode")
       @resource.values([{:name=>"Color", :type=>:string, :data=>"Orange"}])
-      lambda{@resource.run_action(:create)}.should raise_error(Chef::Exceptions::Win32NotWindows)
+      lambda{@resource.run_action(:create)}.should raise_error(Seth::Exceptions::Win32NotWindows)
     end
   end
 end
 
-describe 'Chef::Win32::Registry', :windows_only do
+describe 'Seth::Win32::Registry', :windows_only do
 
   before(:all) do
     #Create a registry item
@@ -58,15 +58,15 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     #Create the node with ohai data
-    events = Chef::EventDispatch::Dispatcher.new
-    @node = Chef::Node.new
+    events = Seth::EventDispatch::Dispatcher.new
+    @node = Seth::Node.new
     ohai = Ohai::System.new
     ohai.all_plugins
     @node.consume_external_attrs(ohai.data,{})
-    @run_context = Chef::RunContext.new(@node, {}, events)
+    @run_context = Seth::RunContext.new(@node, {}, events)
 
     #Create a registry object that has access ot the node previously created
-    @registry = Chef::Win32::Registry.new(@run_context)
+    @registry = Seth::Win32::Registry.new(@run_context)
   end
 
   #Delete what is left of the registry key-values previously created
@@ -102,7 +102,7 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.key_exists?("JKLM\\Software\\Branch\\Flower")}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.key_exists?("JKLM\\Software\\Branch\\Flower")}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
   end
 
@@ -112,20 +112,20 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception if the key path does not exist" do
-      lambda {@registry.key_exists!("HKCU\\Software\\Branch\\Flower")}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.key_exists!("HKCU\\Software\\Branch\\Flower")}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
 
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.key_exists!("JKLM\\Software\\Branch\\Flower")}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.key_exists!("JKLM\\Software\\Branch\\Flower")}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
   end
 
   describe "value_exists?" do
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.value_exists?("JKLM\\Software\\Branch\\Flower", {:name=>"Petals"})}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.value_exists?("JKLM\\Software\\Branch\\Flower", {:name=>"Petals"})}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
     it "throws an exception if the key does not exist" do
-      lambda {@registry.value_exists?("HKCU\\Software\\Branch\\Flower", {:name=>"Petals"})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.value_exists?("HKCU\\Software\\Branch\\Flower", {:name=>"Petals"})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
     it "returns true if the value exists" do
       @registry.value_exists?("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"Petals"}).should == true
@@ -137,25 +137,25 @@ describe 'Chef::Win32::Registry', :windows_only do
 
   describe "value_exists!" do
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.value_exists!("JKLM\\Software\\Branch\\Flower", {:name=>"Petals"})}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.value_exists!("JKLM\\Software\\Branch\\Flower", {:name=>"Petals"})}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
     it "throws an exception if the key does not exist" do
-      lambda {@registry.value_exists!("HKCU\\Software\\Branch\\Flower", {:name=>"Petals"})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.value_exists!("HKCU\\Software\\Branch\\Flower", {:name=>"Petals"})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
     it "returns true if the value exists" do
       @registry.value_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"Petals"}).should == true
     end
     it "throws an exception if the value does not exist" do
-      lambda {@registry.value_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"FOOBAR"})}.should raise_error(Chef::Exceptions::Win32RegValueMissing)
+      lambda {@registry.value_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"FOOBAR"})}.should raise_error(Seth::Exceptions::Win32RegValueMissing)
     end
   end
 
   describe "data_exists?" do
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.data_exists?("JKLM\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.data_exists?("JKLM\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
     it "throws an exception if the key does not exist" do
-      lambda {@registry.data_exists?("HKCU\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.data_exists?("HKCU\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
     it "returns true if all the data matches" do
       @registry.data_exists?("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]}).should == true
@@ -173,22 +173,22 @@ describe 'Chef::Win32::Registry', :windows_only do
 
   describe "data_exists!" do
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.data_exists!("JKLM\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.data_exists!("JKLM\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
     it "throws an exception if the key does not exist" do
-      lambda {@registry.data_exists!("HKCU\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.data_exists!("HKCU\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
     it "returns true if all the data matches" do
       @registry.data_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Pink", "Delicate"]}).should == true
     end
     it "throws an exception if the name does not exist" do
-      lambda {@registry.data_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"slateP", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Chef::Exceptions::Win32RegDataMissing)
+      lambda {@registry.data_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"slateP", :type=>:multi_string, :data=>["Pink", "Delicate"]})}.should raise_error(Seth::Exceptions::Win32RegDataMissing)
     end
     it "throws an exception if the types do not match" do
-      lambda {@registry.data_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"Petals", :type=>:string, :data=>"Pink"})}.should raise_error(Chef::Exceptions::Win32RegDataMissing)
+      lambda {@registry.data_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"Petals", :type=>:string, :data=>"Pink"})}.should raise_error(Seth::Exceptions::Win32RegDataMissing)
     end
     it "throws an exception if the data does not match" do
-      lambda {@registry.data_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Mauve", "Delicate"]})}.should raise_error(Chef::Exceptions::Win32RegDataMissing)
+      lambda {@registry.data_exists!("HKCU\\Software\\Root\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Mauve", "Delicate"]})}.should raise_error(Seth::Exceptions::Win32RegDataMissing)
     end
   end
 
@@ -201,11 +201,11 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception if the key does not exist" do
-      lambda {@registry.get_values("HKCU\\Software\\Branch\\Flower")}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.get_values("HKCU\\Software\\Branch\\Flower")}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
 
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.get_values("JKLM\\Software\\Branch\\Flower")}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.get_values("JKLM\\Software\\Branch\\Flower")}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
   end
 
@@ -232,11 +232,11 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception if the key does not exist" do
-      lambda {@registry.set_value("HKCU\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Yellow", "Changed Color"]})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.set_value("HKCU\\Software\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Yellow", "Changed Color"]})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
 
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.set_value("JKLM\\Software\\Root\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Yellow", "Changed Color"]})}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.set_value("JKLM\\Software\\Root\\Branch\\Flower", {:name=>"Petals", :type=>:multi_string, :data=>["Yellow", "Changed Color"]})}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
 
     # we are validating that the data gets .to_i called on it when type is a :dword
@@ -289,7 +289,7 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception if the path has missing keys but recursive set to false" do
-      lambda {@registry.create_key("HKCU\\Software\\Root\\Trunk\\Peck\\Woodpecker", false)}.should raise_error(Chef::Exceptions::Win32RegNoRecursive)
+      lambda {@registry.create_key("HKCU\\Software\\Root\\Trunk\\Peck\\Woodpecker", false)}.should raise_error(Seth::Exceptions::Win32RegNoRecursive)
       @registry.key_exists?("HKCU\\Software\\Root\\Trunk\\Peck\\Woodpecker").should == false
     end
 
@@ -304,7 +304,7 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception of the hive does not exist" do
-      lambda {@registry.create_key("JKLM\\Software\\Root\\Trunk\\Peck\\Woodpecker", false)}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.create_key("JKLM\\Software\\Root\\Trunk\\Peck\\Woodpecker", false)}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
   end
 
@@ -327,11 +327,11 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception if the key does not exist?" do
-      lambda {@registry.delete_value("HKCU\\Software\\Trunk\\Peck\\Woodpecker", {:name=>"Peter", :type=>:string, :data=>"Tiny"})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.delete_value("HKCU\\Software\\Trunk\\Peck\\Woodpecker", {:name=>"Peter", :type=>:string, :data=>"Tiny"})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
 
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.delete_value("JKLM\\Software\\Root\\Trunk\\Peck\\Woodpecker", {:name=>"Peter", :type=>:string, :data=>"Tiny"})}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.delete_value("JKLM\\Software\\Root\\Trunk\\Peck\\Woodpecker", {:name=>"Peter", :type=>:string, :data=>"Tiny"})}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
   end
 
@@ -353,7 +353,7 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception if key to delete has subkeys and recursive is false" do
-      lambda { @registry.delete_key("HKCU\\Software\\Root\\Trunk", false) }.should raise_error(Chef::Exceptions::Win32RegNoRecursive)
+      lambda { @registry.delete_key("HKCU\\Software\\Root\\Trunk", false) }.should raise_error(Seth::Exceptions::Win32RegNoRecursive)
       @registry.key_exists?("HKCU\\Software\\Root\\Trunk\\Peck\\Woodpecker").should == true
     end
 
@@ -368,7 +368,7 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.delete_key("JKLM\\Software\\Root\\Branch\\Flower", false)}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.delete_key("JKLM\\Software\\Root\\Branch\\Flower", false)}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
   end
 
@@ -384,11 +384,11 @@ describe 'Chef::Win32::Registry', :windows_only do
     end
 
     it "throws an exception if the hive was missing" do
-      lambda {@registry.has_subkeys?("LMNO\\Software\\Root")}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.has_subkeys?("LMNO\\Software\\Root")}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
 
     it "throws an exception if the key is missing" do
-      lambda {@registry.has_subkeys?("HKCU\\Software\\Root\\Trunk\\Red")}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.has_subkeys?("HKCU\\Software\\Root\\Trunk\\Red")}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
 
     it "returns true if the key has subkeys" do
@@ -403,10 +403,10 @@ describe 'Chef::Win32::Registry', :windows_only do
 
   describe "get_subkeys" do
     it "throws an exception if the key is missing" do
-      lambda {@registry.get_subkeys("HKCU\\Software\\Trunk\\Red")}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.get_subkeys("HKCU\\Software\\Trunk\\Red")}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
     it "throws an exception if the hive does not exist" do
-      lambda {@registry.get_subkeys("JKLM\\Software\\Root")}.should raise_error(Chef::Exceptions::Win32RegHiveMissing)
+      lambda {@registry.get_subkeys("JKLM\\Software\\Root")}.should raise_error(Seth::Exceptions::Win32RegHiveMissing)
     end
     it "returns the array of subkeys for a given key" do
       subkeys = @registry.get_subkeys("HKCU\\Software\\Root")
@@ -431,17 +431,17 @@ describe 'Chef::Win32::Registry', :windows_only do
 
       context "registry constructor" do
         it "throws an exception if requested architecture is 64bit but running on 32bit" do
-          lambda {Chef::Win32::Registry.new(@run_context, :x86_64)}.should raise_error(Chef::Exceptions::Win32RegArchitectureIncorrect)
+          lambda {Seth::Win32::Registry.new(@run_context, :x86_64)}.should raise_error(Chef::Exceptions::Win32RegArchitectureIncorrect)
         end
 
         it "can correctly set the requested architecture to 32-bit" do
-          @r = Chef::Win32::Registry.new(@run_context, :i386)
+          @r = Seth::Win32::Registry.new(@run_context, :i386)
           @r.architecture.should == :i386
           @r.registry_system_architecture.should == 0x0200
         end
 
         it "can correctly set the requested architecture to :machine" do
-          @r = Chef::Win32::Registry.new(@run_context, :machine)
+          @r = Seth::Win32::Registry.new(@run_context, :machine)
           @r.architecture.should == :machine
           @r.registry_system_architecture.should == 0x0200
         end
@@ -449,7 +449,7 @@ describe 'Chef::Win32::Registry', :windows_only do
 
       context "architecture setter" do
         it "throws an exception if requested architecture is 64bit but running on 32bit" do
-          lambda {@registry.architecture = :x86_64}.should raise_error(Chef::Exceptions::Win32RegArchitectureIncorrect)
+          lambda {@registry.architecture = :x86_64}.should raise_error(Seth::Exceptions::Win32RegArchitectureIncorrect)
         end
 
         it "sets the requested architecture to :machine if passed :machine" do
@@ -478,19 +478,19 @@ describe 'Chef::Win32::Registry', :windows_only do
 
       context "registry constructor" do
         it "can correctly set the requested architecture to 32-bit" do
-          @r = Chef::Win32::Registry.new(@run_context, :i386)
+          @r = Seth::Win32::Registry.new(@run_context, :i386)
           @r.architecture.should == :i386
           @r.registry_system_architecture.should == 0x0200
         end
 
         it "can correctly set the requested architecture to 64-bit" do
-          @r = Chef::Win32::Registry.new(@run_context, :x86_64)
+          @r = Seth::Win32::Registry.new(@run_context, :x86_64)
           @r.architecture.should == :x86_64
           @r.registry_system_architecture.should == 0x0100
         end
 
         it "can correctly set the requested architecture to :machine" do
-          @r = Chef::Win32::Registry.new(@run_context, :machine)
+          @r = Seth::Win32::Registry.new(@run_context, :machine)
           @r.architecture.should == :machine
           @r.registry_system_architecture.should == 0x0100
         end
@@ -574,7 +574,7 @@ describe 'Chef::Win32::Registry', :windows_only do
       describe "value_exists?" do
         it "does not find 64-bit values in the 32-bit registry" do
           @registry.architecture=:i386
-          lambda{@registry.value_exists?("HKLM\\Software\\Root\\Mauve", {:name=>"Alert"})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+          lambda{@registry.value_exists?("HKLM\\Software\\Root\\Mauve", {:name=>"Alert"})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
         end
         it "finds 32-bit values in the 32-bit registry" do
           @registry.architecture=:i386
@@ -586,14 +586,14 @@ describe 'Chef::Win32::Registry', :windows_only do
         end
         it "finds 64-bit values in the 64-bit registry" do
           @registry.architecture=:x86_64
-          lambda{@registry.value_exists?("HKLM\\Software\\Root\\Poosh", {:name=>"Status"})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+          lambda{@registry.value_exists?("HKLM\\Software\\Root\\Poosh", {:name=>"Status"})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
         end
       end
 
       describe "data_exists?" do
         it "does not find 64-bit keys in the 32-bit registry" do
           @registry.architecture=:i386
-          lambda{@registry.data_exists?("HKLM\\Software\\Root\\Mauve", {:name=>"Alert", :type=>:string, :data=>"Universal"})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+          lambda{@registry.data_exists?("HKLM\\Software\\Root\\Mauve", {:name=>"Alert", :type=>:string, :data=>"Universal"})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
         end
         it "finds 32-bit keys in the 32-bit registry" do
           @registry.architecture=:i386
@@ -605,7 +605,7 @@ describe 'Chef::Win32::Registry', :windows_only do
         end
         it "finds 64-bit keys in the 64-bit registry" do
           @registry.architecture=:x86_64
-          lambda{@registry.data_exists?("HKLM\\Software\\Root\\Poosh", {:name=>"Status", :type=>:string, :data=>"Lost"})}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+          lambda{@registry.data_exists?("HKLM\\Software\\Root\\Poosh", {:name=>"Status", :type=>:string, :data=>"Lost"})}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
         end
       end
 

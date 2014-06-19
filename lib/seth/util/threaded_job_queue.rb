@@ -15,7 +15,7 @@
 
 require 'thread'
 
-class Chef
+class Seth
   class Util
     # A simple threaded job queue
     #

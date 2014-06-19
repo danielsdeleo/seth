@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Deploy do
+describe Seth::Resource::Deploy do
 
   class << self
     def resource_has_a_string_attribute(attr_name)
@@ -51,7 +51,7 @@ describe Chef::Resource::Deploy do
   end
 
   before do
-    @resource = Chef::Resource::Deploy.new("/my/deploy/dir")
+    @resource = Seth::Resource::Deploy.new("/my/deploy/dir")
   end
 
   resource_has_a_string_attribute(:repo)
@@ -88,21 +88,21 @@ describe Chef::Resource::Deploy do
   end
 
   it "takes the SCM resource to use as a constant, and defaults to git" do
-    @resource.scm_provider.should eql(Chef::Provider::Git)
-    @resource.scm_provider Chef::Provider::Subversion
-    @resource.scm_provider.should eql(Chef::Provider::Subversion)
+    @resource.scm_provider.should eql(Seth::Provider::Git)
+    @resource.scm_provider Seth::Provider::Subversion
+    @resource.scm_provider.should eql(Seth::Provider::Subversion)
   end
 
   it "allows scm providers to be set via symbol" do
-    @resource.scm_provider.should == Chef::Provider::Git
+    @resource.scm_provider.should == Seth::Provider::Git
     @resource.scm_provider :subversion
-    @resource.scm_provider.should == Chef::Provider::Subversion
+    @resource.scm_provider.should == Seth::Provider::Subversion
   end
 
   it "allows scm providers to be set via string" do
-    @resource.scm_provider.should == Chef::Provider::Git
+    @resource.scm_provider.should == Seth::Provider::Git
     @resource.scm_provider "subversion"
-    @resource.scm_provider.should == Chef::Provider::Subversion
+    @resource.scm_provider.should == Seth::Provider::Subversion
   end
 
   it "has a boolean attribute for svn_force_export defaulting to false" do
@@ -197,22 +197,22 @@ describe Chef::Resource::Deploy do
   end
 
   it "defaults to using the Deploy::Timestamped provider" do
-    @resource.provider.should == Chef::Provider::Deploy::Timestamped
+    @resource.provider.should == Seth::Provider::Deploy::Timestamped
   end
 
   it "allows providers to be set with a full class name" do
-    @resource.provider Chef::Provider::Deploy::Timestamped
-    @resource.provider.should == Chef::Provider::Deploy::Timestamped
+    @resource.provider Seth::Provider::Deploy::Timestamped
+    @resource.provider.should == Seth::Provider::Deploy::Timestamped
   end
 
   it "allows deploy providers to be set via symbol" do
     @resource.provider :revision
-    @resource.provider.should == Chef::Provider::Deploy::Revision
+    @resource.provider.should == Seth::Provider::Deploy::Revision
   end
 
   it "allows deploy providers to be set via string" do
     @resource.provider "revision"
-    @resource.provider.should == Chef::Provider::Deploy::Revision
+    @resource.provider.should == Seth::Provider::Deploy::Revision
   end
 
   it "defaults keep_releases to 5" do
@@ -251,7 +251,7 @@ describe Chef::Resource::Deploy do
       @resource.revision("1.2.3")
       @resource.user("root")
       @resource.group("pokemon")
-      @resource.scm_provider(Chef::Provider::Git)
+      @resource.scm_provider(Seth::Provider::Git)
       @resource.repository_cache("cached-copy")
       @resource.environment({"SUDO" => "TRUE"})
       @resource.symlinks({"system" => "public/system"})

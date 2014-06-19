@@ -21,18 +21,18 @@ require 'spec_helper'
 require 'tmpdir'
 
 shared_context "using file paths with spaces" do
-  let!(:old_tempfile) { Tempfile.new("chef-util diff-spec") }
-  let!(:new_tempfile) { Tempfile.new("chef-util diff-spec") }
+  let!(:old_tempfile) { Tempfile.new("seth-util diff-spec") }
+  let!(:new_tempfile) { Tempfile.new("seth-util diff-spec") }
 end
 
 shared_context "using file paths without spaces" do
-  let!(:old_tempfile) { Tempfile.new("chef-util-diff-spec") }
-  let!(:new_tempfile) { Tempfile.new("chef-util-diff-spec") }
+  let!(:old_tempfile) { Tempfile.new("seth-util-diff-spec") }
+  let!(:new_tempfile) { Tempfile.new("seth-util-diff-spec") }
 end
 
 shared_examples_for "a diff util" do
-  it "should return a Chef::Util::Diff" do
-    expect(differ).to be_a_kind_of(Chef::Util::Diff)
+  it "should return a Seth::Util::Diff" do
+    expect(differ).to be_a_kind_of(Seth::Util::Diff)
   end
 
   it "produces a diff even if the old_file does not exist" do
@@ -59,11 +59,11 @@ shared_examples_for "a diff util" do
 
   describe "when diffs are disabled" do
     before do
-      Chef::Config[:diff_disabled] = true
+      Seth::Config[:diff_disabled] = true
     end
 
     after do
-      Chef::Config[:diff_disabled] = false
+      Seth::Config[:diff_disabled] = false
     end
 
     it "calling for_output should return the error message" do
@@ -301,12 +301,12 @@ shared_examples_for "a diff util" do
 
   describe "when testing the diff_filesize_threshold" do
     before do
-      @diff_filesize_threshold_saved = Chef::Config[:diff_filesize_threshold]
-      Chef::Config[:diff_filesize_threshold] = 10
+      @diff_filesize_threshold_saved = Seth::Config[:diff_filesize_threshold]
+      Seth::Config[:diff_filesize_threshold] = 10
     end
 
     after do
-      Chef::Config[:diff_filesize_threshold] = @diff_filesize_threshold_saved
+      Seth::Config[:diff_filesize_threshold] = @diff_filesize_threshold_saved
     end
 
     describe "when the old_file goes over the threshold" do
@@ -360,12 +360,12 @@ shared_examples_for "a diff util" do
     describe "when the diff output is too long" do
 
       before do
-        @diff_output_threshold_saved = Chef::Config[:diff_output_threshold]
-        Chef::Config[:diff_output_threshold] = 10
+        @diff_output_threshold_saved = Seth::Config[:diff_output_threshold]
+        Seth::Config[:diff_output_threshold] = 10
       end
 
       after do
-        Chef::Config[:diff_output_threshold] = @diff_output_threshold_saved
+        Seth::Config[:diff_output_threshold] = @diff_output_threshold_saved
       end
 
       it "calling for_output should return the error message" do
@@ -381,14 +381,14 @@ shared_examples_for "a diff util" do
   describe "when checking if files are binary or text" do
 
     it "should identify zero-length files as text" do
-      Tempfile.open("chef-util-diff-spec") do |file|
+      Tempfile.open("seth-util-diff-spec") do |file|
         file.close
         differ.send(:is_binary?, file.path).should be_false
       end
     end
 
     it "should identify text files as text" do
-      Tempfile.open("chef-util-diff-spec") do |file|
+      Tempfile.open("seth-util-diff-spec") do |file|
         file.write(plain_ascii)
         file.close
         differ.send(:is_binary?, file.path).should be_false
@@ -396,7 +396,7 @@ shared_examples_for "a diff util" do
     end
 
     it "should identify a null-terminated string files as binary" do
-      Tempfile.open("chef-util-diff-spec") do |file|
+      Tempfile.open("seth-util-diff-spec") do |file|
         file.write("This is a binary file.\0")
         file.close
         differ.send(:is_binary?, file.path).should be_true
@@ -404,7 +404,7 @@ shared_examples_for "a diff util" do
     end
 
     it "should identify null-teriminated multi-line string files as binary" do
-      Tempfile.open("chef-util-diff-spec") do |file|
+      Tempfile.open("seth-util-diff-spec") do |file|
         file.write("This is a binary file.\nNo Really\nit is\0")
         file.close
         differ.send(:is_binary?, file.path).should be_true
@@ -423,7 +423,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify normal ASCII as text" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(plain_ascii)
           file.close
           differ.send(:is_binary?, file.path).should be_false
@@ -431,7 +431,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify UTF-8 as text" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(utf_8)
           file.close
           differ.send(:is_binary?, file.path).should be_false
@@ -439,7 +439,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify Latin-1 that is invalid UTF-8 as binary" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(latin_1)
           file.close
           differ.send(:is_binary?, file.path).should be_true
@@ -447,7 +447,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify Shift-JIS that is invalid UTF-8 as binary" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(shift_jis)
           file.close
           differ.send(:is_binary?, file.path).should be_true
@@ -468,7 +468,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify normal ASCII as text" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(plain_ascii)
           file.close
           differ.send(:is_binary?, file.path).should be_false
@@ -476,7 +476,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify UTF-8 that is invalid Latin-1 as binary" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(utf_8)
           file.close
           differ.send(:is_binary?, file.path).should be_true
@@ -484,7 +484,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify Latin-1 as text" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(latin_1)
           file.close
           differ.send(:is_binary?, file.path).should be_false
@@ -492,7 +492,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify Shift-JIS that is invalid Latin-1 as binary" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(shift_jis)
           file.close
           differ.send(:is_binary?, file.path).should be_true
@@ -512,14 +512,14 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify normal ASCII as text" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(plain_ascii)
           file.close
           differ.send(:is_binary?, file.path).should be_false
         end
       end
       it "should identify UTF-8 that is invalid Shift-JIS as binary" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(utf_8)
           file.close
           differ.send(:is_binary?, file.path).should be_true
@@ -527,7 +527,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify Latin-1 that is invalid Shift-JIS as binary" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(latin_1)
           file.close
           differ.send(:is_binary?, file.path).should be_true
@@ -535,7 +535,7 @@ shared_examples_for "a diff util" do
       end
 
       it "should identify Shift-JIS as text" do
-        Tempfile.open("chef-util-diff-spec") do |file|
+        Tempfile.open("seth-util-diff-spec") do |file|
           file.write(shift_jis)
           file.close
           differ.send(:is_binary?, file.path).should be_false
@@ -547,7 +547,7 @@ shared_examples_for "a diff util" do
 
 end
 
-describe Chef::Util::Diff, :uses_diff => true do
+describe Seth::Util::Diff, :uses_diff => true do
   let!(:old_file) { old_tempfile.path }
   let!(:new_file) { new_tempfile.path }
 
@@ -558,7 +558,7 @@ describe Chef::Util::Diff, :uses_diff => true do
   let(:shift_jis) { "I have no idea what this character is:\n \x83\x80.\n" } # seriously, no clue, but \x80 is nice and illegal in other encodings
 
   let(:differ) do  # subject
-    differ = Chef::Util::Diff.new
+    differ = Seth::Util::Diff.new
     differ.diff(old_file, new_file)
     differ
   end

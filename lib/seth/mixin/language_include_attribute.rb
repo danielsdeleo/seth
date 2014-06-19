@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'chef/dsl/include_attribute'
-require 'chef/mixin/deprecation'
+require 'seth/dsl/include_attribute'
+require 'seth/mixin/deprecation'
 
-class Chef
+class Seth
   module Mixin
 
     # DEPRECATED: This is just here for compatibility, use
-    # Chef::DSL::IncludeAttribute instead.
+    # Seth::DSL::IncludeAttribute instead.
 
-    deprecate_constant(:LanguageIncludeAttribute, Chef::DSL::IncludeAttribute, <<-EOM)
-Chef::Mixin::LanguageIncludeAttribute is deprecated. Use
-Chef::DSL::IncludeAttribute instead.
+    deprecate_constant(:LanguageIncludeAttribute, Seth::DSL::IncludeAttribute, <<-EOM)
+Seth::Mixin::LanguageIncludeAttribute is deprecated. Use
+Seth::DSL::IncludeAttribute instead.
 EOM
 
   end

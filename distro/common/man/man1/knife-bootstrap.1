@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-BOOTSTRAP" "1" "Chef 11.12.0" "" "knife bootstrap"
+.TH "KNIFE-BOOTSTRAP" "1" "Seth 11.12.0" "" "knife bootstrap"
 .SH NAME
 knife-bootstrap \- The man page for the knife bootstrap subcommand.
 .
@@ -31,9 +31,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-A bootstrap is a process that installs the chef\-client on a target system so that it can run as a chef\-client and communicate with a Chef server\&.
+A bootstrap is a process that installs the seth\-client on a target system so that it can run as a chef\-client and communicate with a Seth server\&.
 .sp
-The \fBknife bootstrap\fP subcommand is used to run a bootstrap operation that installs the chef\-client on the target system. The bootstrap operation must specify the IP address or FQDN of the target system.
+The \fBknife bootstrap\fP subcommand is used to run a bootstrap operation that installs the seth\-client on the target system. The bootstrap operation must specify the IP address or FQDN of the target system.
 .sp
 \fBSyntax\fP
 .sp
@@ -58,19 +58,19 @@ This subcommand has the following options:
 Indicates that SSH agent forwarding is enabled.
 .TP
 .B \fB\-\-bootstrap\-no\-proxy NO_PROXY_URL_or_IP\fP
-A URL or IP address that specifies a location that should not be proxied. Note: This option is used internally by Chef to help verify bootstrap operations during testing and should never be used during an actual bootstrap operation.
+A URL or IP address that specifies a location that should not be proxied. Note: This option is used internally by Seth to help verify bootstrap operations during testing and should never be used during an actual bootstrap operation.
 .TP
 .B \fB\-\-bootstrap\-proxy PROXY_URL\fP
 The proxy server for the node that is the target of a bootstrap operation.
 .TP
 .B \fB\-\-bootstrap\-version VERSION\fP
-The version of the chef\-client to install.
+The version of the seth\-client to install.
 .TP
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -80,11 +80,11 @@ Indicates whether colored output will be used.
 \fBWARNING:\fP
 .INDENT 7.0
 .INDENT 3.5
-The default bootstrap operation uses the omnibus installer, which means the default template file (\fBchef\-full\fP) should work on all supported platforms. It is recommended to use custom bootstrap templates only when the omnibus installer cannot be used. The \fB\&.erb\fP file extension is added automatically and should not be passed as part of the bootstrap command.
+The default bootstrap operation uses the omnibus installer, which means the default template file (\fBseth\-full\fP) should work on all supported platforms. It is recommended to use custom bootstrap templates only when the omnibus installer cannot be used. The \fB\&.erb\fP file extension is added automatically and should not be passed as part of the bootstrap command.
 .UNINDENT
 .UNINDENT
 .sp
-The template file to be used during a bootstrap operation. The following distributions are supported: \fBchef\-full\fP (the default bootstrap), \fBcentos5\-gems\fP, \fBfedora13\-gems\fP, \fBubuntu10.04\-gems\fP, \fBubuntu10.04\-apt\fP, \fBubuntu12.04\-gems\fP, and the name of a custom bootstrap template file. When this option is used, Knife will search for the template file in the following order: the \fBbootstrap/\fP folder in the current working directory, the \fBbootstrap/\fP folder in the chef\-repo, the \fBbootstrap/\fP folder in the \fB~/.chef/\fP directory, or a default bootstrap file. Do not use the \fB\-\-template\-file\fP option when \fB\-\-distro\fP is specified.
+The template file to be used during a bootstrap operation. The following distributions are supported: \fBseth\-full\fP (the default bootstrap), \fBcentos5\-gems\fP, \fBfedora13\-gems\fP, \fBubuntu10.04\-gems\fP, \fBubuntu10.04\-apt\fP, \fBubuntu12.04\-gems\fP, and the name of a custom bootstrap template file. When this option is used, Knife will search for the template file in the following order: the \fBbootstrap/\fP folder in the current working directory, the \fBbootstrap/\fP folder in the chef\-repo, the \fBbootstrap/\fP folder in the \fB~/.chef/\fP directory, or a default bootstrap file. Do not use the \fB\-\-template\-file\fP option when \fB\-\-distro\fP is specified.
 .TP
 .B \fB\-\-defaults\fP
 Indicates that Knife will use the default value, instead of asking a user to provide one.
@@ -108,7 +108,7 @@ The SSH tunnel or gateway that is used to run a bootstrap action on a machine th
 Shows help for the command.
 .TP
 .B \fB\-\-hint HINT_NAME[=HINT_FILE]\fP
-An Ohai hint to be set on the target of the bootstrap. The hint is contained in a file and is formatted as JSON: \fB{"attribute":"value","attribute":"value"...}\fP\&. \fBHINT_NAME\fP is the name of the hint and \fBHINT_FILE\fP is the name of the hint file located at \fB/etc/chef/ohai/hints/HINT_FILE.json\fP\&. Use multiple \fB\-\-hint\fP options in the command to specify multiple hints.
+An Ohai hint to be set on the target of the bootstrap. The hint is contained in a file and is formatted as JSON: \fB{"attribute":"value","attribute":"value"...}\fP\&. \fBHINT_NAME\fP is the name of the hint and \fBHINT_FILE\fP is the name of the hint file located at \fB/etc/seth/ohai/hints/HINT_FILE.json\fP\&. Use multiple \fB\-\-hint\fP options in the command to specify multiple hints.
 .TP
 .B \fB\-\-[no\-]host\-key\-verify\fP
 Use \fB\-\-no\-host\-key\-verify\fP to disable host key verification. Default setting: \fB\-\-host\-key\-verify\fP\&.
@@ -117,10 +117,10 @@ Use \fB\-\-no\-host\-key\-verify\fP to disable host key verification. Default se
 The SSH identity file used for authentication. Key\-based authentication is recommended.
 .TP
 .B \fB\-j JSON_ATTRIBS\fP, \fB\-\-json\-attributes JSON_ATTRIBS\fP
-A JSON string that is added to the first run of a chef\-client\&.
+A JSON string that is added to the first run of a seth\-client\&.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-N NAME\fP, \fB\-\-node\-name NAME\fP
 The name of the node.
@@ -141,7 +141,7 @@ Indicates that data will be shown after a destructive operation.
 A comma\-separated list of roles and/or recipes to be applied.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-\-secret SECRET\fP
 The encryption key that is used for values contained within a data bag item.
@@ -156,13 +156,13 @@ Indicates that a bootstrap operation should be executed using sudo\&.
 The path to a template file that will be used during a bootstrap operation. Do not use the \fB\-\-distro\fP option when \fB\-\-template\-file\fP is specified.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-\-use\-sudo\-password\fP
 Indicates that a bootstrap operation is done using sudo, with the password specified by the \fB\-P\fP (or \fB\-\-ssh\-password\fP) option.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -174,7 +174,7 @@ The SSH user name.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -199,6 +199,6 @@ $ knife bootstrap 192.168.1.1 \-x username \-i ~/.ssh/id_rsa \-\-sudo
 .UNINDENT
 .UNINDENT
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

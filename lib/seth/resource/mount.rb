@@ -17,11 +17,11 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
+require 'seth/resource'
 
-class Chef
+class Seth
   class Resource
-    class Mount < Chef::Resource
+    class Mount < Seth::Resource
 
       identity_attr :device
 

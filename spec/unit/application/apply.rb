@@ -17,19 +17,19 @@
 
 require 'spec_helper'
 
-describe Chef::Application::Apply do
+describe Seth::Application::Apply do
 
   before do
-    @app = Chef::Application::Recipe.new
+    @app = Seth::Application::Recipe.new
     @app.stub(:configure_logging).and_return(true)
     @recipe_text = "package 'nyancat'"
-    Chef::Config[:solo] = true
+    Seth::Config[:solo] = true
   end
 
   describe "configuring the application" do
     it "should set solo mode to true" do
       @app.reconfigure
-      Chef::Config[:solo].should be_true
+      Seth::Config[:solo].should be_true
     end
   end
   describe "read_recipe_file" do
@@ -39,7 +39,7 @@ describe Chef::Application::Apply do
       @recipe_file = double("Tempfile (mock)", :read => @recipe_text)
       @app.stub(:open).with(@recipe_path).and_return(@recipe_file)
       File.stub(:exist?).with("foo.rb").and_return(true)
-      Chef::Application.stub(:fatal!).and_return(true)
+      Seth::Application.stub(:fatal!).and_return(true)
     end
     it "should read text properly" do
       @app.read_recipe_file(@recipe_file_name)[0].should == @recipe_text
@@ -52,7 +52,7 @@ describe Chef::Application::Apply do
         File.stub(:exist?).with(@recipe_file_name).and_return(false)
       end
       it "should raise a fatal" do
-        Chef::Application.should_receive(:fatal!)
+        Seth::Application.should_receive(:fatal!)
         @app.read_recipe_file(@recipe_file_name)
       end
     end

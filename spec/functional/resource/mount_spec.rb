@@ -17,21 +17,21 @@
 #
 
 require 'functional/resource/base'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 require 'tmpdir'
 
 # run this test only for following platforms.
 include_flag = !(['ubuntu', 'centos', 'aix', 'solaris2'].include?(ohai[:platform]))
 
-describe Chef::Resource::Mount, :requires_root, :external => include_flag do
+describe Seth::Resource::Mount, :requires_root, :external => include_flag do
 
-  include Chef::Mixin::ShellOut
+  include Seth::Mixin::ShellOut
 
   # Platform specific setup, cleanup and validation helpers.
 
   def setup_device_for_mount
     # use ramdisk for creating a test device for mount.
-    # This can cleaner if we have chef resource/provider for ramdisk.
+    # This can cleaner if we have seth resource/provider for ramdisk.
     case ohai[:platform]
     when "aix"
       ramdisk = shell_out!("mkramdisk 16M").stdout
@@ -110,7 +110,7 @@ describe Chef::Resource::Mount, :requires_root, :external => include_flag do
   end
 
   let(:new_resource) do
-    new_resource = Chef::Resource::Mount.new(@mount_point, run_context)
+    new_resource = Seth::Resource::Mount.new(@mount_point, run_context)
     new_resource.device      @device
     new_resource.name        @mount_point
     new_resource.fstype      @fstype

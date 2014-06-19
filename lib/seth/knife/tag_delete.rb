@@ -18,14 +18,14 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class TagDelete < Knife
 
       deps do
-        require 'chef/node'
+        require 'seth/node'
       end
 
       banner "knife tag delete NODE TAG ..."
@@ -40,7 +40,7 @@ class Chef
           exit 1
         end
 
-        node = Chef::Node.load name
+        node = Seth::Node.load name
         deleted_tags = Array.new
         tags.each do |tag|
           unless node.tags.delete(tag).nil?

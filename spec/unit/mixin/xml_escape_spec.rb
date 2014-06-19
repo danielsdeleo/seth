@@ -19,10 +19,10 @@
 require 'spec_helper'
 
 class XMLEscapingTestHarness
-  include Chef::Mixin::XMLEscape
+  include Seth::Mixin::XMLEscape
 end
 
-describe Chef::Mixin::XMLEscape do
+describe Seth::Mixin::XMLEscape do
   before do
     @escaper = XMLEscapingTestHarness.new
   end

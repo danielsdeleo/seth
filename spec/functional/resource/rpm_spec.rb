@@ -17,15 +17,15 @@
 #
 
 require 'functional/resource/base'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
 # run this test only for following platforms.
 exclude_test = !['aix', 'centos', 'redhat', 'suse'].include?(ohai[:platform])
-describe Chef::Resource::RpmPackage, :requires_root, :external => exclude_test do
-  include Chef::Mixin::ShellOut
+describe Seth::Resource::RpmPackage, :requires_root, :external => exclude_test do
+  include Seth::Mixin::ShellOut
 
   let(:new_resource) do
-    new_resource = Chef::Resource::RpmPackage.new(@pkg_name, run_context)
+    new_resource = Seth::Resource::RpmPackage.new(@pkg_name, run_context)
     new_resource.source @pkg_path
     new_resource
   end

@@ -15,29 +15,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/resource/package'
-require 'chef/mixin/get_source_from_package'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/resource/package'
+require 'seth/mixin/get_source_from_package'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Rpm < Chef::Provider::Package
+      class Rpm < Seth::Provider::Package
 
-        include Chef::Mixin::GetSourceFromPackage
+        include Seth::Mixin::GetSourceFromPackage
 
         def define_resource_requirements
           super
 
           requirements.assert(:all_actions) do |a|
             a.assertion { @package_source_exists }
-            a.failure_message Chef::Exceptions::Package, "Package #{@new_resource.name} not found: #{@new_resource.source}"
+            a.failure_message Seth::Exceptions::Package, "Package #{@new_resource.name} not found: #{@new_resource.source}"
             a.whyrun "Assuming package #{@new_resource.name} would have been made available."
           end
           requirements.assert(:all_actions) do |a|
             a.assertion { !@rpm_status.nil? && (@rpm_status.exitstatus == 0 || @rpm_status.exitstatus == 1) }
-            a.failure_message Chef::Exceptions::Package, "Unable to determine current version due to RPM failure. Detail: #{@rpm_status.inspect}"
+            a.failure_message Seth::Exceptions::Package, "Unable to determine current version due to RPM failure. Detail: #{@rpm_status.inspect}"
             a.whyrun "Assuming current version would have been determined for package#{@new_resource.name}."
           end
         end
@@ -46,7 +46,7 @@ class Chef
           @package_source_provided = true
           @package_source_exists = true
 
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
           @new_resource.version(nil)
 
@@ -56,7 +56,7 @@ class Chef
               return
             end
 
-            Chef::Log.debug("#{@new_resource} checking rpm status")
+            Seth::Log.debug("#{@new_resource} checking rpm status")
             status = popen4("rpm -qp --queryformat '%{NAME} %{VERSION}-%{RELEASE}\n' #{@new_resource.source}") do |pid, stdin, stdout, stderr|
               stdout.each do |line|
                 case line
@@ -74,12 +74,12 @@ class Chef
             end
           end
 
-          Chef::Log.debug("#{@new_resource} checking install state")
+          Seth::Log.debug("#{@new_resource} checking install state")
           @rpm_status = popen4("rpm -q --queryformat '%{NAME} %{VERSION}-%{RELEASE}\n' #{@current_resource.package_name}") do |pid, stdin, stdout, stderr|
             stdout.each do |line|
               case line
               when /([\w\d+_.-]+)\s([\w\d_.-]+)/
-                Chef::Log.debug("#{@new_resource} current version is #{$2}")
+                Seth::Log.debug("#{@new_resource} current version is #{$2}")
                 @current_resource.version($2)
               end
             end

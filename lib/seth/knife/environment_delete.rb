@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class EnvironmentDelete < Knife
 
       deps do
-        require 'chef/environment'
-        require 'chef/json_compat'
+        require 'seth/environment'
+        require 'seth/json_compat'
       end
 
       banner "knife environment delete ENVIRONMENT (options)"
@@ -38,7 +38,7 @@ class Chef
           exit 1
         end
 
-        delete_object(Chef::Environment, env_name)
+        delete_object(Seth::Environment, env_name)
       end
     end
   end

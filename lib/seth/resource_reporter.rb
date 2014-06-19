@@ -20,10 +20,10 @@
 #
 
 require 'uri'
-require 'chef/monkey_patches/securerandom'
-require 'chef/event_dispatch/base'
+require 'seth/monkey_patches/securerandom'
+require 'seth/event_dispatch/base'
 
-class Chef
+class Seth
   class ResourceReporter < EventDispatch::Base
 
     class ResourceReport < Struct.new(:new_resource,
@@ -107,7 +107,7 @@ class Chef
     PROTOCOL_VERSION = '0.1.0'
 
     def initialize(rest_client)
-      if Chef::Config[:enable_reporting] && !Chef::Config[:why_run]
+      if Seth::Config[:enable_reporting] && !Chef::Config[:why_run]
         @reporting_enabled = true
       else
         @reporting_enabled = false
@@ -145,22 +145,22 @@ class Chef
 
       if !e.response || (code != "404" && code != "406")
         exception = "Exception: #{code} "
-        if Chef::Config[:enable_reporting_url_fatals]
+        if Seth::Config[:enable_reporting_url_fatals]
           reporting_status = "Reporting fatals enabled. Aborting run. "
-          Chef::Log.error(message + exception + reporting_status)
+          Seth::Log.error(message + exception + reporting_status)
           raise
         else
           reporting_status = "Disabling reporting for run."
-          Chef::Log.info(message + exception + reporting_status)
+          Seth::Log.info(message + exception + reporting_status)
         end
       else
         reason = "Received #{code}. "
         if code == "406"
           reporting_status = "Client version not supported. Please update the client. Disabling reporting for run."
-          Chef::Log.info(message + reason + reporting_status)
+          Seth::Log.info(message + reason + reporting_status)
         else
           reporting_status = "Disabling reporting for run."
-          Chef::Log.debug(message + reason + reporting_status)
+          Seth::Log.debug(message + reason + reporting_status)
         end
       end
 
@@ -228,24 +228,24 @@ class Chef
       if reporting_enabled?
         run_data = prepare_run_data
         resource_history_url = "reports/nodes/#{node_name}/runs/#{run_id}"
-        Chef::Log.info("Sending resource update report (run-id: #{run_id})")
-        Chef::Log.debug run_data.inspect
+        Seth::Log.info("Sending resource update report (run-id: #{run_id})")
+        Seth::Log.debug run_data.inspect
         compressed_data = encode_gzip(run_data.to_json)
         begin
-          Chef::Log.debug("Sending compressed run data...")
+          Seth::Log.debug("Sending compressed run data...")
           # Since we're posting compressed data we can not directly call post_rest which expects JSON
           reporting_url = @rest_client.create_url(resource_history_url)
           @rest_client.raw_http_request(:POST, reporting_url, headers({'Content-Encoding' => 'gzip'}), compressed_data)
         rescue Net::HTTPServerException => e
           if e.response.code.to_s == "400"
-            Chef::FileCache.store("failed-reporting-data.json", Chef::JSONCompat.to_json_pretty(run_data), 0640)
-            Chef::Log.error("Failed to post reporting data to server (HTTP 400), saving to #{Chef::FileCache.load("failed-reporting-data.json", false)}")
+            Seth::FileCache.store("failed-reporting-data.json", Chef::JSONCompat.to_json_pretty(run_data), 0640)
+            Seth::Log.error("Failed to post reporting data to server (HTTP 400), saving to #{Chef::FileCache.load("failed-reporting-data.json", false)}")
           else
-            Chef::Log.error("Failed to post reporting data to server (HTTP #{e.response.code.to_s})")
+            Seth::Log.error("Failed to post reporting data to server (HTTP #{e.response.code.to_s})")
           end
         end
       else
-        Chef::Log.debug("Server doesn't support resource history, skipping resource report.")
+        Seth::Log.debug("Server doesn't support resource history, skipping resource report.")
       end
     end
 

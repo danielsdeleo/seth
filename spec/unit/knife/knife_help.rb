@@ -18,11 +18,11 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::Help do
+describe Seth::Knife::Help do
   before(:each) do
     # Perilously use the build in list even though it is dynamic so we don't get warnings about the constant
     # HELP_TOPICS = [ "foo", "bar", "knife-kittens", "ceiling-cat", "shell" ]
-    @knife = Chef::Knife::Help.new
+    @knife = Seth::Knife::Help.new
   end
 
   it "should return a list of help topics" do
@@ -47,7 +47,7 @@ describe Chef::Knife::Help do
 
   describe "find_manpage_path" do
     it "should find the man page in the gem" do
-      @knife.find_manpage_path("shell").should =~ /distro\/common\/man\/man1\/chef-shell.1$/
+      @knife.find_manpage_path("shell").should =~ /distro\/common\/man\/man1\/seth-shell.1$/
     end
 
     it "should provide the man page name if not in the gem" do

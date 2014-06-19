@@ -18,19 +18,19 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
-require 'chef/provider/directory'
-require 'chef/mixin/securable'
+require 'seth/resource'
+require 'seth/provider/directory'
+require 'seth/mixin/securable'
 
-class Chef
+class Seth
   class Resource
-    class Directory < Chef::Resource
+    class Directory < Seth::Resource
 
       identity_attr :path
 
       state_attrs :group, :mode, :owner
 
-      include Chef::Mixin::Securable
+      include Seth::Mixin::Securable
 
       provides :directory, :on_platforms => :all
 
@@ -41,7 +41,7 @@ class Chef
         @action = :create
         @recursive = false
         @allowed_actions.push(:create, :delete)
-        @provider = Chef::Provider::Directory
+        @provider = Seth::Provider::Directory
       end
 
       def recursive(arg=nil)

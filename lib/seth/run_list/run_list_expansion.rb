@@ -16,14 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/mash'
+require 'seth/mash'
 
-require 'chef/mixin/deep_merge'
+require 'seth/mixin/deep_merge'
 
-require 'chef/role'
-require 'chef/rest'
+require 'seth/role'
+require 'seth/rest'
 
-class Chef
+class Seth
   class RunList
     # Abstract Base class for expanding a run list. Subclasses must handle
     # fetching roles from a data source by defining +fetch_role+
@@ -44,7 +44,7 @@ class Chef
       attr_reader :missing_roles_with_including_role
 
       # The data source passed to the constructor. Not used in this class.
-      # In subclasses, this is a couchdb or Chef::REST object pre-configured
+      # In subclasses, this is a couchdb or Seth::REST object pre-configured
       # to fetch roles from their correct location.
       attr_reader :source
 
@@ -64,7 +64,7 @@ class Chef
         @default_attrs = Mash.new
         @override_attrs = Mash.new
 
-        @recipes = Chef::RunList::VersionedRecipeList.new
+        @recipes = Seth::RunList::VersionedRecipeList.new
 
         @applied_roles = {}
         @run_list_trace = Hash.new {|h, key| h[key] = [] }
@@ -86,7 +86,7 @@ class Chef
 
       # Fetches and inflates a role
       # === Returns
-      # Chef::Role  in most cases
+      # Seth::Role  in most cases
       # false       if the role has already been applied
       # nil         if the role does not exist
       def inflate_role(role_name, included_by)
@@ -96,8 +96,8 @@ class Chef
       end
 
       def apply_role_attributes(role)
-        @default_attrs = Chef::Mixin::DeepMerge.role_merge(@default_attrs, role.default_attributes)
-        @override_attrs = Chef::Mixin::DeepMerge.role_merge(@override_attrs, role.override_attributes)
+        @default_attrs = Seth::Mixin::DeepMerge.role_merge(@default_attrs, role.default_attributes)
+        @override_attrs = Seth::Mixin::DeepMerge.role_merge(@override_attrs, role.override_attributes)
       end
 
       def applied_role?(role_name)
@@ -122,7 +122,7 @@ class Chef
       # === Returns
       # nil
       def role_not_found(name, included_by)
-        Chef::Log.error("Role #{name} (included by '#{included_by}') is in the runlist but does not exist. Skipping expand.")
+        Seth::Log.error("Role #{name} (included by '#{included_by}') is in the runlist but does not exist. Skipping expand.")
         @missing_roles_with_including_role << [name, included_by]
         nil
       end
@@ -158,22 +158,22 @@ class Chef
 
     end
 
-    # Expand a run list from disk. Suitable for chef-solo
+    # Expand a run list from disk. Suitable for seth-solo
     class RunListExpansionFromDisk < RunListExpansion
 
       def fetch_role(name, included_by)
-        Chef::Role.from_disk(name)
-      rescue Chef::Exceptions::RoleNotFound
+        Seth::Role.from_disk(name)
+      rescue Seth::Exceptions::RoleNotFound
         role_not_found(name, included_by)
       end
 
     end
 
-    # Expand a run list from the chef-server API.
+    # Expand a run list from the seth-server API.
     class RunListExpansionFromAPI < RunListExpansion
 
       def rest
-        @rest ||= (source || Chef::REST.new(Chef::Config[:chef_server_url]))
+        @rest ||= (source || Seth::REST.new(Chef::Config[:seth_server_url]))
       end
 
       def fetch_role(name, included_by)

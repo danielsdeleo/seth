@@ -19,15 +19,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Directory do
+describe Seth::Resource::Directory do
 
   before(:each) do
-    @resource = Chef::Resource::Directory.new("fakey_fakerton")
+    @resource = Seth::Resource::Directory.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::Directory" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Directory)
+  it "should create a new Seth::Resource::Directory" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Directory)
   end
 
   it "should have a name" do

@@ -18,10 +18,10 @@
 # limitations under the License.
 
 require 'logger'
-require 'chef/monologger'
+require 'seth/monologger'
 require 'mixlib/log'
 
-class Chef
+class Seth
   class Log
     extend Mixlib::Log
 

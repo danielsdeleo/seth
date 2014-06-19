@@ -1,6 +1,6 @@
 #
-# Author:: Lamont Granquist (<lamont@getchef.com>)
-# Copyright:: Copyright (c) 2008-2014 Chef Software, Inc.
+# Author:: Lamont Granquist (<lamont@getseth.com>)
+# Copyright:: Copyright (c) 2008-2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,12 +19,12 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Chef::Provider::Mount::Solaris do
-  let(:node) { Chef::Node.new }
+describe Seth::Provider::Mount::Solaris do
+  let(:node) { Seth::Node.new }
 
-  let(:events) { Chef::EventDispatch::Dispatcher.new }
+  let(:events) { Seth::EventDispatch::Dispatcher.new }
 
-  let(:run_context) { Chef::RunContext.new(node, {}, events) }
+  let(:run_context) { Seth::RunContext.new(node, {}, events) }
 
   let(:device_type) { :device }
 
@@ -37,7 +37,7 @@ describe Chef::Provider::Mount::Solaris do
   let(:options) { nil }
 
   let(:new_resource) {
-    new_resource = Chef::Resource::Mount.new(mountpoint)
+    new_resource = Seth::Resource::Mount.new(mountpoint)
     new_resource.device      device
     new_resource.device_type device_type
     new_resource.fstype      fstype
@@ -48,7 +48,7 @@ describe Chef::Provider::Mount::Solaris do
   }
 
   let(:provider) {
-    Chef::Provider::Mount::Solaris.new(new_resource, run_context)
+    Seth::Provider::Mount::Solaris.new(new_resource, run_context)
   }
 
   let(:vfstab_file_contents) {
@@ -86,7 +86,7 @@ describe Chef::Provider::Mount::Solaris do
   }
 
   before do
-    stub_const("Chef::Provider::Mount::Solaris::VFSTAB", vfstab_file.path )
+    stub_const("Seth::Provider::Mount::Solaris::VFSTAB", vfstab_file.path )
     provider.stub(:shell_out!).with("mount -v").and_return(OpenStruct.new(:stdout => mount_output))
     File.stub(:symlink?).with(device).and_return(false)
     File.stub(:exist?).and_call_original # Tempfile.open on ruby 1.8.7 calls File.exist?
@@ -103,22 +103,22 @@ describe Chef::Provider::Mount::Solaris do
 
     it "run_action(:mount) should raise an error if the device does not exist" do
       File.stub(:exist?).with(device).and_return(false)
-      expect { provider.run_action(:mount) }.to raise_error(Chef::Exceptions::Mount)
+      expect { provider.run_action(:mount) }.to raise_error(Seth::Exceptions::Mount)
     end
 
     it "run_action(:remount) should raise an error if the device does not exist" do
       File.stub(:exist?).with(device).and_return(false)
-      expect { provider.run_action(:remount) }.to raise_error(Chef::Exceptions::Mount)
+      expect { provider.run_action(:remount) }.to raise_error(Seth::Exceptions::Mount)
     end
 
     it "run_action(:mount) should raise an error if the mountpoint does not exist" do
       File.stub(:exist?).with(mountpoint).and_return false
-      expect { provider.run_action(:mount) }.to raise_error(Chef::Exceptions::Mount)
+      expect { provider.run_action(:mount) }.to raise_error(Seth::Exceptions::Mount)
     end
 
     it "run_action(:remount) should raise an error if the mountpoint does not exist" do
       File.stub(:exist?).with(mountpoint).and_return false
-      expect { provider.run_action(:remount) }.to raise_error(Chef::Exceptions::Mount)
+      expect { provider.run_action(:remount) }.to raise_error(Seth::Exceptions::Mount)
     end
 
     %w{tmpfs nfs ctfs proc mntfs objfs sharefs fd smbfs}.each do |ft|
@@ -149,8 +149,8 @@ describe Chef::Provider::Mount::Solaris do
         provider.load_current_resource
       end
 
-      it "should create a current_resource of type Chef::Resource::Mount" do
-        expect(provider.current_resource).to be_a(Chef::Resource::Mount)
+      it "should create a current_resource of type Seth::Resource::Mount" do
+        expect(provider.current_resource).to be_a(Seth::Resource::Mount)
       end
 
       it "should set the name on the current_resource" do

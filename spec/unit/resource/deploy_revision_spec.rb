@@ -18,29 +18,29 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::DeployRevision do
+describe Seth::Resource::DeployRevision do
 
   it "defaults to the revision deploy provider" do
-    @resource = Chef::Resource::DeployRevision.new("deploy _this_!")
-    @resource.provider.should == Chef::Provider::Deploy::Revision
+    @resource = Seth::Resource::DeployRevision.new("deploy _this_!")
+    @resource.provider.should == Seth::Provider::Deploy::Revision
   end
 
   it "has a name of deploy_revision" do
-    @resource = Chef::Resource::DeployRevision.new("deploy _this_!")
+    @resource = Seth::Resource::DeployRevision.new("deploy _this_!")
     @resource.resource_name.should == :deploy_revision
   end
 
 end
 
-describe Chef::Resource::DeployBranch do
+describe Seth::Resource::DeployBranch do
 
   it "defaults to the revision deploy provider" do
-    @resource = Chef::Resource::DeployBranch.new("deploy _this_!")
-    @resource.provider.should == Chef::Provider::Deploy::Revision
+    @resource = Seth::Resource::DeployBranch.new("deploy _this_!")
+    @resource.provider.should == Seth::Provider::Deploy::Revision
   end
 
   it "has a name of deploy_branch" do
-    @resource = Chef::Resource::DeployBranch.new("deploy _this_!")
+    @resource = Seth::Resource::DeployBranch.new("deploy _this_!")
     @resource.resource_name.should == :deploy_branch
   end
 

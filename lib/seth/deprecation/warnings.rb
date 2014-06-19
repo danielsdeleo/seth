@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Deprecation
     module Warnings
 
@@ -24,9 +24,9 @@ class Chef
         method_names.each do |name|
           m = instance_method(name)
           define_method(name) do |*args|
-            Chef::Log.warn "Method '#{name}' of '#{self.class}' is deprecated. It will be removed in Chef 12."
-            Chef::Log.warn "Please update your cookbooks accordingly. Accessed from:"
-            caller[0..3].each {|l| Chef::Log.warn l}
+            Seth::Log.warn "Method '#{name}' of '#{self.class}' is deprecated. It will be removed in Chef 12."
+            Seth::Log.warn "Please update your cookbooks accordingly. Accessed from:"
+            caller[0..3].each {|l| Seth::Log.warn l}
             super(*args)
           end
         end

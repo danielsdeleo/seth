@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/exceptions'
-require 'chef/win32/api'
-require 'chef/win32/error'
+require 'seth/exceptions'
+require 'seth/win32/api'
+require 'seth/win32/error'
 require 'pathname'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     module API
       module Installer
-        extend Chef::ReservedNames::Win32
-        extend Chef::ReservedNames::Win32::API
+        extend Seth::ReservedNames::Win32
+        extend Seth::ReservedNames::Win32::API
 
         ###############################################
         # Win32 API Constants
@@ -91,8 +91,8 @@ UINT MsiCloseHandle(
           # We expect error ERROR_MORE_DATA (234) here because we passed a buffer length of 0
           if status != 234
             msg = "msi_get_product_property: returned unknown error #{status} when retrieving #{property_name}: "
-            msg << Chef::ReservedNames::Win32::Error.format_message(status)
-            raise Chef::Exceptions::Package, msg
+            msg << Seth::ReservedNames::Win32::Error.format_message(status)
+            raise Seth::Exceptions::Package, msg
           end
          
           buffer_length = FFI::Buffer.new(:long).write_long(buffer_length.read_long + 1)
@@ -103,8 +103,8 @@ UINT MsiCloseHandle(
 
           if status != 0
             msg = "msi_get_product_property: returned unknown error #{status} when retrieving #{property_name}: "
-            msg << Chef::ReservedNames::Win32::Error.format_message(status)
-            raise Chef::Exceptions::Package, msg
+            msg << Seth::ReservedNames::Win32::Error.format_message(status)
+            raise Seth::Exceptions::Package, msg
           end
 
           msi_close_handle(pkg_ptr.read_pointer)
@@ -123,7 +123,7 @@ UINT MsiCloseHandle(
           when 0 
             # success
           else
-            raise Chef::Exceptions::Package, "msi_open_package: unexpected status #{status}: #{Chef::ReservedNames::Win32::Error.format_message(status)}"
+            raise Seth::Exceptions::Package, "msi_open_package: unexpected status #{status}: #{Chef::ReservedNames::Win32::Error.format_message(status)}"
           end
           return pkg_ptr        
         end
@@ -141,8 +141,8 @@ UINT MsiCloseHandle(
           # We expect error ERROR_MORE_DATA (234) here because we passed a buffer length of 0
           if status != 234
             msg = "msi_get_product_info: product code '#{product_code}' returned unknown error #{status} when retrieving VersionString: "
-            msg << Chef::ReservedNames::Win32::Error.format_message(status)
-            raise Chef::Exceptions::Package, msg
+            msg << Seth::ReservedNames::Win32::Error.format_message(status)
+            raise Seth::Exceptions::Package, msg
           end
 
           # We could fetch the product version now that we know the variable length, but we don't need it here.
@@ -154,8 +154,8 @@ UINT MsiCloseHandle(
            
           if status != 0
             msg = "msi_get_product_info: product code '#{product_code}' returned unknown error #{status} when retrieving VersionString: "
-            msg << Chef::ReservedNames::Win32::Error.format_message(status)
-            raise Chef::Exceptions::Package, msg
+            msg << Seth::ReservedNames::Win32::Error.format_message(status)
+            raise Seth::Exceptions::Package, msg
           end
 
           version

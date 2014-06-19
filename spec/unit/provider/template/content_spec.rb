@@ -18,10 +18,10 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Template::Content do
+describe Seth::Provider::Template::Content do
 
   let(:new_resource) do
-    double("Chef::Resource::Template (new)",
+    double("Seth::Resource::Template (new)",
          :cookbook_name => 'openldap',
          :source => 'openldap_stuff.conf.erb',
          :local => false,
@@ -36,17 +36,17 @@ describe Chef::Provider::Template::Content do
 
   let(:run_context) do
     cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-    Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
-    cl = Chef::CookbookLoader.new(cookbook_repo)
+    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
+    cl = Seth::CookbookLoader.new(cookbook_repo)
     cl.load_cookbooks
-    cookbook_collection = Chef::CookbookCollection.new(cl)
-    node = Chef::Node.new
-    double("Chef::Resource::RunContext", :node => node, :cookbook_collection => cookbook_collection)
+    cookbook_collection = Seth::CookbookCollection.new(cl)
+    node = Seth::Node.new
+    double("Seth::Resource::RunContext", :node => node, :cookbook_collection => cookbook_collection)
   end
 
   let(:content) do
-    current_resource = double("Chef::Resource::Template (current)")
-    Chef::Provider::Template::Content.new(new_resource, current_resource, run_context)
+    current_resource = double("Seth::Resource::Template (current)")
+    Seth::Provider::Template::Content.new(new_resource, current_resource, run_context)
   end
 
   after do

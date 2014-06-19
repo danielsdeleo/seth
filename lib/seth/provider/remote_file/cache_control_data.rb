@@ -20,12 +20,12 @@
 #
 
 require 'stringio'
-require 'chef/file_cache'
-require 'chef/json_compat'
-require 'chef/digester'
-require 'chef/exceptions'
+require 'seth/file_cache'
+require 'seth/json_compat'
+require 'seth/digester'
+require 'seth/exceptions'
 
-class Chef
+class Seth
   class Provider
     class RemoteFile
 
@@ -104,18 +104,18 @@ class Chef
           end
         end
 
-        # Saves the data to disk using Chef::FileCache. The filename is a
+        # Saves the data to disk using Seth::FileCache. The filename is a
         # sanitized version of the URI with a MD5 of the same URI appended (to
         # avoid collisions between different URIs having the same sanitized
         # form).
         def save
-          Chef::FileCache.store("remote_file/#{sanitized_cache_file_basename}", json_data)
+          Seth::FileCache.store("remote_file/#{sanitized_cache_file_basename}", json_data)
         end
 
         # :nodoc:
         # JSON representation of this object for storage.
         def json_data
-          Chef::JSONCompat.to_json(hash_data)
+          Seth::JSONCompat.to_json(hash_data)
         end
 
         private
@@ -139,13 +139,13 @@ class Chef
         end
 
         def load_data
-          Chef::JSONCompat.from_json(load_json_data)
-        rescue Chef::Exceptions::FileNotFound, Yajl::ParseError, JSON::ParserError
+          Seth::JSONCompat.from_json(load_json_data)
+        rescue Seth::Exceptions::FileNotFound, Yajl::ParseError, JSON::ParserError
           false
         end
 
         def load_json_data
-          Chef::FileCache.load("remote_file/#{sanitized_cache_file_basename}")
+          Seth::FileCache.load("remote_file/#{sanitized_cache_file_basename}")
         end
 
         def sanitized_cache_file_basename
@@ -153,7 +153,7 @@ class Chef
           # human-readable but within the bounds of local file system
           # path length limits
           scrubbed_uri = uri.gsub(/\W/, '_')[0..63]
-          uri_md5 = Chef::Digester.instance.generate_md5_checksum(StringIO.new(uri))
+          uri_md5 = Seth::Digester.instance.generate_md5_checksum(StringIO.new(uri))
           "#{scrubbed_uri}-#{uri_md5}.json"
         end
 

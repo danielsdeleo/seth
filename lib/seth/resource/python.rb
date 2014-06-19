@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/resource/script'
+require 'seth/resource/script'
 
-class Chef
+class Seth
   class Resource
-    class Python < Chef::Resource::Script
+    class Python < Seth::Resource::Script
 
       def initialize(name, run_context=nil)
         super

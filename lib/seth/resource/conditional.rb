@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
-require 'chef/guard_interpreter/resource_guard_interpreter'
+require 'seth/mixin/shell_out'
+require 'seth/guard_interpreter/resource_guard_interpreter'
 
-class Chef
+class Seth
   class Resource
     class Conditional
-      include Chef::Mixin::ShellOut
+      include Seth::Mixin::ShellOut
 
       # We only create these via the `not_if` or `only_if` constructors, and
       # not the default constructor
@@ -77,8 +77,8 @@ class Chef
 
       def evaluate_command
         @guard_interpreter.evaluate
-      rescue Chef::Exceptions::CommandTimeout
-        Chef::Log.warn "Command '#{@command}' timed out"
+      rescue Seth::Exceptions::CommandTimeout
+        Seth::Log.warn "Command '#{@command}' timed out"
         false
       end
 
@@ -107,9 +107,9 @@ class Chef
 
       def new_guard_interpreter(parent_resource, command, opts)
         if parent_resource.guard_interpreter == :default
-          guard_interpreter = Chef::GuardInterpreter::DefaultGuardInterpreter.new(command, opts)
+          guard_interpreter = Seth::GuardInterpreter::DefaultGuardInterpreter.new(command, opts)
         else
-          guard_interpreter = Chef::GuardInterpreter::ResourceGuardInterpreter.new(parent_resource, command, opts)
+          guard_interpreter = Seth::GuardInterpreter::ResourceGuardInterpreter.new(parent_resource, command, opts)
         end
       end
 

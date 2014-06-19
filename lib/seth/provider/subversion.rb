@@ -19,25 +19,25 @@
 
 #TODO subversion and git should both extend from a base SCM provider.
 
-require 'chef/log'
-require 'chef/provider'
-require 'chef/mixin/command'
+require 'seth/log'
+require 'seth/provider'
+require 'seth/mixin/command'
 require 'fileutils'
 
-class Chef
+class Seth
   class Provider
-    class Subversion < Chef::Provider
+    class Subversion < Seth::Provider
 
       SVN_INFO_PATTERN = /^([\w\s]+): (.+)$/
 
-      include Chef::Mixin::Command
+      include Seth::Mixin::Command
 
       def whyrun_supported?
         true
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::Subversion.new(@new_resource.name)
+        @current_resource = Seth::Resource::Subversion.new(@new_resource.name)
 
         unless [:export, :force_export].include?(Array(@new_resource.action).first)
           if current_revision = find_current_revision
@@ -52,7 +52,7 @@ class Chef
           # for why run, print a message explaining the potential error.
           parent_directory = ::File.dirname(@new_resource.destination)
           a.assertion { ::File.directory?(parent_directory) }
-          a.failure_message(Chef::Exceptions::MissingParentDirectory,
+          a.failure_message(Seth::Exceptions::MissingParentDirectory,
             "Cannot clone #{@new_resource} to #{@new_resource.destination}, the enclosing directory #{parent_directory} does not exist")
           a.whyrun("Directory #{parent_directory} does not exist, assuming it would have been created")
         end
@@ -64,7 +64,7 @@ class Chef
             run_command(run_options(:command => checkout_command))
           end
         else
-          Chef::Log.debug "#{@new_resource} checkout destination #{@new_resource.destination} already exists or is a non-empty directory - nothing to do"
+          Seth::Log.debug "#{@new_resource} checkout destination #{@new_resource.destination} already exists or is a non-empty directory - nothing to do"
         end
       end
 
@@ -72,7 +72,7 @@ class Chef
         if target_dir_non_existent_or_empty?
           action_force_export
         else
-          Chef::Log.debug "#{@new_resource} export destination #{@new_resource.destination} already exists or is a non-empty directory - nothing to do"
+          Seth::Log.debug "#{@new_resource} export destination #{@new_resource.destination} already exists or is a non-empty directory - nothing to do"
         end
       end
 
@@ -86,11 +86,11 @@ class Chef
         assert_target_directory_valid!
         if ::File.exist?(::File.join(@new_resource.destination, ".svn"))
           current_rev = find_current_revision
-          Chef::Log.debug "#{@new_resource} current revision: #{current_rev} target revision: #{revision_int}"
+          Seth::Log.debug "#{@new_resource} current revision: #{current_rev} target revision: #{revision_int}"
           unless current_revision_matches_target_revision?
             converge_by("sync #{@new_resource.destination} from #{@new_resource.repository}") do
               run_command(run_options(:command => sync_command))
-              Chef::Log.info "#{@new_resource} updated to revision: #{revision_int}"
+              Seth::Log.info "#{@new_resource} updated to revision: #{revision_int}"
             end
           end
         else
@@ -100,14 +100,14 @@ class Chef
 
       def sync_command
         c = scm :update, @new_resource.svn_arguments, verbose, authentication, "-r#{revision_int}", @new_resource.destination
-        Chef::Log.debug "#{@new_resource} updated working copy #{@new_resource.destination} to revision #{@new_resource.revision}"
+        Seth::Log.debug "#{@new_resource} updated working copy #{@new_resource.destination} to revision #{@new_resource.revision}"
 				c
       end
 
       def checkout_command
         c = scm :checkout, @new_resource.svn_arguments, verbose, authentication,
             "-r#{revision_int}", @new_resource.repository, @new_resource.destination
-        Chef::Log.info "#{@new_resource} checked out #{@new_resource.repository} at revision #{@new_resource.revision} to #{@new_resource.destination}"
+        Seth::Log.info "#{@new_resource} checked out #{@new_resource.repository} at revision #{@new_resource.revision} to #{@new_resource.destination}"
 				c
       end
 
@@ -116,7 +116,7 @@ class Chef
         args << @new_resource.svn_arguments << verbose << authentication <<
             "-r#{revision_int}" << @new_resource.repository << @new_resource.destination
         c = scm :export, *args
-        Chef::Log.info "#{@new_resource} exported #{@new_resource.repository} at revision #{@new_resource.revision} to #{@new_resource.destination}"
+        Seth::Log.info "#{@new_resource} exported #{@new_resource.repository} at revision #{@new_resource.revision} to #{@new_resource.destination}"
 				c
       end
 
@@ -180,7 +180,7 @@ class Chef
         end
         rev = (repo_attrs['Last Changed Rev'] || repo_attrs['Revision'])
         raise "Could not parse `svn info` data: #{svn_info}" if repo_attrs.empty?
-        Chef::Log.debug "#{@new_resource} resolved revision #{@new_resource.revision} to #{rev}"
+        Seth::Log.debug "#{@new_resource} resolved revision #{@new_resource.revision} to #{rev}"
         rev
       end
 
@@ -207,7 +207,7 @@ class Chef
         target_parent_directory = ::File.dirname(@new_resource.destination)
         unless ::File.directory?(target_parent_directory)
           msg = "Cannot clone #{@new_resource} to #{@new_resource.destination}, the enclosing directory #{target_parent_directory} does not exist"
-          raise Chef::Exceptions::MissingParentDirectory, msg
+          raise Seth::Exceptions::MissingParentDirectory, msg
         end
       end
     end

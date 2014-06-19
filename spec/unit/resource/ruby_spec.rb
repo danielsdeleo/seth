@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Ruby do
+describe Seth::Resource::Ruby do
 
   before(:each) do
-    @resource = Chef::Resource::Ruby.new("fakey_fakerton")
+    @resource = Seth::Resource::Ruby.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::Ruby" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Ruby)
+  it "should create a new Seth::Resource::Ruby" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Ruby)
   end
 
   it "should have a resource name of :ruby" do

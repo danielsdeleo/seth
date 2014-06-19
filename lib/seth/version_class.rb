@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Chef
+class Seth
   class Version
     include Comparable
     attr_reader :major, :minor, :patch
@@ -62,7 +62,7 @@ class Chef
           [ $1.to_i, $2.to_i, 0 ]
         else
           msg = "'#{str.to_s}' does not match 'x.y.z' or 'x.y'"
-          raise Chef::Exceptions::InvalidCookbookVersion.new( msg )
+          raise Seth::Exceptions::InvalidCookbookVersion.new( msg )
         end
     end
 

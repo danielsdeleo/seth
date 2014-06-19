@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
-    class OneTwoThreeFour < Chef::Resource
+    class OneTwoThreeFour < Seth::Resource
       attr_reader :i_can_count
 
       def initialize(name, run_context)

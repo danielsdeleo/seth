@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Chef::FileContentManagement::Deploy::Cp do
+describe Seth::FileContentManagement::Deploy::Cp do
 
   let(:content_deployer) { described_class.new }
   let(:target_file_path) { "/etc/my_app.conf" }

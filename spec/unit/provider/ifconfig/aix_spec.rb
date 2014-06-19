@@ -17,9 +17,9 @@
 #
 
 require 'spec_helper'
-require 'chef/exceptions'
+require 'seth/exceptions'
 
-describe Chef::Provider::Ifconfig::Aix do
+describe Seth::Provider::Ifconfig::Aix do
 
   before(:all) do
     @ifconfig_output = <<-IFCONFIG
@@ -37,14 +37,14 @@ IFCONFIG
 
 
   before(:each) do
-    @node = Chef::Node.new
-    @cookbook_collection = Chef::CookbookCollection.new([])
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
+    @node = Seth::Node.new
+    @cookbook_collection = Seth::CookbookCollection.new([])
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
 
-    @new_resource = Chef::Resource::Ifconfig.new("10.0.0.1", @run_context)
+    @new_resource = Seth::Resource::Ifconfig.new("10.0.0.1", @run_context)
 
-    @provider = Chef::Provider::Ifconfig::Aix.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Ifconfig::Aix.new(@new_resource, @run_context)
   end
 
   describe "#load_current_resource" do
@@ -69,7 +69,7 @@ IFCONFIG
       @new_resource.device "en10"
       @provider.stub(:load_current_resource) do
         @provider.instance_variable_set("@status", double("Status", :exitstatus => 0))
-        @provider.instance_variable_set("@current_resource", Chef::Resource::Ifconfig.new("10.0.0.1", @run_context))
+        @provider.instance_variable_set("@current_resource", Seth::Resource::Ifconfig.new("10.0.0.1", @run_context))
       end
       command = "chdev -l #{@new_resource.device} -a netaddr=#{@new_resource.name}"
       @provider.should_receive(:run_command).with(:command => command)
@@ -83,10 +83,10 @@ IFCONFIG
       @new_resource.metric "1"
       @provider.stub(:load_current_resource) do
         @provider.instance_variable_set("@status", double("Status", :exitstatus => 0))
-        @provider.instance_variable_set("@current_resource", Chef::Resource::Ifconfig.new("10.0.0.1", @run_context))
+        @provider.instance_variable_set("@current_resource", Seth::Resource::Ifconfig.new("10.0.0.1", @run_context))
       end
 
-      expect{@provider.run_action(:add)}.to raise_error(Chef::Exceptions::Ifconfig, "interface metric attribute cannot be set for :add action")
+      expect{@provider.run_action(:add)}.to raise_error(Seth::Exceptions::Ifconfig, "interface metric attribute cannot be set for :add action")
     end
   end
 
@@ -95,7 +95,7 @@ IFCONFIG
       @new_resource.device "en10"
       @provider.stub(:load_current_resource) do
         @provider.instance_variable_set("@status", double("Status", :exitstatus => 0))
-        @provider.instance_variable_set("@current_resource", Chef::Resource::Ifconfig.new("10.0.0.1", @run_context))
+        @provider.instance_variable_set("@current_resource", Seth::Resource::Ifconfig.new("10.0.0.1", @run_context))
       end
       command = "ifconfig #{@new_resource.device} #{@new_resource.name}"
       @provider.should_receive(:run_command).with(:command => command)
@@ -111,7 +111,7 @@ IFCONFIG
       @new_resource.device "en10"
       @provider.stub(:load_current_resource) do
         @provider.instance_variable_set("@status", double("Status", :exitstatus => 0))
-        @provider.instance_variable_set("@current_resource", Chef::Resource::Ifconfig.new("10.0.0.1", @run_context))
+        @provider.instance_variable_set("@current_resource", Seth::Resource::Ifconfig.new("10.0.0.1", @run_context))
       end
 
       @provider.should_not_receive(:run_command)
@@ -125,7 +125,7 @@ IFCONFIG
         @new_resource.device "en10"
         @provider.stub(:load_current_resource) do
           @provider.instance_variable_set("@status", double("Status", :exitstatus => 0))
-          current_resource = Chef::Resource::Ifconfig.new("10.0.0.1", @run_context)
+          current_resource = Seth::Resource::Ifconfig.new("10.0.0.1", @run_context)
           current_resource.device @new_resource.device
           @provider.instance_variable_set("@current_resource", current_resource)
         end
@@ -148,7 +148,7 @@ IFCONFIG
       @new_resource.device "en10"
       @provider.stub(:load_current_resource) do
         @provider.instance_variable_set("@status", double("Status", :exitstatus => 0))
-        @provider.instance_variable_set("@current_resource", Chef::Resource::Ifconfig.new("10.0.0.1", @run_context))
+        @provider.instance_variable_set("@current_resource", Seth::Resource::Ifconfig.new("10.0.0.1", @run_context))
       end
 
       @provider.should_not_receive(:run_command)
@@ -162,7 +162,7 @@ IFCONFIG
         @new_resource.device "en10"
         @provider.stub(:load_current_resource) do
           @provider.instance_variable_set("@status", double("Status", :exitstatus => 0))
-          current_resource = Chef::Resource::Ifconfig.new("10.0.0.1", @run_context)
+          current_resource = Seth::Resource::Ifconfig.new("10.0.0.1", @run_context)
           current_resource.device @new_resource.device
           @provider.instance_variable_set("@current_resource", current_resource)
         end

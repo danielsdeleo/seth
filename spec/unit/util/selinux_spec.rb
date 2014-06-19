@@ -19,9 +19,9 @@
 
 require 'spec_helper'
 
-describe Chef::Util::Selinux do
+describe Seth::Util::Selinux do
   class TestClass
-    include Chef::Util::Selinux
+    include Seth::Util::Selinux
 
     def self.reset_state
       @@selinux_enabled = nil
@@ -158,7 +158,7 @@ describe Chef::Util::Selinux do
 
       it "should log a warning message" do
         log = [ ]
-        Chef::Log.stub(:warn) do |message|
+        Seth::Log.stub(:warn) do |message|
           log << message
         end
 

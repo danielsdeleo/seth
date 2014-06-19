@@ -17,16 +17,16 @@
 #
 
 require 'win32/service'
-require 'chef/config'
+require 'seth/config'
 require 'mixlib/cli'
 
-class Chef
+class Seth
   class Application
     #
     # This class is used to create and manage a windows service.
     # Service should be created using Daemon class from
     # win32/service gem.
-    # For an example see: Chef::Application::WindowsService
+    # For an example see: Seth::Application::WindowsService
     #
     # Outside programs are expected to use this class to manage
     # windows services.
@@ -38,19 +38,19 @@ class Chef
         :short => "-a ACTION",
         :long  => "--action ACTION",
         :default => "status",
-        :description => "Action to carry out on chef-service (install, uninstall, status, start, stop, pause, or resume)"
+        :description => "Action to carry out on seth-service (install, uninstall, status, start, stop, pause, or resume)"
 
       option :config_file,
         :short => "-c CONFIG",
         :long  => "--config CONFIG",
-        :default => "#{ENV['SYSTEMDRIVE']}/chef/client.rb",
-        :description => "The configuration file to use for chef runs"
+        :default => "#{ENV['SYSTEMDRIVE']}/seth/client.rb",
+        :description => "The configuration file to use for seth runs"
 
       option :log_location,
         :short        => "-L LOGLOCATION",
         :long         => "--logfile LOGLOCATION",
-        :description  => "Set the log file location for chef-service",
-        :default => "#{ENV['SYSTEMDRIVE']}/chef/client.log"
+        :description  => "Set the log file location for seth-service",
+        :default => "#{ENV['SYSTEMDRIVE']}/seth/client.log"
 
       option :help,
         :short        => "-h",
@@ -64,9 +64,9 @@ class Chef
       option :version,
         :short        => "-v",
         :long         => "--version",
-        :description  => "Show chef version",
+        :description  => "Show seth version",
         :boolean      => true,
-        :proc         => lambda {|v| puts "Chef: #{::Chef::VERSION}"},
+        :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
         :exit         => 0
 
       def initialize(service_options)

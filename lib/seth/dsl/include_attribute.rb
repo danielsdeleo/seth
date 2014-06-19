@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/log'
+require 'seth/log'
 
-class Chef
+class Seth
   module DSL
     module IncludeAttribute
 
@@ -31,9 +31,9 @@ class Chef
         attr_file_specs.flatten.each do |attr_file_spec|
           cookbook_name, attr_file = parse_attribute_file_spec(attr_file_spec)
           if run_context.loaded_fully_qualified_attribute?(cookbook_name, attr_file)
-            Chef::Log.debug("I am not loading attribute file #{cookbook_name}::#{attr_file}, because I have already seen it.")
+            Seth::Log.debug("I am not loading attribute file #{cookbook_name}::#{attr_file}, because I have already seen it.")
           else
-            Chef::Log.debug("Loading Attribute #{cookbook_name}::#{attr_file}")
+            Seth::Log.debug("Loading Attribute #{cookbook_name}::#{attr_file}")
             run_context.loaded_attribute(cookbook_name, attr_file)
             attr_file_path = run_context.resolve_attribute(cookbook_name, attr_file)
             node.from_file(attr_file_path)
@@ -57,7 +57,7 @@ class Chef
 end
 
 # **DEPRECATED**
-# This used to be part of chef/mixin/language_include_attribute. Load the file to activate the deprecation code.
-require 'chef/mixin/language_include_attribute'
+# This used to be part of seth/mixin/language_include_attribute. Load the file to activate the deprecation code.
+require 'seth/mixin/language_include_attribute'
 
 

@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-require 'chef/formatters/error_inspectors/api_error_formatting'
+require 'seth/formatters/error_inspectors/api_error_formatting'
 
-class Chef
+class Seth
   module Formatters
     module ErrorInspectors
       class RunListExpansionErrorInspector
@@ -39,11 +39,11 @@ class Chef
             error_description.section("Networking Error:",<<-E)
 #{exception.message}
 
-Your chef_server_url may be misconfigured, or the network could be down.
+Your seth_server_url may be misconfigured, or the network could be down.
 E
           when Net::HTTPServerException, Net::HTTPFatalError
             humanize_http_exception(error_description)
-          when Chef::Exceptions::MissingRole
+          when Seth::Exceptions::MissingRole
             describe_missing_role(error_description)
           else
             error_description.section("Unexpected Error:","#{exception.class.name}: #{exception.message}")
@@ -67,7 +67,7 @@ E
         end
 
         def config
-          Chef::Config
+          Seth::Config
         end
 
         def humanize_http_exception(error_description)
@@ -75,12 +75,12 @@ E
           case response
           when Net::HTTPUnauthorized
             error_description.section("Authentication Error:",<<-E)
-Failed to authenticate to the chef server (http 401).
+Failed to authenticate to the seth server (http 401).
 E
 
             error_description.section("Server Response:", format_rest_error)
             error_description.section("Relevant Config Settings:",<<-E)
-chef_server_url   "#{server_url}"
+seth_server_url   "#{server_url}"
 node_name         "#{username}"
 client_key        "#{api_key}"
 
@@ -104,7 +104,7 @@ The server had a fatal error attempting to load a role.
 E
             error_description.section("Server Response:", format_rest_error)
           when Net::HTTPBadGateway, Net::HTTPServiceUnavailable
-            error_description.section("Server Unavailable","The Chef Server is temporarily unavailable")
+            error_description.section("Server Unavailable","The Seth Server is temporarily unavailable")
             error_description.section("Server Response:", format_rest_error)
           else
             error_description.section("Unexpected API Request Failure:", format_rest_error)

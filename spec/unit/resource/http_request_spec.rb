@@ -19,15 +19,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::HttpRequest do
+describe Seth::Resource::HttpRequest do
 
   before(:each) do
-    @resource = Chef::Resource::HttpRequest.new("fakey_fakerton")
+    @resource = Seth::Resource::HttpRequest.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::HttpRequest" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::HttpRequest)
+  it "should create a new Seth::Resource::HttpRequest" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::HttpRequest)
   end
 
   it "should set url to a string" do

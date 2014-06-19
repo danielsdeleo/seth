@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/mixin/shell_out'
-require 'chef/resource/package'
-require 'chef/mixin/shell_out'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/mixin/shell_out'
+require 'seth/resource/package'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class EasyInstall < Chef::Provider::Package
+      class EasyInstall < Seth::Provider::Package
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         def install_check(name)
           check = false
@@ -67,7 +67,7 @@ class Chef
         end
 
         def load_current_resource
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
           @current_resource.version(nil)
 
@@ -95,10 +95,10 @@ class Chef
           end
 
           if package_version == @new_resource.version
-            Chef::Log.debug("#{@new_resource} at version #{@new_resource.version}")
+            Seth::Log.debug("#{@new_resource} at version #{@new_resource.version}")
             @current_resource.version(@new_resource.version)
           else
-            Chef::Log.debug("#{@new_resource} at version #{package_version}")
+            Seth::Log.debug("#{@new_resource} at version #{package_version}")
             @current_resource.version(package_version)
           end
 

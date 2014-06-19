@@ -16,19 +16,19 @@
 # limitations under the License.
 #
 
-require "chef/dsl/registry_helper"
+require "seth/dsl/registry_helper"
 require "spec_helper"
 
-describe Chef::Resource::RegistryKey do
+describe Seth::Resource::RegistryKey do
 
   before (:all) do
-    events = Chef::EventDispatch::Dispatcher.new
-    node = Chef::Node.new
+    events = Seth::EventDispatch::Dispatcher.new
+    node = Seth::Node.new
     ohai = Ohai::System.new
     ohai.all_plugins
     node.consume_external_attrs(ohai.data,{})
-    run_context = Chef::RunContext.new(node, {}, events)
-    @resource = Chef::Resource::new("foo", run_context)
+    run_context = Seth::RunContext.new(node, {}, events)
+    @resource = Seth::Resource::new("foo", run_context)
   end
 
   context "tests registry dsl" do

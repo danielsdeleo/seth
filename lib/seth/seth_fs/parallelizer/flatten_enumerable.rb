@@ -1,5 +1,5 @@
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     class Parallelizer
       class FlattenEnumerable
         include Enumerable

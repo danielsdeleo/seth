@@ -17,7 +17,7 @@
 #
 
 require 'spec_helper'
-require 'chef/mash'
+require 'seth/mash'
 
 describe Mash do
   it "should duplicate a simple key/value mash to a new mash" do

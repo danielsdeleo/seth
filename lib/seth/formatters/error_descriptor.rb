@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Formatters
     # == Formatters::ErrorDescription
     # Class for displaying errors on STDOUT.

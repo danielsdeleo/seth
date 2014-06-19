@@ -18,27 +18,27 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::EasyInstallPackage, "initialize" do
+describe Seth::Resource::EasyInstallPackage, "initialize" do
 
   before(:each) do
-    @resource = Chef::Resource::EasyInstallPackage.new("foo")
+    @resource = Seth::Resource::EasyInstallPackage.new("foo")
   end
 
-  it "should create a new Chef::Resource::EasyInstallPackage" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::EasyInstallPackage)
+  it "should create a new Seth::Resource::EasyInstallPackage" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::EasyInstallPackage)
   end
 
-  it "should return a Chef::Resource::EasyInstallPackage" do
-    @resource.should be_a_kind_of(Chef::Resource::EasyInstallPackage)
+  it "should return a Seth::Resource::EasyInstallPackage" do
+    @resource.should be_a_kind_of(Seth::Resource::EasyInstallPackage)
   end
 
   it "should set the resource_name to :easy_install_package" do
     @resource.resource_name.should eql(:easy_install_package)
   end
 
-  it "should set the provider to Chef::Provider::Package::EasyInstall" do
-    @resource.provider.should eql(Chef::Provider::Package::EasyInstall)
+  it "should set the provider to Seth::Provider::Package::EasyInstall" do
+    @resource.provider.should eql(Seth::Provider::Package::EasyInstall)
   end
 
   it "should allow you to set the easy_install_binary attribute" do

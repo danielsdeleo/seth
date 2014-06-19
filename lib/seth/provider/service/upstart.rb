@@ -16,19 +16,19 @@
 # limitations under the License.
 #
 
-require 'chef/resource/service'
-require 'chef/provider/service/simple'
-require 'chef/mixin/command'
-require 'chef/util/file_edit'
+require 'seth/resource/service'
+require 'seth/provider/service/simple'
+require 'seth/mixin/command'
+require 'seth/util/file_edit'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Upstart < Chef::Provider::Service::Simple
+      class Upstart < Seth::Provider::Service::Simple
         UPSTART_STATE_FORMAT = /\w+ \(?(\w+)\)?[\/ ](\w+)/
 
         # Upstart does more than start or stop a service, creating multiple 'states' [1] that a service can be in.
-        # In chef, when we ask a service to start, we expect it to have started before performing the next step
+        # In seth, when we ask a service to start, we expect it to have started before performing the next step
         # since we have top down dependencies. Which is to say we may follow witha resource next that requires
         # that service to be running. According to [2] we can trust that sending a 'goal' such as start will not
         # return until that 'goal' is reached, or some error has occured.
@@ -52,7 +52,7 @@ class Chef
             end
           end
 
-          platform, version = Chef::Platform.find_platform_and_version(run_context.node)
+          platform, version = Seth::Platform.find_platform_and_version(run_context.node)
           if platform == "ubuntu" && (8.04..9.04).include?(version.to_f)
             @upstart_job_dir = "/etc/event.d"
             @upstart_conf_suffix = ""
@@ -87,20 +87,20 @@ class Chef
         end
 
         def load_current_resource
-          @current_resource = Chef::Resource::Service.new(@new_resource.name)
+          @current_resource = Seth::Resource::Service.new(@new_resource.name)
           @current_resource.service_name(@new_resource.service_name)
 
           # Get running/stopped state
           # We do not support searching for a service via ps when using upstart since status is a native
           # upstart function. We will however support status_command in case someone wants to do something special.
           if @new_resource.status_command
-            Chef::Log.debug("#{@new_resource} you have specified a status command, running..")
+            Seth::Log.debug("#{@new_resource} you have specified a status command, running..")
 
             begin
               if run_command_with_systems_locale(:command => @new_resource.status_command) == 0
                 @current_resource.running true
               end
-            rescue Chef::Exceptions::Exec
+            rescue Seth::Exceptions::Exec
               @command_success = false
               @current_resource.running false
               nil
@@ -112,7 +112,7 @@ class Chef
               else
                 @current_resource.running false
               end
-            rescue Chef::Exceptions::Exec
+            rescue Seth::Exceptions::Exec
               @command_success = false
               @current_resource.running false
               nil
@@ -120,16 +120,16 @@ class Chef
           end
           # Get enabled/disabled state by reading job configuration file
           if ::File.exists?("#{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}")
-            Chef::Log.debug("#{@new_resource} found #{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}")
+            Seth::Log.debug("#{@new_resource} found #{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}")
             ::File.open("#{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}",'r') do |file|
               while line = file.gets
                 case line
                 when /^start on/
-                  Chef::Log.debug("#{@new_resource} enabled: #{line.chomp}")
+                  Seth::Log.debug("#{@new_resource} enabled: #{line.chomp}")
                   @current_resource.enabled true
                   break
                 when /^#start on/
-                  Chef::Log.debug("#{@new_resource} disabled: #{line.chomp}")
+                  Seth::Log.debug("#{@new_resource} disabled: #{line.chomp}")
                   @current_resource.enabled false
                   break
                 end
@@ -137,7 +137,7 @@ class Chef
             end
           else
             @config_file_found = false
-            Chef::Log.debug("#{@new_resource} did not find #{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}")
+            Seth::Log.debug("#{@new_resource} did not find #{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}")
             @current_resource.enabled false
           end
 
@@ -148,7 +148,7 @@ class Chef
           # Calling start on a service that is already started will return 1
           # Our 'goal' when we call start is to ensure the service is started
           if @current_resource.running
-            Chef::Log.debug("#{@new_resource} already running, not starting")
+            Seth::Log.debug("#{@new_resource} already running, not starting")
           else
             if @new_resource.start_command
               super
@@ -162,7 +162,7 @@ class Chef
           # Calling stop on a service that is already stopped will return 1
           # Our 'goal' when we call stop is to ensure the service is stopped
           unless @current_resource.running
-            Chef::Log.debug("#{@new_resource} not running, not stopping")
+            Seth::Log.debug("#{@new_resource} not running, not stopping")
           else
             if @new_resource.stop_command
               super
@@ -198,15 +198,15 @@ class Chef
         # https://bugs.launchpad.net/upstart/+bug/94065
 
         def enable_service
-          Chef::Log.debug("#{@new_resource} upstart lacks inherent support for enabling services, editing job config file")
-          conf = Chef::Util::FileEdit.new("#{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}")
+          Seth::Log.debug("#{@new_resource} upstart lacks inherent support for enabling services, editing job config file")
+          conf = Seth::Util::FileEdit.new("#{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}")
           conf.search_file_replace(/^#start on/, "start on")
           conf.write_file
         end
 
         def disable_service
-          Chef::Log.debug("#{@new_resource} upstart lacks inherent support for disabling services, editing job config file")
-          conf = Chef::Util::FileEdit.new("#{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}")
+          Seth::Log.debug("#{@new_resource} upstart lacks inherent support for disabling services, editing job config file")
+          conf = Seth::Util::FileEdit.new("#{@upstart_job_dir}/#{@new_resource.service_name}#{@upstart_conf_suffix}")
           conf.search_file_replace(/^start on/, "#start on")
           conf.write_file
         end

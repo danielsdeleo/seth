@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class ClientEdit < Knife
 
       deps do
-        require 'chef/api_client'
-        require 'chef/json_compat'
+        require 'seth/api_client'
+        require 'seth/json_compat'
       end
 
       banner "knife client edit CLIENT (options)"
@@ -38,7 +38,7 @@ class Chef
           exit 1
         end
 
-        edit_object(Chef::ApiClient, @client_name)
+        edit_object(Seth::ApiClient, @client_name)
       end
     end
   end

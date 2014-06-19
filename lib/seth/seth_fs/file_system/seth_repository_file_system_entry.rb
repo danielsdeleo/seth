@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/file_system_entry'
-require 'chef/chef_fs/file_system/not_found_error'
+require 'seth/chef_fs/file_system/file_system_entry'
+require 'seth/chef_fs/file_system/not_found_error'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
-      # ChefRepositoryFileSystemEntry works just like FileSystemEntry,
-      # except can inflate Chef objects
-      class ChefRepositoryFileSystemEntry < FileSystemEntry
+      # SethRepositoryFileSystemEntry works just like FileSystemEntry,
+      # except can inflate Seth objects
+      class SethRepositoryFileSystemEntry < FileSystemEntry
         def initialize(name, parent, file_path = nil, data_handler = nil)
           super(name, parent, file_path)
           @data_handler = data_handler
@@ -39,11 +39,11 @@ class Chef
           @data_handler || parent.data_handler
         end
 
-        def chef_object
+        def seth_object
           begin
-            return data_handler.chef_object(JSON.parse(read, :create_additions => false))
+            return data_handler.seth_object(JSON.parse(read, :create_additions => false))
           rescue
-            Chef::Log.error("Could not read #{path_for_printing} into a Chef object: #{$!}")
+            Seth::Log.error("Could not read #{path_for_printing} into a Chef object: #{$!}")
           end
           nil
         end
@@ -73,14 +73,14 @@ class Chef
                 select { |child_name| can_have_child?(child_name, File.directory?(File.join(file_path, child_name))) }.
                 map { |child_name| make_child(child_name) }
           rescue Errno::ENOENT
-            raise Chef::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 
         protected
 
         def make_child(child_name)
-          ChefRepositoryFileSystemEntry.new(child_name, self)
+          SethRepositoryFileSystemEntry.new(child_name, self)
         end
       end
     end

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>knife status &mdash; chef-client Man Pages</title>
+    <title>knife status &mdash; seth-client Man Pages</title>
     
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="shortcut icon" href="_static/chef.ico"/>
+    <link rel="shortcut icon" href="_static/seth.ico"/>
 
 
   </head>
   <body>
 <div style="background-color: #212c35; text-align: left; padding: 0px 0px 0px 0px">
-<a href="http://docs.opscode.com/"><img src="_static/chef_html_logo.png" border="0" alt="Chef"/></a>
+<a href="http://docs.opscode.com/"><img src="_static/seth_html_logo.png" border="0" alt="Seth"/></a>
 </div>
 
 
@@ -42,7 +42,7 @@
             
   <div class="section" id="knife-status">
 <h1>knife status<a class="headerlink" href="#knife-status" title="Permalink to this headline">¶</a></h1>
-<p>The <strong>knife status</strong> subcommand is used to display a brief summary of the nodes on a Chef server, including the time of the most recent successful chef-client run.</p>
+<p>The <strong>knife status</strong> subcommand is used to display a brief summary of the nodes on a Seth server, including the time of the most recent successful seth-client run.</p>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <p>This subcommand has the following syntax:</p>
@@ -59,9 +59,9 @@
 <p>This subcommand has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">QUERY</span></tt></dt>
-<dd>The search query used to identify a a list of items on a Chef server. This option uses the same syntax as the <tt class="docutils literal"><span class="pre">search</span></tt> sub-command.</dd>
+<dd>The search query used to identify a a list of items on a Seth server. This option uses the same syntax as the <tt class="docutils literal"><span class="pre">search</span></tt> sub-command.</dd>
 <dt><tt class="docutils literal"><span class="pre">-H</span></tt>, <tt class="docutils literal"><span class="pre">--hide-healthy</span></tt></dt>
-<dd>Indicates that nodes on which a chef-client run has occurred within the previous hour will be hidden.</dd>
+<dd>Indicates that nodes on which a seth-client run has occurred within the previous hour will be hidden.</dd>
 <dt><tt class="docutils literal"><span class="pre">-r</span> <span class="pre">RUN_LIST</span></tt>, <tt class="docutils literal"><span class="pre">--run-list</span> <span class="pre">RUN_LIST</span></tt></dt>
 <dd>A comma-separated list of roles and/or recipes to be applied.</dd>
 <dt><tt class="docutils literal"><span class="pre">-s</span></tt>, <tt class="docutils literal"><span class="pre">--sort-reverse</span></tt></dt>
@@ -86,7 +86,7 @@
 </pre></div>
 </div>
 <p><strong>View status using a date range</strong></p>
-<p>To show the status for nodes on which the chef-client did not run successfully within the past hour, enter:</p>
+<p>To show the status for nodes on which the seth-client did not run successfully within the past hour, enter:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife status --hide-healthy
 </pre></div>
 </div>

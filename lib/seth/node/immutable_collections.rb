@@ -1,5 +1,5 @@
 
-class Chef
+class Seth
   class Node
 
     module Immutablize
@@ -23,7 +23,7 @@ class Chef
     # * Methods that mutate the array are overridden to raise an error, making
     #   the collection more or less immutable.
     # * Since this class stores values computed from a parent
-    #   Chef::Node::Attribute's values, it overrides all reader methods to
+    #   Seth::Node::Attribute's values, it overrides all reader methods to
     #   detect staleness and raise an error if accessed when stale.
     class ImmutableArray < Array
       include Immutablize
@@ -122,7 +122,7 @@ class Chef
     # Symbol keys), with some important exceptions:
     # * Methods that mutate state are overridden to raise an error instead.
     # * Methods that read from the collection are overriden so that they check
-    #   if the Chef::Node::Attribute has been modified since an instance of
+    #   if the Seth::Node::Attribute has been modified since an instance of
     #   this class was generated. An error is raised if the object detects that
     #   it is stale.
     # * Values can be accessed in attr_reader-like fashion via method_missing.
@@ -197,7 +197,7 @@ class Chef
       # NOTE: #default and #default= are likely to be pretty confusing. For a
       # regular ruby Hash, they control what value is returned for, e.g.,
       #   hash[:no_such_key] #=> hash.default
-      # Of course, 'default' has a specific meaning in Chef-land
+      # Of course, 'default' has a specific meaning in Seth-land
 
       def dup
         Mash.new(self)

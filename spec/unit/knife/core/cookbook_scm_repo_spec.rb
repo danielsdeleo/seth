@@ -17,24 +17,24 @@
 #
 
 require 'spec_helper'
-require 'chef/knife/core/cookbook_scm_repo'
+require 'seth/knife/core/cookbook_scm_repo'
 
-describe Chef::Knife::CookbookSCMRepo do
+describe Seth::Knife::CookbookSCMRepo do
   before do
     @repo_path = File.join(CHEF_SPEC_DATA, 'cookbooks')
     @stdout, @stderr, @stdin = StringIO.new, StringIO.new, StringIO.new
-    @ui = Chef::Knife::UI.new(@stdout, @stderr, @stdin, {})
-    @cookbook_repo = Chef::Knife::CookbookSCMRepo.new(@repo_path, @ui, :default_branch => 'master')
+    @ui = Seth::Knife::UI.new(@stdout, @stderr, @stdin, {})
+    @cookbook_repo = Seth::Knife::CookbookSCMRepo.new(@repo_path, @ui, :default_branch => 'master')
 
     @branch_list = Mixlib::ShellOut.new
     @branch_list.stdout.replace(<<-BRANCHES)
-  chef-vendor-apache2
-  chef-vendor-build-essential
-  chef-vendor-dynomite
-  chef-vendor-ganglia
-  chef-vendor-graphite
-  chef-vendor-python
-  chef-vendor-absent-new
+  seth-vendor-apache2
+  seth-vendor-build-essential
+  seth-vendor-dynomite
+  seth-vendor-ganglia
+  seth-vendor-graphite
+  seth-vendor-python
+  seth-vendor-absent-new
 BRANCHES
   end
 
@@ -83,7 +83,7 @@ BRANCHES
           it "exits when the git repo is dirty" do
             @dirty_status = Mixlib::ShellOut.new
             @dirty_status.stdout.replace(<<-DIRTY)
- M chef/lib/chef/knife/cookbook_site_vendor.rb
+ M seth/lib/chef/knife/cookbook_site_vendor.rb
 DIRTY
             @cookbook_repo.should_receive(:shell_out!).with('git status --porcelain', :cwd => @repo_path).and_return(@dirty_status)
             lambda {@cookbook_repo.sanity_check}.should raise_error(SystemExit)
@@ -112,21 +112,21 @@ DIRTY
 
   it "determines if a the pristine copy branch exists" do
     @cookbook_repo.should_receive(:shell_out!).with('git branch --no-color', :cwd => @repo_path).and_return(@branch_list)
-    @cookbook_repo.branch_exists?("chef-vendor-apache2").should be_true
+    @cookbook_repo.branch_exists?("seth-vendor-apache2").should be_true
     @cookbook_repo.should_receive(:shell_out!).with('git branch --no-color', :cwd => @repo_path).and_return(@branch_list)
-    @cookbook_repo.branch_exists?("chef-vendor-nginx").should be_false
+    @cookbook_repo.branch_exists?("seth-vendor-nginx").should be_false
   end
 
   it "determines if a the branch not exists correctly without substring search" do
     @cookbook_repo.should_receive(:shell_out!).twice.with('git branch --no-color', :cwd => @repo_path).and_return(@branch_list)
-    @cookbook_repo.should_not be_branch_exists("chef-vendor-absent")
-    @cookbook_repo.should be_branch_exists("chef-vendor-absent-new")
+    @cookbook_repo.should_not be_branch_exists("seth-vendor-absent")
+    @cookbook_repo.should be_branch_exists("seth-vendor-absent-new")
   end
 
   describe "when the pristine copy branch does not exist" do
     it "prepares for import by creating the pristine copy branch" do
       @cookbook_repo.should_receive(:shell_out!).with('git branch --no-color', :cwd => @repo_path).and_return(@branch_list)
-      @cookbook_repo.should_receive(:shell_out!).with('git checkout -b chef-vendor-nginx', :cwd => @repo_path)
+      @cookbook_repo.should_receive(:shell_out!).with('git checkout -b seth-vendor-nginx', :cwd => @repo_path)
       @cookbook_repo.prepare_to_import("nginx")
     end
   end
@@ -134,7 +134,7 @@ DIRTY
   describe "when the pristine copy branch does exist" do
     it "prepares for import by checking out the pristine copy branch" do
       @cookbook_repo.should_receive(:shell_out!).with('git branch --no-color', :cwd => @repo_path).and_return(@branch_list)
-      @cookbook_repo.should_receive(:shell_out!).with('git checkout chef-vendor-apache2', :cwd => @repo_path)
+      @cookbook_repo.should_receive(:shell_out!).with('git checkout seth-vendor-apache2', :cwd => @repo_path)
       @cookbook_repo.prepare_to_import("apache2")
     end
   end
@@ -176,7 +176,7 @@ DIRTY
 
   describe "when a custom default branch is specified" do
     before do
-      @cookbook_repo = Chef::Knife::CookbookSCMRepo.new(@repo_path, @ui, :default_branch => 'develop')
+      @cookbook_repo = Seth::Knife::CookbookSCMRepo.new(@repo_path, @ui, :default_branch => 'develop')
     end
 
     it "resets to default state by checking out the default branch" do

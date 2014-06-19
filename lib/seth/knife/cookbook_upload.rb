@@ -18,10 +18,10 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
-require 'chef/cookbook_uploader'
+require 'seth/knife'
+require 'seth/cookbook_uploader'
 
-class Chef
+class Seth
   class Knife
     class CookbookUpload < Knife
 
@@ -29,9 +29,9 @@ class Chef
       MATCH_CHECKSUM = /[0-9a-f]{32,}/
 
       deps do
-        require 'chef/exceptions'
-        require 'chef/cookbook_loader'
-        require 'chef/cookbook_uploader'
+        require 'seth/exceptions'
+        require 'seth/cookbook_loader'
+        require 'seth/cookbook_uploader'
       end
 
       banner "knife cookbook upload [COOKBOOKS...] (options)"
@@ -84,7 +84,7 @@ class Chef
           end
         end
 
-        config[:cookbook_path] ||= Chef::Config[:cookbook_path]
+        config[:cookbook_path] ||= Seth::Config[:cookbook_path]
 
         if @name_args.empty? and ! config[:all]
           show_usage
@@ -100,7 +100,7 @@ class Chef
 
         # Get a list of cookbooks and their versions from the server
         # to check for the existence of a cookbook's dependencies.
-        @server_side_cookbooks = Chef::CookbookVersion.list_all_versions
+        @server_side_cookbooks = Seth::CookbookVersion.list_all_versions
         justify_width = @server_side_cookbooks.map {|name| name.size}.max.to_i + 2
         if config[:all]
           cookbook_repo.load_cookbooks
@@ -184,8 +184,8 @@ class Chef
 
       def cookbook_repo
         @cookbook_loader ||= begin
-          Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, config[:cookbook_path]) }
-          Chef::CookbookLoader.new(config[:cookbook_path])
+          Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, config[:cookbook_path]) }
+          Seth::CookbookLoader.new(config[:cookbook_path])
         end
       end
 
@@ -211,7 +211,7 @@ class Chef
 The cookbooks: #{cookbook_repo.merged_cookbooks.join(', ')} exist in multiple places in your cookbook_path.
 A composite version of these cookbooks has been compiled for uploading.
 
-#{ui.color('IMPORTANT:', :red, :bold)} In a future version of Chef, this behavior will be removed and you will no longer
+#{ui.color('IMPORTANT:', :red, :bold)} In a future version of Seth, this behavior will be removed and you will no longer
 be able to have the same version of a cookbook in multiple places in your cookbook_path.
 WARNING
           ui.warn "The affected cookbooks are located:"
@@ -240,8 +240,8 @@ WARNING
           check_for_broken_links!(cb)
           check_for_dependencies!(cb)
         end
-        Chef::CookbookUploader.new(cookbooks, config[:cookbook_path], :force => config[:force], :concurrency => config[:concurrency]).upload_cookbooks
-      rescue Chef::Exceptions::CookbookFrozen => e
+        Seth::CookbookUploader.new(cookbooks, config[:cookbook_path], :force => config[:force], :concurrency => config[:concurrency]).upload_cookbooks
+      rescue Seth::Exceptions::CookbookFrozen => e
         ui.error e
         raise
       end
@@ -285,7 +285,7 @@ WARNING
           versions = @server_side_cookbooks[cookbook_name]['versions'].collect {|versions| versions["version"]}
           Log.debug "Versions of cookbook '#{cookbook_name}' returned by the server: #{versions.join(", ")}"
           @server_side_cookbooks[cookbook_name]["versions"].each do |versions_hash|
-            if Chef::VersionConstraint.new(version).include?(versions_hash["version"])
+            if Seth::VersionConstraint.new(version).include?(versions_hash["version"])
               Log.debug "Matched cookbook '#{cookbook_name}' with constraint '#{version}' to cookbook version '#{versions_hash['version']}' on the server"
               return true
             end
@@ -295,7 +295,7 @@ WARNING
       end
 
       def check_uploading_cookbooks(cookbook_name, version)
-        if (! cookbooks_to_upload[cookbook_name].nil?) && Chef::VersionConstraint.new(version).include?(cookbooks_to_upload[cookbook_name].version)
+        if (! cookbooks_to_upload[cookbook_name].nil?) && Seth::VersionConstraint.new(version).include?(cookbooks_to_upload[cookbook_name].version)
           Log.debug "Matched cookbook '#{cookbook_name}' with constraint '#{version}' to a local cookbook."
           return true
         end

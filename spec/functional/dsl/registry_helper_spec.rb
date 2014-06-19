@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require "chef/dsl/registry_helper"
+require "seth/dsl/registry_helper"
 require "spec_helper"
 
-describe Chef::Resource::RegistryKey, :windows_only do
+describe Seth::Resource::RegistryKey, :windows_only do
 
   before (:all) do
     ::Win32::Registry::HKEY_CURRENT_USER.create "Software\\Root"
@@ -29,13 +29,13 @@ describe Chef::Resource::RegistryKey, :windows_only do
       reg.write('Roots', Win32::Registry::REG_MULTI_SZ, ["strong roots", "healthy tree"])
     end
 
-    events = Chef::EventDispatch::Dispatcher.new
-    node = Chef::Node.new
+    events = Seth::EventDispatch::Dispatcher.new
+    node = Seth::Node.new
     ohai = Ohai::System.new
     ohai.all_plugins
     node.consume_external_attrs(ohai.data,{})
-    run_context = Chef::RunContext.new(node, {}, events)
-    @resource = Chef::Resource.new("foo", run_context)
+    run_context = Seth::RunContext.new(node, {}, events)
+    @resource = Seth::Resource.new("foo", run_context)
   end
 
   context "tests registry dsl" do

@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-SSL-CHECK" "1" "Chef 11.12.0" "" "knife ssl check"
+.TH "KNIFE-SSL-CHECK" "1" "Seth 11.12.0" "" "knife ssl check"
 .SH NAME
 knife-ssl-check \- The man page for the knife ssl check subcommand.
 .
@@ -31,12 +31,12 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife ssl check\fP subcommand is used to verify the SSL configuration for the Enterprise Chef and/or Open Source Chef servers, or at another location specified by a URL or URI.
+The \fBknife ssl check\fP subcommand is used to verify the SSL configuration for the Enterprise Seth and/or Open Source Chef servers, or at another location specified by a URL or URI.
 .sp
 \fBWARNING:\fP
 .INDENT 0.0
 .INDENT 3.5
-When verification of a remote server\(aqs SSL certificate is disabled, the chef\-client will issue a warning similar to "SSL validation of HTTPS requests is disabled. HTTPS connections are still encrypted, but the chef\-client is not able to detect forged replies or man\-in\-the\-middle attacks." To configure SSL for the chef\-client, set \fBssl_verify_mode\fP to \fB:verify_peer\fP (recommended) \fBor\fP \fBverify_api_cert\fP to \fBtrue\fP in the client.rb file.
+When verification of a remote server\(aqs SSL certificate is disabled, the seth\-client will issue a warning similar to "SSL validation of HTTPS requests is disabled. HTTPS connections are still encrypted, but the chef\-client is not able to detect forged replies or man\-in\-the\-middle attacks." To configure SSL for the chef\-client, set \fBssl_verify_mode\fP to \fB:verify_peer\fP (recommended) \fBor\fP \fBverify_api_cert\fP to \fBtrue\fP in the client.rb file.
 .UNINDENT
 .UNINDENT
 .sp
@@ -71,8 +71,8 @@ The configuration file to use.
 .B \fB\-C NUM\fP, \fB\-\-concurrency NUM\fP
 The number of allowed concurrent connections.
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -102,7 +102,7 @@ Shows help for the command.
 The SSH identity file used for authentication. Key\-based authentication is recommended.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-m\fP, \fB\-\-manual\-list\fP
 Indicates that a search query is a space\-separated list of servers. If there is more than one item in the list, put quotes around the entire list. For example: \fB\-\-manual\-list "server01 server 02 server 03"\fP
@@ -123,7 +123,7 @@ The SSH password. This can be used to pass the password directly on the command 
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fBSEARCH_QUERY\fP
 The search query used to return a list of servers to be accessed using SSH and the specified \fBSSH_COMMAND\fP\&. This option uses the same syntax as the search sub\-command.
@@ -132,10 +132,10 @@ The search query used to return a list of servers to be accessed using SSH and t
 The command that will be run against the results of a search query.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -147,14 +147,14 @@ The SSH user name.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP
 .sp
 The following examples show how to use this Knife subcommand:
 .sp
-\fBVerify the SSL configuration for the Chef server\fP
+\fBVerify the SSL configuration for the Seth server\fP
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -166,13 +166,13 @@ $ knife ssl check
 .UNINDENT
 .UNINDENT
 .sp
-\fBVerify the SSL configuration for the chef\-client\fP
+\fBVerify the SSL configuration for the seth\-client\fP
 .INDENT 0.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
-$ knife ssl check \-c /etc/chef/client.rb
+$ knife ssl check \-c /etc/seth/client.rb
 .ft P
 .fi
 .UNINDENT
@@ -196,12 +196,12 @@ for example:
 .sp
 .nf
 .ft C
-$ knife ssl check https://www.getchef.com
+$ knife ssl check https://www.getseth.com
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

@@ -18,16 +18,16 @@
 # limitations under the License.
 #
 
-require 'chef/provider'
+require 'seth/provider'
 
-class Chef
+class Seth
   class Provider
 
-    # == Chef::Provider::LWRPBase
+    # == Seth::Provider::LWRPBase
     # Base class from which LWRP providers inherit.
     class LWRPBase < Provider
 
-      # Chef::Provider::LWRPBase::InlineResources
+      # Seth::Provider::LWRPBase::InlineResources
       # Implementation of inline resource convergence for LWRP providers. See
       # Provider::LWRPBase.use_inline_resources for a longer explanation.
       #
@@ -55,10 +55,10 @@ class Chef
           saved_run_context = @run_context
           temp_run_context = @run_context.dup
           @run_context = temp_run_context
-          @run_context.resource_collection = Chef::ResourceCollection.new
+          @run_context.resource_collection = Seth::ResourceCollection.new
 
           return_value = instance_eval(&block)
-          Chef::Runner.new(@run_context).converge
+          Seth::Runner.new(@run_context).converge
           return_value
         ensure
           @run_context = saved_run_context
@@ -69,16 +69,16 @@ class Chef
 
       end
 
-      extend Chef::Mixin::ConvertToClassName
-      extend Chef::Mixin::FromFile
+      extend Seth::Mixin::ConvertToClassName
+      extend Seth::Mixin::FromFile
 
-      include Chef::DSL::Recipe
+      include Seth::DSL::Recipe
 
-      # These were previously provided by Chef::Mixin::RecipeDefinitionDSLCore.
-      # They are not included by its replacment, Chef::DSL::Recipe, but
+      # These were previously provided by Seth::Mixin::RecipeDefinitionDSLCore.
+      # They are not included by its replacment, Seth::DSL::Recipe, but
       # they may be used in existing LWRPs.
-      include Chef::DSL::PlatformIntrospection
-      include Chef::DSL::DataQuery
+      include Seth::DSL::PlatformIntrospection
+      include Seth::DSL::DataQuery
 
       def self.build_from_file(cookbook_name, filename, run_context)
         provider_name = filename_to_qualified_string(cookbook_name, filename)
@@ -86,16 +86,16 @@ class Chef
         # Add log entry if we override an existing light-weight provider.
         class_name = convert_to_class_name(provider_name)
 
-        if Chef::Provider.const_defined?(class_name)
-          Chef::Log.info("#{class_name} light-weight provider already initialized -- overriding!")
+        if Seth::Provider.const_defined?(class_name)
+          Seth::Log.info("#{class_name} light-weight provider already initialized -- overriding!")
         end
 
         provider_class = Class.new(self)
         provider_class.class_from_file(filename)
 
         class_name = convert_to_class_name(provider_name)
-        Chef::Provider.const_set(class_name, provider_class)
-        Chef::Log.debug("Loaded contents of #{filename} into a provider named #{provider_name} defined in Chef::Provider::#{class_name}")
+        Seth::Provider.const_set(class_name, provider_class)
+        Seth::Log.debug("Loaded contents of #{filename} into a provider named #{provider_name} defined in Chef::Provider::#{class_name}")
 
         provider_class
       end
@@ -105,7 +105,7 @@ class Chef
       # Without this option, any resources declared inside the LWRP are added
       # to the resource collection after the current position at the time the
       # action is executed. Because they are added to the primary resource
-      # collection for the chef run, they can notify other resources outside
+      # collection for the seth run, they can notify other resources outside
       # the LWRP, and potentially be notified by resources outside the LWRP
       # (but this is complicated by the fact that they don't exist until the
       # provider executes). In this mode, it is impossible to correctly set the
@@ -121,11 +121,11 @@ class Chef
       # external resources via notifies, though notifications to other
       # resources within the LWRP will work. Delayed notifications are executed
       # at the conclusion of the provider's action, *not* at the end of the
-      # main chef run.
+      # main seth run.
       #
       # This mode of evaluation is experimental, but is believed to be a better
       # set of tradeoffs than the append-after mode, so it will likely become
-      # the default in a future major release of Chef.
+      # the default in a future major release of Seth.
       #
       def self.use_inline_resources
         extend InlineResources::ClassMethods
@@ -141,7 +141,7 @@ class Chef
 
       # no-op `load_current_resource`. Allows simple LWRP providers to work
       # without defining this method explicitly (silences
-      # Chef::Exceptions::Override exception)
+      # Seth::Exceptions::Override exception)
       def load_current_resource
       end
 

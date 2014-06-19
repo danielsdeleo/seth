@@ -19,16 +19,16 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Log do
+describe Seth::Resource::Log do
 
   before(:each) do
     @log_str = "this is my string to log"
-    @resource = Chef::Resource::Log.new(@log_str)
+    @resource = Seth::Resource::Log.new(@log_str)
   end
 
-  it "should create a new Chef::Resource::Log" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Log)
+  it "should create a new Seth::Resource::Log" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Log)
   end
 
   it "supports the :write actions" do
@@ -63,7 +63,7 @@ describe Chef::Resource::Log do
 
   describe "when the identity is defined" do
     before do
-      @resource = Chef::Resource::Log.new("ery day I'm loggin-in")
+      @resource = Seth::Resource::Log.new("ery day I'm loggin-in")
     end
 
     it "returns the log string as its identity" do

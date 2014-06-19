@@ -21,21 +21,21 @@
 # ACL information on the dst file.
 #
 
-require 'chef/platform/query_helpers'
-if Chef::Platform.windows?
-  require 'chef/win32/security'
+require 'seth/platform/query_helpers'
+if Seth::Platform.windows?
+  require 'seth/win32/security'
 end
 
-class Chef
+class Seth
   class FileContentManagement
     class Deploy
       class MvWindows
 
-        Security = Chef::ReservedNames::Win32::Security
+        Security = Seth::ReservedNames::Win32::Security
         ACL = Security::ACL
 
         def create(file)
-          Chef::Log.debug("touching #{file} to create it")
+          Seth::Log.debug("touching #{file} to create it")
           FileUtils.touch(file)
         end
 
@@ -56,11 +56,11 @@ class Chef
           begin
             # get the sd with the SACL
             dst_sd = dst_so.security_descriptor(true)
-          rescue Chef::Exceptions::Win32APIError
+          rescue Seth::Exceptions::Win32APIError
             # Catch and raise if the user is not elevated enough.
             # At this point we can't configure the file as expected so
             # we're failing action on the resource.
-            raise Chef::Exceptions::WindowsNotAdmin, "can not get the security information for '#{dst}' due to missing Administrator privileges."
+            raise Seth::Exceptions::WindowsNotAdmin, "can not get the security information for '#{dst}' due to missing Administrator privileges."
           end
 
           if dst_sd.dacl_present?

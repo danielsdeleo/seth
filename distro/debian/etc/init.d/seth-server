@@ -1,25 +1,25 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:           chef-server
+# Provides:           seth-server
 # Required-Start:     $remote_fs $network rabbitmq-server couchdb
 # Required-Stop:      $remote_fs $network rabbitmq-server couchdb
 # Default-Start:      2 3 4 5
 # Default-Stop:       0 1 6
-# Short-Description:  Start a chef-server.
+# Short-Description:  Start a seth-server.
 ### END INIT INFO
 #
 # Copyright (c) 2009-2010 Opscode, Inc <legal@opscode.com>
 #
-# chef-server         Startup script for chef-server.
+# seth-server         Startup script for chef-server.
 # chkconfig: - 90 02
-# description: starts up chef-server webui.
+# description: starts up seth-server webui.
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=$(which chef-server)
-PIDFILE=/var/run/chef/server.%s.pid
-MAINPID=/var/run/chef/server.main.pid
-NAME=chef-server
-DESC=chef-server
+DAEMON=$(which seth-server)
+PIDFILE=/var/run/seth/server.%s.pid
+MAINPID=/var/run/seth/server.main.pid
+NAME=seth-server
+DESC=seth-server
 
 test -x $DAEMON || exit 1
 
@@ -27,9 +27,9 @@ test -x $DAEMON || exit 1
 
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
-if [ ! -d /var/run/chef ]; then
-  mkdir /var/run/chef
-  chown $USER:$GROUP /var/run/chef
+if [ ! -d /var/run/seth ]; then
+  mkdir /var/run/seth
+  chown $USER:$GROUP /var/run/seth
 fi
 
 DAEMON_OPTS="-p $PORT -e production -d -a $ADAPTER -P $PIDFILE -L $LOGFILE -C $CONFIG -u $USER -G $GROUP"

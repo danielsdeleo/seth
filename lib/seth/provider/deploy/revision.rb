@@ -19,14 +19,14 @@
 # limitations under the License.
 #
 
-require 'chef/provider'
-require 'chef/provider/deploy'
-require 'chef/json_compat'
+require 'seth/provider'
+require 'seth/provider/deploy'
+require 'seth/json_compat'
 
-class Chef
+class Seth
   class Provider
     class Deploy
-      class Revision < Chef::Provider::Deploy
+      class Revision < Seth::Provider::Deploy
 
         def all_releases
           sorted_releases
@@ -90,14 +90,14 @@ class Chef
 
         def load_cache
           begin
-            Chef::JSONCompat.from_json(Chef::FileCache.load("revision-deploys/#{new_resource.name}"))
-          rescue Chef::Exceptions::FileNotFound
+            Seth::JSONCompat.from_json(Chef::FileCache.load("revision-deploys/#{new_resource.name}"))
+          rescue Seth::Exceptions::FileNotFound
             sorted_releases_from_filesystem
           end
         end
 
         def save_cache(cache)
-          Chef::FileCache.store("revision-deploys/#{new_resource.name}", cache.to_json)
+          Seth::FileCache.store("revision-deploys/#{new_resource.name}", cache.to_json)
           cache
         end
 

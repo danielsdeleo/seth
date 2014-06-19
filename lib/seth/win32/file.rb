@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'chef/win32/api/file'
-require 'chef/win32/api/security'
-require 'chef/win32/error'
+require 'seth/win32/api/file'
+require 'seth/win32/api/security'
+require 'seth/win32/error'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     class File
-      include Chef::ReservedNames::Win32::API::File
-      extend Chef::ReservedNames::Win32::API::File
+      include Seth::ReservedNames::Win32::API::File
+      extend Seth::ReservedNames::Win32::API::File
 
       # Creates a symbolic link called +new_name+ for the file or directory
       # +old_name+.
@@ -40,7 +40,7 @@ class Chef
         old_name = encode_path(old_name)
         new_name = encode_path(new_name)
         unless CreateHardLinkW(new_name, old_name, nil)
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
       end
 
@@ -58,7 +58,7 @@ class Chef
         old_name = encode_path(old_name)
         new_name = encode_path(new_name)
         unless CreateSymbolicLinkW(new_name, old_name, flags)
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
       end
 
@@ -95,7 +95,7 @@ class Chef
           reparse_buffer = FFI::MemoryPointer.new(MAXIMUM_REPARSE_DATA_BUFFER_SIZE)
           parsed_size = FFI::Buffer.new(:long).write_long(0)
           if DeviceIoControl(handle, FSCTL_GET_REPARSE_POINT, nil, 0, reparse_buffer, MAXIMUM_REPARSE_DATA_BUFFER_SIZE, parsed_size, nil) == 0
-            Chef::ReservedNames::Win32::Error.raise!
+            Seth::ReservedNames::Win32::Error.raise!
           end
 
           # Ensure it's a symbolic link
@@ -118,11 +118,11 @@ class Chef
         path = path.to_wstring
         size = GetShortPathNameW(path, nil, 0)
         if size == 0
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
         result = FFI::MemoryPointer.new :char, (size+1)*2
         if GetShortPathNameW(path, result, size+1) == 0
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
         result.read_wstring(size)
       end
@@ -132,11 +132,11 @@ class Chef
         path = path.to_wstring
         size = GetLongPathNameW(path, nil, 0)
         if size == 0
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
         result = FFI::MemoryPointer.new :char, (size+1)*2
         if GetLongPathNameW(path, result, size+1) == 0
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
         result.read_wstring(size)
       end
@@ -148,7 +148,7 @@ class Chef
       def self.verify_links_supported!
         begin
           CreateSymbolicLinkW(nil)
-        rescue Chef::Exceptions::Win32APIFunctionNotImplemented => e
+        rescue Seth::Exceptions::Win32APIFunctionNotImplemented => e
           raise e
         rescue Exception
           # things are ok.
@@ -164,4 +164,4 @@ class Chef
   end
 end
 
-require 'chef/win32/file/info'
+require 'seth/win32/file/info'

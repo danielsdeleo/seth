@@ -18,35 +18,35 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/mixin/params_validate'
-require 'chef/mixin/from_file'
-require 'chef/run_list'
-require 'chef/mash'
-require 'chef/json_compat'
-require 'chef/search/query'
+require 'seth/config'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/from_file'
+require 'seth/run_list'
+require 'seth/mash'
+require 'seth/json_compat'
+require 'seth/search/query'
 
-class Chef
+class Seth
   class Role
 
-    include Chef::Mixin::FromFile
-    include Chef::Mixin::ParamsValidate
+    include Seth::Mixin::FromFile
+    include Seth::Mixin::ParamsValidate
 
-    # Create a new Chef::Role object.
+    # Create a new Seth::Role object.
     def initialize
       @name = ''
       @description = ''
       @default_attributes = Mash.new
       @override_attributes = Mash.new
-      @env_run_lists = {"_default" => Chef::RunList.new}
+      @env_run_lists = {"_default" => Seth::RunList.new}
     end
 
-    def chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
-    def self.chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def self.seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
     def name(arg=nil)
@@ -93,10 +93,10 @@ class Chef
         unless env_run_lists.key?("_default")
           msg = "_default key is required in env_run_lists.\n"
           msg << "(env_run_lists: #{env_run_lists.inspect})"
-          raise Chef::Exceptions::InvalidEnvironmentRunListSpecification, msg
+          raise Seth::Exceptions::InvalidEnvironmentRunListSpecification, msg
         end
         @env_run_lists.clear
-        env_run_lists.each { |k,v| @env_run_lists[k] = Chef::RunList.new(*Array(v))}
+        env_run_lists.each { |k,v| @env_run_lists[k] = Seth::RunList.new(*Array(v))}
       end
       @env_run_lists
     end
@@ -128,7 +128,7 @@ class Chef
         'json_class' => self.class.name,
         "default_attributes" => @default_attributes,
         "override_attributes" => @override_attributes,
-        "chef_type" => "role",
+        "seth_type" => "role",
 
         #Render to_json correctly for run_list items (both run_list and evn_run_lists)
         #so malformed json does not result
@@ -155,7 +155,7 @@ class Chef
       self
     end
 
-    # Create a Chef::Role from JSON
+    # Create a Seth::Role from JSON
     def self.json_create(o)
       role = new
       role.name(o["name"])
@@ -181,47 +181,47 @@ class Chef
     def self.list(inflate=false)
       if inflate
         response = Hash.new
-        Chef::Search::Query.new.search(:role) do |n|
+        Seth::Search::Query.new.search(:role) do |n|
           response[n.name] = n unless n.nil?
         end
         response
       else
-        chef_server_rest.get_rest("roles")
+        seth_server_rest.get_rest("roles")
       end
     end
 
     # Load a role by name from the API
     def self.load(name)
-      chef_server_rest.get_rest("roles/#{name}")
+      seth_server_rest.get_rest("roles/#{name}")
     end
 
     def environment(env_name)
-      chef_server_rest.get_rest("roles/#{@name}/environments/#{env_name}")
+      seth_server_rest.get_rest("roles/#{@name}/environments/#{env_name}")
     end
 
     def environments
-      chef_server_rest.get_rest("roles/#{@name}/environments")
+      seth_server_rest.get_rest("roles/#{@name}/environments")
     end
 
     # Remove this role via the REST API
     def destroy
-      chef_server_rest.delete_rest("roles/#{@name}")
+      seth_server_rest.delete_rest("roles/#{@name}")
     end
 
     # Save this role via the REST API
     def save
       begin
-        chef_server_rest.put_rest("roles/#{@name}", self)
+        seth_server_rest.put_rest("roles/#{@name}", self)
       rescue Net::HTTPServerException => e
         raise e unless e.response.code == "404"
-        chef_server_rest.post_rest("roles", self)
+        seth_server_rest.post_rest("roles", self)
       end
       self
     end
 
     # Create the role via the REST API
     def create
-      chef_server_rest.post_rest("roles", self)
+      seth_server_rest.post_rest("roles", self)
       self
     end
 
@@ -233,28 +233,28 @@ class Chef
     # Load a role from disk - prefers to load the JSON, but will happily load
     # the raw rb files as well. Can search within directories in the role_path.
     def self.from_disk(name)
-      paths = Array(Chef::Config[:role_path])
+      paths = Array(Seth::Config[:role_path])
       paths.each do |path|
         roles_files = Dir.glob(File.join(path, "**", "**"))
         js_files = roles_files.select { |file| file.match /#{name}\.json$/ }
         rb_files = roles_files.select { |file| file.match /#{name}\.rb$/ }
         if js_files.count > 1 or rb_files.count > 1
-          raise Chef::Exceptions::DuplicateRole, "Multiple roles of same type found named #{name}"
+          raise Seth::Exceptions::DuplicateRole, "Multiple roles of same type found named #{name}"
         end
         js_path, rb_path = js_files.first, rb_files.first
 
         if js_path && File.exists?(js_path)
           # from_json returns object.class => json_class in the JSON.
-          return Chef::JSONCompat.from_json(IO.read(js_path))
+          return Seth::JSONCompat.from_json(IO.read(js_path))
         elsif rb_path && File.exists?(rb_path)
-          role = Chef::Role.new
+          role = Seth::Role.new
           role.name(name)
           role.from_file(rb_path)
           return role
         end
       end
 
-      raise Chef::Exceptions::RoleNotFound, "Role '#{name}' could not be loaded from disk"
+      raise Seth::Exceptions::RoleNotFound, "Role '#{name}' could not be loaded from disk"
     end
 
   end

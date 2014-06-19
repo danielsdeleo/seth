@@ -19,10 +19,10 @@
 require 'spec_helper'
 
 class ConvertToClassTestHarness
-  include Chef::Mixin::ConvertToClassName
+  include Seth::Mixin::ConvertToClassName
 end
 
-describe Chef::Mixin::ConvertToClassName do
+describe Seth::Mixin::ConvertToClassName do
 
   before do
     @convert = ConvertToClassTestHarness.new

@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/http/json_output'
+require 'seth/http/json_output'
 
-class Chef
+class Seth
   class HTTP
 
     # A Middleware-ish thing that takes an HTTP response, parses it as JSON if

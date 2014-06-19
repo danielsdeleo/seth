@@ -1,12 +1,12 @@
-require 'chef/formatters/base'
+require 'seth/formatters/base'
 
-class Chef
+class Seth
 
   module Formatters
 
 
     # == Formatters::Minimal
-    # Shows the progress of the chef run by printing single characters, and
+    # Shows the progress of the seth run by printing single characters, and
     # displays a summary of updates at the conclusion of the run. For events
     # that don't have meaningful status information (loading a file, syncing a
     # cookbook) a dot is printed. For resources, a dot, 'S' or 'U' is printed
@@ -27,19 +27,19 @@ class Chef
         @updates_by_resource = Hash.new {|h, k| h[k] = []}
       end
 
-      # Called at the very start of a Chef Run
+      # Called at the very start of a Seth Run
       def run_start(version)
-        puts "Starting Chef Client, version #{version}"
+        puts "Starting Seth Client, version #{version}"
       end
 
-      # Called at the end of the Chef run.
+      # Called at the end of the Seth run.
       def run_completed(node)
-        puts "chef client finished, #{@updated_resources.size} resources updated"
+        puts "seth client finished, #{@updated_resources.size} resources updated"
       end
 
       # called at the end of a failed run
       def run_failed(exception)
-        puts "chef client failed. #{@updated_resources.size} resources updated"
+        puts "seth client failed. #{@updated_resources.size} resources updated"
       end
 
       # Called right after ohai runs.

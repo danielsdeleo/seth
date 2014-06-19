@@ -1,8 +1,8 @@
-/var/log/chef/expander.log {
+/var/log/seth/expander.log {
   rotate 12
   weekly
   compress
   postrotate
-    /etc/init.d/chef-expander condrestart >/dev/null || :
+    /etc/init.d/seth-expander condrestart >/dev/null || :
   endscript
 }

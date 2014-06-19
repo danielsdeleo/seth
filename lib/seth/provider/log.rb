@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
 
   class Provider
 
     class Log
 
-      # Chef log provider, allows logging to chef's logs from recipes
-      class ChefLog < Chef::Provider
+      # Seth log provider, allows logging to seth's logs from recipes
+      class SethLog < Chef::Provider
 
         # ordered array of the log levels
         @@levels = [ :debug, :info, :warn, :error, :fatal ]
@@ -36,15 +36,15 @@ class Chef
           true
         end
 
-        # Write the log to Chef's log
+        # Write the log to Seth's log
         #
         # === Return
         # true:: Always return true
         def action_write
-          Chef::Log.send(@new_resource.level, @new_resource.message)
+          Seth::Log.send(@new_resource.level, @new_resource.message)
 
           # resolve the integers for the current log levels
-          global_level = Mixlib::Log::LEVELS.fetch(Chef::Log.level)
+          global_level = Mixlib::Log::LEVELS.fetch(Seth::Log.level)
           resource_level = Mixlib::Log::LEVELS.fetch(@new_resource.level)
 
           # If the resource level is greater than or the same os the global

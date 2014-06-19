@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/template'
-require 'chef/file_content_management/content_base'
+require 'seth/mixin/template'
+require 'seth/file_content_management/content_base'
 
-class Chef
+class Seth
   class Provider
     class Template
 
-      class Content < Chef::FileContentManagement::ContentBase
+      class Content < Seth::FileContentManagement::ContentBase
 
-        include Chef::Mixin::Template
+        include Seth::Mixin::Template
 
         def template_location
           @template_file_cache_location ||= begin
@@ -42,7 +42,7 @@ class Chef
           context._extend_modules(@new_resource.helper_modules)
           output = context.render_template(template_location)
 
-          tempfile = Tempfile.open("chef-rendered-template")
+          tempfile = Tempfile.open("seth-rendered-template")
           tempfile.binmode
           tempfile.write(output)
           tempfile.close

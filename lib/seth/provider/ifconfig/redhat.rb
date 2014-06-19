@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'chef/provider/ifconfig'
+require 'seth/provider/ifconfig'
 
-class Chef
+class Seth
   class Provider
     class Ifconfig
-      class Redhat < Chef::Provider::Ifconfig
+      class Redhat < Seth::Provider::Ifconfig
 
         def initialize(new_resource, run_context)
           super(new_resource, run_context)

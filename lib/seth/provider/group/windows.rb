@@ -16,23 +16,23 @@
 # limitations under the License.
 #
 
-require 'chef/provider/user'
+require 'seth/provider/user'
 if RUBY_PLATFORM =~ /mswin|mingw32|windows/
-  require 'chef/util/windows/net_group'
+  require 'seth/util/windows/net_group'
 end
 
-class Chef
+class Seth
   class Provider
     class Group
-      class Windows < Chef::Provider::Group
+      class Windows < Seth::Provider::Group
 
         def initialize(new_resource,run_context)
           super
-          @net_group = Chef::Util::Windows::NetGroup.new(@new_resource.group_name)
+          @net_group = Seth::Util::Windows::NetGroup.new(@new_resource.group_name)
         end
 
         def load_current_resource
-          @current_resource = Chef::Resource::Group.new(@new_resource.name)
+          @current_resource = Seth::Resource::Group.new(@new_resource.name)
           @current_resource.group_name(@new_resource.group_name)
 
           members = nil
@@ -40,7 +40,7 @@ class Chef
             members = @net_group.local_get_members
           rescue => e
             @group_exists = false
-            Chef::Log.debug("#{@new_resource} group does not exist")
+            Seth::Log.debug("#{@new_resource} group does not exist")
           end
 
           if members
@@ -88,7 +88,7 @@ class Chef
 
         def local_group_name_to_sid(group_name)
           locally_qualified_name = group_name.include?("\\") ? group_name : "#{ENV['COMPUTERNAME']}\\#{group_name}"
-          Chef::ReservedNames::Win32::Security.lookup_account_name(locally_qualified_name)[1].to_s
+          Seth::ReservedNames::Win32::Security.lookup_account_name(locally_qualified_name)[1].to_s
         end
       end
     end

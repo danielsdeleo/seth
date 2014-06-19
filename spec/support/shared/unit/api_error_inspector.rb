@@ -31,14 +31,14 @@ shared_examples_for "an api error inspector" do
     @node_name = "test-node.example.com"
     @config = {
       :validation_client_name => "testorg-validator",
-      :validation_key => "/etc/chef/testorg-validator.pem",
-      :chef_server_url => "https://chef-api.example.com",
+      :validation_key => "/etc/seth/testorg-validator.pem",
+      :seth_server_url => "https://chef-api.example.com",
       :node_name => "testnode-name",
-      :client_key => "/etc/chef/client.pem"
+      :client_key => "/etc/seth/client.pem"
     }
-    @description = Chef::Formatters::ErrorDescription.new("Error registering the node:")
-    @outputter = Chef::Formatters::IndentableOutputStream.new(StringIO.new, STDERR)
-    #@outputter = Chef::Formatters::IndentableOutputStream.new(STDOUT, STDERR)
+    @description = Seth::Formatters::ErrorDescription.new("Error registering the node:")
+    @outputter = Seth::Formatters::IndentableOutputStream.new(StringIO.new, STDERR)
+    #@outputter = Seth::Formatters::IndentableOutputStream.new(STDOUT, STDERR)
 
   end
 
@@ -57,7 +57,7 @@ shared_examples_for "an api error inspector" do
 
   describe "when explaining a 'private key missing' error" do
     before do
-      @exception = Chef::Exceptions::PrivateKeyMissing.new("no private key yo")
+      @exception = Seth::Exceptions::PrivateKeyMissing.new("no private key yo")
       @inspector = described_class.new(@node_name, @exception, @config)
       @inspector.add_explanation(@description)
     end

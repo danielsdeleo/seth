@@ -19,13 +19,13 @@
 require 'spec_helper'
 require 'tmpdir'
 if windows?
-  require 'chef/win32/file'
+  require 'seth/win32/file'
 end
 
 # Filesystem stubs
 def file_symlink_class
   if windows?
-    Chef::ReservedNames::Win32::File
+    Seth::ReservedNames::Win32::File
   else
     File
   end
@@ -126,7 +126,7 @@ class BasicTempfile < ::File
 
 end
 
-shared_examples_for Chef::Provider::File do
+shared_examples_for Seth::Provider::File do
 
   let(:tempfile_path) do
   end
@@ -189,7 +189,7 @@ shared_examples_for Chef::Provider::File do
 
       it "should load a current resource based on the one specified at construction" do
         provider.load_current_resource
-        provider.current_resource.should be_a_kind_of(Chef::Resource::File)
+        provider.current_resource.should be_a_kind_of(Seth::Resource::File)
       end
 
       it "the loaded current_resource name should be the same as the resource name" do
@@ -225,9 +225,9 @@ shared_examples_for Chef::Provider::File do
         setup_missing_file
       end
 
-      it "the current_resource should be a Chef::Resource::File" do
+      it "the current_resource should be a Seth::Resource::File" do
         provider.load_current_resource
-        provider.current_resource.should be_a_kind_of(Chef::Resource::File)
+        provider.current_resource.should be_a_kind_of(Seth::Resource::File)
       end
 
       it "the current_resource name should be the same as the resource name" do
@@ -255,7 +255,7 @@ shared_examples_for Chef::Provider::File do
     context "examining file security metadata on Unix with a file that exists" do
       before do
         # fake that we're on unix even if we're on windows
-        Chef::Platform.stub(:windows?).and_return(false)
+        Seth::Platform.stub(:windows?).and_return(false)
         # mock up the filesystem to behave like unix
         setup_normal_file
         stat_struct = double("::File.stat", :mode => 0600, :uid => 0, :gid => 0, :mtime => 10000)
@@ -331,7 +331,7 @@ shared_examples_for Chef::Provider::File do
     context "examining file security metadata on Unix with a file that does not exist" do
       before do
         # fake that we're on unix even if we're on windows
-        Chef::Platform.stub(:windows?).and_return(false)
+        Seth::Platform.stub(:windows?).and_return(false)
         setup_missing_file
       end
 
@@ -380,7 +380,7 @@ shared_examples_for Chef::Provider::File do
 
     before do
       # fake that we're on unix even if we're on windows
-      Chef::Platform.stub(:windows?).and_return(false)
+      Seth::Platform.stub(:windows?).and_return(false)
       # mock up the filesystem to behave like unix
       setup_normal_file
       stat_struct = double("::File.stat", :mode => 0600, :uid => 0, :gid => 0, :mtime => 10000)
@@ -419,13 +419,13 @@ shared_examples_for Chef::Provider::File do
       [:create, :create_if_missing, :touch].each do |action|
         context "action #{action}" do
           it "raises EnclosingDirectoryDoesNotExist" do
-            lambda {provider.run_action(action)}.should raise_error(Chef::Exceptions::EnclosingDirectoryDoesNotExist)
+            lambda {provider.run_action(action)}.should raise_error(Seth::Exceptions::EnclosingDirectoryDoesNotExist)
           end
 
           it "does not raise an exception in why-run mode" do
-            Chef::Config[:why_run] = true
+            Seth::Config[:why_run] = true
             lambda {provider.run_action(action)}.should_not raise_error
-            Chef::Config[:why_run] = false
+            Seth::Config[:why_run] = false
           end
         end
       end
@@ -435,13 +435,13 @@ shared_examples_for Chef::Provider::File do
       before { setup_unwritable_file }
 
       it "action delete raises InsufficientPermissions" do
-        lambda {provider.run_action(:delete)}.should raise_error(Chef::Exceptions::InsufficientPermissions)
+        lambda {provider.run_action(:delete)}.should raise_error(Seth::Exceptions::InsufficientPermissions)
       end
 
       it "action delete also raises InsufficientPermissions in why-run mode" do
-        Chef::Config[:why_run] = true
-        lambda {provider.run_action(:delete)}.should raise_error(Chef::Exceptions::InsufficientPermissions)
-        Chef::Config[:why_run] = false
+        Seth::Config[:why_run] = true
+        lambda {provider.run_action(:delete)}.should raise_error(Seth::Exceptions::InsufficientPermissions)
+        Seth::Config[:why_run] = false
       end
     end
   end
@@ -568,12 +568,12 @@ shared_examples_for Chef::Provider::File do
 
         context "when selinux fixup is enabled in the config" do
           before do
-            @original_selinux_fixup = Chef::Config[:enable_selinux_file_permission_fixup]
-            Chef::Config[:enable_selinux_file_permission_fixup] = true
+            @original_selinux_fixup = Seth::Config[:enable_selinux_file_permission_fixup]
+            Seth::Config[:enable_selinux_file_permission_fixup] = true
           end
 
           after do
-            Chef::Config[:enable_selinux_file_permission_fixup] = @original_selinux_fixup
+            Seth::Config[:enable_selinux_file_permission_fixup] = @original_selinux_fixup
           end
 
           context "when selinux is enabled on the system" do
@@ -606,12 +606,12 @@ shared_examples_for Chef::Provider::File do
 
         context "when selinux fixup is disabled in the config" do
           before do
-            @original_selinux_fixup = Chef::Config[:enable_selinux_file_permission_fixup]
-            Chef::Config[:enable_selinux_file_permission_fixup] = false
+            @original_selinux_fixup = Seth::Config[:enable_selinux_file_permission_fixup]
+            Seth::Config[:enable_selinux_file_permission_fixup] = false
           end
 
           after do
-            Chef::Config[:enable_selinux_file_permission_fixup] = @original_selinux_fixup
+            Seth::Config[:enable_selinux_file_permission_fixup] = @original_selinux_fixup
           end
 
           it "should not check for selinux_enabled?" do

@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
-require 'chef/provider/service'
-require 'chef/resource/service'
-require 'chef/mixin/command'
+require 'seth/mixin/shell_out'
+require 'seth/provider/service'
+require 'seth/resource/service'
+require 'seth/mixin/command'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Simple < Chef::Provider::Service
+      class Simple < Seth::Provider::Service
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         def load_current_resource
-          @current_resource = Chef::Resource::Service.new(@new_resource.name)
+          @current_resource = Seth::Resource::Service.new(@new_resource.name)
           @current_resource.service_name(@new_resource.service_name)
 
           @status_load_success = true
@@ -57,31 +57,31 @@ class Chef
           shared_resource_requirements
           requirements.assert(:start) do |a|
             a.assertion { @new_resource.start_command }
-            a.failure_message Chef::Exceptions::Service, "#{self.to_s} requires that start_command be set"
+            a.failure_message Seth::Exceptions::Service, "#{self.to_s} requires that start_command be set"
           end
           requirements.assert(:stop) do |a|
             a.assertion { @new_resource.stop_command }
-            a.failure_message Chef::Exceptions::Service, "#{self.to_s} requires that stop_command be set"
+            a.failure_message Seth::Exceptions::Service, "#{self.to_s} requires that stop_command be set"
           end
 
           requirements.assert(:restart) do |a|
             a.assertion { @new_resource.restart_command  || ( @new_resource.start_command && @new_resource.stop_command ) }
-            a.failure_message Chef::Exceptions::Service, "#{self.to_s} requires a restart_command or both start_command and stop_command be set in order to perform a restart"
+            a.failure_message Seth::Exceptions::Service, "#{self.to_s} requires a restart_command or both start_command and stop_command be set in order to perform a restart"
           end
 
           requirements.assert(:reload) do |a|
             a.assertion { @new_resource.reload_command }
-            a.failure_message Chef::Exceptions::UnsupportedAction, "#{self.to_s} requires a reload_command be set in order to perform a reload"
+            a.failure_message Seth::Exceptions::UnsupportedAction, "#{self.to_s} requires a reload_command be set in order to perform a reload"
           end
 
           requirements.assert(:all_actions) do |a|
             a.assertion { @new_resource.status_command or @new_resource.supports[:status] or
               (!ps_cmd.nil? and !ps_cmd.empty?) }
-            a.failure_message Chef::Exceptions::Service, "#{@new_resource} could not determine how to inspect the process table, please set this node's 'command.ps' attribute"
+            a.failure_message Seth::Exceptions::Service, "#{@new_resource} could not determine how to inspect the process table, please set this node's 'command.ps' attribute"
           end
           requirements.assert(:all_actions) do |a|
             a.assertion { !@ps_command_failed }
-            a.failure_message Chef::Exceptions::Service, "Command #{ps_cmd} failed to execute, cannot determine service current status"
+            a.failure_message Seth::Exceptions::Service, "Command #{ps_cmd} failed to execute, cannot determine service current status"
           end
         end
 
@@ -110,12 +110,12 @@ class Chef
       protected
         def determine_current_status!
           if @new_resource.status_command
-            Chef::Log.debug("#{@new_resource} you have specified a status command, running..")
+            Seth::Log.debug("#{@new_resource} you have specified a status command, running..")
 
             begin
               if shell_out(@new_resource.status_command).exitstatus == 0
                 @current_resource.running true
-                Chef::Log.debug("#{@new_resource} is running")
+                Seth::Log.debug("#{@new_resource} is running")
               end
             rescue Mixlib::ShellOut::ShellCommandFailed, SystemCallError
             # ShellOut sometimes throws different types of Exceptions than ShellCommandFailed.
@@ -127,11 +127,11 @@ class Chef
             end
 
           elsif @new_resource.supports[:status]
-            Chef::Log.debug("#{@new_resource} supports status, running")
+            Seth::Log.debug("#{@new_resource} supports status, running")
             begin
               if shell_out("#{default_init_command} status").exitstatus == 0
                 @current_resource.running true
-                Chef::Log.debug("#{@new_resource} is running")
+                Seth::Log.debug("#{@new_resource} is running")
               end
             # ShellOut sometimes throws different types of Exceptions than ShellCommandFailed.
             # Temporarily catching different types of exceptions here until we get Shellout fixed.
@@ -142,9 +142,9 @@ class Chef
               nil
             end
           else
-            Chef::Log.debug "#{@new_resource} falling back to process table inspection"
+            Seth::Log.debug "#{@new_resource} falling back to process table inspection"
             r = Regexp.new(@new_resource.pattern)
-            Chef::Log.debug "#{@new_resource} attempting to match '#{@new_resource.pattern}' (#{r.inspect}) against process list"
+            Seth::Log.debug "#{@new_resource} attempting to match '#{@new_resource.pattern}' (#{r.inspect}) against process list"
             begin
               shell_out!(ps_cmd).stdout.each_line do |line|
                 if r.match(line)
@@ -154,7 +154,7 @@ class Chef
               end
 
               @current_resource.running false unless @current_resource.running
-              Chef::Log.debug "#{@new_resource} running: #{@current_resource.running}"
+              Seth::Log.debug "#{@new_resource} running: #{@current_resource.running}"
             # ShellOut sometimes throws different types of Exceptions than ShellCommandFailed.
             # Temporarily catching different types of exceptions here until we get Shellout fixed.
             # TODO: Remove the line before one we get the ShellOut fix.

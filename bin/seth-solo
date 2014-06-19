@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# ./chef-solo - Run the chef client, in stand-alone mode
+# ./seth-solo - Run the chef client, in stand-alone mode
 #
 # Author:: AJ Christensen (<aj@opscode.com>)
 # Copyright:: Copyright (c) 2008 Opscode, Inc.
@@ -20,6 +20,6 @@
 
 require 'rubygems'
 $:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
-require 'chef/application/solo'
+require 'seth/application/solo'
 
-Chef::Application::Solo.new.run
+Seth::Application::Solo.new.run

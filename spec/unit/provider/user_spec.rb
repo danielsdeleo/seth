@@ -21,27 +21,27 @@ require 'spec_helper'
 EtcPwnamIsh = Struct.new(:name, :passwd, :uid, :gid, :gecos, :dir, :shell, :change, :uclass, :expire)
 EtcGrnamIsh = Struct.new(:name, :passwd, :gid, :mem)
 
-describe Chef::Provider::User do
+describe Seth::Provider::User do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::User.new("adam")
+    @new_resource = Seth::Resource::User.new("adam")
     @new_resource.comment "Adam Jacob"
     @new_resource.uid 1000
     @new_resource.gid 1000
     @new_resource.home "/home/adam"
     @new_resource.shell "/usr/bin/zsh"
 
-    @current_resource = Chef::Resource::User.new("adam")
+    @current_resource = Seth::Resource::User.new("adam")
     @current_resource.comment "Adam Jacob"
     @current_resource.uid 1000
     @current_resource.gid 1000
     @current_resource.home "/home/adam"
     @current_resource.shell "/usr/bin/zsh"
 
-    @provider = Chef::Provider::User.new(@new_resource, @run_context)
+    @provider = Seth::Provider::User.new(@new_resource, @run_context)
     @provider.current_resource = @current_resource
   end
 
@@ -57,8 +57,8 @@ describe Chef::Provider::User do
 
   describe "executing load_current_resource" do
     before(:each) do
-      @node = Chef::Node.new
-      #@new_resource = double("Chef::Resource::User",
+      @node = Seth::Node.new
+      #@new_resource = double("Seth::Resource::User",
       #  :null_object => true,
       #  :username => "adam",
       #  :comment => "Adam Jacob",
@@ -69,7 +69,7 @@ describe Chef::Provider::User do
       #  :password => nil,
       #  :updated => nil
       #)
-      Chef::Resource::User.stub(:new).and_return(@current_resource)
+      Seth::Resource::User.stub(:new).and_return(@current_resource)
       @pw_user = EtcPwnamIsh.new
       @pw_user.name = "adam"
       @pw_user.gid = 1000
@@ -108,7 +108,7 @@ describe Chef::Provider::User do
       @provider.user_exists.should eql(false)
     end
 
-    # The mapping between the Chef::Resource::User and Getpwnam struct
+    # The mapping between the Seth::Resource::User and Getpwnam struct
     user_attrib_map = {
       :uid => :uid,
       :gid => :gid,
@@ -183,7 +183,7 @@ describe Chef::Provider::User do
         @provider.should_receive(:require).with("shadow") { raise LoadError }
         @provider.load_current_resource
         @provider.define_resource_requirements
-        lambda {@provider.process_resource_requirements}.should raise_error Chef::Exceptions::MissingLibrary
+        lambda {@provider.process_resource_requirements}.should raise_error Seth::Exceptions::MissingLibrary
       end
 
     end
@@ -226,7 +226,7 @@ describe Chef::Provider::User do
   describe "action_create" do
     before(:each) do
       @provider.stub(:load_current_resource)
-      # @current_resource = double("Chef::Resource::User",
+      # @current_resource = double("Seth::Resource::User",
       #   :null_object => true,
       #   :username => "adam",
       #   :comment => "Adam Jacob",
@@ -237,7 +237,7 @@ describe Chef::Provider::User do
       #   :password => nil,
       #   :updated => nil
       # )
-      # @provider = Chef::Provider::User.new(@node, @new_resource)
+      # @provider = Seth::Provider::User.new(@node, @new_resource)
       # @provider.current_resource = @current_resource
       # @provider.user_exists = false
       # @provider.stub(:create_user).and_return(true)
@@ -298,14 +298,14 @@ describe Chef::Provider::User do
   describe "action_manage" do
     before(:each) do
       @provider.stub(:load_current_resource)
-      # @node = Chef::Node.new
-      # @new_resource = double("Chef::Resource::User",
+      # @node = Seth::Node.new
+      # @new_resource = double("Seth::Resource::User",
       #   :null_object => true
       # )
-      # @current_resource = double("Chef::Resource::User",
+      # @current_resource = double("Seth::Resource::User",
       #   :null_object => true
       # )
-      # @provider = Chef::Provider::User.new(@node, @new_resource)
+      # @provider = Seth::Provider::User.new(@node, @new_resource)
       # @provider.current_resource = @current_resource
       # @provider.user_exists = true
       # @provider.stub(:manage_user).and_return(true)
@@ -341,14 +341,14 @@ describe Chef::Provider::User do
   describe "action_modify" do
     before(:each) do
       @provider.stub(:load_current_resource)
-      # @node = Chef::Node.new
-      # @new_resource = double("Chef::Resource::User",
+      # @node = Seth::Node.new
+      # @new_resource = double("Seth::Resource::User",
       #   :null_object => true
       # )
-      # @current_resource = double("Chef::Resource::User",
+      # @current_resource = double("Seth::Resource::User",
       #   :null_object => true
       # )
-      # @provider = Chef::Provider::User.new(@node, @new_resource)
+      # @provider = Seth::Provider::User.new(@node, @new_resource)
       # @provider.current_resource = @current_resource
       # @provider.user_exists = true
       # @provider.stub(:manage_user).and_return(true)
@@ -374,9 +374,9 @@ describe Chef::Provider::User do
       @provider.action_modify
     end
 
-    it "should raise a Chef::Exceptions::User if the user doesn't exist" do
+    it "should raise a Seth::Exceptions::User if the user doesn't exist" do
       @provider.user_exists = false
-      lambda { @provider.action = :modify; @provider.run_action }.should raise_error(Chef::Exceptions::User)
+      lambda { @provider.action = :modify; @provider.run_action }.should raise_error(Seth::Exceptions::User)
     end
   end
 
@@ -399,25 +399,25 @@ describe Chef::Provider::User do
       @new_resource.should be_updated
     end
 
-    it "should raise a Chef::Exceptions::User if we try and lock a user that does not exist" do
+    it "should raise a Seth::Exceptions::User if we try and lock a user that does not exist" do
       @provider.user_exists = false
       @provider.action = :lock
 
-      lambda { @provider.run_action }.should raise_error(Chef::Exceptions::User)
+      lambda { @provider.run_action }.should raise_error(Seth::Exceptions::User)
     end
   end
 
   describe "action_unlock" do
     before(:each) do
       @provider.stub(:load_current_resource)
-      # @node = Chef::Node.new
-      # @new_resource = double("Chef::Resource::User",
+      # @node = Seth::Node.new
+      # @new_resource = double("Seth::Resource::User",
       #   :null_object => true
       # )
-      # @current_resource = double("Chef::Resource::User",
+      # @current_resource = double("Seth::Resource::User",
       #   :null_object => true
       # )
-      # @provider = Chef::Provider::User.new(@node, @new_resource)
+      # @provider = Seth::Provider::User.new(@node, @new_resource)
       # @provider.current_resource = @current_resource
       # @provider.user_exists = true
       # @provider.stub(:check_lock).and_return(true)
@@ -432,10 +432,10 @@ describe Chef::Provider::User do
       @new_resource.should be_updated
     end
 
-    it "should raise a Chef::Exceptions::User if we try and unlock a user that does not exist" do
+    it "should raise a Seth::Exceptions::User if we try and unlock a user that does not exist" do
       @provider.user_exists = false
       @provider.action = :unlock
-      lambda { @provider.run_action }.should raise_error(Chef::Exceptions::User)
+      lambda { @provider.run_action }.should raise_error(Seth::Exceptions::User)
     end
   end
 
@@ -454,7 +454,7 @@ describe Chef::Provider::User do
       Etc.should_receive(:getgrnam).and_raise(ArgumentError)
       @provider.define_resource_requirements
       @provider.convert_group_name
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::User)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::User)
     end
 
     it "should set the new resources gid to the integerized version if available" do

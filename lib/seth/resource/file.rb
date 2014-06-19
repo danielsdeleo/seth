@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
-require 'chef/platform/query_helpers'
-require 'chef/provider/file'
-require 'chef/mixin/securable'
+require 'seth/resource'
+require 'seth/platform/query_helpers'
+require 'seth/provider/file'
+require 'seth/mixin/securable'
 
-class Chef
+class Seth
   class Resource
-    class File < Chef::Resource
-      include Chef::Mixin::Securable
+    class File < Seth::Resource
+      include Seth::Mixin::Securable
 
       identity_attr :path
 
@@ -47,8 +47,8 @@ class Chef
         @backup = 5
         @action = "create"
         @allowed_actions.push(:create, :delete, :touch, :create_if_missing)
-        @provider = Chef::Provider::File
-        @atomic_update = Chef::Config[:file_atomic_update]
+        @provider = Seth::Provider::File
+        @atomic_update = Seth::Config[:file_atomic_update]
         @force_unlink = false
         @manage_symlink_source = nil
         @diff = nil

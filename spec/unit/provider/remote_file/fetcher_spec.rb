@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::RemoteFile::Fetcher do
+describe Seth::Provider::RemoteFile::Fetcher do
 
   let(:current_resource) { double("current resource") }
   let(:new_resource) { double("new resource") }
@@ -27,7 +27,7 @@ describe Chef::Provider::RemoteFile::Fetcher do
   describe "when passed an http url" do
     let(:uri) { double("uri", :scheme => "http" ) }
     before do
-      Chef::Provider::RemoteFile::HTTP.should_receive(:new).and_return(fetcher_instance)
+      Seth::Provider::RemoteFile::HTTP.should_receive(:new).and_return(fetcher_instance)
     end
     it "returns an http fetcher" do
       described_class.for_resource(uri, new_resource, current_resource).should == fetcher_instance
@@ -37,7 +37,7 @@ describe Chef::Provider::RemoteFile::Fetcher do
   describe "when passed an https url" do
     let(:uri) { double("uri", :scheme => "https" ) }
     before do
-      Chef::Provider::RemoteFile::HTTP.should_receive(:new).and_return(fetcher_instance)
+      Seth::Provider::RemoteFile::HTTP.should_receive(:new).and_return(fetcher_instance)
     end
     it "returns an http fetcher" do
       described_class.for_resource(uri, new_resource, current_resource).should == fetcher_instance
@@ -47,7 +47,7 @@ describe Chef::Provider::RemoteFile::Fetcher do
   describe "when passed an ftp url" do
     let(:uri) { double("uri", :scheme => "ftp" ) }
     before do
-      Chef::Provider::RemoteFile::FTP.should_receive(:new).and_return(fetcher_instance)
+      Seth::Provider::RemoteFile::FTP.should_receive(:new).and_return(fetcher_instance)
     end
     it "returns an ftp fetcher" do
       described_class.for_resource(uri, new_resource, current_resource).should == fetcher_instance
@@ -57,7 +57,7 @@ describe Chef::Provider::RemoteFile::Fetcher do
   describe "when passed a file url" do
     let(:uri) { double("uri", :scheme => "file" ) }
     before do
-      Chef::Provider::RemoteFile::LocalFile.should_receive(:new).and_return(fetcher_instance)
+      Seth::Provider::RemoteFile::LocalFile.should_receive(:new).and_return(fetcher_instance)
     end
     it "returns a localfile fetcher" do
       described_class.for_resource(uri, new_resource, current_resource).should == fetcher_instance

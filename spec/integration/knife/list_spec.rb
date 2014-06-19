@@ -17,7 +17,7 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'chef/knife/list'
+require 'seth/knife/list'
 
 describe 'knife list' do
   extend IntegrationSupport
@@ -25,7 +25,7 @@ describe 'knife list' do
 
   include_context "default config options"
 
-  when_the_chef_server "is empty" do
+  when_the_seth_server "is empty" do
     it "knife list / returns all top level directories" do
       knife('list /').should_succeed <<EOM
 /clients
@@ -50,8 +50,8 @@ roles
 users
 
 /clients:
-chef-validator.json
-chef-webui.json
+seth-validator.json
+seth-webui.json
 
 /cookbooks:
 
@@ -70,7 +70,7 @@ EOM
     end
   end
 
-  when_the_chef_server "has plenty of stuff in it" do
+  when_the_seth_server "has plenty of stuff in it" do
     client 'client1', {}
     client 'client2', {}
     cookbook 'cookbook1', '1.0.0', { 'metadata.rb' => '' }
@@ -110,8 +110,8 @@ roles
 users
 
 /clients:
-chef-validator.json
-chef-webui.json
+seth-validator.json
+seth-webui.json
 client1.json
 client2.json
 
@@ -164,8 +164,8 @@ EOM
     it "knife list -R --flat / returns everything" do
       knife('list -R --flat /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/client1.json
 /clients/client2.json
 /cookbooks
@@ -202,8 +202,8 @@ EOM
     it "knife list -Rfp / returns everything" do
       knife('list -Rfp /').should_succeed <<EOM
 /clients/
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/client1.json
 /clients/client2.json
 /cookbooks/
@@ -266,8 +266,8 @@ EOM
 
     it "knife list /**.json returns all json files" do
       knife('list /**.json').should_succeed <<EOM
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/client1.json
 /clients/client2.json
 /data_bags/bag1/item1.json
@@ -322,8 +322,8 @@ EOM
           it "knife list -Rfp returns everything" do
             knife('list -Rfp').should_succeed <<EOM
 clients/
-clients/chef-validator.json
-clients/chef-webui.json
+clients/seth-validator.json
+clients/seth-webui.json
 clients/client1.json
 clients/client2.json
 cookbooks/
@@ -367,8 +367,8 @@ EOM
           it "knife list -Rfp / returns everything" do
             knife('list -Rfp /').should_succeed <<EOM
 /clients/
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/client1.json
 /clients/client2.json
 ./
@@ -405,8 +405,8 @@ EOM
           it "knife list -Rfp .. returns everything" do
             knife('list -Rfp ..').should_succeed <<EOM
 /clients/
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/client1.json
 /clients/client2.json
 ./
@@ -469,7 +469,7 @@ EOM
         end
       end
 
-      when_the_repository 'has a cookbooks directory and a symlinked cookbooks directory', :pending => (Chef::Platform.windows?) do
+      when_the_repository 'has a cookbooks directory and a symlinked cookbooks directory', :pending => (Seth::Platform.windows?) do
         directory 'cookbooks'
         symlink 'symlinked', 'cookbooks'
 
@@ -504,7 +504,7 @@ EOM
         end
       end
 
-      when_the_repository 'has a real_cookbooks directory and a cookbooks symlink to it', :pending => (Chef::Platform.windows?) do
+      when_the_repository 'has a real_cookbooks directory and a cookbooks symlink to it', :pending => (Seth::Platform.windows?) do
         directory 'real_cookbooks'
         symlink 'cookbooks', 'real_cookbooks'
 

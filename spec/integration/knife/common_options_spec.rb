@@ -16,7 +16,7 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'chef/knife/raw'
+require 'seth/knife/raw'
 
 describe 'knife common options' do
   extend IntegrationSupport
@@ -26,36 +26,36 @@ describe 'knife common options' do
     file 'nodes/x.json', {}
 
     before(:each) do
-      if ChefZero::RSpec.server
-        ChefZero::RSpec.server.stop
-        ChefZero::RSpec.server = nil
+      if SethZero::RSpec.server
+        SethZero::RSpec.server.stop
+        SethZero::RSpec.server = nil
       end
     end
 
-    context 'When chef_zero.enabled is true' do
+    context 'When seth_zero.enabled is true' do
       before(:each) do
-        Chef::Config.chef_zero.enabled = true
+        Seth::Config.seth_zero.enabled = true
       end
 
       it 'knife raw /nodes/x should retrieve the node' do
         knife('raw /nodes/x').should_succeed /"name": "x"/
       end
 
-      context 'And chef_zero.port is 9999' do
-        before(:each) { Chef::Config.chef_zero.port = 9999 }
+      context 'And seth_zero.port is 9999' do
+        before(:each) { Seth::Config.seth_zero.port = 9999 }
 
         it 'knife raw /nodes/x should retrieve the node' do
           knife('raw /nodes/x').should_succeed /"name": "x"/
-          Chef::Config.chef_server_url.should == 'http://localhost:9999'
+          Seth::Config.seth_server_url.should == 'http://localhost:9999'
         end
       end
 
-      context 'And chef_zero.host is 0.0.0.0' do
-        before(:each) { Chef::Config.chef_zero.host = '0.0.0.0' }
+      context 'And seth_zero.host is 0.0.0.0' do
+        before(:each) { Seth::Config.seth_zero.host = '0.0.0.0' }
  
         it 'knife raw /nodes/x should retrieve the role' do
           knife('raw /nodes/x').should_succeed /"name": "x"/
-          Chef::Config.chef_server_url.should == 'http://0.0.0.0:8889'
+          Seth::Config.seth_server_url.should == 'http://0.0.0.0:8889'
         end
       end
 
@@ -104,9 +104,9 @@ EOM
       knife('raw --local-mode /nodes/x').should_succeed /"name": "x"/
     end
 
-    it 'knife raw -z --chef-zero-port=9999 /nodes/x retrieves the node' do
-      knife('raw -z --chef-zero-port=9999 /nodes/x').should_succeed /"name": "x"/
-      Chef::Config.chef_server_url.should == 'http://localhost:9999'
+    it 'knife raw -z --seth-zero-port=9999 /nodes/x retrieves the node' do
+      knife('raw -z --seth-zero-port=9999 /nodes/x').should_succeed /"name": "x"/
+      Seth::Config.seth_server_url.should == 'http://localhost:9999'
     end
   end
 end

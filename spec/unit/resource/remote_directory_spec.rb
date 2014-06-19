@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::RemoteDirectory do
+describe Seth::Resource::RemoteDirectory do
 
   before(:each) do
-    @resource = Chef::Resource::RemoteDirectory.new("/etc/dunk")
+    @resource = Seth::Resource::RemoteDirectory.new("/etc/dunk")
   end
 
-  it "should create a new Chef::Resource::RemoteDirectory" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::RemoteDirectory)
+  it "should create a new Seth::Resource::RemoteDirectory" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::RemoteDirectory)
   end
 
   it "should set the path to the first argument to new" do

@@ -18,42 +18,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/config'
-require 'chef/mixin/params_validate'
-require 'chef/mixin/path_sanity'
-require 'chef/log'
-require 'chef/rest'
-require 'chef/api_client'
-require 'chef/api_client/registration'
-require 'chef/platform/query_helpers'
-require 'chef/node'
-require 'chef/role'
-require 'chef/file_cache'
-require 'chef/run_context'
-require 'chef/runner'
-require 'chef/run_status'
-require 'chef/cookbook/cookbook_collection'
-require 'chef/cookbook/file_vendor'
-require 'chef/cookbook/file_system_file_vendor'
-require 'chef/cookbook/remote_file_vendor'
-require 'chef/event_dispatch/dispatcher'
-require 'chef/formatters/base'
-require 'chef/formatters/doc'
-require 'chef/formatters/minimal'
-require 'chef/version'
-require 'chef/resource_reporter'
-require 'chef/run_lock'
-require 'chef/policy_builder'
-require 'chef/request_id'
+require 'seth/config'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/path_sanity'
+require 'seth/log'
+require 'seth/rest'
+require 'seth/api_client'
+require 'seth/api_client/registration'
+require 'seth/platform/query_helpers'
+require 'seth/node'
+require 'seth/role'
+require 'seth/file_cache'
+require 'seth/run_context'
+require 'seth/runner'
+require 'seth/run_status'
+require 'seth/cookbook/cookbook_collection'
+require 'seth/cookbook/file_vendor'
+require 'seth/cookbook/file_system_file_vendor'
+require 'seth/cookbook/remote_file_vendor'
+require 'seth/event_dispatch/dispatcher'
+require 'seth/formatters/base'
+require 'seth/formatters/doc'
+require 'seth/formatters/minimal'
+require 'seth/version'
+require 'seth/resource_reporter'
+require 'seth/run_lock'
+require 'seth/policy_builder'
+require 'seth/request_id'
 require 'ohai'
 require 'rbconfig'
 
-class Chef
-  # == Chef::Client
-  # The main object in a Chef run. Preps a Chef::Node and Chef::RunContext,
+class Seth
+  # == Seth::Client
+  # The main object in a Seth run. Preps a Chef::Node and Chef::RunContext,
   # syncs cookbooks if necessary, and triggers convergence.
   class Client
-    include Chef::Mixin::PathSanity
+    include Seth::Mixin::PathSanity
 
     # IO stream that will be used as 'STDOUT' for formatters. Formatters are
     # configured during `initialize`, so this provides a convenience for
@@ -90,27 +90,27 @@ class Chef
     end
 
     # Add a notification for the 'client run started' event. The notification
-    # is provided as a block. The current Chef::RunStatus object will be passed
+    # is provided as a block. The current Seth::RunStatus object will be passed
     # to the notification_block when the event is triggered.
     def self.when_run_starts(&notification_block)
       run_start_notifications << notification_block
     end
 
     # Add a notification for the 'client run success' event. The notification
-    # is provided as a block. The current Chef::RunStatus object will be passed
+    # is provided as a block. The current Seth::RunStatus object will be passed
     # to the notification_block when the event is triggered.
     def self.when_run_completes_successfully(&notification_block)
       run_completed_successfully_notifications << notification_block
     end
 
     # Add a notification for the 'client run failed' event. The notification
-    # is provided as a block. The current Chef::RunStatus is passed to the
+    # is provided as a block. The current Seth::RunStatus is passed to the
     # notification_block when the event is triggered.
     def self.when_run_fails(&notification_block)
       run_failed_notifications << notification_block
     end
 
-    # Callback to fire notifications that the Chef run is starting
+    # Callback to fire notifications that the Seth run is starting
     def run_started
       self.class.run_start_notifications.each do |notification|
         notification.call(run_status)
@@ -126,7 +126,7 @@ class Chef
       end
     end
 
-    # Callback to fire notifications that the Chef run failed
+    # Callback to fire notifications that the Seth run failed
     def run_failed
       failure_handlers = self.class.run_failed_notifications
       failure_handlers.each do |notification|
@@ -143,7 +143,7 @@ class Chef
     attr_reader :run_status
     attr_reader :events
 
-    # Creates a new Chef::Client.
+    # Creates a new Seth::Client.
     def initialize(json_attribs=nil, args={})
       @json_attribs = json_attribs || {}
       @node = nil
@@ -152,7 +152,7 @@ class Chef
       @ohai = Ohai::System.new
 
       event_handlers = configure_formatters
-      event_handlers += Array(Chef::Config[:event_handlers])
+      event_handlers += Array(Seth::Config[:event_handlers])
 
       @events = EventDispatch::Dispatcher.new(*event_handlers)
       @override_runlist = args.delete(:override_runlist)
@@ -166,32 +166,32 @@ class Chef
     def configure_formatters
       formatters_for_run.map do |formatter_name, output_path|
         if output_path.nil?
-          Chef::Formatters.new(formatter_name, STDOUT_FD, STDERR_FD)
+          Seth::Formatters.new(formatter_name, STDOUT_FD, STDERR_FD)
         else
           io = File.open(output_path, "a+")
           io.sync = true
-          Chef::Formatters.new(formatter_name, io, io)
+          Seth::Formatters.new(formatter_name, io, io)
         end
       end
     end
 
     def formatters_for_run
-      if Chef::Config.formatters.empty?
+      if Seth::Config.formatters.empty?
         [default_formatter]
       else
-        Chef::Config.formatters
+        Seth::Config.formatters
       end
     end
 
     def default_formatter
-      if (STDOUT.tty? && !Chef::Config[:force_logger]) || Chef::Config[:force_formatter]
+      if (STDOUT.tty? && !Seth::Config[:force_logger]) || Chef::Config[:force_formatter]
         [:doc]
       else
         [:null]
       end
     end
 
-    # Do a full run for this Chef::Client.  Calls:
+    # Do a full run for this Seth::Client.  Calls:
     # * do_run
     #
     # This provides a wrapper around #do_run allowing the
@@ -202,26 +202,26 @@ class Chef
       # win32-process gem exposes some form of :fork for Process
       # class. So we are seperately ensuring that the platform we're
       # running on is not windows before forking.
-      if(Chef::Config[:client_fork] && Process.respond_to?(:fork) && !Chef::Platform.windows?)
-        Chef::Log.info "Forking chef instance to converge..."
+      if(Seth::Config[:client_fork] && Process.respond_to?(:fork) && !Chef::Platform.windows?)
+        Seth::Log.info "Forking seth instance to converge..."
         pid = fork do
           [:INT, :TERM].each {|s| trap(s, "EXIT") }
-          client_solo = Chef::Config[:solo] ? "chef-solo" : "chef-client"
+          client_solo = Seth::Config[:solo] ? "seth-solo" : "chef-client"
           $0 = "#{client_solo} worker: ppid=#{Process.ppid};start=#{Time.new.strftime("%R:%S")};"
           begin
-            Chef::Log.debug "Forked instance now converging"
+            Seth::Log.debug "Forked instance now converging"
             do_run
           rescue Exception => e
-            Chef::Log.error(e.to_s)
+            Seth::Log.error(e.to_s)
             exit 1
           else
             exit 0
           end
         end
-        Chef::Log.debug "Fork successful. Waiting for new chef pid: #{pid}"
+        Seth::Log.debug "Fork successful. Waiting for new seth pid: #{pid}"
         result = Process.waitpid2(pid)
         handle_child_exit(result)
-        Chef::Log.debug "Forked instance successfully reaped (pid: #{pid})"
+        Seth::Log.debug "Forked instance successfully reaped (pid: #{pid})"
         true
       else
         do_run
@@ -232,32 +232,32 @@ class Chef
       status = pid_and_status[1]
       return true if status.success?
       message = if status.signaled?
-        "Chef run process terminated by signal #{status.termsig} (#{Signal.list.invert[status.termsig]})"
+        "Seth run process terminated by signal #{status.termsig} (#{Signal.list.invert[status.termsig]})"
       else
-        "Chef run process exited unsuccessfully (exit code #{status.exitstatus})"
+        "Seth run process exited unsuccessfully (exit code #{status.exitstatus})"
       end
       raise Exceptions::ChildConvergeError, message
     end
 
-    # Instantiates a Chef::Node object, possibly loading the node's prior state
-    # when using chef-client. Delegates to policy_builder
+    # Instantiates a Seth::Node object, possibly loading the node's prior state
+    # when using seth-client. Delegates to policy_builder
     #
     #
     # === Returns
-    # Chef::Node:: The node object for this chef run
+    # Seth::Node:: The node object for this seth run
     def load_node
       policy_builder.load_node
       @node = policy_builder.node
     end
 
-    # Mutates the `node` object to prepare it for the chef run. Delegates to
+    # Mutates the `node` object to prepare it for the seth run. Delegates to
     # policy_builder
     #
     # === Returns
-    # Chef::Node:: The updated node object
+    # Seth::Node:: The updated node object
     def build_node
       policy_builder.build_node
-      @run_status = Chef::RunStatus.new(node, events)
+      @run_status = Seth::RunStatus.new(node, events)
       node
     end
 
@@ -273,17 +273,17 @@ class Chef
     end
 
     def policy_builder
-      @policy_builder ||= Chef::PolicyBuilder.strategy.new(node_name, ohai.data, json_attribs, @override_runlist, events)
+      @policy_builder ||= Seth::PolicyBuilder.strategy.new(node_name, ohai.data, json_attribs, @override_runlist, events)
     end
 
 
     def save_updated_node
-      if Chef::Config[:solo]
+      if Seth::Config[:solo]
         # nothing to do
       elsif policy_builder.temporary_policy?
-        Chef::Log.warn("Skipping final node save because override_runlist was given")
+        Seth::Log.warn("Skipping final node save because override_runlist was given")
       else
-        Chef::Log.debug("Saving the current state of node #{node_name}")
+        Seth::Log.debug("Saving the current state of node #{node_name}")
         @node.save
       end
     end
@@ -293,15 +293,15 @@ class Chef
     end
 
     def node_name
-      name = Chef::Config[:node_name] || ohai[:fqdn] || ohai[:machinename] || ohai[:hostname]
-      Chef::Config[:node_name] = name
+      name = Seth::Config[:node_name] || ohai[:fqdn] || ohai[:machinename] || ohai[:hostname]
+      Seth::Config[:node_name] = name
 
-      raise Chef::Exceptions::CannotDetermineNodeName unless name
+      raise Seth::Exceptions::CannotDetermineNodeName unless name
 
       # node names > 90 bytes only work with authentication protocol >= 1.1
       # see discussion in config.rb.
       if name.bytesize > 90
-        Chef::Config[:authentication_protocol_version] = "1.1"
+        Seth::Config[:authentication_protocol_version] = "1.1"
       end
 
       name
@@ -309,23 +309,23 @@ class Chef
 
     #
     # === Returns
-    # rest<Chef::REST>:: returns Chef::REST connection object
-    def register(client_name=node_name, config=Chef::Config)
+    # rest<Seth::REST>:: returns Chef::REST connection object
+    def register(client_name=node_name, config=Seth::Config)
       if !config[:client_key]
         @events.skipping_registration(client_name, config)
-        Chef::Log.debug("Client key is unspecified - skipping registration")
+        Seth::Log.debug("Client key is unspecified - skipping registration")
       elsif File.exists?(config[:client_key])
         @events.skipping_registration(client_name, config)
-        Chef::Log.debug("Client key #{config[:client_key]} is present - skipping registration")
+        Seth::Log.debug("Client key #{config[:client_key]} is present - skipping registration")
       else
         @events.registration_start(node_name, config)
-        Chef::Log.info("Client key #{config[:client_key]} is not present - registering")
-        Chef::ApiClient::Registration.new(node_name, config[:client_key]).run
+        Seth::Log.info("Client key #{config[:client_key]} is not present - registering")
+        Seth::ApiClient::Registration.new(node_name, config[:client_key]).run
         @events.registration_completed
       end
       # We now have the client key, and should use it from now on.
-      @rest = Chef::REST.new(config[:chef_server_url], client_name, config[:client_key])
-      @resource_reporter = Chef::ResourceReporter.new(@rest)
+      @rest = Seth::REST.new(config[:seth_server_url], client_name, config[:client_key])
+      @resource_reporter = Seth::ResourceReporter.new(@rest)
       @events.register(@resource_reporter)
     rescue Exception => e
       # TODO: munge exception so a semantic failure message can be given to the
@@ -340,8 +340,8 @@ class Chef
     # true:: Always returns true
     def converge(run_context)
       @events.converge_start(run_context)
-      Chef::Log.debug("Converging node #{node_name}")
-      @runner = Chef::Runner.new(run_context)
+      Seth::Log.debug("Converging node #{node_name}")
+      @runner = Seth::Runner.new(run_context)
       runner.converge
       @events.converge_complete
       true
@@ -354,7 +354,7 @@ class Chef
     # Expands the run list. Delegates to the policy_builder.
     #
     # Normally this does not need to be called from here, it will be called by
-    # build_node. This is provided so external users (like the chefspec
+    # build_node. This is provided so external users (like the sethspec
     # project) can inject custom behavior into the run process.
     #
     # === Returns
@@ -365,27 +365,27 @@ class Chef
 
 
     def do_windows_admin_check
-      if Chef::Platform.windows?
-        Chef::Log.debug("Checking for administrator privileges....")
+      if Seth::Platform.windows?
+        Seth::Log.debug("Checking for administrator privileges....")
 
         if !has_admin_privileges?
-          message = "chef-client doesn't have administrator privileges on node #{node_name}."
-          if Chef::Config[:fatal_windows_admin_check]
-            Chef::Log.fatal(message)
-            Chef::Log.fatal("fatal_windows_admin_check is set to TRUE.")
-            raise Chef::Exceptions::WindowsNotAdmin, message
+          message = "seth-client doesn't have administrator privileges on node #{node_name}."
+          if Seth::Config[:fatal_windows_admin_check]
+            Seth::Log.fatal(message)
+            Seth::Log.fatal("fatal_windows_admin_check is set to TRUE.")
+            raise Seth::Exceptions::WindowsNotAdmin, message
           else
-            Chef::Log.warn("#{message} This might cause unexpected resource failures.")
+            Seth::Log.warn("#{message} This might cause unexpected resource failures.")
           end
         else
-          Chef::Log.debug("chef-client has administrator privileges on node #{node_name}.")
+          Seth::Log.debug("seth-client has administrator privileges on node #{node_name}.")
         end
       end
     end
 
     private
 
-    # Do a full run for this Chef::Client.  Calls:
+    # Do a full run for this Seth::Client.  Calls:
     #
     #  * run_ohai - Collect information about the system
     #  * build_node - Get the last known state, merge with local changes
@@ -396,7 +396,7 @@ class Chef
     # === Returns
     # true:: Always returns true.
     def do_run
-      runlock = RunLock.new(Chef::Config.lockfile)
+      runlock = RunLock.new(Seth::Config.lockfile)
       runlock.acquire
       # don't add code that may fail before entering this section to be sure to release lock
       begin
@@ -404,16 +404,16 @@ class Chef
 
         check_ssl_config
 
-        request_id = Chef::RequestID.instance.request_id
+        request_id = Seth::RequestID.instance.request_id
         run_context = nil
-        @events.run_start(Chef::VERSION)
-        Chef::Log.info("*** Chef #{Chef::VERSION} ***")
-        Chef::Log.info "Chef-client pid: #{Process.pid}"
-        Chef::Log.debug("Chef-client request_id: #{request_id}")
+        @events.run_start(Seth::VERSION)
+        Seth::Log.info("*** Chef #{Chef::VERSION} ***")
+        Seth::Log.info "Chef-client pid: #{Process.pid}"
+        Seth::Log.debug("Chef-client request_id: #{request_id}")
         enforce_path_sanity
         run_ohai
         @events.ohai_completed(node)
-        register unless Chef::Config[:solo]
+        register unless Seth::Config[:solo]
 
         load_node
 
@@ -421,7 +421,7 @@ class Chef
 
         run_status.run_id = request_id
         run_status.start_clock
-        Chef::Log.info("Starting Chef Run for #{node.name}")
+        Seth::Log.info("Starting Chef Run for #{node.name}")
         run_started
 
         do_windows_admin_check
@@ -433,24 +433,24 @@ class Chef
         save_updated_node
 
         run_status.stop_clock
-        Chef::Log.info("Chef Run complete in #{run_status.elapsed_time} seconds")
+        Seth::Log.info("Chef Run complete in #{run_status.elapsed_time} seconds")
         run_completed_successfully
         @events.run_completed(node)
         true
       rescue Exception => e
         # CHEF-3336: Send the error first in case something goes wrong below and we don't know why
-        Chef::Log.debug("Re-raising exception: #{e.class} - #{e.message}\n#{e.backtrace.join("\n  ")}")
+        Seth::Log.debug("Re-raising exception: #{e.class} - #{e.message}\n#{e.backtrace.join("\n  ")}")
         # If we failed really early, we may not have a run_status yet. Too early for these to be of much use.
         if run_status
           run_status.stop_clock
           run_status.exception = e
           run_failed
         end
-        Chef::Application.debug_stacktrace(e)
+        Seth::Application.debug_stacktrace(e)
         @events.run_failed(e)
         raise
       ensure
-        Chef::RequestID.instance.reset_request_id
+        Seth::RequestID.instance.reset_request_id
         request_id = nil
         @run_status = nil
         run_context = nil
@@ -469,36 +469,36 @@ class Chef
     end
 
     def assert_cookbook_path_not_empty(run_context)
-      if Chef::Config[:solo]
+      if Seth::Config[:solo]
         # Check for cookbooks in the path given
-        # Chef::Config[:cookbook_path] can be a string or an array
+        # Seth::Config[:cookbook_path] can be a string or an array
         # if it's an array, go through it and check each one, raise error at the last one if no files are found
-        cookbook_paths = Array(Chef::Config[:cookbook_path])
-        Chef::Log.debug "Loading from cookbook_path: #{cookbook_paths.map { |path| File.expand_path(path) }.join(', ')}"
+        cookbook_paths = Array(Seth::Config[:cookbook_path])
+        Seth::Log.debug "Loading from cookbook_path: #{cookbook_paths.map { |path| File.expand_path(path) }.join(', ')}"
         if cookbook_paths.all? {|path| empty_directory?(path) }
-          msg = "None of the cookbook paths set in Chef::Config[:cookbook_path], #{cookbook_paths.inspect}, contain any cookbooks"
-          Chef::Log.fatal(msg)
-          raise Chef::Exceptions::CookbookNotFound, msg
+          msg = "None of the cookbook paths set in Seth::Config[:cookbook_path], #{cookbook_paths.inspect}, contain any cookbooks"
+          Seth::Log.fatal(msg)
+          raise Seth::Exceptions::CookbookNotFound, msg
         end
       else
-        Chef::Log.warn("Node #{node_name} has an empty run list.") if run_context.node.run_list.empty?
+        Seth::Log.warn("Node #{node_name} has an empty run list.") if run_context.node.run_list.empty?
       end
 
     end
 
     def has_admin_privileges?
-      require 'chef/win32/security'
+      require 'seth/win32/security'
 
-      Chef::ReservedNames::Win32::Security.has_admin_privileges?
+      Seth::ReservedNames::Win32::Security.has_admin_privileges?
     end
 
     def check_ssl_config
-      if Chef::Config[:ssl_verify_mode] == :verify_none and !Chef::Config[:verify_api_cert]
-        Chef::Log.warn(<<-WARN)
+      if Seth::Config[:ssl_verify_mode] == :verify_none and !Chef::Config[:verify_api_cert]
+        Seth::Log.warn(<<-WARN)
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 SSL validation of HTTPS requests is disabled. HTTPS connections are still
-encrypted, but chef is not able to detect forged replies or man in the middle
+encrypted, but seth is not able to detect forged replies or man in the middle
 attacks.
 
 To fix this issue add an entry like this to your configuration file:
@@ -507,7 +507,7 @@ To fix this issue add an entry like this to your configuration file:
   # Verify all HTTPS connections (recommended)
   ssl_verify_mode :verify_peer
 
-  # OR, Verify only connections to chef-server
+  # OR, Verify only connections to seth-server
   verify_api_cert true
 ```
 
@@ -515,7 +515,7 @@ To check your SSL configuration, or troubleshoot errors, you can use the
 `knife ssl check` command like so:
 
 ```
-  knife ssl check -c #{Chef::Config.config_file}
+  knife ssl check -c #{Seth::Config.config_file}
 ```
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -527,6 +527,6 @@ WARN
 end
 
 # HACK cannot load this first, but it must be loaded.
-require 'chef/cookbook_loader'
-require 'chef/cookbook_version'
-require 'chef/cookbook/synchronizer'
+require 'seth/cookbook_loader'
+require 'seth/cookbook_version'
+require 'seth/cookbook/synchronizer'

@@ -20,10 +20,10 @@ require 'base64'
 require 'digest/sha2'
 require 'openssl'
 require 'yajl'
-require 'chef/encrypted_data_bag_item'
-require 'chef/encrypted_data_bag_item/unsupported_encrypted_data_bag_item_format'
+require 'seth/encrypted_data_bag_item'
+require 'seth/encrypted_data_bag_item/unsupported_encrypted_data_bag_item_format'
 
-class Chef::EncryptedDataBagItem
+class Seth::EncryptedDataBagItem
 
   # Implementation class for converting plaintext data bag item values to an
   # encrypted value, including any necessary wrappers and metadata.
@@ -32,9 +32,9 @@ class Chef::EncryptedDataBagItem
     # "factory" method that creates an encryptor object with the proper class
     # for the desired encrypted data bag format version.
     #
-    # +Chef::Config[:data_bag_encrypt_version]+ determines which version is used.
+    # +Seth::Config[:data_bag_encrypt_version]+ determines which version is used.
     def self.new(value, secret, iv=nil)
-      format_version = Chef::Config[:data_bag_encrypt_version]
+      format_version = Seth::Config[:data_bag_encrypt_version]
       case format_version
       when 1
         Version1Encryptor.new(value, secret, iv)

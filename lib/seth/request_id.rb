@@ -15,10 +15,10 @@
 # limitations under the License.
 #
 
-require 'chef/monkey_patches/securerandom'
+require 'seth/monkey_patches/securerandom'
 require 'singleton'
 
-class Chef
+class Seth
   class RequestID
     include Singleton
 

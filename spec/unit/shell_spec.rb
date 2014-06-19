@@ -56,61 +56,61 @@ describe Shell do
   describe "configuring IRB" do
     it "configures irb history" do
       Shell.configure_irb
-      Shell.irb_conf[:HISTORY_FILE].should == "~/.chef/chef_shell_history"
+      Shell.irb_conf[:HISTORY_FILE].should == "~/.seth/chef_shell_history"
       Shell.irb_conf[:SAVE_HISTORY].should == 1000
     end
 
-    it "has a prompt like ``chef > '' in the default context" do
+    it "has a prompt like ``seth > '' in the default context" do
       Shell.configure_irb
 
       conf = OpenStruct.new
       conf.main = Object.new
       conf.main.instance_eval(&ObjectTestHarness)
       Shell.irb_conf[:IRB_RC].call(conf)
-      conf.prompt_c.should      == "chef > "
+      conf.prompt_c.should      == "seth > "
       conf.return_format.should == " => %s \n"
-      conf.prompt_i.should      == "chef > "
-      conf.prompt_n.should      == "chef ?> "
-      conf.prompt_s.should      == "chef%l> "
+      conf.prompt_i.should      == "seth > "
+      conf.prompt_n.should      == "seth ?> "
+      conf.prompt_s.should      == "seth%l> "
       conf.use_tracer.should    == false
     end
 
-    it "has a prompt like ``chef:recipe > '' in recipe context" do
+    it "has a prompt like ``seth:recipe > '' in recipe context" do
       Shell.configure_irb
 
       conf = OpenStruct.new
-      events = Chef::EventDispatch::Dispatcher.new
-      conf.main = Chef::Recipe.new(nil,nil,Chef::RunContext.new(Chef::Node.new, {}, events))
+      events = Seth::EventDispatch::Dispatcher.new
+      conf.main = Seth::Recipe.new(nil,nil,Chef::RunContext.new(Chef::Node.new, {}, events))
       Shell.irb_conf[:IRB_RC].call(conf)
-      conf.prompt_c.should      == "chef:recipe > "
-      conf.prompt_i.should      == "chef:recipe > "
-      conf.prompt_n.should      == "chef:recipe ?> "
-      conf.prompt_s.should      == "chef:recipe%l> "
+      conf.prompt_c.should      == "seth:recipe > "
+      conf.prompt_i.should      == "seth:recipe > "
+      conf.prompt_n.should      == "seth:recipe ?> "
+      conf.prompt_s.should      == "seth:recipe%l> "
     end
 
-    it "has a prompt like ``chef:attributes > '' in attributes/node context" do
+    it "has a prompt like ``seth:attributes > '' in attributes/node context" do
       Shell.configure_irb
 
       conf = OpenStruct.new
-      conf.main = Chef::Node.new
+      conf.main = Seth::Node.new
       Shell.irb_conf[:IRB_RC].call(conf)
-      conf.prompt_c.should      == "chef:attributes > "
-      conf.prompt_i.should      == "chef:attributes > "
-      conf.prompt_n.should      == "chef:attributes ?> "
-      conf.prompt_s.should      == "chef:attributes%l> "
+      conf.prompt_c.should      == "seth:attributes > "
+      conf.prompt_i.should      == "seth:attributes > "
+      conf.prompt_n.should      == "seth:attributes ?> "
+      conf.prompt_s.should      == "seth:attributes%l> "
     end
 
   end
 
-  describe "convenience macros for creating the chef object" do
+  describe "convenience macros for creating the seth object" do
 
     before do
-      @chef_object = Object.new
-      @chef_object.instance_eval(&ObjectTestHarness)
+      @seth_object = Object.new
+      @seth_object.instance_eval(&ObjectTestHarness)
     end
 
     it "creates help text for methods with descriptions" do
-      @chef_object.help_descriptions.should == [Shell::Extensions::Help.new("rspec_method", "rspecin'", nil)]
+      @seth_object.help_descriptions.should == [Shell::Extensions::Help.new("rspec_method", "rspecin'", nil)]
     end
 
     it "adds help text when a new method is described then defined" do
@@ -119,8 +119,8 @@ describe Shell do
         def baz
         end
       EVAL
-      @chef_object.instance_eval describe_define
-      @chef_object.help_descriptions.should == [Shell::Extensions::Help.new("rspec_method", "rspecin'"),
+      @seth_object.instance_eval describe_define
+      @seth_object.help_descriptions.should == [Shell::Extensions::Help.new("rspec_method", "rspecin'"),
                                                 Shell::Extensions::Help.new("baz", "foo2the Bar")]
     end
 
@@ -130,10 +130,10 @@ describe Shell do
         def baz
         end
       EVAL
-      @chef_object.instance_eval describe_define
+      @seth_object.instance_eval describe_define
       expected_help_text_fragments = [Shell::Extensions::Help.new("rspec_method", "rspecin'")]
       expected_help_text_fragments << Shell::Extensions::Help.new("baz.baz_obj_command", "something you can do with baz.baz_obj_command")
-      @chef_object.help_descriptions.should == expected_help_text_fragments
+      @seth_object.help_descriptions.should == expected_help_text_fragments
     end
 
     it "doesn't add previous subcommand help to commands defined afterward" do
@@ -146,14 +146,14 @@ describe Shell do
         end
 
       EVAL
-      @chef_object.instance_eval describe_define
-      @chef_object.help_descriptions.should have(2).descriptions
-      @chef_object.help_descriptions.select {|h| h.cmd == "super_monkey_time" }.should be_empty
+      @seth_object.instance_eval describe_define
+      @seth_object.help_descriptions.should have(2).descriptions
+      @seth_object.help_descriptions.select {|h| h.cmd == "super_monkey_time" }.should be_empty
     end
 
     it "creates a help banner with the command descriptions" do
-      @chef_object.help_banner.should match(/^\|\ Command[\s]+\|\ Description[\s]*$/)
-      @chef_object.help_banner.should match(/^\|\ rspec_method[\s]+\|\ rspecin\'[\s]*$/)
+      @seth_object.help_banner.should match(/^\|\ Command[\s]+\|\ Description[\s]*$/)
+      @seth_object.help_banner.should match(/^\|\ rspec_method[\s]+\|\ rspecin\'[\s]*$/)
     end
   end
 

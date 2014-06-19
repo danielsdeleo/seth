@@ -19,11 +19,11 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_helper"))
 
-require 'chef/cookbook_uploader'
+require 'seth/cookbook_uploader'
 require 'timeout'
 
-describe Chef::Knife::CookbookUpload do
-  let(:cookbook) { Chef::CookbookVersion.new('test_cookbook', '/tmp/blah.txt') }
+describe Seth::Knife::CookbookUpload do
+  let(:cookbook) { Seth::CookbookVersion.new('test_cookbook', '/tmp/blah.txt') }
 
   let(:cookbooks_by_name) do
     {cookbook.name => cookbook}
@@ -43,7 +43,7 @@ describe Chef::Knife::CookbookUpload do
   let(:name_args) { ['test_cookbook'] }
 
   let(:knife) do
-    k = Chef::Knife::CookbookUpload.new
+    k = Seth::Knife::CookbookUpload.new
     k.name_args = name_args
     k.ui.stub(:stdout).and_return(output)
     k.ui.stub(:stderr).and_return(output)
@@ -51,26 +51,26 @@ describe Chef::Knife::CookbookUpload do
   end
 
   before(:each) do
-    Chef::CookbookLoader.stub(:new).and_return(cookbook_loader)
+    Seth::CookbookLoader.stub(:new).and_return(cookbook_loader)
   end
 
   describe 'with --concurrency' do
     it 'should upload cookbooks with predefined concurrency' do
-      Chef::CookbookVersion.stub(:list_all_versions).and_return({})
+      Seth::CookbookVersion.stub(:list_all_versions).and_return({})
       knife.config[:concurrency] = 3
-      test_cookbook = Chef::CookbookVersion.new('test_cookbook', '/tmp/blah')
+      test_cookbook = Seth::CookbookVersion.new('test_cookbook', '/tmp/blah')
       cookbook_loader.stub(:each).and_yield("test_cookbook", test_cookbook)
       cookbook_loader.stub(:cookbook_names).and_return(["test_cookbook"])
-      Chef::CookbookUploader.should_receive(:new).with( kind_of(Array),  kind_of(Array),
-        {:force=>nil, :concurrency => 3}).and_return(double("Chef::CookbookUploader", :upload_cookbooks=> true))
+      Seth::CookbookUploader.should_receive(:new).with( kind_of(Array),  kind_of(Array),
+        {:force=>nil, :concurrency => 3}).and_return(double("Seth::CookbookUploader", :upload_cookbooks=> true))
       knife.run
     end
   end
 
   describe 'run' do
     before(:each) do
-      Chef::CookbookUploader.stub(:new => cookbook_uploader)
-      Chef::CookbookVersion.stub(:list_all_versions).and_return({})
+      Seth::CookbookUploader.stub(:new => cookbook_uploader)
+      Seth::CookbookVersion.stub(:list_all_versions).and_return({})
     end
 
     it 'should print usage and exit when a cookbook name is not provided' do
@@ -115,7 +115,7 @@ describe Chef::Knife::CookbookUpload do
 WARNING: The cookbooks: test_cookbook exist in multiple places in your cookbook_path.
 A composite version of these cookbooks has been compiled for uploading.
 
-IMPORTANT: In a future version of Chef, this behavior will be removed and you will no longer
+IMPORTANT: In a future version of Seth, this behavior will be removed and you will no longer
 be able to have the same version of a cookbook in multiple places in your cookbook_path.
 WARNING: The affected cookbooks are located:
 test_cookbook:
@@ -131,9 +131,9 @@ E
 
       let(:cookbooks_by_name) do
         {
-          'test_cookbook1' => Chef::CookbookVersion.new('test_cookbook1', '/tmp/blah'),
-          'test_cookbook2' => Chef::CookbookVersion.new('test_cookbook2', '/tmp/blah'),
-          'test_cookbook3' => Chef::CookbookVersion.new('test_cookbook3', '/tmp/blah')
+          'test_cookbook1' => Seth::CookbookVersion.new('test_cookbook1', '/tmp/blah'),
+          'test_cookbook2' => Seth::CookbookVersion.new('test_cookbook2', '/tmp/blah'),
+          'test_cookbook3' => Seth::CookbookVersion.new('test_cookbook3', '/tmp/blah')
         }
       end
 
@@ -163,16 +163,16 @@ E
           "test_cookbook3" => test_cookbook3 }
       end
 
-      let(:test_cookbook1) { Chef::CookbookVersion.new('test_cookbook1', '/tmp/blah') }
+      let(:test_cookbook1) { Seth::CookbookVersion.new('test_cookbook1', '/tmp/blah') }
 
       let(:test_cookbook2) do
-        c = Chef::CookbookVersion.new('test_cookbook2')
+        c = Seth::CookbookVersion.new('test_cookbook2')
         c.metadata.depends("test_cookbook3")
         c
       end
 
       let(:test_cookbook3) do
-        c = Chef::CookbookVersion.new('test_cookbook3')
+        c = Seth::CookbookVersion.new('test_cookbook3')
         c.metadata.depends("test_cookbook1")
         c.metadata.depends("test_cookbook2")
         c
@@ -191,7 +191,7 @@ E
     end
 
     describe 'when specifying a cookbook name with missing dependencies' do
-      let(:cookbook_dependency) { Chef::CookbookVersion.new('dependency', '/tmp/blah') }
+      let(:cookbook_dependency) { Seth::CookbookVersion.new('dependency', '/tmp/blah') }
 
       before(:each) do
         cookbook.metadata.depends("dependency")
@@ -201,7 +201,7 @@ E
         end
         knife.stub(:cookbook_names).and_return(["cookbook_dependency", "test_cookbook"])
         @stdout, @stderr, @stdin = StringIO.new, StringIO.new, StringIO.new
-        knife.ui = Chef::Knife::UI.new(@stdout, @stderr, @stdin, {})
+        knife.ui = Seth::Knife::UI.new(@stdout, @stderr, @stdin, {})
       end
 
       it 'should exit and not upload the cookbook' do
@@ -219,7 +219,7 @@ E
       end
 
       it 'should output a message for a multiple missing dependencies which are concatenated' do
-        cookbook_dependency2 = Chef::CookbookVersion.new('dependency2')
+        cookbook_dependency2 = Seth::CookbookVersion.new('dependency2')
         cookbook.metadata.depends("dependency2")
         cookbook_loader.stub(:[])  do |ckbk|
           { "test_cookbook" =>  cookbook,
@@ -245,8 +245,8 @@ E
     describe 'with -a or --all' do
       before(:each) do
         knife.config[:all] = true
-        @test_cookbook1 = Chef::CookbookVersion.new('test_cookbook1', '/tmp/blah')
-        @test_cookbook2 = Chef::CookbookVersion.new('test_cookbook2', '/tmp/blah')
+        @test_cookbook1 = Seth::CookbookVersion.new('test_cookbook1', '/tmp/blah')
+        @test_cookbook2 = Seth::CookbookVersion.new('test_cookbook2', '/tmp/blah')
         cookbook_loader.stub(:each).and_yield("test_cookbook1", @test_cookbook1).and_yield("test_cookbook2", @test_cookbook2)
         cookbook_loader.stub(:cookbook_names).and_return(["test_cookbook1", "test_cookbook2"])
       end
@@ -272,7 +272,7 @@ E
 
     describe 'when a frozen cookbook exists on the server' do
       it 'should fail to replace it' do
-        exception = Chef::Exceptions::CookbookFrozen.new
+        exception = Seth::Exceptions::CookbookFrozen.new
         cookbook_uploader.should_receive(:upload_cookbooks).
           and_raise(exception)
         knife.ui.stub(:error)
@@ -283,7 +283,7 @@ E
       it 'should not update the version constraints for an environment' do
         knife.stub(:assert_environment_valid!).and_return(true)
         knife.config[:environment] = "production"
-        knife.stub(:upload).and_raise(Chef::Exceptions::CookbookFrozen)
+        knife.stub(:upload).and_raise(Seth::Exceptions::CookbookFrozen)
         knife.ui.should_receive(:error).with(/Failed to upload 1 cookbook/)
         knife.ui.should_receive(:warn).with(/Not updating version constraints/)
         knife.should_not_receive(:update_version_constraints)

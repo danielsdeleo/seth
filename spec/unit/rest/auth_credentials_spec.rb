@@ -54,11 +54,11 @@ Y6S6MeZ69Rp89ma4ttMZ+kwi1+XyHqC/dlcVRW42Zl5Dc7BALRlJjQ==
   END_RSA_KEY
 
 
-describe Chef::REST::AuthCredentials do
+describe Seth::REST::AuthCredentials do
   before do
     @key_file_fixture = CHEF_SPEC_DATA + '/ssl/private_key.pem'
     @key = OpenSSL::PKey::RSA.new(IO.read(@key_file_fixture).strip)
-    @auth_credentials = Chef::REST::AuthCredentials.new("client-name", @key)
+    @auth_credentials = Seth::REST::AuthCredentials.new("client-name", @key)
   end
 
   it "has a client name" do
@@ -73,7 +73,7 @@ describe Chef::REST::AuthCredentials do
   describe "when loading the private key" do
     it "strips extra whitespace before checking the key" do
       key_file_fixture = CHEF_SPEC_DATA + '/ssl/private_key_with_whitespace.pem'
-      lambda {Chef::REST::AuthCredentials.new("client-name", @key_file_fixture)}.should_not raise_error
+      lambda {Seth::REST::AuthCredentials.new("client-name", @key_file_fixture)}.should_not raise_error
     end
   end
 
@@ -102,11 +102,11 @@ describe Chef::REST::AuthCredentials do
 
     describe "when configured for version 1.1 of the authn protocol" do
       before do
-        Chef::Config[:authentication_protocol_version] = "1.1"
+        Seth::Config[:authentication_protocol_version] = "1.1"
       end
 
       after do
-        Chef::Config[:authentication_protocol_version] = "1.0"
+        Seth::Config[:authentication_protocol_version] = "1.0"
       end
 
       it "generates the correct signature for version 1.1" do
@@ -125,21 +125,21 @@ describe Chef::REST::AuthCredentials do
   end
 end
 
-describe Chef::REST::RESTRequest do
+describe Seth::REST::RESTRequest do
   def new_request(method=nil)
     method ||= :POST
-    Chef::REST::RESTRequest.new(method, @url, @req_body, @headers)
+    Seth::REST::RESTRequest.new(method, @url, @req_body, @headers)
   end
 
   before do
-    @auth_credentials = Chef::REST::AuthCredentials.new("client-name", CHEF_SPEC_DATA + '/ssl/private_key.pem')
-    @url = URI.parse("http://chef.example.com:4000/?q=chef_is_awesome")
+    @auth_credentials = Seth::REST::AuthCredentials.new("client-name", CHEF_SPEC_DATA + '/ssl/private_key.pem')
+    @url = URI.parse("http://seth.example.com:4000/?q=chef_is_awesome")
     @req_body = '{"json_data":"as_a_string"}'
     @headers = { "Content-type" =>"application/json",
                  "Accept"=>"application/json",
-                 "Accept-Encoding" => Chef::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
-                 "Host" => "chef.example.com:4000" }
-    @request = Chef::REST::RESTRequest.new(:POST, @url, @req_body, @headers)
+                 "Accept-Encoding" => Seth::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
+                 "Host" => "seth.example.com:4000" }
+    @request = Seth::REST::RESTRequest.new(:POST, @url, @req_body, @headers)
   end
 
   it "stores the url it was created with" do
@@ -150,8 +150,8 @@ describe Chef::REST::RESTRequest do
     @request.method.should == :POST
   end
 
-  it "adds the chef version header" do
-    @request.headers.should == @headers.merge("X-Chef-Version" => ::Chef::VERSION)
+  it "adds the seth version header" do
+    @request.headers.should == @headers.merge("X-Seth-Version" => ::Chef::VERSION)
   end
 
   describe "configuring the HTTP request" do
@@ -159,32 +159,32 @@ describe Chef::REST::RESTRequest do
       @req_body = nil
       rest_req = new_request(:GET)
       rest_req.http_request.should be_a_kind_of(Net::HTTP::Get)
-      rest_req.http_request.path.should == "/?q=chef_is_awesome"
+      rest_req.http_request.path.should == "/?q=seth_is_awesome"
       rest_req.http_request.body.should be_nil
     end
 
     it "configures POST requests, including the body" do
       @request.http_request.should be_a_kind_of(Net::HTTP::Post)
-      @request.http_request.path.should == "/?q=chef_is_awesome"
+      @request.http_request.path.should == "/?q=seth_is_awesome"
       @request.http_request.body.should == @req_body
     end
 
     it "configures PUT requests, including the body" do
       rest_req = new_request(:PUT)
       rest_req.http_request.should be_a_kind_of(Net::HTTP::Put)
-      rest_req.http_request.path.should == "/?q=chef_is_awesome"
+      rest_req.http_request.path.should == "/?q=seth_is_awesome"
       rest_req.http_request.body.should == @req_body
     end
 
     it "configures DELETE requests" do
       rest_req = new_request(:DELETE)
       rest_req.http_request.should be_a_kind_of(Net::HTTP::Delete)
-      rest_req.http_request.path.should == "/?q=chef_is_awesome"
+      rest_req.http_request.path.should == "/?q=seth_is_awesome"
       rest_req.http_request.body.should be_nil
     end
 
     it "configures HTTP basic auth" do
-      @url = URI.parse("http://homie:theclown@chef.example.com:4000/?q=chef_is_awesome")
+      @url = URI.parse("http://homie:theclown@seth.example.com:4000/?q=chef_is_awesome")
       rest_req = new_request(:GET)
       rest_req.http_request.to_hash["authorization"].should == ["Basic aG9taWU6dGhlY2xvd24="]
     end
@@ -193,34 +193,34 @@ describe Chef::REST::RESTRequest do
   describe "configuring the HTTP client" do
     it "configures the HTTP client for the host and port" do
       http_client = new_request.http_client
-      http_client.address.should == "chef.example.com"
+      http_client.address.should == "seth.example.com"
       http_client.port.should == 4000
     end
 
     it "configures the HTTP client with the read timeout set in the config file" do
-      Chef::Config[:rest_timeout] = 9001
+      Seth::Config[:rest_timeout] = 9001
       new_request.http_client.read_timeout.should == 9001
     end
 
     describe "for proxy" do
       before do
-        Chef::Config[:http_proxy]  = "http://proxy.example.com:3128"
-        Chef::Config[:https_proxy] = "http://sproxy.example.com:3129"
-        Chef::Config[:http_proxy_user] = nil
-        Chef::Config[:http_proxy_pass] = nil
-        Chef::Config[:https_proxy_user] = nil
-        Chef::Config[:https_proxy_pass] = nil
-        Chef::Config[:no_proxy] = nil
+        Seth::Config[:http_proxy]  = "http://proxy.example.com:3128"
+        Seth::Config[:https_proxy] = "http://sproxy.example.com:3129"
+        Seth::Config[:http_proxy_user] = nil
+        Seth::Config[:http_proxy_pass] = nil
+        Seth::Config[:https_proxy_user] = nil
+        Seth::Config[:https_proxy_pass] = nil
+        Seth::Config[:no_proxy] = nil
       end
 
       after do
-        Chef::Config[:http_proxy]  = nil
-        Chef::Config[:https_proxy] = nil
-        Chef::Config[:http_proxy_user] = nil
-        Chef::Config[:http_proxy_pass] = nil
-        Chef::Config[:https_proxy_user] = nil
-        Chef::Config[:https_proxy_pass] = nil
-        Chef::Config[:no_proxy] = nil
+        Seth::Config[:http_proxy]  = nil
+        Seth::Config[:https_proxy] = nil
+        Seth::Config[:http_proxy_user] = nil
+        Seth::Config[:http_proxy_pass] = nil
+        Seth::Config[:https_proxy_user] = nil
+        Seth::Config[:https_proxy_pass] = nil
+        Seth::Config[:no_proxy] = nil
       end
 
       describe "with :no_proxy nil" do
@@ -246,7 +246,7 @@ describe Chef::REST::RESTRequest do
 
       describe "with :no_proxy set" do
         before do
-          Chef::Config[:no_proxy] = "10.*,*.example.com"
+          Seth::Config[:no_proxy] = "10.*,*.example.com"
         end
 
         it "does not configure the proxy address and port when using http scheme" do
@@ -271,13 +271,13 @@ describe Chef::REST::RESTRequest do
 
       describe "with :http_proxy_user and :http_proxy_pass set" do
         before do
-          Chef::Config[:http_proxy_user] = "homie"
-          Chef::Config[:http_proxy_pass] = "theclown"
+          Seth::Config[:http_proxy_user] = "homie"
+          Seth::Config[:http_proxy_pass] = "theclown"
         end
 
         after do
-          Chef::Config[:http_proxy_user] = nil
-          Chef::Config[:http_proxy_pass] = nil
+          Seth::Config[:http_proxy_user] = nil
+          Seth::Config[:http_proxy_pass] = nil
         end
 
         it "configures the proxy user and pass when using http scheme" do
@@ -298,13 +298,13 @@ describe Chef::REST::RESTRequest do
 
       describe "with :https_proxy_user and :https_proxy_pass set" do
         before do
-          Chef::Config[:https_proxy_user] = "homie"
-          Chef::Config[:https_proxy_pass] = "theclown"
+          Seth::Config[:https_proxy_user] = "homie"
+          Seth::Config[:https_proxy_pass] = "theclown"
         end
 
         after do
-          Chef::Config[:https_proxy_user] = nil
-          Chef::Config[:https_proxy_pass] = nil
+          Seth::Config[:https_proxy_user] = nil
+          Seth::Config[:https_proxy_pass] = nil
         end
 
         it "does not configure the proxy user and pass when using http scheme" do

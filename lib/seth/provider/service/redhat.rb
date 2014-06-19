@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/provider/service/init'
-require 'chef/mixin/shell_out'
+require 'seth/provider/service/init'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Redhat < Chef::Provider::Service::Init
-        include Chef::Mixin::ShellOut
+      class Redhat < Seth::Provider::Service::Init
+        include Seth::Mixin::ShellOut
 
         CHKCONFIG_ON = /\d:on/
         CHKCONFIG_MISSING = /No such/
@@ -41,12 +41,12 @@ class Chef
           requirements.assert(:all_actions) do |a|
             chkconfig_file = "/sbin/chkconfig"
             a.assertion { ::File.exists? chkconfig_file  }
-            a.failure_message Chef::Exceptions::Service, "#{chkconfig_file} does not exist!"
+            a.failure_message Seth::Exceptions::Service, "#{chkconfig_file} does not exist!"
           end
 
           requirements.assert(:start, :enable, :reload, :restart) do |a|
             a.assertion { !@service_missing }
-            a.failure_message Chef::Exceptions::Service, "#{@new_resource}: unable to locate the init.d script!"
+            a.failure_message Seth::Exceptions::Service, "#{@new_resource}: unable to locate the init.d script!"
             a.whyrun "Assuming service would be disabled. The init script is not presently installed."
           end
         end

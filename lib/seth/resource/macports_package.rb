@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
-    class MacportsPackage < Chef::Resource::Package
+    class MacportsPackage < Seth::Resource::Package
       def initialize(name, run_context=nil)
         super
         @resource_name = :macports_package
-        @provider = Chef::Provider::Package::Macports
+        @provider = Seth::Provider::Package::Macports
       end
     end
   end

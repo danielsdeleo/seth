@@ -18,13 +18,13 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::UserEdit do
+describe Seth::Knife::UserEdit do
   before(:each) do
     @stderr = StringIO.new
     @stdout = StringIO.new
 
-    Chef::Knife::UserEdit.load_deps
-    @knife = Chef::Knife::UserEdit.new
+    Seth::Knife::UserEdit.load_deps
+    @knife = Seth::Knife::UserEdit.new
     @knife.ui.stub(:stderr).and_return(@stderr)
     @knife.ui.stub(:stdout).and_return(@stdout)
     @knife.name_args = [ 'my_user' ]
@@ -33,7 +33,7 @@ describe Chef::Knife::UserEdit do
 
   it 'loads and edits the user' do
     data = { :name => "my_user" }
-    Chef::User.stub(:load).with("my_user").and_return(data)
+    Seth::User.stub(:load).with("my_user").and_return(data)
     @knife.should_receive(:edit_data).with(data).and_return(data)
     @knife.run
   end

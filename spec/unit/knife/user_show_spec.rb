@@ -18,16 +18,16 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::UserShow do
+describe Seth::Knife::UserShow do
   before(:each) do
-    Chef::Knife::UserShow.load_deps
-    @knife = Chef::Knife::UserShow.new
+    Seth::Knife::UserShow.load_deps
+    @knife = Seth::Knife::UserShow.new
     @knife.name_args = [ 'my_user' ]
     @user_mock = double('user_mock')
   end
 
   it 'loads and displays the user' do
-    Chef::User.should_receive(:load).with('my_user').and_return(@user_mock)
+    Seth::User.should_receive(:load).with('my_user').and_return(@user_mock)
     @knife.should_receive(:format_for_display).with(@user_mock)
     @knife.run
   end

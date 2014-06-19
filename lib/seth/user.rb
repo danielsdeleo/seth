@@ -15,18 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'chef/config'
-require 'chef/mixin/params_validate'
-require 'chef/mixin/from_file'
-require 'chef/mash'
-require 'chef/json_compat'
-require 'chef/search/query'
+require 'seth/config'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/from_file'
+require 'seth/mash'
+require 'seth/json_compat'
+require 'seth/search/query'
 
-class Chef
+class Seth
   class User
 
-    include Chef::Mixin::FromFile
-    include Chef::Mixin::ParamsValidate
+    include Seth::Mixin::FromFile
+    include Seth::Mixin::ParamsValidate
 
     def initialize
       @name = ''
@@ -77,22 +77,22 @@ class Chef
     end
 
     def destroy
-      Chef::REST.new(Chef::Config[:chef_server_url]).delete_rest("users/#{@name}")
+      Seth::REST.new(Chef::Config[:seth_server_url]).delete_rest("users/#{@name}")
     end
 
     def create
       payload = {:name => self.name, :admin => self.admin, :password => self.password }
       payload[:public_key] = public_key if public_key
-      new_user =Chef::REST.new(Chef::Config[:chef_server_url]).post_rest("users", payload)
-      Chef::User.from_hash(self.to_hash.merge(new_user))
+      new_user =Seth::REST.new(Chef::Config[:seth_server_url]).post_rest("users", payload)
+      Seth::User.from_hash(self.to_hash.merge(new_user))
     end
 
     def update(new_key=false)
       payload = {:name => name, :admin => admin}
       payload[:private_key] = new_key if new_key
       payload[:password] = password if password
-      updated_user = Chef::REST.new(Chef::Config[:chef_server_url]).put_rest("users/#{name}", payload)
-      Chef::User.from_hash(self.to_hash.merge(updated_user))
+      updated_user = Seth::REST.new(Chef::Config[:seth_server_url]).put_rest("users/#{name}", payload)
+      Seth::User.from_hash(self.to_hash.merge(updated_user))
     end
 
     def save(new_key=false)
@@ -108,7 +108,7 @@ class Chef
     end
 
     def reregister
-      r = Chef::REST.new(Chef::Config[:chef_server_url])
+      r = Seth::REST.new(Chef::Config[:seth_server_url])
       reregistered_self = r.put_rest("users/#{name}", { :name => name, :admin => admin, :private_key => true })
       private_key(reregistered_self["private_key"])
       self
@@ -119,14 +119,14 @@ class Chef
     end
 
     def inspect
-      "Chef::User name:'#{name}' admin:'#{admin.inspect}'" +
+      "Seth::User name:'#{name}' admin:'#{admin.inspect}'" +
       "public_key:'#{public_key}' private_key:#{private_key}"
     end
 
     # Class Methods
 
     def self.from_hash(user_hash)
-      user = Chef::User.new
+      user = Seth::User.new
       user.name user_hash['name']
       user.private_key user_hash['private_key'] if user_hash.key?('private_key')
       user.password user_hash['password'] if user_hash.key?('password')
@@ -136,7 +136,7 @@ class Chef
     end
 
     def self.from_json(json)
-      Chef::User.from_hash(Chef::JSONCompat.from_json(json))
+      Seth::User.from_hash(Chef::JSONCompat.from_json(json))
     end
 
     class << self
@@ -144,7 +144,7 @@ class Chef
     end
 
     def self.list(inflate=false)
-      response = Chef::REST.new(Chef::Config[:chef_server_url]).get_rest('users')
+      response = Seth::REST.new(Chef::Config[:seth_server_url]).get_rest('users')
       users = if response.is_a?(Array)
         transform_ohc_list_response(response) # OHC/OPC
       else
@@ -152,7 +152,7 @@ class Chef
       end
       if inflate
         users.inject({}) do |user_map, (name, _url)|
-          user_map[name] = Chef::User.load(name)
+          user_map[name] = Seth::User.load(name)
           user_map
         end
       else
@@ -161,8 +161,8 @@ class Chef
     end
 
     def self.load(name)
-      response = Chef::REST.new(Chef::Config[:chef_server_url]).get_rest("users/#{name}")
-      Chef::User.from_hash(response)
+      response = Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("users/#{name}")
+      Seth::User.from_hash(response)
     end
 
     private
@@ -175,7 +175,7 @@ class Chef
       new_response = Hash.new
       response.each do |u|
         name = u['user']['username']
-        new_response[name] = Chef::Config[:chef_server_url] + "/users/#{name}"
+        new_response[name] = Seth::Config[:seth_server_url] + "/users/#{name}"
       end
       new_response
     end

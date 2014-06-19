@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::UserList do
+describe Seth::Knife::UserList do
   before(:each) do
-    Chef::Knife::UserList.load_deps
-    @knife = Chef::Knife::UserList.new
+    Seth::Knife::UserList.load_deps
+    @knife = Seth::Knife::UserList.new
   end
 
   it 'lists the users' do
-    Chef::User.should_receive(:list)
+    Seth::User.should_receive(:list)
     @knife.should_receive(:format_list_for_display)
     @knife.run
   end

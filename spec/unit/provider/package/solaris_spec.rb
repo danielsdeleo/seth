@@ -17,16 +17,16 @@
 #
 require 'spec_helper'
 
-describe Chef::Provider::Package::Solaris do
+describe Seth::Provider::Package::Solaris do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Package.new("SUNWbash")
+    @new_resource = Seth::Resource::Package.new("SUNWbash")
     @new_resource.source("/tmp/bash.pkg")
 
-    @provider = Chef::Provider::Package::Solaris.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Package::Solaris.new(@new_resource, @run_context)
     ::File.stub(:exists?).and_return(true)
   end
 
@@ -66,7 +66,7 @@ PKGINFO
       ::File.stub(:exists?).and_return(false)
       @provider.define_resource_requirements
       @provider.load_current_resource
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Package)
     end
 
 
@@ -91,16 +91,16 @@ PKGINFO
     end
 
     it "should raise an exception if the source is not set but we are installing" do
-      @new_resource = Chef::Resource::Package.new("SUNWbash")
-      @provider = Chef::Provider::Package::Solaris.new(@new_resource, @run_context)
+      @new_resource = Seth::Resource::Package.new("SUNWbash")
+      @provider = Seth::Provider::Package::Solaris.new(@new_resource, @run_context)
       @provider.stub(:popen4).and_return(@status)
-      lambda { @provider.run_action(:install) }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.run_action(:install) }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should raise an exception if pkginfo fails to run" do
       @status = double("Status", :exitstatus => -1)
       @provider.stub(:popen4).and_return(@status)
-      lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should return a current resource with a nil version if the package is not found" do
@@ -129,7 +129,7 @@ PKGINFO
     it "should throw and exception if the exitstatus is not 0" do
       @status = double("Status", :exitstatus => 1)
       @provider.stub(:popen4).and_return(@status)
-      lambda { @provider.candidate_version }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.candidate_version }.should raise_error(Seth::Exceptions::Package)
     end
 
   end
@@ -143,8 +143,8 @@ PKGINFO
     end
 
     it "should run pkgadd -n -d when the package is a path to install" do
-      @new_resource = Chef::Resource::Package.new("/tmp/bash.pkg")
-      @provider = Chef::Provider::Package::Solaris.new(@new_resource, @run_context)
+      @new_resource = Seth::Resource::Package.new("/tmp/bash.pkg")
+      @provider = Seth::Provider::Package::Solaris.new(@new_resource, @run_context)
       @new_resource.source.should == "/tmp/bash.pkg"
       @provider.should_receive(:run_command_with_systems_locale).with({
         :command => "pkgadd -n -d /tmp/bash.pkg all"

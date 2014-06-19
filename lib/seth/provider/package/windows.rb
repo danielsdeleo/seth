@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,26 +16,26 @@
 # limitations under the License.
 #
 
-require 'chef/resource/windows_package'
-require 'chef/provider/package'
-require 'chef/util/path_helper'
+require 'seth/resource/windows_package'
+require 'seth/provider/package'
+require 'seth/util/path_helper'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Windows < Chef::Provider::Package
+      class Windows < Seth::Provider::Package
 
         # Depending on the installer, we may need to examine installer_type or 
         # source attributes, or search for text strings in the installer file 
         # binary to determine the installer type for the user. Since the file
         # must be on disk to do so, we have to make this choice in the provider.
-        require 'chef/provider/package/windows/msi.rb'
+        require 'seth/provider/package/windows/msi.rb'
 
-        # load_current_resource is run in Chef::Provider#run_action when not in whyrun_mode?
+        # load_current_resource is run in Seth::Provider#run_action when not in whyrun_mode?
         def load_current_resource
-          @new_resource.source(Chef::Util::PathHelper.validate_path(@new_resource.source))
+          @new_resource.source(Seth::Util::PathHelper.validate_path(@new_resource.source))
 
-          @current_resource = Chef::Resource::WindowsPackage.new(@new_resource.name)
+          @current_resource = Seth::Resource::WindowsPackage.new(@new_resource.name)
           @current_resource.version(package_provider.installed_version)
           @new_resource.version(package_provider.package_version)
           @current_resource
@@ -45,9 +45,9 @@ class Chef
           @package_provider ||= begin
             case installer_type
             when :msi
-              Chef::Provider::Package::Windows::MSI.new(@new_resource)
+              Seth::Provider::Package::Windows::MSI.new(@new_resource)
             else
-              raise "Unable to find a Chef::Provider::Package::Windows provider for installer_type '#{installer_type}'"
+              raise "Unable to find a Seth::Provider::Package::Windows provider for installer_type '#{installer_type}'"
             end
           end
         end
@@ -68,7 +68,7 @@ class Chef
           end
         end
 
-        # Chef::Provider::Package action_install + action_remove call install_package + remove_package
+        # Seth::Provider::Package action_install + action_remove call install_package + remove_package
         # Pass those calls to the correct sub-provider
         def install_package(name, version)
           package_provider.install_package(name, version)

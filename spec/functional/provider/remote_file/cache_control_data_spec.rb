@@ -19,22 +19,22 @@
 require 'spec_helper'
 require 'uri'
 
-describe Chef::Provider::RemoteFile::CacheControlData do
+describe Seth::Provider::RemoteFile::CacheControlData do
 
   before do
-    @original_config = Chef::Config.hash_dup    
+    @original_config = Seth::Config.hash_dup    
   end
 
   after do
-    Chef::Config.configuration = @original_config if @original_config    
+    Seth::Config.configuration = @original_config if @original_config    
   end
   
   before(:each) do
-    Chef::Config[:file_cache_path] = Dir.mktmpdir
+    Seth::Config[:file_cache_path] = Dir.mktmpdir
   end
 
   after(:each) do
-    FileUtils.rm_rf(Chef::Config[:file_cache_path])
+    FileUtils.rm_rf(Seth::Config[:file_cache_path])
   end
 
   let(:uri) { URI.parse("http://www.bing.com/robots.txt") }
@@ -42,7 +42,7 @@ describe Chef::Provider::RemoteFile::CacheControlData do
   describe "when the cache control data save method is invoked" do
 
     subject(:cache_control_data) do
-      Chef::Provider::RemoteFile::CacheControlData.load_and_validate(uri, file_checksum)
+      Seth::Provider::RemoteFile::CacheControlData.load_and_validate(uri, file_checksum)
     end
 
     # the checksum of the file last we fetched it.
@@ -63,7 +63,7 @@ describe Chef::Provider::RemoteFile::CacheControlData do
 
     it "writes the data to the cache and the same data can be read back" do
       cache_control_data.save
-      saved_cache_control_data = Chef::Provider::RemoteFile::CacheControlData.load_and_validate(uri, file_checksum)
+      saved_cache_control_data = Seth::Provider::RemoteFile::CacheControlData.load_and_validate(uri, file_checksum)
       saved_cache_control_data.etag.should == cache_control_data.etag
       saved_cache_control_data.mtime.should == cache_control_data.mtime
       saved_cache_control_data.checksum.should == cache_control_data.checksum  
@@ -88,7 +88,7 @@ describe Chef::Provider::RemoteFile::CacheControlData do
 
       it "writes the data to the cache and the same data can be read back" do
         cache_control_data.save
-        saved_cache_control_data = Chef::Provider::RemoteFile::CacheControlData.load_and_validate(uri, file_checksum)
+        saved_cache_control_data = Seth::Provider::RemoteFile::CacheControlData.load_and_validate(uri, file_checksum)
         saved_cache_control_data.etag.should == cache_control_data.etag
         saved_cache_control_data.mtime.should == cache_control_data.mtime
         saved_cache_control_data.checksum.should == cache_control_data.checksum  

@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Knife
-    class Help < Chef::Knife
+    class Help < Seth::Knife
 
       banner "knife help [list|TOPIC]"
 

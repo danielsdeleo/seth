@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector do
+describe Seth::Formatters::ErrorInspectors::CookbookResolveErrorInspector do
 
   before do
-    @expanded_run_list = Chef::RunList.new("recipe[annoyances]", "recipe[apache2]", "recipe[users]", "recipe[chef::client]")
+    @expanded_run_list = Seth::RunList.new("recipe[annoyances]", "recipe[apache2]", "recipe[users]", "recipe[seth::client]")
 
-    @description = Chef::Formatters::ErrorDescription.new("Error Resolving Cookbooks for Run List:")
+    @description = Seth::Formatters::ErrorDescription.new("Error Resolving Cookbooks for Run List:")
     @outputter_output = StringIO.new
-    @outputter = Chef::Formatters::IndentableOutputStream.new(@outputter_output, STDERR)
-    # @outputter = Chef::Formatters::IndentableOutputStream.new(STDOUT, STDERR)
+    @outputter = Seth::Formatters::IndentableOutputStream.new(@outputter_output, STDERR)
+    # @outputter = Seth::Formatters::IndentableOutputStream.new(STDOUT, STDERR)
   end
 
   describe "when explaining a 403 error" do
@@ -37,7 +37,7 @@ describe Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector do
       @response.stub(:body).and_return(@response_body)
       @exception = Net::HTTPServerException.new("(exception) forbidden", @response)
 
-      @inspector = Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector.new(@expanded_run_list, @exception)
+      @inspector = Seth::Formatters::ErrorInspectors::CookbookResolveErrorInspector.new(@expanded_run_list, @exception)
       @inspector.add_explanation(@description)
     end
 
@@ -48,7 +48,7 @@ describe Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector do
   end
 
   describe "when explaining a PreconditionFailed (412) error with current error message style" do
-    # Chef currently returns error messages with some fields as JSON strings,
+    # Seth currently returns error messages with some fields as JSON strings,
     # which must be re-parsed to get the actual data.
 
     before do
@@ -58,7 +58,7 @@ describe Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector do
       @response.stub(:body).and_return(@response_body)
       @exception = Net::HTTPServerException.new("(exception) precondition failed", @response)
 
-      @inspector = Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector.new(@expanded_run_list, @exception)
+      @inspector = Seth::Formatters::ErrorInspectors::CookbookResolveErrorInspector.new(@expanded_run_list, @exception)
       @inspector.add_explanation(@description)
     end
 
@@ -74,7 +74,7 @@ describe Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector do
   end
 
   describe "when explaining a PreconditionFailed (412) error with current error message style without cookbook details" do
-    # Chef currently returns error messages with some fields as JSON strings,
+    # Seth currently returns error messages with some fields as JSON strings,
     # which must be re-parsed to get the actual data.
     # In some cases the error message doesn't contain any cookbook
     # details. But we should still print a pretty error message.
@@ -86,7 +86,7 @@ describe Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector do
       @response.stub(:body).and_return(@response_body)
       @exception = Net::HTTPServerException.new("(exception) precondition failed", @response)
 
-      @inspector = Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector.new(@expanded_run_list, @exception)
+      @inspector = Seth::Formatters::ErrorInspectors::CookbookResolveErrorInspector.new(@expanded_run_list, @exception)
       @inspector.add_explanation(@description)
     end
 
@@ -99,7 +99,7 @@ describe Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector do
   end
 
   describe "when explaining a PreconditionFailed (412) error with single encoded JSON" do
-    # Chef currently returns error messages with some fields as JSON strings,
+    # Seth currently returns error messages with some fields as JSON strings,
     # which must be re-parsed to get the actual data.
 
     before do
@@ -109,7 +109,7 @@ describe Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector do
       @response.stub(:body).and_return(@response_body)
       @exception = Net::HTTPServerException.new("(exception) precondition failed", @response)
 
-      @inspector = Chef::Formatters::ErrorInspectors::CookbookResolveErrorInspector.new(@expanded_run_list, @exception)
+      @inspector = Seth::Formatters::ErrorInspectors::CookbookResolveErrorInspector.new(@expanded_run_list, @exception)
       @inspector.add_explanation(@description)
     end
 

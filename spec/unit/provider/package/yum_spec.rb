@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Package::Yum do
+describe Seth::Provider::Package::Yum do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Package.new('cups')
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Package.new('cups')
     @status = double("Status", :exitstatus => 0)
     @yum_cache = double(
-      'Chef::Provider::Yum::YumCache',
+      'Seth::Provider::Yum::YumCache',
       :reload_installed => true,
       :reset => true,
       :installed_version => "1.2.4-11.18.el5",
@@ -37,8 +37,8 @@ describe Chef::Provider::Package::Yum do
       :package_repository => "base",
       :disable_extra_repo_control => true
     )
-    Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-    @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+    Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+    @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
     @pid = double("PID")
   end
 
@@ -75,9 +75,9 @@ describe Chef::Provider::Package::Yum do
 
     describe "when arch in package_name" do
       it "should set the arch if no existing package_name is found and new_package_name+new_arch is available" do
-        @new_resource = Chef::Resource::YumPackage.new('testing.noarch')
+        @new_resource = Seth::Resource::YumPackage.new('testing.noarch')
         @yum_cache = double(
-          'Chef::Provider::Yum::YumCache'
+          'Seth::Provider::Yum::YumCache'
         )
         @yum_cache.stub(:installed_version) do |package_name, arch|
           # nothing installed for package_name/new_package_name
@@ -93,15 +93,15 @@ describe Chef::Provider::Package::Yum do
         end
         @yum_cache.stub(:package_available?).and_return(true)
         @yum_cache.stub(:disable_extra_repo_control).and_return(true)
-        Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-        @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+        Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+        @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
         @provider.load_current_resource
         @provider.new_resource.package_name.should == "testing"
         @provider.new_resource.arch.should == "noarch"
         @provider.arch.should == "noarch"
 
-        @new_resource = Chef::Resource::YumPackage.new('testing.more.noarch')
-        @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+        @new_resource = Seth::Resource::YumPackage.new('testing.more.noarch')
+        @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
         @provider.load_current_resource
         @provider.new_resource.package_name.should == "testing.more"
         @provider.new_resource.arch.should == "noarch"
@@ -109,9 +109,9 @@ describe Chef::Provider::Package::Yum do
       end
 
       it "should not set the arch when an existing package_name is found" do
-        @new_resource = Chef::Resource::YumPackage.new('testing.beta3')
+        @new_resource = Seth::Resource::YumPackage.new('testing.beta3')
         @yum_cache = double(
-          'Chef::Provider::Yum::YumCache'
+          'Seth::Provider::Yum::YumCache'
         )
         @yum_cache.stub(:installed_version) do |package_name, arch|
           # installed for package_name
@@ -127,16 +127,16 @@ describe Chef::Provider::Package::Yum do
         end
         @yum_cache.stub(:package_available?).and_return(true)
         @yum_cache.stub(:disable_extra_repo_control).and_return(true)
-        Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-        @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+        Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+        @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
         # annoying side effect of the fun stub'ing above
         @provider.load_current_resource
         @provider.new_resource.package_name.should == "testing.beta3"
         @provider.new_resource.arch.should == nil
         @provider.arch.should == nil
 
-        @new_resource = Chef::Resource::YumPackage.new('testing.beta3.more')
-        @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+        @new_resource = Seth::Resource::YumPackage.new('testing.beta3.more')
+        @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
         @provider.load_current_resource
         @provider.new_resource.package_name.should == "testing.beta3.more"
         @provider.new_resource.arch.should == nil
@@ -144,9 +144,9 @@ describe Chef::Provider::Package::Yum do
       end
 
       it "should not set the arch when no existing package_name or new_package_name+new_arch is found" do
-        @new_resource = Chef::Resource::YumPackage.new('testing.beta3')
+        @new_resource = Seth::Resource::YumPackage.new('testing.beta3')
         @yum_cache = double(
-          'Chef::Provider::Yum::YumCache'
+          'Seth::Provider::Yum::YumCache'
         )
         @yum_cache.stub(:installed_version) do |package_name, arch|
           # nothing installed for package_name/new_package_name
@@ -158,15 +158,15 @@ describe Chef::Provider::Package::Yum do
         end
         @yum_cache.stub(:package_available?).and_return(true)
         @yum_cache.stub(:disable_extra_repo_control).and_return(true)
-        Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-        @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+        Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+        @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
         @provider.load_current_resource
         @provider.new_resource.package_name.should == "testing.beta3"
         @provider.new_resource.arch.should == nil
         @provider.arch.should == nil
 
-        @new_resource = Chef::Resource::YumPackage.new('testing.beta3.more')
-        @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+        @new_resource = Seth::Resource::YumPackage.new('testing.beta3.more')
+        @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
         @provider.load_current_resource
         @provider.new_resource.package_name.should == "testing.beta3.more"
         @provider.new_resource.arch.should == nil
@@ -174,10 +174,10 @@ describe Chef::Provider::Package::Yum do
       end
 
       it "should ensure it doesn't clobber an existing arch if passed" do
-        @new_resource = Chef::Resource::YumPackage.new('testing.i386')
+        @new_resource = Seth::Resource::YumPackage.new('testing.i386')
         @new_resource.arch("x86_64")
         @yum_cache = double(
-          'Chef::Provider::Yum::YumCache'
+          'Seth::Provider::Yum::YumCache'
         )
          @yum_cache.stub(:installed_version) do |package_name, arch|
            # nothing installed for package_name/new_package_name
@@ -193,8 +193,8 @@ describe Chef::Provider::Package::Yum do
         end.and_return("something")
         @yum_cache.stub(:package_available?).and_return(true)
         @yum_cache.stub(:disable_extra_repo_control).and_return(true)
-        Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-        @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+        Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+        @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
         @provider.load_current_resource
         @provider.new_resource.package_name.should == "testing.i386"
         @provider.new_resource.arch.should == "x86_64"
@@ -233,7 +233,7 @@ describe Chef::Provider::Package::Yum do
 
     it "should search provides if package name can't be found then set package_name to match" do
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_installed => true,
         :reset => true,
         :installed_version => "1.2.4-11.18.el5",
@@ -242,17 +242,17 @@ describe Chef::Provider::Package::Yum do
         :version_available? => true,
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-      pkg = Chef::Provider::Package::Yum::RPMPackage.new("test-package", "1.2.4-11.18.el5", "x86_64", [])
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      pkg = Seth::Provider::Package::Yum::RPMPackage.new("test-package", "1.2.4-11.18.el5", "x86_64", [])
       @yum_cache.should_receive(:packages_from_require).and_return([pkg])
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @provider.load_current_resource
       @new_resource.package_name.should == "test-package"
     end
 
     it "should search provides if package name can't be found, warn about multiple matches, but use the first one" do
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_installed => true,
         :reset => true,
         :installed_version => "1.2.4-11.18.el5",
@@ -261,19 +261,19 @@ describe Chef::Provider::Package::Yum do
         :version_available? => true,
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-      pkg_x = Chef::Provider::Package::Yum::RPMPackage.new("test-package-x", "1.2.4-11.18.el5", "x86_64", [])
-      pkg_y = Chef::Provider::Package::Yum::RPMPackage.new("test-package-y", "1.2.6-11.3.el5", "i386", [])
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      pkg_x = Seth::Provider::Package::Yum::RPMPackage.new("test-package-x", "1.2.4-11.18.el5", "x86_64", [])
+      pkg_y = Seth::Provider::Package::Yum::RPMPackage.new("test-package-y", "1.2.6-11.3.el5", "i386", [])
       @yum_cache.should_receive(:packages_from_require).and_return([pkg_x, pkg_y])
-      Chef::Log.should_receive(:warn).exactly(1).times.with(%r{matched multiple Provides})
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      Seth::Log.should_receive(:warn).exactly(1).times.with(%r{matched multiple Provides})
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @provider.load_current_resource
       @new_resource.package_name.should == "test-package-x"
     end
 
     it "should search provides if no package is available - if no match in installed provides then load the complete set" do
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_installed => true,
         :reset => true,
         :installed_version => "1.2.4-11.18.el5",
@@ -282,16 +282,16 @@ describe Chef::Provider::Package::Yum do
         :version_available? => true,
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
       @yum_cache.should_receive(:packages_from_require).twice.and_return([])
       @yum_cache.should_receive(:reload_provides)
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @provider.load_current_resource
     end
 
     it "should search provides if no package is available and not load the complete set if action is :remove or :purge" do
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_installed => true,
         :reset => true,
         :installed_version => "1.2.4-11.18.el5",
@@ -300,8 +300,8 @@ describe Chef::Provider::Package::Yum do
         :version_available? => true,
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @yum_cache.should_receive(:packages_from_require).once.and_return([])
       @yum_cache.should_not_receive(:reload_provides)
       @new_resource.action(:remove)
@@ -314,7 +314,7 @@ describe Chef::Provider::Package::Yum do
 
     it "should search provides if no package is available - if no match in provides leave the name intact" do
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_provides => true,
         :reload_installed => true,
         :reset => true,
@@ -324,9 +324,9 @@ describe Chef::Provider::Package::Yum do
         :version_available? => true,
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
       @yum_cache.should_receive(:packages_from_require).twice.and_return([])
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @provider.load_current_resource
       @new_resource.package_name.should == "cups"
     end
@@ -335,7 +335,7 @@ describe Chef::Provider::Package::Yum do
   describe "when installing a package" do
     it "should run yum install with the package name and version" do
       @provider.load_current_resource
-      Chef::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
+      Seth::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y install emacs-1.0"
       )
@@ -351,9 +351,9 @@ describe Chef::Provider::Package::Yum do
     end
 
     it "should run yum localinstall if given a path to an rpm as the package" do
-      @new_resource = Chef::Resource::Package.new("/tmp/emacs-21.4-20.el5.i386.rpm")
+      @new_resource = Seth::Resource::Package.new("/tmp/emacs-21.4-20.el5.i386.rpm")
       ::File.stub(:exists?).and_return(true)
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @new_resource.source.should == "/tmp/emacs-21.4-20.el5.i386.rpm"
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y localinstall /tmp/emacs-21.4-20.el5.i386.rpm"
@@ -364,7 +364,7 @@ describe Chef::Provider::Package::Yum do
     it "should run yum install with the package name, version and arch" do
       @provider.load_current_resource
       @new_resource.stub(:arch).and_return("i386")
-      Chef::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
+      Seth::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y install emacs-21.4-20.el5.i386"
       )
@@ -375,7 +375,7 @@ describe Chef::Provider::Package::Yum do
       @provider.load_current_resource
       @provider.candidate_version = '11'
       @new_resource.stub(:options).and_return("--disablerepo epmd")
-      Chef::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
+      Seth::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y --disablerepo epmd install cups-11"
       )
@@ -384,7 +384,7 @@ describe Chef::Provider::Package::Yum do
 
     it "should raise an exception if the package is not available" do
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_from_cache => true,
         :reset => true,
         :installed_version => "1.2.4-11.18.el5",
@@ -393,15 +393,15 @@ describe Chef::Provider::Package::Yum do
         :version_available? => nil,
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
-      lambda { @provider.install_package("lolcats", "0.99") }.should raise_error(Chef::Exceptions::Package, %r{Version .* not found})
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
+      lambda { @provider.install_package("lolcats", "0.99") }.should raise_error(Seth::Exceptions::Package, %r{Version .* not found})
     end
 
     it "should raise an exception if candidate version is older than the installed version and allow_downgrade is false" do
       @new_resource.stub(:allow_downgrade).and_return(false)
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_installed => true,
         :reset => true,
         :installed_version => "1.2.4-11.18.el5",
@@ -411,15 +411,15 @@ describe Chef::Provider::Package::Yum do
         :allow_multi_install => [ "kernel" ],
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @provider.load_current_resource
-      lambda { @provider.install_package("cups", "1.2.4-11.15.el5") }.should raise_error(Chef::Exceptions::Package, %r{is newer than candidate package})
+      lambda { @provider.install_package("cups", "1.2.4-11.15.el5") }.should raise_error(Seth::Exceptions::Package, %r{is newer than candidate package})
     end
 
     it "should not raise an exception if candidate version is older than the installed version and the package is list in yum's installonlypkg option" do
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_installed => true,
         :reset => true,
         :installed_version => "1.2.4-11.18.el5",
@@ -430,8 +430,8 @@ describe Chef::Provider::Package::Yum do
         :package_repository => "base",
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @provider.load_current_resource
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y install cups-1.2.4-11.15.el5"
@@ -442,7 +442,7 @@ describe Chef::Provider::Package::Yum do
     it "should run yum downgrade if candidate version is older than the installed version and allow_downgrade is true" do
       @new_resource.stub(:allow_downgrade).and_return(true)
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_installed => true,
         :reset => true,
         :installed_version => "1.2.4-11.18.el5",
@@ -453,8 +453,8 @@ describe Chef::Provider::Package::Yum do
         :package_repository => "base",
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @provider.load_current_resource
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y downgrade cups-1.2.4-11.15.el5"
@@ -465,7 +465,7 @@ describe Chef::Provider::Package::Yum do
     it "should run yum install then flush the cache if :after is true" do
       @new_resource.stub(:flush_cache).and_return({:after => true, :before => false})
       @provider.load_current_resource
-      Chef::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
+      Seth::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y install emacs-1.0"
       )
@@ -476,7 +476,7 @@ describe Chef::Provider::Package::Yum do
     it "should run yum install then not flush the cache if :after is false" do
       @new_resource.stub(:flush_cache).and_return({:after => false, :before => false})
       @provider.load_current_resource
-      Chef::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
+      Seth::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y install emacs-1.0"
       )
@@ -489,7 +489,7 @@ describe Chef::Provider::Package::Yum do
     it "should run yum install if the package is installed and a version is given" do
       @provider.load_current_resource
       @provider.candidate_version = '11'
-      Chef::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
+      Seth::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y install cups-11"
       )
@@ -498,9 +498,9 @@ describe Chef::Provider::Package::Yum do
 
     it "should run yum install if the package is not installed" do
       @provider.load_current_resource
-      @current_resource = Chef::Resource::Package.new('cups')
+      @current_resource = Seth::Resource::Package.new('cups')
       @provider.candidate_version = '11'
-      Chef::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
+      Seth::Provider::Package::Yum::RPMUtils.stub(:rpmvercmp).and_return(-1)
       @provider.should_receive(:yum_command).with(
         "yum -d0 -e0 -y install cups-11"
       )
@@ -509,7 +509,7 @@ describe Chef::Provider::Package::Yum do
 
     it "should raise an exception if candidate version is older than the installed version" do
       @yum_cache = double(
-        'Chef::Provider::Yum::YumCache',
+        'Seth::Provider::Yum::YumCache',
         :reload_installed => true,
         :reset => true,
         :installed_version => "1.2.4-11.18.el5",
@@ -519,17 +519,17 @@ describe Chef::Provider::Package::Yum do
         :allow_multi_install => [ "kernel" ],
         :disable_extra_repo_control => true
       )
-      Chef::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
-      @provider = Chef::Provider::Package::Yum.new(@new_resource, @run_context)
+      Seth::Provider::Package::Yum::YumCache.stub(:instance).and_return(@yum_cache)
+      @provider = Seth::Provider::Package::Yum.new(@new_resource, @run_context)
       @provider.load_current_resource
-      lambda { @provider.upgrade_package("cups", "1.2.4-11.15.el5") }.should raise_error(Chef::Exceptions::Package, %r{is newer than candidate package})
+      lambda { @provider.upgrade_package("cups", "1.2.4-11.15.el5") }.should raise_error(Seth::Exceptions::Package, %r{is newer than candidate package})
     end
 
-    # Test our little workaround, some crossover into Chef::Provider::Package territory
+    # Test our little workaround, some crossover into Seth::Provider::Package territory
     it "should call action_upgrade in the parent if the current resource version is nil" do
       @yum_cache.stub(:installed_version).and_return(nil)
       @provider.load_current_resource
-      @current_resource = Chef::Resource::Package.new('cups')
+      @current_resource = Seth::Resource::Package.new('cups')
       @provider.candidate_version = '11'
       @provider.should_receive(:upgrade_package).with(
         "cups",
@@ -540,7 +540,7 @@ describe Chef::Provider::Package::Yum do
 
     it "should call action_upgrade in the parent if the candidate version is nil" do
       @provider.load_current_resource
-      @current_resource = Chef::Resource::Package.new('cups')
+      @current_resource = Seth::Resource::Package.new('cups')
       @provider.candidate_version = nil
       @provider.should_not_receive(:upgrade_package)
       @provider.action_upgrade
@@ -548,7 +548,7 @@ describe Chef::Provider::Package::Yum do
 
     it "should call action_upgrade in the parent if the candidate is newer" do
       @provider.load_current_resource
-      @current_resource = Chef::Resource::Package.new('cups')
+      @current_resource = Seth::Resource::Package.new('cups')
       @provider.candidate_version = '11'
       @provider.should_receive(:upgrade_package).with(
         "cups",
@@ -560,7 +560,7 @@ describe Chef::Provider::Package::Yum do
     it "should not call action_upgrade in the parent if the candidate is older" do
       @yum_cache.stub(:installed_version).and_return("12")
       @provider.load_current_resource
-      @current_resource = Chef::Resource::Package.new('cups')
+      @current_resource = Seth::Resource::Package.new('cups')
       @provider.candidate_version = '11'
       @provider.should_not_receive(:upgrade_package)
       @provider.action_upgrade
@@ -599,7 +599,7 @@ describe Chef::Provider::Package::Yum do
       @provider.stub(:output_of_command).and_return([@status, "", ""])
       @provider.should_receive(:output_of_command).once.with(
         "yum -d0 -e0 -y install emacs-1.0",
-        {:timeout => Chef::Config[:yum_timeout]}
+        {:timeout => Seth::Config[:yum_timeout]}
       )
       @provider.yum_command("yum -d0 -e0 -y install emacs-1.0")
     end
@@ -609,9 +609,9 @@ describe Chef::Provider::Package::Yum do
       @provider.stub(:output_of_command).and_return([@status, "failure failure", "problem problem"])
       @provider.should_receive(:output_of_command).once.with(
         "yum -d0 -e0 -y install emacs-1.0",
-        {:timeout => Chef::Config[:yum_timeout]}
+        {:timeout => Seth::Config[:yum_timeout]}
       )
-      lambda { @provider.yum_command("yum -d0 -e0 -y install emacs-1.0") }.should raise_error(Chef::Exceptions::Exec)
+      lambda { @provider.yum_command("yum -d0 -e0 -y install emacs-1.0") }.should raise_error(Seth::Exceptions::Exec)
     end
 
     it "should run yum once if it exits with a return code of 1 and %pre scriptlet failures" do
@@ -619,10 +619,10 @@ describe Chef::Provider::Package::Yum do
       @provider.stub(:output_of_command).and_return([@status, "error: %pre(demo-1-1.el5.centos.x86_64) scriptlet failed, exit status 2", ""])
       @provider.should_receive(:output_of_command).once.with(
         "yum -d0 -e0 -y install emacs-1.0",
-        {:timeout => Chef::Config[:yum_timeout]}
+        {:timeout => Seth::Config[:yum_timeout]}
       )
       # will still raise an exception, can't stub out the subsequent call
-      lambda { @provider.yum_command("yum -d0 -e0 -y install emacs-1.0") }.should raise_error(Chef::Exceptions::Exec)
+      lambda { @provider.yum_command("yum -d0 -e0 -y install emacs-1.0") }.should raise_error(Seth::Exceptions::Exec)
     end
 
     it "should run yum twice if it exits with a return code of 1 and %post scriptlet failures" do
@@ -630,18 +630,18 @@ describe Chef::Provider::Package::Yum do
       @provider.stub(:output_of_command).and_return([@status, "error: %post(demo-1-1.el5.centos.x86_64) scriptlet failed, exit status 2", ""])
       @provider.should_receive(:output_of_command).twice.with(
         "yum -d0 -e0 -y install emacs-1.0",
-        {:timeout => Chef::Config[:yum_timeout]}
+        {:timeout => Seth::Config[:yum_timeout]}
       )
       # will still raise an exception, can't stub out the subsequent call
-      lambda { @provider.yum_command("yum -d0 -e0 -y install emacs-1.0") }.should raise_error(Chef::Exceptions::Exec)
+      lambda { @provider.yum_command("yum -d0 -e0 -y install emacs-1.0") }.should raise_error(Seth::Exceptions::Exec)
     end
   end
 end
 
-describe Chef::Provider::Package::Yum::RPMUtils do
+describe Seth::Provider::Package::Yum::RPMUtils do
   describe "version_parse" do
     before do
-      @rpmutils = Chef::Provider::Package::Yum::RPMUtils
+      @rpmutils = Seth::Provider::Package::Yum::RPMUtils
     end
 
     it "parses known good epoch strings" do
@@ -707,7 +707,7 @@ describe Chef::Provider::Package::Yum::RPMUtils do
 
   describe "rpmvercmp" do
     before do
-      @rpmutils = Chef::Provider::Package::Yum::RPMUtils
+      @rpmutils = Seth::Provider::Package::Yum::RPMUtils
     end
 
     it "should validate version compare logic for standard examples" do
@@ -819,10 +819,10 @@ describe Chef::Provider::Package::Yum::RPMUtils do
 
 end
 
-describe Chef::Provider::Package::Yum::RPMVersion do
+describe Seth::Provider::Package::Yum::RPMVersion do
   describe "new - with parsing" do
     before do
-      @rpmv = Chef::Provider::Package::Yum::RPMVersion.new("1:1.6.5-9.36.el5")
+      @rpmv = Seth::Provider::Package::Yum::RPMVersion.new("1:1.6.5-9.36.el5")
     end
 
     it "should expose evr (name-version-release) available" do
@@ -840,7 +840,7 @@ describe Chef::Provider::Package::Yum::RPMVersion do
 
   describe "new - no parsing" do
     before do
-      @rpmv = Chef::Provider::Package::Yum::RPMVersion.new("1", "1.6.5", "9.36.el5")
+      @rpmv = Seth::Provider::Package::Yum::RPMVersion.new("1", "1.6.5", "9.36.el5")
     end
 
     it "should expose evr (name-version-release) available" do
@@ -858,19 +858,19 @@ describe Chef::Provider::Package::Yum::RPMVersion do
 
   it "should raise an error unless passed 1 or 3 args" do
     lambda {
-      Chef::Provider::Package::Yum::RPMVersion.new()
+      Seth::Provider::Package::Yum::RPMVersion.new()
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMVersion.new("1:1.6.5-9.36.el5")
+      Seth::Provider::Package::Yum::RPMVersion.new("1:1.6.5-9.36.el5")
     }.should_not raise_error
     lambda {
-      Chef::Provider::Package::Yum::RPMVersion.new("1:1.6.5-9.36.el5", "extra")
+      Seth::Provider::Package::Yum::RPMVersion.new("1:1.6.5-9.36.el5", "extra")
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMVersion.new("1", "1.6.5", "9.36.el5")
+      Seth::Provider::Package::Yum::RPMVersion.new("1", "1.6.5", "9.36.el5")
     }.should_not raise_error
     lambda {
-      Chef::Provider::Package::Yum::RPMVersion.new("1", "1.6.5", "9.36.el5", "extra")
+      Seth::Provider::Package::Yum::RPMVersion.new("1", "1.6.5", "9.36.el5", "extra")
     }.should raise_error(ArgumentError)
   end
 
@@ -896,8 +896,8 @@ describe Chef::Provider::Package::Yum::RPMVersion do
         [ "0:2.3.4-2.el5",
           "0:2.3.4-2.el6" ]
       ].each do |smaller, larger|
-        sm = Chef::Provider::Package::Yum::RPMVersion.new(smaller)
-        lg = Chef::Provider::Package::Yum::RPMVersion.new(larger)
+        sm = Seth::Provider::Package::Yum::RPMVersion.new(smaller)
+        lg = Seth::Provider::Package::Yum::RPMVersion.new(larger)
         sm.should be < lg
         lg.should be > sm
         sm.should_not == lg
@@ -922,8 +922,8 @@ describe Chef::Provider::Package::Yum::RPMVersion do
         [ "2.3-2.el5",
           "2.3-2.el6" ]
       ].each do |smaller, larger|
-        sm = Chef::Provider::Package::Yum::RPMVersion.new(smaller)
-        lg = Chef::Provider::Package::Yum::RPMVersion.new(larger)
+        sm = Seth::Provider::Package::Yum::RPMVersion.new(smaller)
+        lg = Seth::Provider::Package::Yum::RPMVersion.new(larger)
         sm.should be < lg
         lg.should be > sm
         sm.should_not == lg
@@ -939,8 +939,8 @@ describe Chef::Provider::Package::Yum::RPMVersion do
         [ "0:alpha9.8-27.2",
           "0:alpha9.8-27.2" ]
       ].each do |smaller, larger|
-        sm = Chef::Provider::Package::Yum::RPMVersion.new(smaller)
-        lg = Chef::Provider::Package::Yum::RPMVersion.new(larger)
+        sm = Seth::Provider::Package::Yum::RPMVersion.new(smaller)
+        lg = Seth::Provider::Package::Yum::RPMVersion.new(larger)
         sm.should be == lg
       end
     end
@@ -954,8 +954,8 @@ describe Chef::Provider::Package::Yum::RPMVersion do
         [ "alpha9.8-3",
           "alpha9.8-3" ]
       ].each do |smaller, larger|
-        sm = Chef::Provider::Package::Yum::RPMVersion.new(smaller)
-        lg = Chef::Provider::Package::Yum::RPMVersion.new(larger)
+        sm = Seth::Provider::Package::Yum::RPMVersion.new(smaller)
+        lg = Seth::Provider::Package::Yum::RPMVersion.new(larger)
         sm.should be == lg
       end
     end
@@ -978,8 +978,8 @@ describe Chef::Provider::Package::Yum::RPMVersion do
         [ "0:1.1.1-1",
           "0:1.1.2-1" ],
       ].each do |smaller, larger|
-        sm = Chef::Provider::Package::Yum::RPMVersion.new(smaller)
-        lg = Chef::Provider::Package::Yum::RPMVersion.new(larger)
+        sm = Seth::Provider::Package::Yum::RPMVersion.new(smaller)
+        lg = Seth::Provider::Package::Yum::RPMVersion.new(larger)
         sm.partial_compare(lg).should be == -1
         lg.partial_compare(sm).should be == 1
         sm.partial_compare(lg).should_not be == 0
@@ -995,8 +995,8 @@ describe Chef::Provider::Package::Yum::RPMVersion do
         [ "0:1.1.1-1",
           "0:1.1.1-1" ],
       ].each do |smaller, larger|
-        sm = Chef::Provider::Package::Yum::RPMVersion.new(smaller)
-        lg = Chef::Provider::Package::Yum::RPMVersion.new(larger)
+        sm = Seth::Provider::Package::Yum::RPMVersion.new(smaller)
+        lg = Seth::Provider::Package::Yum::RPMVersion.new(larger)
         sm.partial_compare(lg).should be == 0
       end
     end
@@ -1004,10 +1004,10 @@ describe Chef::Provider::Package::Yum::RPMVersion do
 
 end
 
-describe Chef::Provider::Package::Yum::RPMPackage do
+describe Seth::Provider::Package::Yum::RPMPackage do
   describe "new - with parsing" do
     before do
-      @rpm = Chef::Provider::Package::Yum::RPMPackage.new("testing", "1:1.6.5-9.36.el5", "x86_64", [])
+      @rpm = Seth::Provider::Package::Yum::RPMPackage.new("testing", "1:1.6.5-9.36.el5", "x86_64", [])
     end
 
     it "should expose nevra (name-epoch-version-release-arch) available" do
@@ -1031,7 +1031,7 @@ describe Chef::Provider::Package::Yum::RPMPackage do
 
   describe "new - no parsing" do
     before do
-      @rpm = Chef::Provider::Package::Yum::RPMPackage.new("testing", "1", "1.6.5", "9.36.el5", "x86_64", [])
+      @rpm = Seth::Provider::Package::Yum::RPMPackage.new("testing", "1", "1.6.5", "9.36.el5", "x86_64", [])
     end
 
     it "should expose nevra (name-epoch-version-release-arch) available" do
@@ -1055,28 +1055,28 @@ describe Chef::Provider::Package::Yum::RPMPackage do
 
   it "should raise an error unless passed 4 or 6 args" do
     lambda {
-      Chef::Provider::Package::Yum::RPMPackage.new()
+      Seth::Provider::Package::Yum::RPMPackage.new()
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMPackage.new("testing")
+      Seth::Provider::Package::Yum::RPMPackage.new("testing")
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMPackage.new("testing", "1:1.6.5-9.36.el5")
+      Seth::Provider::Package::Yum::RPMPackage.new("testing", "1:1.6.5-9.36.el5")
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMPackage.new("testing", "1:1.6.5-9.36.el5", "x86_64")
+      Seth::Provider::Package::Yum::RPMPackage.new("testing", "1:1.6.5-9.36.el5", "x86_64")
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMPackage.new("testing", "1:1.6.5-9.36.el5", "x86_64", [])
+      Seth::Provider::Package::Yum::RPMPackage.new("testing", "1:1.6.5-9.36.el5", "x86_64", [])
     }.should_not raise_error
     lambda {
-      Chef::Provider::Package::Yum::RPMPackage.new("testing", "1", "1.6.5", "9.36.el5", "x86_64")
+      Seth::Provider::Package::Yum::RPMPackage.new("testing", "1", "1.6.5", "9.36.el5", "x86_64")
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMPackage.new("testing", "1", "1.6.5", "9.36.el5", "x86_64", [])
+      Seth::Provider::Package::Yum::RPMPackage.new("testing", "1", "1.6.5", "9.36.el5", "x86_64", [])
     }.should_not raise_error
     lambda {
-      Chef::Provider::Package::Yum::RPMPackage.new("testing", "1", "1.6.5", "9.36.el5", "x86_64", [], "extra")
+      Seth::Provider::Package::Yum::RPMPackage.new("testing", "1", "1.6.5", "9.36.el5", "x86_64", [], "extra")
     }.should raise_error(ArgumentError)
   end
 
@@ -1094,8 +1094,8 @@ describe Chef::Provider::Package::Yum::RPMPackage do
         [ "1test",
           "2test" ],
       ].each do |smaller, larger|
-        sm = Chef::Provider::Package::Yum::RPMPackage.new(smaller, "0:0.0.1-1", "x86_64", [])
-        lg = Chef::Provider::Package::Yum::RPMPackage.new(larger, "0:0.0.1-1", "x86_64", [])
+        sm = Seth::Provider::Package::Yum::RPMPackage.new(smaller, "0:0.0.1-1", "x86_64", [])
+        lg = Seth::Provider::Package::Yum::RPMPackage.new(larger, "0:0.0.1-1", "x86_64", [])
         sm.should be < lg
         lg.should be > sm
         sm.should_not == lg
@@ -1111,8 +1111,8 @@ describe Chef::Provider::Package::Yum::RPMPackage do
         [ "noarch",
           "x86_64" ],
       ].each do |smaller, larger|
-        sm = Chef::Provider::Package::Yum::RPMPackage.new("test-package", "0:0.0.1-1", smaller, [])
-        lg = Chef::Provider::Package::Yum::RPMPackage.new("test-package", "0:0.0.1-1", larger, [])
+        sm = Seth::Provider::Package::Yum::RPMPackage.new("test-package", "0:0.0.1-1", smaller, [])
+        lg = Seth::Provider::Package::Yum::RPMPackage.new("test-package", "0:0.0.1-1", larger, [])
         sm.should be < lg
         lg.should be > sm
         sm.should_not == lg
@@ -1122,17 +1122,17 @@ describe Chef::Provider::Package::Yum::RPMPackage do
 
 end
 
-describe Chef::Provider::Package::Yum::RPMDbPackage do
+describe Seth::Provider::Package::Yum::RPMDbPackage do
   before(:each) do
     # name, version, arch, installed, available, repoid
-    @rpm_x = Chef::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "noarch", [], false, true, "base")
-    @rpm_y = Chef::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "noarch", [], true, true, "extras")
-    @rpm_z = Chef::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "noarch", [], true, false, "other")
+    @rpm_x = Seth::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "noarch", [], false, true, "base")
+    @rpm_y = Seth::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "noarch", [], true, true, "extras")
+    @rpm_z = Seth::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "noarch", [], true, false, "other")
   end
 
   describe "initialize" do
-    it "should return a Chef::Provider::Package::Yum::RPMDbPackage object" do
-      @rpm_x.should be_kind_of(Chef::Provider::Package::Yum::RPMDbPackage)
+    it "should return a Seth::Provider::Package::Yum::RPMDbPackage object" do
+      @rpm_x.should be_kind_of(Seth::Provider::Package::Yum::RPMDbPackage)
     end
   end
 
@@ -1161,10 +1161,10 @@ describe Chef::Provider::Package::Yum::RPMDbPackage do
   end
 end
 
-describe Chef::Provider::Package::Yum::RPMDependency do
+describe Seth::Provider::Package::Yum::RPMDependency do
   describe "new - with parsing" do
     before do
-      @rpmdep = Chef::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==)
+      @rpmdep = Seth::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==)
     end
 
     it "should expose name, version, flag available" do
@@ -1178,7 +1178,7 @@ describe Chef::Provider::Package::Yum::RPMDependency do
 
   describe "new - no parsing" do
     before do
-      @rpmdep = Chef::Provider::Package::Yum::RPMDependency.new("testing", "1", "1.6.5", "9.36.el5", :==)
+      @rpmdep = Seth::Provider::Package::Yum::RPMDependency.new("testing", "1", "1.6.5", "9.36.el5", :==)
     end
 
     it "should expose name, version, flag available" do
@@ -1192,31 +1192,31 @@ describe Chef::Provider::Package::Yum::RPMDependency do
 
   it "should raise an error unless passed 3 or 5 args" do
     lambda {
-      Chef::Provider::Package::Yum::RPMDependency.new()
+      Seth::Provider::Package::Yum::RPMDependency.new()
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMDependency.new("testing")
+      Seth::Provider::Package::Yum::RPMDependency.new("testing")
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5")
+      Seth::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5")
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==)
+      Seth::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==)
     }.should_not raise_error
     lambda {
-      Chef::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==, "extra")
+      Seth::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==, "extra")
     }.should raise_error(ArgumentError)
     lambda {
-      Chef::Provider::Package::Yum::RPMDependency.new("testing", "1", "1.6.5", "9.36.el5", :==)
+      Seth::Provider::Package::Yum::RPMDependency.new("testing", "1", "1.6.5", "9.36.el5", :==)
     }.should_not raise_error
     lambda {
-      Chef::Provider::Package::Yum::RPMDependency.new("testing", "1", "1.6.5", "9.36.el5", :==, "extra")
+      Seth::Provider::Package::Yum::RPMDependency.new("testing", "1", "1.6.5", "9.36.el5", :==, "extra")
     }.should raise_error(ArgumentError)
   end
 
   describe "parse" do
     it "should parse a name, flag, version string into a valid RPMDependency object" do
-      @rpmdep = Chef::Provider::Package::Yum::RPMDependency.parse("testing >= 1:1.6.5-9.36.el5")
+      @rpmdep = Seth::Provider::Package::Yum::RPMDependency.parse("testing >= 1:1.6.5-9.36.el5")
 
       @rpmdep.name.should == "testing"
       @rpmdep.version.e.should == 1
@@ -1226,7 +1226,7 @@ describe Chef::Provider::Package::Yum::RPMDependency do
     end
 
     it "should parse a name into a valid RPMDependency object" do
-      @rpmdep = Chef::Provider::Package::Yum::RPMDependency.parse("testing")
+      @rpmdep = Seth::Provider::Package::Yum::RPMDependency.parse("testing")
 
       @rpmdep.name.should == "testing"
       @rpmdep.version.e.should == nil
@@ -1236,7 +1236,7 @@ describe Chef::Provider::Package::Yum::RPMDependency do
     end
 
     it "should parse an invalid string into the name of a RPMDependency object" do
-      @rpmdep = Chef::Provider::Package::Yum::RPMDependency.parse("testing blah >")
+      @rpmdep = Seth::Provider::Package::Yum::RPMDependency.parse("testing blah >")
 
       @rpmdep.name.should == "testing blah >"
       @rpmdep.version.e.should == nil
@@ -1254,7 +1254,7 @@ describe Chef::Provider::Package::Yum::RPMDependency do
         [ "<=", :<= ],
         [ "<", :< ]
       ].each do |before, after|
-        @rpmdep = Chef::Provider::Package::Yum::RPMDependency.parse("testing #{before} 1:1.1-1")
+        @rpmdep = Seth::Provider::Package::Yum::RPMDependency.parse("testing #{before} 1:1.1-1")
         @rpmdep.flag.should == after
       end
     end
@@ -1268,7 +1268,7 @@ describe Chef::Provider::Package::Yum::RPMDependency do
         [ "!", :== ],
         [ "~", :== ]
       ].each do |before, after|
-        @rpmdep = Chef::Provider::Package::Yum::RPMDependency.parse("testing #{before} 1:1.1-1")
+        @rpmdep = Seth::Provider::Package::Yum::RPMDependency.parse("testing #{before} 1:1.1-1")
         @rpmdep.name.should == "testing #{before} 1:1.1-1"
         @rpmdep.flag.should == after
       end
@@ -1277,8 +1277,8 @@ describe Chef::Provider::Package::Yum::RPMDependency do
 
   describe "satisfy?" do
     it "should raise an error unless a RPMDependency is passed" do
-      @rpmprovide = Chef::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==)
-      @rpmrequire = Chef::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :>=)
+      @rpmprovide = Seth::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==)
+      @rpmrequire = Seth::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :>=)
       lambda {
         @rpmprovide.satisfy?("hi")
       }.should raise_error(ArgumentError)
@@ -1323,8 +1323,8 @@ describe Chef::Provider::Package::Yum::RPMDependency do
         [ "testing = 1:1.1-1", "testing == 1:1.1", true ],
         [ "testing = 1:1.1-1", "testing == 1:", true ],
      ].each do |prov, req, result|
-        @rpmprovide = Chef::Provider::Package::Yum::RPMDependency.parse(prov)
-        @rpmrequire = Chef::Provider::Package::Yum::RPMDependency.parse(req)
+        @rpmprovide = Seth::Provider::Package::Yum::RPMDependency.parse(prov)
+        @rpmrequire = Seth::Provider::Package::Yum::RPMDependency.parse(req)
 
         @rpmprovide.satisfy?(@rpmrequire).should == result
         @rpmrequire.satisfy?(@rpmprovide).should == result
@@ -1335,30 +1335,30 @@ describe Chef::Provider::Package::Yum::RPMDependency do
 end
 
 # thanks resource_collection_spec.rb!
-describe Chef::Provider::Package::Yum::RPMDb do
+describe Seth::Provider::Package::Yum::RPMDb do
   before(:each) do
-    @rpmdb = Chef::Provider::Package::Yum::RPMDb.new
+    @rpmdb = Seth::Provider::Package::Yum::RPMDb.new
     # name, version, arch, installed, available
     deps_v = [
-      Chef::Provider::Package::Yum::RPMDependency.parse("libz.so.1()(64bit)"),
-      Chef::Provider::Package::Yum::RPMDependency.parse("test-package-a = 0:1.6.5-9.36.el5")
+      Seth::Provider::Package::Yum::RPMDependency.parse("libz.so.1()(64bit)"),
+      Seth::Provider::Package::Yum::RPMDependency.parse("test-package-a = 0:1.6.5-9.36.el5")
     ]
     deps_z = [
-      Chef::Provider::Package::Yum::RPMDependency.parse("libz.so.1()(64bit)"),
-      Chef::Provider::Package::Yum::RPMDependency.parse("config(test) = 0:1.6.5-9.36.el5"),
-      Chef::Provider::Package::Yum::RPMDependency.parse("test-package-c = 0:1.6.5-9.36.el5")
+      Seth::Provider::Package::Yum::RPMDependency.parse("libz.so.1()(64bit)"),
+      Seth::Provider::Package::Yum::RPMDependency.parse("config(test) = 0:1.6.5-9.36.el5"),
+      Seth::Provider::Package::Yum::RPMDependency.parse("test-package-c = 0:1.6.5-9.36.el5")
     ]
-    @rpm_v = Chef::Provider::Package::Yum::RPMDbPackage.new("test-package-a", "0:1.6.5-9.36.el5", "i386", deps_v, true, false, "base")
-    @rpm_w = Chef::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "i386", [], true, true, "extras")
-    @rpm_x = Chef::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "x86_64", [], false, true, "extras")
-    @rpm_y = Chef::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "1:1.6.5-9.36.el5", "x86_64", [], true, true, "extras")
-    @rpm_z = Chef::Provider::Package::Yum::RPMDbPackage.new("test-package-c", "0:1.6.5-9.36.el5", "noarch", deps_z, true, true, "base")
-    @rpm_z_mirror = Chef::Provider::Package::Yum::RPMDbPackage.new("test-package-c", "0:1.6.5-9.36.el5", "noarch", deps_z, true, true, "base")
+    @rpm_v = Seth::Provider::Package::Yum::RPMDbPackage.new("test-package-a", "0:1.6.5-9.36.el5", "i386", deps_v, true, false, "base")
+    @rpm_w = Seth::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "i386", [], true, true, "extras")
+    @rpm_x = Seth::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "0:1.6.5-9.36.el5", "x86_64", [], false, true, "extras")
+    @rpm_y = Seth::Provider::Package::Yum::RPMDbPackage.new("test-package-b", "1:1.6.5-9.36.el5", "x86_64", [], true, true, "extras")
+    @rpm_z = Seth::Provider::Package::Yum::RPMDbPackage.new("test-package-c", "0:1.6.5-9.36.el5", "noarch", deps_z, true, true, "base")
+    @rpm_z_mirror = Seth::Provider::Package::Yum::RPMDbPackage.new("test-package-c", "0:1.6.5-9.36.el5", "noarch", deps_z, true, true, "base")
   end
 
   describe "initialize" do
-    it "should return a Chef::Provider::Package::Yum::RPMDb object" do
-      @rpmdb.should be_kind_of(Chef::Provider::Package::Yum::RPMDb)
+    it "should return a Seth::Provider::Package::Yum::RPMDb object" do
+      @rpmdb.should be_kind_of(Seth::Provider::Package::Yum::RPMDb)
     end
   end
 
@@ -1504,8 +1504,8 @@ describe Chef::Provider::Package::Yum::RPMDb do
 
   describe "whatprovides" do
     it "should raise an error unless a RPMDependency is passed" do
-      @rpmprovide = Chef::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==)
-      @rpmrequire = Chef::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :>=)
+      @rpmprovide = Seth::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :==)
+      @rpmrequire = Seth::Provider::Package::Yum::RPMDependency.new("testing", "1:1.6.5-9.36.el5", :>=)
       lambda {
         @rpmdb.whatprovides("hi")
       }.should raise_error(ArgumentError)
@@ -1517,12 +1517,12 @@ describe Chef::Provider::Package::Yum::RPMDb do
     it "should return an Array of packages statisfying a RPMDependency" do
       @rpmdb.push(@rpm_v, @rpm_w, @rpm_z)
 
-      @rpmrequire = Chef::Provider::Package::Yum::RPMDependency.parse("test-package-a >= 1.6.5")
+      @rpmrequire = Seth::Provider::Package::Yum::RPMDependency.parse("test-package-a >= 1.6.5")
       x = @rpmdb.whatprovides(@rpmrequire)
       x.should be_kind_of(Array)
       x[0].should be == @rpm_v
 
-      @rpmrequire = Chef::Provider::Package::Yum::RPMDependency.parse("libz.so.1()(64bit)")
+      @rpmrequire = Seth::Provider::Package::Yum::RPMDependency.parse("libz.so.1()(64bit)")
       x = @rpmdb.whatprovides(@rpmrequire)
       x.should be_kind_of(Array)
       x[0].should be == @rpm_v
@@ -1532,10 +1532,10 @@ describe Chef::Provider::Package::Yum::RPMDb do
 
 end
 
-describe Chef::Provider::Package::Yum::YumCache do
+describe Seth::Provider::Package::Yum::YumCache do
   # allow for the reset of a Singleton
   # thanks to Ian White (http://blog.ardes.com/2006/12/11/testing-singletons-with-ruby)
-  class << Chef::Provider::Package::Yum::YumCache
+  class << Seth::Provider::Package::Yum::YumCache
     def reset_instance
       Singleton.send :__init__, self
       self
@@ -1589,23 +1589,23 @@ EOF
     @status = double("Status", :exitstatus => 0, :stdin => @stdin, :stdout => @stdout_good, :stderr => @stderr)
 
     # new singleton each time
-    Chef::Provider::Package::Yum::YumCache.reset_instance
-    @yc = Chef::Provider::Package::Yum::YumCache.instance
+    Seth::Provider::Package::Yum::YumCache.reset_instance
+    @yc = Seth::Provider::Package::Yum::YumCache.instance
     # load valid data
     @yc.stub(:shell_out!).and_return(@status)
   end
 
   describe "initialize" do
-    it "should return a Chef::Provider::Package::Yum::YumCache object" do
-      @yc.should be_kind_of(Chef::Provider::Package::Yum::YumCache)
+    it "should return a Seth::Provider::Package::Yum::YumCache object" do
+      @yc.should be_kind_of(Seth::Provider::Package::Yum::YumCache)
     end
 
-    it "should register reload for start of Chef::Client runs" do
-      Chef::Provider::Package::Yum::YumCache.reset_instance
-      Chef::Client.should_receive(:when_run_starts) do |&b|
+    it "should register reload for start of Seth::Client runs" do
+      Seth::Provider::Package::Yum::YumCache.reset_instance
+      Seth::Client.should_receive(:when_run_starts) do |&b|
         b.should_not be_nil
       end
-      @yc = Chef::Provider::Package::Yum::YumCache.instance
+      @yc = Seth::Provider::Package::Yum::YumCache.instance
     end
   end
 
@@ -1619,60 +1619,60 @@ EOF
 
     it "should run yum-dump.py using the system python when next_refresh is for :all" do
       @yc.reload
-      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --options --installed-provides --yum-lock-timeout 30$}, :timeout=>Chef::Config[:yum_timeout])
+      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --options --installed-provides --yum-lock-timeout 30$}, :timeout=>Seth::Config[:yum_timeout])
       @yc.refresh
     end
 
     it "should run yum-dump.py with the installed flag when next_refresh is for :installed" do
       @yc.reload_installed
-      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --installed --yum-lock-timeout 30$}, :timeout=>Chef::Config[:yum_timeout])
+      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --installed --yum-lock-timeout 30$}, :timeout=>Seth::Config[:yum_timeout])
       @yc.refresh
     end
 
     it "should run yum-dump.py with the all-provides flag when next_refresh is for :provides" do
       @yc.reload_provides
-      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --options --all-provides --yum-lock-timeout 30$}, :timeout=>Chef::Config[:yum_timeout])
+      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --options --all-provides --yum-lock-timeout 30$}, :timeout=>Seth::Config[:yum_timeout])
       @yc.refresh
     end
 
     it "should pass extra_repo_control args to yum-dump.py" do
       @yc.enable_extra_repo_control("--enablerepo=foo --disablerepo=bar")
-      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --options --installed-provides --enablerepo=foo --disablerepo=bar --yum-lock-timeout 30$}, :timeout=>Chef::Config[:yum_timeout])
+      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --options --installed-provides --enablerepo=foo --disablerepo=bar --yum-lock-timeout 30$}, :timeout=>Seth::Config[:yum_timeout])
       @yc.refresh
     end
 
     it "should pass extra_repo_control args and configured yum lock timeout to yum-dump.py" do
-      Chef::Config[:yum_lock_timeout] = 999
+      Seth::Config[:yum_lock_timeout] = 999
       @yc.enable_extra_repo_control("--enablerepo=foo --disablerepo=bar")
-      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --options --installed-provides --enablerepo=foo --disablerepo=bar --yum-lock-timeout 999$}, :timeout=>Chef::Config[:yum_timeout])
+      @yc.should_receive(:shell_out!).with(%r{^/usr/bin/python .*/yum-dump.py --options --installed-provides --enablerepo=foo --disablerepo=bar --yum-lock-timeout 999$}, :timeout=>Seth::Config[:yum_timeout])
       @yc.refresh
     end
 
     it "should warn about invalid data with too many separators" do
       @status = double("Status", :exitstatus => 0, :stdin => @stdin, :stdout => @stdout_bad_separators, :stderr => @stderr)
       @yc.stub(:shell_out!).and_return(@status)
-      Chef::Log.should_receive(:warn).exactly(3).times.with(%r{Problem parsing})
+      Seth::Log.should_receive(:warn).exactly(3).times.with(%r{Problem parsing})
       @yc.refresh
     end
 
     it "should warn about invalid data with an incorrect type" do
       @status = double("Status", :exitstatus => 0, :stdin => @stdin, :stdout => @stdout_bad_type, :stderr => @stderr)
       @yc.stub(:shell_out!).and_return(@status)
-      Chef::Log.should_receive(:warn).exactly(2).times.with(%r{Problem parsing})
+      Seth::Log.should_receive(:warn).exactly(2).times.with(%r{Problem parsing})
       @yc.refresh
     end
 
     it "should warn about no output from yum-dump.py" do
       @status = double("Status", :exitstatus => 0, :stdin => @stdin, :stdout => @stdout_no_output, :stderr => @stderr)
       @yc.stub(:shell_out!).and_return(@status)
-      Chef::Log.should_receive(:warn).exactly(1).times.with(%r{no output from yum-dump.py})
+      Seth::Log.should_receive(:warn).exactly(1).times.with(%r{no output from yum-dump.py})
       @yc.refresh
     end
 
     it "should raise exception yum-dump.py exits with a non zero status" do
       @status = double("Status", :exitstatus => 1, :stdin => @stdin, :stdout => @stdout_no_output, :stderr => @stderr)
       @yc.stub(:shell_out!).and_return(@status)
-      lambda { @yc.refresh}.should raise_error(Chef::Exceptions::Package, %r{CentOS-Base.repo, line: 12})
+      lambda { @yc.refresh}.should raise_error(Seth::Exceptions::Package, %r{CentOS-Base.repo, line: 12})
     end
 
     it "should parse type 'i' into an installed state for a package" do

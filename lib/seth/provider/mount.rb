@@ -1,7 +1,7 @@
 #
-# Author:: Joshua Timberman (<joshua@getchef.com>)
-# Author:: Lamont Granquist (<lamont@getchef.com>)
-# Copyright:: Copyright (c) 2009-2014 Chef Software, Inc.
+# Author:: Joshua Timberman (<joshua@getseth.com>)
+# Author:: Lamont Granquist (<lamont@getseth.com>)
+# Copyright:: Copyright (c) 2009-2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'chef/log'
-require 'chef/mixin/command'
-require 'chef/provider'
+require 'seth/log'
+require 'seth/mixin/command'
+require 'seth/provider'
 
-class Chef
+class Seth
   class Provider
-    class Mount < Chef::Provider
+    class Mount < Seth::Provider
 
-      include Chef::Mixin::Command
+      include Seth::Mixin::Command
 
       attr_accessor :unmount_retries
 
@@ -46,10 +46,10 @@ class Chef
         unless current_resource.mounted
           converge_by("mount #{current_resource.device} to #{current_resource.mount_point}") do
             mount_fs
-            Chef::Log.info("#{new_resource} mounted")
+            Seth::Log.info("#{new_resource} mounted")
           end
         else
-          Chef::Log.debug("#{new_resource} is already mounted")
+          Seth::Log.debug("#{new_resource} is already mounted")
         end
       end
 
@@ -57,10 +57,10 @@ class Chef
         if current_resource.mounted
           converge_by("unmount #{current_resource.device}") do
             umount_fs
-            Chef::Log.info("#{new_resource} unmounted")
+            Seth::Log.info("#{new_resource} unmounted")
           end
         else
-          Chef::Log.debug("#{new_resource} is already unmounted")
+          Seth::Log.debug("#{new_resource} is already unmounted")
         end
       end
 
@@ -69,21 +69,21 @@ class Chef
           if new_resource.supports[:remount]
             converge_by("remount #{current_resource.device}") do
               remount_fs
-              Chef::Log.info("#{new_resource} remounted")
+              Seth::Log.info("#{new_resource} remounted")
             end
           else
             converge_by("unmount #{current_resource.device}") do
               umount_fs
-              Chef::Log.info("#{new_resource} unmounted")
+              Seth::Log.info("#{new_resource} unmounted")
             end
             wait_until_unmounted(unmount_retries)
             converge_by("mount #{current_resource.device}") do
               mount_fs
-              Chef::Log.info("#{new_resource} mounted")
+              Seth::Log.info("#{new_resource} mounted")
             end
           end
         else
-          Chef::Log.debug("#{new_resource} not mounted, nothing to remount")
+          Seth::Log.debug("#{new_resource} not mounted, nothing to remount")
         end
       end
 
@@ -91,10 +91,10 @@ class Chef
         unless current_resource.enabled && mount_options_unchanged?
           converge_by("enable #{current_resource.device}") do
             enable_fs
-            Chef::Log.info("#{new_resource} enabled")
+            Seth::Log.info("#{new_resource} enabled")
           end
         else
-          Chef::Log.debug("#{new_resource} already enabled")
+          Seth::Log.debug("#{new_resource} already enabled")
         end
       end
 
@@ -102,10 +102,10 @@ class Chef
         if current_resource.enabled
           converge_by("disable #{current_resource.device}") do
             disable_fs
-            Chef::Log.info("#{new_resource} disabled")
+            Seth::Log.info("#{new_resource} disabled")
           end
         else
-          Chef::Log.debug("#{new_resource} already disabled")
+          Seth::Log.debug("#{new_resource} already disabled")
         end
       end
 
@@ -115,12 +115,12 @@ class Chef
 
       # should actually check if the filesystem is mounted (not just return current_resource) and return true/false
       def mounted?
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not implement #mounted?"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not implement #mounted?"
       end
 
       # should check new_resource against current_resource to see if mount options need updating, returns true/false
       def mount_options_unchanged?
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not implement #mount_options_unchanged?"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not implement #mount_options_unchanged?"
       end
 
       #
@@ -131,28 +131,28 @@ class Chef
 
       # should implement mounting of the filesystem, raises if action does not succeed
       def mount_fs
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :mount"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :mount"
       end
 
       # should implement unmounting of the filesystem, raises if action does not succeed
       def umount_fs
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :umount"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :umount"
       end
 
       # should implement remounting of the filesystem (via a -o remount or some other atomic-ish action that isn't
       # simply a umount/mount style remount), raises if action does not succeed
       def remount_fs
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :remount"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :remount"
       end
 
       # should implement enabling of the filesystem (e.g. in /etc/fstab), raises if action does not succeed
       def enable_fs
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :enable"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :enable"
       end
 
       # should implement disabling of the filesystem (e.g. in /etc/fstab), raises if action does not succeed
       def disable_fs
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :disable"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :disable"
       end
 
       private
@@ -160,7 +160,7 @@ class Chef
       def wait_until_unmounted(tries)
         while mounted?
           if (tries -= 1) < 0
-            raise Chef::Exceptions::Mount, "Retries exceeded waiting for filesystem to unmount"
+            raise Seth::Exceptions::Mount, "Retries exceeded waiting for filesystem to unmount"
           end
           sleep 0.1
         end

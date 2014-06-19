@@ -16,8 +16,8 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
-class Chef::Knife::RecipeList < Chef::Knife
+require 'seth/knife'
+class Seth::Knife::RecipeList < Chef::Knife
 
   banner "knife recipe list [PATTERN]"
 

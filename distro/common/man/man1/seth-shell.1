@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "CHEF-SHELL" "1" "Chef 11.12.0" "" "chef-shell"
+.TH "CHEF-SHELL" "1" "Seth 11.12.0" "" "seth-shell"
 .SH NAME
-chef-shell \- The man page for the chef-shell command line tool.
+seth-shell \- The man page for the chef-shell command line tool.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,19 +31,19 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-chef\-shell is a recipe debugging tool that allows the use of breakpoints within recipes. chef\-shell runs as an Interactive Ruby (IRb) session. chef\-shell supports both recipe and attribute file syntax, as well as interactive debugging features.
+seth\-shell is a recipe debugging tool that allows the use of breakpoints within recipes. chef\-shell runs as an Interactive Ruby (IRb) session. chef\-shell supports both recipe and attribute file syntax, as well as interactive debugging features.
 .sp
 \fBNOTE:\fP
 .INDENT 0.0
 .INDENT 3.5
-chef\-shell is the new name for Shef as of Chef 11.x\&. chef\-shell is backwards compatible and aside from the name change, has the same set of functionality as with previous releases.
+seth\-shell is the new name for Shef as of Seth 11.x\&. chef\-shell is backwards compatible and aside from the name change, has the same set of functionality as with previous releases.
 .UNINDENT
 .UNINDENT
 .sp
-The chef\-shell executable is run as a command\-line tool.
+The seth\-shell executable is run as a command\-line tool.
 .SH MODES
 .sp
-chef\-shell is tool that allows Knife to be run using an Interactive Ruby (IRb) session. chef\-shell currently supports recipe and attribute file syntax, as well as interactive debugging features. chef\-shell has three run modes:
+seth\-shell is tool that allows Knife to be run using an Interactive Ruby (IRb) session. chef\-shell currently supports recipe and attribute file syntax, as well as interactive debugging features. chef\-shell has three run modes:
 .TS
 center;
 |l|l|.
@@ -63,13 +63,13 @@ _
 T{
 Solo
 T}	T{
-chef\-shell acts as a chef\-solo client. It attempts to load the chef\-solo configuration file and JSON attributes. If the JSON attributes set a run list, it will be honored. Cookbooks will be loaded in the same way that chef\-solo loads them. chef\-solo mode is activated with the \fB\-s\fP or \fB\-\-solo\fP command line option, and JSON attributes are specified in the same way as for chef\-solo, with \fB\-j /path/to/chef\-solo.json\fP\&.
+seth\-shell acts as a chef\-solo client. It attempts to load the chef\-solo configuration file and JSON attributes. If the JSON attributes set a run list, it will be honored. Cookbooks will be loaded in the same way that chef\-solo loads them. chef\-solo mode is activated with the \fB\-s\fP or \fB\-\-solo\fP command line option, and JSON attributes are specified in the same way as for chef\-solo, with \fB\-j /path/to/chef\-solo.json\fP\&.
 T}
 _
 T{
 Client
 T}	T{
-chef\-shell acts as a chef\-client\&. During startup, it reads the chef\-client configuration file and contacts the Chef server to get attributes and cookbooks. The run list will be set in the same way as normal chef\-client runs. chef\-client mode is activated with the \fB\-z\fP or \fB\-\-client\fP options. You can also specify the configuration file with \fB\-c CONFIG\fP and the server URL with \fB\-S SERVER_URL\fP\&.
+seth\-shell acts as a chef\-client\&. During startup, it reads the chef\-client configuration file and contacts the Seth server to get attributes and cookbooks. The run list will be set in the same way as normal chef\-client runs. chef\-client mode is activated with the \fB\-z\fP or \fB\-\-client\fP options. You can also specify the configuration file with \fB\-c CONFIG\fP and the server URL with \fB\-S SERVER_URL\fP\&.
 T}
 _
 .TE
@@ -81,7 +81,7 @@ This command has the following syntax:
 .sp
 .nf
 .ft C
-chef\-shell OPTION VALUE OPTION VALUE ...
+seth\-shell OPTION VALUE OPTION VALUE ...
 .ft P
 .fi
 .UNINDENT
@@ -91,7 +91,7 @@ This command has the following options:
 .INDENT 0.0
 .TP
 .B \fB\-a\fP, \fB\-\-standalone\fP
-Indicates that chef\-shell will be run in standalone mode.
+Indicates that seth\-shell will be run in standalone mode.
 .TP
 .B \fB\-c CONFIG\fP, \fB\-\-config CONFIG\fP
 The configuration file to use.
@@ -106,18 +106,18 @@ The path to a file that contains JSON data.
 The level of logging that will be stored in a log file.
 .TP
 .B \fB\-s\fP, \fB\-\-solo\fP
-Indicates that chef\-shell will be run in chef\-solo mode.
+Indicates that seth\-shell will be run in chef\-solo mode.
 .TP
 .B \fB\-S CHEF_SERVER_URL\fP, \fB\-\-server CHEF_SERVER_URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-z\fP, \fB\-\-client\fP
-Indicates that chef\-shell will be run in chef\-client mode.
+Indicates that seth\-shell will be run in chef\-client mode.
 .UNINDENT
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

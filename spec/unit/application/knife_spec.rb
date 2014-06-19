@@ -18,11 +18,11 @@
 require 'spec_helper'
 require "#{CHEF_SPEC_DATA}/knife_subcommand/test_yourself"
 
-describe Chef::Application::Knife do
+describe Seth::Application::Knife do
   include SpecHelpers::Knife
 
   before(:all) do
-    class NoopKnifeCommand < Chef::Knife
+    class NoopKnifeCommand < Seth::Knife
       option :opt_with_default,
         :short => "-D VALUE",
         :long => "-optwithdefault VALUE",
@@ -35,12 +35,12 @@ describe Chef::Application::Knife do
 
   before(:each) do
     # Prevent code from getting loaded on every test invocation.
-    Chef::Knife.stub(:load_commands)
+    Seth::Knife.stub(:load_commands)
 
-    @knife = Chef::Application::Knife.new
+    @knife = Seth::Application::Knife.new
     @knife.stub(:puts)
     @knife.stub(:trap)
-    Chef::Knife.stub(:list_commands)
+    Seth::Knife.stub(:list_commands)
   end
 
   it "should exit 1 and print the options if no arguments are given at all" do
@@ -51,15 +51,15 @@ describe Chef::Application::Knife do
 
   it "should exit 2 if run without a sub command" do
     with_argv("--user", "adam") do
-      Chef::Log.should_receive(:error).with(/you need to pass a sub\-command/i)
+      Seth::Log.should_receive(:error).with(/you need to pass a sub\-command/i)
       lambda { @knife.run }.should raise_error(SystemExit) { |e| e.status.should == 2 }
     end
   end
 
   it "should run a sub command with the applications command line option prototype" do
     with_argv(*%w{noop knife command with some args}) do
-      knife = double(Chef::Knife)
-      Chef::Knife.should_receive(:run).with(ARGV, @knife.options).and_return(knife)
+      knife = double(Seth::Knife)
+      Seth::Knife.should_receive(:run).with(ARGV, @knife.options).and_return(knife)
       @knife.should_receive(:exit).with(0)
       @knife.run
     end
@@ -71,50 +71,50 @@ describe Chef::Application::Knife do
       @knife.run
     end
     if windows?
-      Chef::Config[:color].should be_false
+      Seth::Config[:color].should be_false
     else
-      Chef::Config[:color].should be_true
+      Seth::Config[:color].should be_true
     end
   end
 
   describe "when given a path to the client key" do
     it "expands a relative path relative to the CWD" do
-      relative_path = '.chef/client.pem'
+      relative_path = '.seth/client.pem'
       Dir.stub(:pwd).and_return(CHEF_SPEC_DATA)
       with_argv(*%W{noop knife command -k #{relative_path}}) do
         @knife.should_receive(:exit).with(0)
         @knife.run
       end
-      Chef::Config[:client_key].should == File.join(CHEF_SPEC_DATA, relative_path)
+      Seth::Config[:client_key].should == File.join(CHEF_SPEC_DATA, relative_path)
     end
 
     it "expands a ~/home/path to the correct full path" do
-      home_path = '~/.chef/client.pem'
+      home_path = '~/.seth/client.pem'
       with_argv(*%W{noop knife command -k #{home_path}}) do
         @knife.should_receive(:exit).with(0)
         @knife.run
       end
-      Chef::Config[:client_key].should == File.join(ENV['HOME'], '.chef/client.pem').gsub((File::ALT_SEPARATOR || '\\'), File::SEPARATOR)
+      Seth::Config[:client_key].should == File.join(ENV['HOME'], '.seth/client.pem').gsub((File::ALT_SEPARATOR || '\\'), File::SEPARATOR)
     end
 
     it "does not expand a full path" do
       full_path = if windows?
-        'C:/chef/client.pem'
+        'C:/seth/client.pem'
       else
-        '/etc/chef/client.pem'
+        '/etc/seth/client.pem'
       end
       with_argv(*%W{noop knife command -k #{full_path}}) do
         @knife.should_receive(:exit).with(0)
         @knife.run
       end
-      Chef::Config[:client_key].should == full_path
+      Seth::Config[:client_key].should == full_path
     end
 
   end
 
   describe "with environment configuration" do
     before do
-      Chef::Config[:environment] = nil
+      Seth::Config[:environment] = nil
     end
 
     it "should default to no environment" do
@@ -122,7 +122,7 @@ describe Chef::Application::Knife do
         @knife.should_receive(:exit).with(0)
         @knife.run
       end
-      Chef::Config[:environment].should == nil
+      Seth::Config[:environment].should == nil
     end
 
     it "should load the environment from the config file" do
@@ -131,7 +131,7 @@ describe Chef::Application::Knife do
         @knife.should_receive(:exit).with(0)
         @knife.run
       end
-      Chef::Config[:environment].should == 'production'
+      Seth::Config[:environment].should == 'production'
     end
 
     it "should load the environment from the CLI options" do
@@ -139,7 +139,7 @@ describe Chef::Application::Knife do
         @knife.should_receive(:exit).with(0)
         @knife.run
       end
-      Chef::Config[:environment].should == 'development'
+      Seth::Config[:environment].should == 'development'
     end
 
     it "should override the config file environment with the CLI environment" do
@@ -148,7 +148,7 @@ describe Chef::Application::Knife do
         @knife.should_receive(:exit).with(0)
         @knife.run
       end
-      Chef::Config[:environment].should == 'override'
+      Seth::Config[:environment].should == 'override'
     end
 
     it "should override the config file environment with the CLI environment regardless of order" do
@@ -157,13 +157,13 @@ describe Chef::Application::Knife do
         @knife.should_receive(:exit).with(0)
         @knife.run
       end
-      Chef::Config[:environment].should == 'override'
+      Seth::Config[:environment].should == 'override'
     end
 
     it "should run a sub command with the applications command line option prototype" do
       with_argv(*%w{noop knife command with some args}) do
-        knife = double(Chef::Knife)
-        Chef::Knife.should_receive(:run).with(ARGV, @knife.options).and_return(knife)
+        knife = double(Seth::Knife)
+        Seth::Knife.should_receive(:run).with(ARGV, @knife.options).and_return(knife)
         @knife.should_receive(:exit).with(0)
         @knife.run
       end

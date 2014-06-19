@@ -14,15 +14,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-require 'chef/version_class'
+require 'seth/version_class'
 
-class Chef
+class Seth
   class VersionConstraint
     DEFAULT_CONSTRAINT = ">= 0.0.0"
     STANDARD_OPS = %w(< > <= >=)
     OPS = %w(< > = <= >= ~>)
     PATTERN = /^(#{OPS.join('|')}) *([0-9].*)$/
-    VERSION_CLASS = Chef::Version
+    VERSION_CLASS = Seth::Version
 
     attr_reader :op, :version, :raw_version
 
@@ -36,7 +36,7 @@ class Chef
         parse(constraint_spec)
       else
         msg = "VersionConstraint should be created from a String. You gave: #{constraint_spec.inspect}"
-        raise Chef::Exceptions::InvalidVersionConstraint, msg
+        raise Seth::Exceptions::InvalidVersionConstraint, msg
       end
     end
 
@@ -91,7 +91,7 @@ class Chef
       else
         msg = "only one version constraint operation is supported, but you gave #{constraint_spec.size} "
         msg << "['#{constraint_spec.join(', ')}']"
-        raise Chef::Exceptions::InvalidVersionConstraint, msg
+        raise Seth::Exceptions::InvalidVersionConstraint, msg
       end
     end
 
@@ -110,7 +110,7 @@ class Chef
           @missing_patch_level = true
         end
       else
-        raise Chef::Exceptions::InvalidVersionConstraint, "'#{str}'"
+        raise Seth::Exceptions::InvalidVersionConstraint, "'#{str}'"
       end
     end
 

@@ -20,5 +20,5 @@ require 'tempfile'
 require 'logger'
 require 'spec_helper'
 
-describe Chef::Log do
+describe Seth::Log do
 end

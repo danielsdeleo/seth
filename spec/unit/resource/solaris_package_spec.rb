@@ -18,22 +18,22 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::SolarisPackage, "initialize" do
+describe Seth::Resource::SolarisPackage, "initialize" do
 
   before(:each) do
-    @resource = Chef::Resource::SolarisPackage.new("foo")
+    @resource = Seth::Resource::SolarisPackage.new("foo")
   end
 
-  it "should return a Chef::Resource::SolarisPackage object" do
-    @resource.should be_a_kind_of(Chef::Resource::SolarisPackage)
+  it "should return a Seth::Resource::SolarisPackage object" do
+    @resource.should be_a_kind_of(Seth::Resource::SolarisPackage)
   end
 
   it "should not raise any Error when valid number of arguments are provided" do
-    expect { Chef::Resource::SolarisPackage.new("foo") }.to_not raise_error
+    expect { Seth::Resource::SolarisPackage.new("foo") }.to_not raise_error
   end
 
   it "should raise ArgumentError when incorrect number of arguments are provided" do
-    expect { Chef::Resource::SolarisPackage.new }.to raise_error(ArgumentError)
+    expect { Seth::Resource::SolarisPackage.new }.to raise_error(ArgumentError)
   end
 
   it "should set the package_name to the name provided" do
@@ -47,11 +47,11 @@ describe Chef::Resource::SolarisPackage, "initialize" do
   it "should set the run_context to the run_context provided" do
     @run_context = double()
     @run_context.stub(:node)
-    resource = Chef::Resource::SolarisPackage.new("foo", @run_context)
+    resource = Seth::Resource::SolarisPackage.new("foo", @run_context)
     resource.run_context.should eql(@run_context)
   end
 
-  it "should set the provider to Chef::Provider::Package::Solaris" do
-    @resource.provider.should eql(Chef::Provider::Package::Solaris)
+  it "should set the provider to Seth::Provider::Package::Solaris" do
+    @resource.provider.should eql(Seth::Provider::Package::Solaris)
   end
 end

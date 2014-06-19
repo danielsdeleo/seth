@@ -1,4 +1,4 @@
-chef-integration-test (1.0-1) unstable; urgency=low
+seth-integration-test (1.0-1) unstable; urgency=low
 
   * Initial release (Closes: #CHEF-1718)
 

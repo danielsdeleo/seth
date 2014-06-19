@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class IndexRebuild < Knife
 
@@ -56,7 +56,7 @@ class Chef
         parse_api_info(r)
       end
 
-      # Only Chef 11+ servers will have version information in their
+      # Only Seth 11+ servers will have version information in their
       # headers, and only those servers will lack an API endpoint for
       # index rebuilding.
       def unsupported_version?(api_info)
@@ -69,7 +69,7 @@ class Chef
       end
 
       def deprecated_server_message
-        ui.warn("'knife index rebuild' has been removed for Chef 11+ servers.  It will continue to work for prior versions, however.")
+        ui.warn("'knife index rebuild' has been removed for Seth 11+ servers.  It will continue to work for prior versions, however.")
       end
 
       def nag
@@ -77,7 +77,7 @@ class Chef
         ui.confirm("Continue")
       end
 
-      # Chef 11 (and above) servers return various pieces of
+      # Seth 11 (and above) servers return various pieces of
       # information about the server in an +x-ops-api-info+ header.
       # This is a +;+ delimited string of key / value pairs, separated
       # by +=+.
@@ -105,12 +105,12 @@ class Chef
       def server_type(api_info)
         case api_info["flavor"]
         when "osc"
-          "Open Source Chef Server"
+          "Open Source Seth Server"
         when "opc"
-          "Private Chef Server"
+          "Private Seth Server"
         else
           # Generic fallback
-          "Chef Server"
+          "Seth Server"
         end
       end
 
@@ -120,12 +120,12 @@ class Chef
       def ctl_command(api_info)
         case api_info["flavor"]
         when "osc"
-          "chef-server-ctl"
+          "seth-server-ctl"
         when "opc"
-          "private-chef-ctl"
+          "private-seth-ctl"
         else
           # Generic fallback
-          "chef-server-ctl"
+          "seth-server-ctl"
         end
       end
 

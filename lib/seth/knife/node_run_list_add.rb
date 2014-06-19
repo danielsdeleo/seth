@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class NodeRunListAdd < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife node run_list add [NODE] [ENTRY[,ENTRY]] (options)"
@@ -40,7 +40,7 @@ class Chef
              :description => "Place the ENTRY in the run list before ITEM"
 
       def run
-        node = Chef::Node.load(@name_args[0])
+        node = Seth::Node.load(@name_args[0])
         if @name_args.size > 2
           # Check for nested lists and create a single plain one
           entries = @name_args[1..-1].map do |entry|

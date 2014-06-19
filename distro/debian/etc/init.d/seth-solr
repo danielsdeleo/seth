@@ -1,25 +1,25 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:           chef-solr
+# Provides:           seth-solr
 # Required-Start:     $remote_fs $network
 # Required-Stop:      $remote_fs $network
 # Default-Start:      2 3 4 5
 # Default-Stop:       0 1 6
-# Short-Description:  Start a chef-solr.
+# Short-Description:  Start a seth-solr.
 ### END INIT INFO
 #
 # Copyright (c) 2009-2010 Opscode, Inc <legal@opscode.com>
 #
-# chef-solr         Startup script for chef-solr.
+# seth-solr         Startup script for chef-solr.
 # chkconfig: - 84 02
-# description: starts up chef-solr in daemon mode.
+# description: starts up seth-solr in daemon mode.
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=$(which chef-solr)
+DAEMON=$(which seth-solr)
 DAEMON_NAME=java
-NAME=chef-solr
-DESC=chef-solr
-PIDFILE=/var/run/chef/solr.pid
+NAME=seth-solr
+DESC=seth-solr
+PIDFILE=/var/run/seth/solr.pid
 
 test -x $DAEMON || exit 1
 
@@ -27,9 +27,9 @@ test -x $DAEMON || exit 1
 
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
-if [ ! -d /var/run/chef ]; then
-  mkdir /var/run/chef
-  chown $USER:$GROUP /var/run/chef
+if [ ! -d /var/run/seth ]; then
+  mkdir /var/run/seth
+  chown $USER:$GROUP /var/run/seth
 fi
 
 if [ ! -f $LOGFILE ]; then

@@ -19,14 +19,14 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::CookbookSiteUnshare do
+describe Seth::Knife::CookbookSiteUnshare do
 
   before(:each) do
-    @knife = Chef::Knife::CookbookSiteUnshare.new
+    @knife = Seth::Knife::CookbookSiteUnshare.new
     @knife.name_args = ['cookbook_name']
     @knife.stub(:confirm).and_return(true)
 
-    @rest = double('Chef::REST')
+    @rest = double('Seth::REST')
     @rest.stub(:delete_rest).and_return(true)
     @knife.stub(:rest).and_return(@rest)
     @stdout = StringIO.new

@@ -1,14 +1,14 @@
-class Chef
+class Seth
 
   # ==EventDispatch
   # Classes in EventDispatch deal with collecting, distributing, and handling
-  # information in response to events that occur during a chef-client run.
+  # information in response to events that occur during a seth-client run.
   #
   # EventDispatch uses a simple publishing system where data from all events
   # are forwarded to all subscribers unconditionally.
   #
   # EventDispatch is used to implement custom console output formatters so that
-  # users may have more control over the formatting and verbosity of Chef
+  # users may have more control over the formatting and verbosity of Seth
   # client output and client-side data collection for server-side client
   # history storage and reporting.
   #
@@ -28,18 +28,18 @@ class Chef
     # that process them.
     class Base
 
-      # Called at the very start of a Chef Run
+      # Called at the very start of a Seth Run
       def run_start(version)
       end
 
       def run_started(run_status)
       end
 
-      # Called at the end a successful Chef run.
+      # Called at the end a successful Seth run.
       def run_completed(node)
       end
 
-      # Called at the end of a failed Chef run.
+      # Called at the end of a failed Seth run.
       def run_failed(exception)
       end
 
@@ -62,7 +62,7 @@ class Chef
       def registration_failed(node_name, exception, config)
       end
 
-      # Called before Chef client loads the node data from the server
+      # Called before Seth client loads the node data from the server
       def node_load_start(node_name, config)
       end
 
@@ -76,7 +76,7 @@ class Chef
       def run_list_expand_failed(node, exception)
       end
 
-      # Called after Chef client has loaded the node data.
+      # Called after Seth client has loaded the node data.
       # Default and override attrs from roles have been computed, but not yet applied.
       # Normal attrs from JSON have been added to the node.
       def node_load_completed(node, expanded_run_list, config)

@@ -86,7 +86,7 @@ def setup(yb, options):
     yb.log = __log
     yb.errorlog = __log
 
-  # Give Chef every possible package version, it can decide what to do with them
+  # Give Seth every possible package version, it can decide what to do with them
   if YUM_MAJOR == 3:
     yb.conf.showdupesfromrepos = True
   elif YUM_MAJOR == 2:
@@ -259,7 +259,7 @@ def main():
                     help="run entirely from cache, don't update cache")
   parser.add_option("-o", "--options",
                     action="store_true", dest="output_options", default=False,
-                    help="output select yum options useful to Chef")
+                    help="output select yum options useful to Seth")
   parser.add_option("-p", "--installed-provides",
                     action="store_const", const="installed", dest="output_provides", default="none",
                     help="output Provides for installed packages, big/wide output")

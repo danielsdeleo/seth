@@ -19,23 +19,23 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Service do
+describe Seth::Resource::Service do
 
   before(:each) do
-    @resource = Chef::Resource::Service.new("chef")
+    @resource = Seth::Resource::Service.new("seth")
   end
 
-  it "should create a new Chef::Resource::Service" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Service)
+  it "should create a new Seth::Resource::Service" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Service)
   end
 
   it "should set the service_name to the first argument to new" do
-    @resource.service_name.should eql("chef")
+    @resource.service_name.should eql("seth")
   end
 
   it "should set the pattern to be the service name by default" do
-    @resource.pattern.should eql("chef")
+    @resource.pattern.should eql("seth")
   end
 
   it "should accept a string for the service name" do
@@ -55,8 +55,8 @@ describe Chef::Resource::Service do
   end
 
   it "should accept a string for the service start command" do
-    @resource.start_command "/etc/init.d/chef start"
-    @resource.start_command.should eql("/etc/init.d/chef start")
+    @resource.start_command "/etc/init.d/seth start"
+    @resource.start_command.should eql("/etc/init.d/seth start")
   end
 
   it "should not accept a regexp for the service start command" do
@@ -66,8 +66,8 @@ describe Chef::Resource::Service do
   end
 
   it "should accept a string for the service stop command" do
-    @resource.stop_command "/etc/init.d/chef stop"
-    @resource.stop_command.should eql("/etc/init.d/chef stop")
+    @resource.stop_command "/etc/init.d/seth stop"
+    @resource.stop_command.should eql("/etc/init.d/seth stop")
   end
 
   it "should not accept a regexp for the service stop command" do
@@ -77,8 +77,8 @@ describe Chef::Resource::Service do
   end
 
   it "should accept a string for the service status command" do
-    @resource.status_command "/etc/init.d/chef status"
-    @resource.status_command.should eql("/etc/init.d/chef status")
+    @resource.status_command "/etc/init.d/seth status"
+    @resource.status_command.should eql("/etc/init.d/seth status")
   end
 
   it "should not accept a regexp for the service status command" do
@@ -88,8 +88,8 @@ describe Chef::Resource::Service do
   end
 
   it "should accept a string for the service restart command" do
-    @resource.restart_command "/etc/init.d/chef restart"
-    @resource.restart_command.should eql("/etc/init.d/chef restart")
+    @resource.restart_command "/etc/init.d/seth restart"
+    @resource.restart_command.should eql("/etc/init.d/seth restart")
   end
 
   it "should not accept a regexp for the service restart command" do
@@ -99,8 +99,8 @@ describe Chef::Resource::Service do
   end
 
   it "should accept a string for the service reload command" do
-    @resource.reload_command "/etc/init.d/chef reload"
-    @resource.reload_command.should eql("/etc/init.d/chef reload")
+    @resource.reload_command "/etc/init.d/seth reload"
+    @resource.reload_command.should eql("/etc/init.d/seth reload")
   end
 
   it "should not accept a regexp for the service reload command" do
@@ -110,8 +110,8 @@ describe Chef::Resource::Service do
   end
 
   it "should accept a string for the service init command" do
-    @resource.init_command "/etc/init.d/chef"
-    @resource.init_command.should eql("/etc/init.d/chef")
+    @resource.init_command "/etc/init.d/seth"
+    @resource.init_command.should eql("/etc/init.d/seth")
   end
 
   it "should not accept a regexp for the service init command" do

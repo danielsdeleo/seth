@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Group::Gpasswd, "modify_group_members" do
+describe Seth::Provider::Group::Gpasswd, "modify_group_members" do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Group.new("wheel")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Group.new("wheel")
     @new_resource.members %w{lobster rage fist}
     @new_resource.append false
-    @provider = Chef::Provider::Group::Gpasswd.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Group::Gpasswd.new(@new_resource, @run_context)
     #@provider.stub(:run_command).and_return(true)
   end
 
@@ -38,12 +38,12 @@ describe Chef::Provider::Group::Gpasswd, "modify_group_members" do
     end
 
     # Checking for required binaries is already done in the spec
-    # for Chef::Provider::Group - no need to repeat it here.  We'll
+    # for Seth::Provider::Group - no need to repeat it here.  We'll
     # include only what's specific to this provider.
     it "should raise an error if the required binary /usr/bin/gpasswd doesn't exist" do
       File.stub(:exists?).and_return(true)
       File.should_receive(:exists?).with("/usr/bin/gpasswd").and_return(false)
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Group)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Group)
     end
 
     it "shouldn't raise an error if the required binaries exist" do
@@ -65,7 +65,7 @@ describe Chef::Provider::Group::Gpasswd, "modify_group_members" do
       end
 
       it "logs a message and sets group's members to 'none'" do
-        Chef::Log.should_receive(:debug).with("group[wheel] setting group members to: none")
+        Seth::Log.should_receive(:debug).with("group[wheel] setting group members to: none")
         @provider.should_receive(:shell_out!).with("gpasswd -M \"\" wheel")
         @provider.modify_group_members
       end
@@ -85,7 +85,7 @@ describe Chef::Provider::Group::Gpasswd, "modify_group_members" do
 
     describe "when the resource specifies group members" do
       it "should log an appropriate debug message" do
-        Chef::Log.should_receive(:debug).with("group[wheel] setting group members to: lobster, rage, fist")
+        Seth::Log.should_receive(:debug).with("group[wheel] setting group members to: lobster, rage, fist")
         @provider.stub(:shell_out!)
         @provider.modify_group_members
       end

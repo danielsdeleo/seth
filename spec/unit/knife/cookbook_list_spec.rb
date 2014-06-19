@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::CookbookList do
+describe Seth::Knife::CookbookList do
   before do
-    @knife = Chef::Knife::CookbookList.new
+    @knife = Seth::Knife::CookbookList.new
     @rest_mock = double('rest')
     @knife.stub(:rest).and_return(@rest_mock)
     @cookbook_names = ['apache2', 'mysql']

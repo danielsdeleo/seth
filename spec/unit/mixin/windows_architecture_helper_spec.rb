@@ -18,19 +18,19 @@
 
 
 require 'spec_helper'
-require 'chef/mixin/windows_architecture_helper'
+require 'seth/mixin/windows_architecture_helper'
 
 
 
-describe Chef::Mixin::WindowsArchitectureHelper do
-  include Chef::Mixin::WindowsArchitectureHelper
+describe Seth::Mixin::WindowsArchitectureHelper do
+  include Seth::Mixin::WindowsArchitectureHelper
 
   before do
     @valid_architectures = [ :i386, :x86_64 ]
     @invalid_architectures = [ "i386", "x86_64", :x64, :x86, :arm ]
 
-    @node_i386 = Chef::Node.new
-    @node_x86_64 = Chef::Node.new
+    @node_i386 = Seth::Node.new
+    @node_x86_64 = Seth::Node.new
   end
 
   it "returns true when valid architectures are passed to valid_windows_architecture?" do
@@ -54,8 +54,8 @@ describe Chef::Mixin::WindowsArchitectureHelper do
   it "raises an error if an invalid architecture is passed to assert_valid_windows_architecture!" do
     @invalid_architectures.each do | architecture |
       begin
-        assert_valid_windows_architecture!(architecture).should raise_error Chef::Exceptions::Win32ArchitectureIncorrect
-      rescue Chef::Exceptions::Win32ArchitectureIncorrect
+        assert_valid_windows_architecture!(architecture).should raise_error Seth::Exceptions::Win32ArchitectureIncorrect
+      rescue Seth::Exceptions::Win32ArchitectureIncorrect
       end
     end
   end
@@ -70,7 +70,7 @@ describe Chef::Mixin::WindowsArchitectureHelper do
 
   def enumerate_architecture_node_combinations(only_valid_combinations)
     @valid_architectures.each do | node_architecture |
-      new_node = Chef::Node.new
+      new_node = Seth::Node.new
       new_node.default["kernel"] = Hash.new
       new_node.default["kernel"][:machine] = node_architecture.to_s
 

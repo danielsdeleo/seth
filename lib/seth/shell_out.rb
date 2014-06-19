@@ -1,12 +1,12 @@
 require 'mixlib/shellout'
 
-class Chef
+class Seth
   class ShellOut < Mixlib::ShellOut
 
     def initialize(*args)
-      Chef::Log.warn("Chef::ShellOut is deprecated, please use Mixlib::ShellOut")
+      Seth::Log.warn("Chef::ShellOut is deprecated, please use Mixlib::ShellOut")
       called_from = caller[0..3].inject("Called from:\n") {|msg, trace_line| msg << "  #{trace_line}\n" }
-      Chef::Log.warn(called_from)
+      Seth::Log.warn(called_from)
       super
     end
   end

@@ -43,7 +43,7 @@
 require 'diff/lcs'
 require 'diff/lcs/hunk'
 
-class Chef
+class Seth
   class Util
     class Diff
       # @todo: to_a, to_s, to_json, inspect defs, accessors for @diff and @error
@@ -64,8 +64,8 @@ class Chef
       def use_tempfile_if_missing(file)
         tempfile = nil
         unless File.exists?(file)
-          Chef::Log.debug("file #{file} does not exist to diff against, using empty tempfile")
-          tempfile = Tempfile.new("chef-diff")
+          Seth::Log.debug("file #{file} does not exist to diff against, using empty tempfile")
+          tempfile = Tempfile.new("seth-diff")
           file = tempfile.path
         end
         yield file
@@ -84,7 +84,7 @@ class Chef
       end
       
       # produces a unified-output-format diff with 3 lines of context
-      # ChefFS uses udiff() directly
+      # SethFS uses udiff() directly
       def udiff(old_file, new_file)
         diff_str = ""
         file_length_difference = 0
@@ -123,12 +123,12 @@ class Chef
       private
 
       def do_diff(old_file, new_file)
-        if Chef::Config[:diff_disabled]
+        if Seth::Config[:diff_disabled]
           return "(diff output suppressed by config)"
         end
 
-        diff_filesize_threshold = Chef::Config[:diff_filesize_threshold]
-        diff_output_threshold = Chef::Config[:diff_output_threshold]
+        diff_filesize_threshold = Seth::Config[:diff_filesize_threshold]
+        diff_output_threshold = Seth::Config[:diff_output_threshold]
 
         if ::File.size(old_file) > diff_filesize_threshold || ::File.size(new_file) > diff_filesize_threshold
           return "(file sizes exceed #{diff_filesize_threshold} bytes, diff output suppressed)"
@@ -139,7 +139,7 @@ class Chef
         return "(new content is binary, diff output suppressed)" if is_binary?(new_file)
 
         begin
-          Chef::Log.debug("running: diff -u #{old_file} #{new_file}")
+          Seth::Log.debug("running: diff -u #{old_file} #{new_file}")
           diff_str = udiff(old_file, new_file)
 
         rescue Exception => e

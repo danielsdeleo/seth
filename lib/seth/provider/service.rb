@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/command'
-require 'chef/provider'
+require 'seth/mixin/command'
+require 'seth/provider'
 
-class Chef
+class Seth
   class Provider
-    class Service < Chef::Provider
+    class Service < Seth::Provider
 
-      include Chef::Mixin::Command
+      include Seth::Mixin::Command
 
       def initialize(new_resource, run_context)
         super
@@ -51,7 +51,7 @@ class Chef
       def define_resource_requirements
        requirements.assert(:reload) do |a|
          a.assertion { @new_resource.supports[:reload] || @new_resource.reload_command }
-         a.failure_message Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :reload"
+         a.failure_message Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :reload"
          # if a service is not declared to support reload, that won't
          # typically change during the course of a run - so no whyrun
          # alternative here.
@@ -60,11 +60,11 @@ class Chef
 
       def action_enable
         if @current_resource.enabled
-          Chef::Log.debug("#{@new_resource} already enabled - nothing to do")
+          Seth::Log.debug("#{@new_resource} already enabled - nothing to do")
         else
           converge_by("enable service #{@new_resource}") do
             enable_service
-            Chef::Log.info("#{@new_resource} enabled")
+            Seth::Log.info("#{@new_resource} enabled")
           end
         end
         load_new_resource_state
@@ -75,10 +75,10 @@ class Chef
         if @current_resource.enabled
           converge_by("disable service #{@new_resource}") do
             disable_service
-            Chef::Log.info("#{@new_resource} disabled")
+            Seth::Log.info("#{@new_resource} disabled")
           end
         else
-          Chef::Log.debug("#{@new_resource} already disabled - nothing to do")
+          Seth::Log.debug("#{@new_resource} already disabled - nothing to do")
         end
         load_new_resource_state
         @new_resource.enabled(false)
@@ -88,10 +88,10 @@ class Chef
         unless @current_resource.running
           converge_by("start service #{@new_resource}") do
             start_service
-            Chef::Log.info("#{@new_resource} started")
+            Seth::Log.info("#{@new_resource} started")
           end
         else
-          Chef::Log.debug("#{@new_resource} already running - nothing to do")
+          Seth::Log.debug("#{@new_resource} already running - nothing to do")
         end
         load_new_resource_state
         @new_resource.running(true)
@@ -101,10 +101,10 @@ class Chef
         if @current_resource.running
           converge_by("stop service #{@new_resource}") do
             stop_service
-            Chef::Log.info("#{@new_resource} stopped")
+            Seth::Log.info("#{@new_resource} stopped")
           end
         else
-          Chef::Log.debug("#{@new_resource} already stopped - nothing to do")
+          Seth::Log.debug("#{@new_resource} already stopped - nothing to do")
         end
         load_new_resource_state
         @new_resource.running(false)
@@ -113,7 +113,7 @@ class Chef
       def action_restart
         converge_by("restart service #{@new_resource}") do
           restart_service
-          Chef::Log.info("#{@new_resource} restarted")
+          Seth::Log.info("#{@new_resource} restarted")
         end
         load_new_resource_state
         @new_resource.running(true)
@@ -123,34 +123,34 @@ class Chef
         if @current_resource.running
           converge_by("reload service #{@new_resource}") do
             reload_service
-            Chef::Log.info("#{@new_resource} reloaded")
+            Seth::Log.info("#{@new_resource} reloaded")
           end
         end
         load_new_resource_state
       end
 
       def enable_service
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :enable"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :enable"
       end
 
       def disable_service
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :disable"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :disable"
       end
 
       def start_service
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :start"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :start"
       end
 
       def stop_service
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :stop"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :stop"
       end
 
       def restart_service
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :restart"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :restart"
       end
 
       def reload_service
-        raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :restart"
+        raise Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :restart"
       end
 
       protected

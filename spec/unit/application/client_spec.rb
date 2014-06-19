@@ -17,22 +17,22 @@
 
 require 'spec_helper'
 
-describe Chef::Application::Client, "reconfigure" do
+describe Seth::Application::Client, "reconfigure" do
   before do
     Kernel.stub(:trap).and_return(:ok)
 
     @original_argv = ARGV.dup
     ARGV.clear
 
-    @app = Chef::Application::Client.new
+    @app = Seth::Application::Client.new
     @app.stub(:trap)
     @app.stub(:configure_opt_parser).and_return(true)
-    @app.stub(:configure_chef).and_return(true)
+    @app.stub(:configure_seth).and_return(true)
     @app.stub(:configure_logging).and_return(true)
     @app.cli_arguments = []
-    Chef::Config[:interval] = 10
+    Seth::Config[:interval] = 10
 
-    Chef::Config[:once] = false
+    Seth::Config[:once] = false
   end
 
   after do
@@ -41,32 +41,32 @@ describe Chef::Application::Client, "reconfigure" do
 
   describe "when in daemonized mode and no interval has been set" do
     before do
-      Chef::Config[:daemonize] = true
-      Chef::Config[:interval] = nil
+      Seth::Config[:daemonize] = true
+      Seth::Config[:interval] = nil
     end
 
     it "should set the interval to 1800" do
       @app.reconfigure
-      Chef::Config.interval.should == 1800
+      Seth::Config.interval.should == 1800
     end
   end
 
   describe "when configured to run once" do
     before do
-      Chef::Config[:once] = true
-      Chef::Config[:daemonize] = false
-      Chef::Config[:splay] = 60
-      Chef::Config[:interval] = 1800
+      Seth::Config[:once] = true
+      Seth::Config[:daemonize] = false
+      Seth::Config[:splay] = 60
+      Seth::Config[:interval] = 1800
     end
 
     it "ignores the splay" do
       @app.reconfigure
-      Chef::Config.splay.should be_nil
+      Seth::Config.splay.should be_nil
     end
 
     it "forces the interval to nil" do
       @app.reconfigure
-      Chef::Config.interval.should be_nil
+      Seth::Config.interval.should be_nil
     end
 
   end
@@ -74,46 +74,46 @@ describe Chef::Application::Client, "reconfigure" do
   describe "when the json_attribs configuration option is specified" do
 
     let(:json_attribs) { {"a" => "b"} }
-    let(:config_fetcher) { double(Chef::ConfigFetcher, :fetch_json => json_attribs) }
+    let(:config_fetcher) { double(Seth::ConfigFetcher, :fetch_json => json_attribs) }
     let(:json_source) { "https://foo.com/foo.json" }
 
     before do
-      Chef::Config[:json_attribs] = json_source
-      Chef::ConfigFetcher.should_receive(:new).with(json_source).
+      Seth::Config[:json_attribs] = json_source
+      Seth::ConfigFetcher.should_receive(:new).with(json_source).
         and_return(config_fetcher)
     end
 
     it "reads the JSON attributes from the specified source" do
       @app.reconfigure
-      @app.chef_client_json.should == json_attribs
+      @app.seth_client_json.should == json_attribs
     end
   end
 end
 
-describe Chef::Application::Client, "setup_application" do
+describe Seth::Application::Client, "setup_application" do
   before do
-    @app = Chef::Application::Client.new
+    @app = Seth::Application::Client.new
     # this is all stuff the reconfigure method needs
     @app.stub(:configure_opt_parser).and_return(true)
-    @app.stub(:configure_chef).and_return(true)
+    @app.stub(:configure_seth).and_return(true)
     @app.stub(:configure_logging).and_return(true)
   end
 
   it "should change privileges" do
-    Chef::Daemon.should_receive(:change_privilege).and_return(true)
+    Seth::Daemon.should_receive(:change_privilege).and_return(true)
     @app.setup_application
   end
   after do
-    Chef::Config[:solo] = false
+    Seth::Config[:solo] = false
   end
 end
 
-describe Chef::Application::Client, "configure_chef" do
+describe Seth::Application::Client, "configure_seth" do
   before do
     @original_argv = ARGV.dup
     ARGV.clear
-    @app = Chef::Application::Client.new
-    @app.configure_chef
+    @app = Seth::Application::Client.new
+    @app.configure_seth
   end
 
   after do
@@ -122,22 +122,22 @@ describe Chef::Application::Client, "configure_chef" do
 
   it "should set the colored output to false by default on windows and true otherwise" do
     if windows?
-      Chef::Config[:color].should be_false
+      Seth::Config[:color].should be_false
     else
-      Chef::Config[:color].should be_true
+      Seth::Config[:color].should be_true
     end
   end
 end
 
-describe Chef::Application::Client, "run_application", :unix_only do
+describe Seth::Application::Client, "run_application", :unix_only do
   before(:each) do
-    Chef::Config[:daemonize] = true
+    Seth::Config[:daemonize] = true
     @pipe = IO.pipe
-    @app = Chef::Application::Client.new
+    @app = Seth::Application::Client.new
     # Default logger doesn't work correctly when logging from a trap handler.
     @app.configure_logging
-    Chef::Daemon.stub(:daemonize).and_return(true)
-    @app.stub(:run_chef_client) do
+    Seth::Daemon.stub(:daemonize).and_return(true)
+    @app.stub(:run_seth_client) do
       @pipe[1].puts 'started'
       sleep 1
       @pipe[1].puts 'finished'
@@ -157,16 +157,16 @@ describe Chef::Application::Client, "run_application", :unix_only do
 
   describe "when splay is set" do
     before do
-      Chef::Config[:splay] = 10
-      Chef::Config[:interval] = 10
+      Seth::Config[:splay] = 10
+      Seth::Config[:interval] = 10
 
       run_count = 0
 
       # uncomment to debug failures...
-      # Chef::Log.init($stderr)
-      # Chef::Log.level = :debug
+      # Seth::Log.init($stderr)
+      # Seth::Log.level = :debug
 
-      @app.stub(:run_chef_client) do
+      @app.stub(:run_seth_client) do
 
         run_count += 1
         if run_count > 3
@@ -183,7 +183,7 @@ describe Chef::Application::Client, "run_application", :unix_only do
       # This is a very complicated way of writing
       # @app.should_receive(:sleep).once.
       # We have to do it this way because the main loop of
-      # Chef::Application::Client swallows most exceptions, and we need to be
+      # Seth::Application::Client swallows most exceptions, and we need to be
       # able to expose our expectation failures to the parent process in the test.
       @app.stub(:sleep) do |arg|
         number_of_sleep_calls += 1

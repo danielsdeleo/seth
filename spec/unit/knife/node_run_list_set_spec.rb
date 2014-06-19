@@ -18,21 +18,21 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::NodeRunListSet do
+describe Seth::Knife::NodeRunListSet do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::NodeRunListSet.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::NodeRunListSet.new
     @knife.config = {}
     @knife.name_args = [ "adam", "role[monkey]" ]
     @knife.stub(:output).and_return(true)
-    @node = Chef::Node.new()
+    @node = Seth::Node.new()
     @node.stub(:save).and_return(true)
-    Chef::Node.stub(:load).and_return(@node)
+    Seth::Node.stub(:load).and_return(@node)
   end
 
   describe "run" do
     it "should load the node" do
-      Chef::Node.should_receive(:load).with("adam")
+      Seth::Node.should_receive(:load).with("adam")
       @knife.run
     end
 

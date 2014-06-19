@@ -18,14 +18,14 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Mixin
     module FileClass
 
       def file_class
-        @host_os_file ||= if Chef::Platform.windows?
-          require 'chef/win32/file'
-          Chef::ReservedNames::Win32::File
+        @host_os_file ||= if Seth::Platform.windows?
+          require 'seth/win32/file'
+          Seth::ReservedNames::Win32::File
         else
           ::File
         end

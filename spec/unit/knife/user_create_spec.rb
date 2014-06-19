@@ -18,11 +18,11 @@
 
 require 'spec_helper'
 
-Chef::Knife::UserCreate.load_deps
+Seth::Knife::UserCreate.load_deps
 
-describe Chef::Knife::UserCreate do
+describe Seth::Knife::UserCreate do
   before(:each) do
-    @knife = Chef::Knife::UserCreate.new
+    @knife = Seth::Knife::UserCreate.new
 
     @stdout = StringIO.new
     @stderr = StringIO.new
@@ -31,19 +31,19 @@ describe Chef::Knife::UserCreate do
 
     @knife.name_args = [ 'a_user' ]
     @knife.config[:user_password] = "foobar"
-    @user = Chef::User.new
+    @user = Seth::User.new
     @user.name "a_user"
-    @user_with_private_key = Chef::User.new
+    @user_with_private_key = Seth::User.new
     @user_with_private_key.name "a_user"
     @user_with_private_key.private_key 'private_key'
     @user.stub(:create).and_return(@user_with_private_key)
-    Chef::User.stub(:new).and_return(@user)
-    Chef::User.stub(:from_hash).and_return(@user)
+    Seth::User.stub(:new).and_return(@user)
+    Seth::User.stub(:from_hash).and_return(@user)
     @knife.stub(:edit_data).and_return(@user.to_hash)
   end
 
   it "creates a new user" do
-    Chef::User.should_receive(:new).and_return(@user)
+    Seth::User.should_receive(:new).and_return(@user)
     @user.should_receive(:create)
     @knife.run
     @stdout.string.should match /created user.+a_user/i

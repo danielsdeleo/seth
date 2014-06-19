@@ -19,18 +19,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/log'
-require 'chef/cookbook/file_vendor'
-require 'chef/cookbook/metadata'
-require 'chef/version_class'
+require 'seth/log'
+require 'seth/cookbook/file_vendor'
+require 'seth/cookbook/metadata'
+require 'seth/version_class'
 require 'pathname'
-require 'chef/monkey_patches/pathname'
+require 'seth/monkey_patches/pathname'
 
-class Chef
+class Seth
 
-  # == Chef::CookbookVersion
-  # CookbookVersion is a model object encapsulating the data about a Chef
-  # cookbook. Chef supports maintaining multiple versions of a cookbook on a
+  # == Seth::CookbookVersion
+  # CookbookVersion is a model object encapsulating the data about a Seth
+  # cookbook. Seth supports maintaining multiple versions of a cookbook on a
   # single server; each version is represented by a distinct instance of this
   # class.
   #--
@@ -73,20 +73,20 @@ class Chef
     # This is the one and only method that knows how cookbook files'
     # checksums are generated.
     def self.checksum_cookbook_file(filepath)
-      Chef::Digester.generate_md5_checksum_for_file(filepath)
+      Seth::Digester.generate_md5_checksum_for_file(filepath)
     rescue Errno::ENOENT
-      Chef::Log.debug("File #{filepath} does not exist, so there is no checksum to generate")
+      Seth::Log.debug("File #{filepath} does not exist, so there is no checksum to generate")
       nil
     end
 
     def self.cache
-      Chef::FileCache
+      Seth::FileCache
     end
 
-    # Creates a new Chef::CookbookVersion object.
+    # Creates a new Seth::CookbookVersion object.
     #
     # === Returns
-    # object<Chef::CookbookVersion>:: Duh. :)
+    # object<Seth::CookbookVersion>:: Duh. :)
     def initialize(name, *root_paths)
       @name = name
       @root_paths = root_paths
@@ -105,7 +105,7 @@ class Chef
       @status = :ready
       @manifest = nil
       @file_vendor = nil
-      @metadata = Chef::Cookbook::Metadata.new
+      @metadata = Seth::Cookbook::Metadata.new
     end
 
     def version
@@ -220,15 +220,15 @@ class Chef
     # called from DSL
     def load_recipe(recipe_name, run_context)
       unless recipe_filenames_by_name.has_key?(recipe_name)
-        raise Chef::Exceptions::RecipeNotFound, "could not find recipe #{recipe_name} for cookbook #{name}"
+        raise Seth::Exceptions::RecipeNotFound, "could not find recipe #{recipe_name} for cookbook #{name}"
       end
 
-      Chef::Log.debug("Found recipe #{recipe_name} in cookbook #{name}")
-      recipe = Chef::Recipe.new(name, recipe_name, run_context)
+      Seth::Log.debug("Found recipe #{recipe_name} in cookbook #{name}")
+      recipe = Seth::Recipe.new(name, recipe_name, run_context)
       recipe_filename = recipe_filenames_by_name[recipe_name]
 
       unless recipe_filename
-        raise Chef::Exceptions::RecipeNotFound, "could not find #{recipe_name} files for cookbook #{name}"
+        raise Seth::Exceptions::RecipeNotFound, "could not find #{recipe_name} files for cookbook #{name}"
       end
 
       recipe.from_file(recipe_filename)
@@ -316,9 +316,9 @@ class Chef
           unless existing_files.empty?
             error_message << "\n\nThis cookbook _does_ contain: ['#{existing_files.join("','")}']"
           end
-          raise Chef::Exceptions::FileNotFound, error_message
+          raise Seth::Exceptions::FileNotFound, error_message
         else
-          raise Chef::Exceptions::FileNotFound, "cookbook #{name} does not contain file #{segment}/#{filename}"
+          raise Seth::Exceptions::FileNotFound, "cookbook #{name} does not contain file #{segment}/#{filename}"
         end
       end
     end
@@ -364,7 +364,7 @@ class Chef
 
       best_pref = preferences.find { |pref| !filenames_by_pref[pref].empty? }
 
-      raise Chef::Exceptions::FileNotFound, "cookbook #{name} has no directory #{segment}/default/#{dirname}" unless best_pref
+      raise Seth::Exceptions::FileNotFound, "cookbook #{name} has no directory #{segment}/default/#{dirname}" unless best_pref
 
       filenames_by_pref[best_pref]
 
@@ -399,7 +399,7 @@ class Chef
 
       best_pref = preferences.find { |pref| !records_by_pref[pref].empty? }
 
-      raise Chef::Exceptions::FileNotFound, "cookbook #{name} (#{version}) has no directory #{segment}/default/#{dirname}" unless best_pref
+      raise Seth::Exceptions::FileNotFound, "cookbook #{name} (#{version}) has no directory #{segment}/default/#{dirname}" unless best_pref
 
       records_by_pref[best_pref]
     end
@@ -412,7 +412,7 @@ class Chef
       # only files and templates can be platform-specific
       if segment.to_sym == :files || segment.to_sym == :templates
         begin
-          platform, version = Chef::Platform.find_platform_and_version(node)
+          platform, version = Seth::Platform.find_platform_and_version(node)
         rescue ArgumentError => e
           # Skip platform/version if they were not found by find_platform_and_version
           if e.message =~ /Cannot find a (?:platform|version)/
@@ -452,7 +452,7 @@ class Chef
     def to_hash
       result = manifest.dup
       result['frozen?'] = frozen_version?
-      result['chef_type'] = 'cookbook_version'
+      result['seth_type'] = 'cookbook_version'
       result.to_hash
     end
 
@@ -464,12 +464,12 @@ class Chef
 
     def self.json_create(o)
       cookbook_version = new(o["cookbook_name"])
-      # We want the Chef::Cookbook::Metadata object to always be inflated
-      cookbook_version.metadata = Chef::Cookbook::Metadata.from_hash(o["metadata"])
+      # We want the Seth::Cookbook::Metadata object to always be inflated
+      cookbook_version.metadata = Seth::Cookbook::Metadata.from_hash(o["metadata"])
       cookbook_version.manifest = o
 
       # We don't need the following step when we decide to stop supporting deprecated operators in the metadata (e.g. <<, >>)
-      cookbook_version.manifest["metadata"] = Chef::JSONCompat.from_json(cookbook_version.metadata.to_json)
+      cookbook_version.manifest["metadata"] = Seth::JSONCompat.from_json(cookbook_version.metadata.to_json)
 
       cookbook_version.freeze_version if o["frozen?"]
       cookbook_version
@@ -505,12 +505,12 @@ class Chef
     ##
     # REST API
     ##
-    def self.chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def self.seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
-    def chef_server_rest
-      self.class.chef_server_rest
+    def seth_server_rest
+      self.class.seth_server_rest
     end
 
     # Return the URL to save (PUT) this object to the server via the
@@ -528,22 +528,22 @@ class Chef
     end
 
     def destroy
-      chef_server_rest.delete_rest("cookbooks/#{name}/#{version}")
+      seth_server_rest.delete_rest("cookbooks/#{name}/#{version}")
       self
     end
 
     def self.load(name, version="_latest")
       version = "_latest" if version == "latest"
-      chef_server_rest.get_rest("cookbooks/#{name}/#{version}")
+      seth_server_rest.get_rest("cookbooks/#{name}/#{version}")
     end
 
     # The API returns only a single version of each cookbook in the result from the cookbooks method
     def self.list
-      chef_server_rest.get_rest('cookbooks')
+      seth_server_rest.get_rest('cookbooks')
     end
 
     def self.list_all_versions
-      chef_server_rest.get_rest('cookbooks?num_versions=all')
+      seth_server_rest.get_rest('cookbooks?num_versions=all')
     end
 
     ##
@@ -553,12 +553,12 @@ class Chef
     # [String]::  Array of cookbook versions, which are strings like 'x.y.z'
     # nil::       if the cookbook doesn't exist. an error will also be logged.
     def self.available_versions(cookbook_name)
-      chef_server_rest.get_rest("cookbooks/#{cookbook_name}")[cookbook_name]["versions"].map do |cb|
+      seth_server_rest.get_rest("cookbooks/#{cookbook_name}")[cookbook_name]["versions"].map do |cb|
         cb["version"]
       end
     rescue Net::HTTPServerException => e
       if e.to_s =~ /^404/
-        Chef::Log.error("Cannot find a cookbook named #{cookbook_name}")
+        Seth::Log.error("Cannot find a cookbook named #{cookbook_name}")
         nil
       else
         raise
@@ -567,15 +567,15 @@ class Chef
 
     # Get the newest version of all cookbooks
     def self.latest_cookbooks
-      chef_server_rest.get_rest('cookbooks/_latest')
+      seth_server_rest.get_rest('cookbooks/_latest')
     end
 
     def <=>(o)
-      raise Chef::Exceptions::CookbookVersionNameMismatch if self.name != o.name
+      raise Seth::Exceptions::CookbookVersionNameMismatch if self.name != o.name
       # FIXME: can we change the interface to the Metadata class such
-      # that metadata.version returns a Chef::Version instance instead
+      # that metadata.version returns a Seth::Version instance instead
       # of a string?
-      Chef::Version.new(self.version) <=> Chef::Version.new(o.version)
+      Seth::Version.new(self.version) <=> Chef::Version.new(o.version)
     end
 
     private
@@ -614,7 +614,7 @@ class Chef
       checksums_to_on_disk_paths = {}
 
       if !root_paths || root_paths.size == 0
-        Chef::Log.error("Cookbook #{name} does not have root_paths! Cannot generate manifest.")
+        Seth::Log.error("Cookbook #{name} does not have root_paths! Cannot generate manifest.")
         raise "Cookbook #{name} does not have root_paths! Cannot generate manifest."
       end
 
@@ -661,13 +661,13 @@ class Chef
           return [ pathname.to_s, 'default' ]
         end
       end
-      Chef::Log.error("Cookbook file #{segment_file} not under cookbook root paths #{root_paths.inspect}.")
+      Seth::Log.error("Cookbook file #{segment_file} not under cookbook root paths #{root_paths.inspect}.")
       raise "Cookbook file #{segment_file} not under cookbook root paths #{root_paths.inspect}."
     end
 
     def file_vendor
       unless @file_vendor
-        @file_vendor = Chef::Cookbook::FileVendor.create_from_manifest(manifest)
+        @file_vendor = Seth::Cookbook::FileVendor.create_from_manifest(manifest)
       end
       @file_vendor
     end

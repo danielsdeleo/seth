@@ -24,7 +24,7 @@ require 'windows/msvcrt/buffer'
 require 'windows/msvcrt/string'
 require 'windows/network/management'
 
-class Chef
+class Seth
   class Util
     class Windows
       protected

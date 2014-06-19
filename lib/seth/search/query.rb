@@ -16,22 +16,22 @@
 # limitations under the License.
 #
 
-require 'chef/config'
+require 'seth/config'
 require 'uri'
-require 'chef/rest'
-require 'chef/node'
-require 'chef/role'
-require 'chef/data_bag'
-require 'chef/data_bag_item'
+require 'seth/rest'
+require 'seth/node'
+require 'seth/role'
+require 'seth/data_bag'
+require 'seth/data_bag_item'
 
-class Chef
+class Seth
   class Search
     class Query
 
       attr_accessor :rest
 
       def initialize(url=nil)
-        @rest = Chef::REST.new(url ||Chef::Config[:chef_server_url])
+        @rest = Seth::REST.new(url ||Chef::Config[:seth_server_url])
       end
 
       # Search Solr for objects of a given type, for a given query. If you give

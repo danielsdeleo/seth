@@ -16,19 +16,19 @@
 # limitations under the License.
 #
 
-require 'chef/resource/package'
-require 'chef/provider/package/apt'
+require 'seth/resource/package'
+require 'seth/provider/package/apt'
 
-class Chef
+class Seth
   class Resource
-    class AptPackage < Chef::Resource::Package
+    class AptPackage < Seth::Resource::Package
 
       provides :package, :on_platforms => ["ubuntu", "gcel", "linaro", "raspbian", "linuxmint", "debian"]
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :apt_package
-        @provider = Chef::Provider::Package::Apt
+        @provider = Seth::Provider::Package::Apt
         @default_release = nil
         @timeout = 900
       end

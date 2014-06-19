@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'chef/win32/security'
-require 'chef/win32/security/ace'
+require 'seth/win32/security'
+require 'seth/win32/security/ace'
 require 'ffi'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     class Security
       class ACL
         include Enumerable
 
         def initialize(pointer, owner = nil)
-          @struct = Chef::ReservedNames::Win32::API::Security::ACLStruct.new pointer
+          @struct = Seth::ReservedNames::Win32::API::Security::ACLStruct.new pointer
           # Keep a reference to the actual owner of this memory so that it isn't freed out from under us
           # TODO this could be avoided if we could mark a pointer's parent manually
           @owner = owner
@@ -35,9 +35,9 @@ class Chef
 
         def self.create(aces)
           aces_size = aces.inject(0) { |sum,ace| sum + ace.size }
-          acl_size = align_dword(Chef::ReservedNames::Win32::API::Security::ACLStruct.size + aces_size) # What the heck is 94???
-          acl = Chef::ReservedNames::Win32::Security.initialize_acl(acl_size)
-          aces.each { |ace| Chef::ReservedNames::Win32::Security.add_ace(acl, ace) }
+          acl_size = align_dword(Seth::ReservedNames::Win32::API::Security::ACLStruct.size + aces_size) # What the heck is 94???
+          acl = Seth::ReservedNames::Win32::Security.initialize_acl(acl_size)
+          aces.each { |ace| Seth::ReservedNames::Win32::Security.add_ace(acl, ace) }
           acl
         end
 
@@ -56,11 +56,11 @@ class Chef
         end
 
         def [](index)
-          Chef::ReservedNames::Win32::Security.get_ace(self, index)
+          Seth::ReservedNames::Win32::Security.get_ace(self, index)
         end
 
         def delete_at(index)
-          Chef::ReservedNames::Win32::Security.delete_ace(self, index)
+          Seth::ReservedNames::Win32::Security.delete_ace(self, index)
         end
 
         def each
@@ -76,15 +76,15 @@ class Chef
         end
 
         def push(*aces)
-          aces.each { |ace| Chef::ReservedNames::Win32::Security.add_ace(self, ace) }
+          aces.each { |ace| Seth::ReservedNames::Win32::Security.add_ace(self, ace) }
         end
 
         def unshift(*aces)
-          aces.each { |ace| Chef::ReservedNames::Win32::Security.add_ace(self, ace, 0) }
+          aces.each { |ace| Seth::ReservedNames::Win32::Security.add_ace(self, ace, 0) }
         end
 
         def valid?
-          Chef::ReservedNames::Win32::Security.is_valid_acl(self)
+          Seth::ReservedNames::Win32::Security.is_valid_acl(self)
         end
 
         def to_s

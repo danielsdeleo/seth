@@ -19,13 +19,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/log'
-require 'chef/exceptions'
+require 'seth/log'
+require 'seth/exceptions'
 require 'mixlib/config'
-require 'chef/util/selinux'
+require 'seth/util/selinux'
 require 'pathname'
 
-class Chef
+class Seth
   class Config
 
     extend Mixlib::Config
@@ -37,19 +37,19 @@ class Chef
       self.instance_eval(string, filename, 1)
     end
 
-    # Manages the chef secret session key
+    # Manages the seth secret session key
     # === Returns
     # <newkey>:: A new or retrieved session key
     #
     def self.manage_secret_key
       newkey = nil
-      if Chef::FileCache.has_key?("chef_server_cookie_id")
-        newkey = Chef::FileCache.load("chef_server_cookie_id")
+      if Seth::FileCache.has_key?("seth_server_cookie_id")
+        newkey = Seth::FileCache.load("seth_server_cookie_id")
       else
         chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
         newkey = ""
         40.times { |i| newkey << chars[rand(chars.size-1)] }
-        Chef::FileCache.store("chef_server_cookie_id", newkey)
+        Seth::FileCache.store("seth_server_cookie_id", newkey)
       end
       newkey
     end
@@ -84,7 +84,7 @@ class Chef
 
     def self.platform_specific_path(path)
       if on_windows?
-        # turns /etc/chef/client.rb into C:/chef/client.rb
+        # turns /etc/seth/client.rb into C:/chef/client.rb
         system_drive = env['SYSTEMDRIVE'] ? env['SYSTEMDRIVE'] : ""
         path = File.join(system_drive, path.split('/')[2..-1])
         # ensure all forward slashes are backslashes
@@ -97,12 +97,12 @@ class Chef
       formatters << [name, file_path]
     end
 
-    # Config file to load (client.rb, knife.rb, etc. defaults set differently in knife, chef-client, etc.)
+    # Config file to load (client.rb, knife.rb, etc. defaults set differently in knife, seth-client, etc.)
     configurable(:config_file)
 
     default(:config_dir) do
       if local_mode
-        path_join(user_home, ".chef#{platform_path_separator}")
+        path_join(user_home, ".seth#{platform_path_separator}")
       else
         config_file && ::File.dirname(config_file)
       end
@@ -117,9 +117,9 @@ class Chef
     # Override the config dispatch to set the value of multiple server options simultaneously
     #
     # === Parameters
-    # url<String>:: String to be set for all of the chef-server-api URL's
+    # url<String>:: String to be set for all of the seth-server-api URL's
     #
-    configurable(:chef_server_url).writes_value { |url| url.strip }
+    configurable(:seth_server_url).writes_value { |url| url.strip }
 
     # When you are using ActiveSupport, they monkey-patch 'daemonize' into Kernel.
     # So while this is basically identical to what method_missing would do, we pull
@@ -127,12 +127,12 @@ class Chef
     # properly.
     configurable(:daemonize).writes_value { |v| v }
 
-    # The root where all local chef object data is stored.  cookbooks, data bags,
+    # The root where all local seth object data is stored.  cookbooks, data bags,
     # environments are all assumed to be in separate directories under this.
-    # chef-solo uses these directories for input data.  knife commands
+    # seth-solo uses these directories for input data.  knife commands
     # that upload or download files (such as knife upload, knife role from file,
     # etc.) work.
-    default :chef_repo_path do
+    default :seth_repo_path do
       if self.configuration[:cookbook_path]
         if self.configuration[:cookbook_path].kind_of?(String)
           File.expand_path('..', self.configuration[:cookbook_path])
@@ -146,86 +146,86 @@ class Chef
       end
     end
 
-    def self.find_chef_repo_path(cwd)
+    def self.find_seth_repo_path(cwd)
       # In local mode, we auto-discover the repo root by looking for a path with "cookbooks" under it.
       # This allows us to run config-free.
       path = cwd
       until File.directory?(path_join(path, "cookbooks"))
         new_path = File.expand_path('..', path)
         if new_path == path
-          Chef::Log.warn("No cookbooks directory found at or above current directory.  Assuming #{Dir.pwd}.")
+          Seth::Log.warn("No cookbooks directory found at or above current directory.  Assuming #{Dir.pwd}.")
           return Dir.pwd
         end
         path = new_path
       end
-      Chef::Log.info("Auto-discovered chef repository at #{path}")
+      Seth::Log.info("Auto-discovered seth repository at #{path}")
       path
     end
 
-    def self.derive_path_from_chef_repo_path(child_path)
-      if chef_repo_path.kind_of?(String)
-        path_join(chef_repo_path, child_path)
+    def self.derive_path_from_seth_repo_path(child_path)
+      if seth_repo_path.kind_of?(String)
+        path_join(seth_repo_path, child_path)
       else
-        chef_repo_path.map { |path| path_join(path, child_path)}
+        seth_repo_path.map { |path| path_join(path, child_path)}
       end
     end
 
     # Location of acls on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/acls.
-    # Only applies to Enterprise Chef commands.
-    default(:acl_path) { derive_path_from_chef_repo_path('acls') }
+    # Defaults to <seth_repo_path>/acls.
+    # Only applies to Enterprise Seth commands.
+    default(:acl_path) { derive_path_from_seth_repo_path('acls') }
 
     # Location of clients on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/acls.
-    default(:client_path) { derive_path_from_chef_repo_path('clients') }
+    # Defaults to <seth_repo_path>/acls.
+    default(:client_path) { derive_path_from_seth_repo_path('clients') }
 
     # Location of cookbooks on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/cookbooks.  If chef_repo_path
-    # is not specified, this is set to [/var/chef/cookbooks, /var/chef/site-cookbooks]).
+    # Defaults to <seth_repo_path>/cookbooks.  If chef_repo_path
+    # is not specified, this is set to [/var/seth/cookbooks, /var/chef/site-cookbooks]).
     default(:cookbook_path) do
-      if self.configuration[:chef_repo_path]
-        derive_path_from_chef_repo_path('cookbooks')
+      if self.configuration[:seth_repo_path]
+        derive_path_from_seth_repo_path('cookbooks')
       else
-        Array(derive_path_from_chef_repo_path('cookbooks')).flatten +
-          Array(derive_path_from_chef_repo_path('site-cookbooks')).flatten
+        Array(derive_path_from_seth_repo_path('cookbooks')).flatten +
+          Array(derive_path_from_seth_repo_path('site-cookbooks')).flatten
       end
     end
 
     # Location of containers on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/containers.
-    # Only applies to Enterprise Chef commands.
-    default(:container_path) { derive_path_from_chef_repo_path('containers') }
+    # Defaults to <seth_repo_path>/containers.
+    # Only applies to Enterprise Seth commands.
+    default(:container_path) { derive_path_from_seth_repo_path('containers') }
 
     # Location of data bags on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/data_bags.
-    default(:data_bag_path) { derive_path_from_chef_repo_path('data_bags') }
+    # Defaults to <seth_repo_path>/data_bags.
+    default(:data_bag_path) { derive_path_from_seth_repo_path('data_bags') }
 
     # Location of environments on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/environments.
-    default(:environment_path) { derive_path_from_chef_repo_path('environments') }
+    # Defaults to <seth_repo_path>/environments.
+    default(:environment_path) { derive_path_from_seth_repo_path('environments') }
 
     # Location of groups on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/groups.
-    # Only applies to Enterprise Chef commands.
-    default(:group_path) { derive_path_from_chef_repo_path('groups') }
+    # Defaults to <seth_repo_path>/groups.
+    # Only applies to Enterprise Seth commands.
+    default(:group_path) { derive_path_from_seth_repo_path('groups') }
 
     # Location of nodes on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/nodes.
-    default(:node_path) { derive_path_from_chef_repo_path('nodes') }
+    # Defaults to <seth_repo_path>/nodes.
+    default(:node_path) { derive_path_from_seth_repo_path('nodes') }
 
     # Location of roles on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/roles.
-    default(:role_path) { derive_path_from_chef_repo_path('roles') }
+    # Defaults to <seth_repo_path>/roles.
+    default(:role_path) { derive_path_from_seth_repo_path('roles') }
 
     # Location of users on disk. String or array of strings.
-    # Defaults to <chef_repo_path>/users.
-    # Does not apply to Enterprise Chef commands.
-    default(:user_path) { derive_path_from_chef_repo_path('users') }
+    # Defaults to <seth_repo_path>/users.
+    # Does not apply to Enterprise Seth commands.
+    default(:user_path) { derive_path_from_seth_repo_path('users') }
 
-    # Turn on "path sanity" by default. See also: http://wiki.opscode.com/display/chef/User+Environment+PATH+Sanity
+    # Turn on "path sanity" by default. See also: http://wiki.opscode.com/display/seth/User+Environment+PATH+Sanity
     default :enforce_path_sanity, true
 
-    # Formatted Chef Client output is a beta feature, disabled by default:
+    # Formatted Seth Client output is a beta feature, disabled by default:
     default :formatter, "null"
 
     # The number of times the client should retry when registering with the server
@@ -241,15 +241,15 @@ class Chef
         "#{config_dir}local-mode-cache"
       else
         primary_cache_root = platform_specific_path("/var")
-        primary_cache_path = platform_specific_path("/var/chef")
-        # Use /var/chef as the cache path only if that folder exists and we can read and write
-        # into it, or /var exists and we can read and write into it (we'll create /var/chef later).
-        # Otherwise, we'll create .chef under the user's home directory and use that as
+        primary_cache_path = platform_specific_path("/var/seth")
+        # Use /var/seth as the cache path only if that folder exists and we can read and write
+        # into it, or /var exists and we can read and write into it (we'll create /var/seth later).
+        # Otherwise, we'll create .seth under the user's home directory and use that as
         # the cache path.
         unless path_accessible?(primary_cache_path) || path_accessible?(primary_cache_root)
-          secondary_cache_path = File.join(user_home, '.chef')
+          secondary_cache_path = File.join(user_home, '.seth')
           secondary_cache_path.gsub!(File::SEPARATOR, platform_path_separator) # Safety, mainly for Windows...
-          Chef::Log.info("Unable to access cache at #{primary_cache_path}. Switching cache to #{secondary_cache_path}")
+          Seth::Log.info("Unable to access cache at #{primary_cache_path}. Switching cache to #{secondary_cache_path}")
           secondary_cache_path
         else
           primary_cache_path
@@ -265,21 +265,21 @@ class Chef
     # Where cookbook files are stored on the server (by content checksum)
     default(:checksum_path) { path_join(cache_path, "checksums") }
 
-    # Where chef's cache files should be stored
+    # Where seth's cache files should be stored
     default(:file_cache_path) { path_join(cache_path, "cache") }
 
-    # Where backups of chef-managed files should go
+    # Where backups of seth-managed files should go
     default(:file_backup_path) { path_join(cache_path, "backup") }
 
-    # The chef-client (or solo) lockfile.
+    # The seth-client (or solo) lockfile.
     #
     # If your `file_cache_path` resides on a NFS (or non-flock()-supporting
     # fs), it's recommended to set this to something like
-    # '/tmp/chef-client-running.pid'
-    default(:lockfile) { path_join(file_cache_path, "chef-client-running.pid") }
+    # '/tmp/seth-client-running.pid'
+    default(:lockfile) { path_join(file_cache_path, "seth-client-running.pid") }
 
     ## Daemonization Settings ##
-    # What user should Chef run as?
+    # What user should Seth run as?
     default :user, nil
     default :group, nil
     default :umask, 0022
@@ -290,8 +290,8 @@ class Chef
     # * :warn
     # * :fatal
     # These work as you'd expect. There is also a special `:auto` setting.
-    # When set to :auto, Chef will auto adjust the log verbosity based on
-    # context. When a tty is available (usually becase the user is running chef
+    # When set to :auto, Seth will auto adjust the log verbosity based on
+    # context. When a tty is available (usually becase the user is running seth
     # in a console), the log level is set to :warn, and output formatters are
     # used as the primary mode of output. When a tty is not available, the
     # logger is the primary mode of output, and the log level is set to :info
@@ -300,10 +300,10 @@ class Chef
     # Logging location as either an IO stream or string representing log file path
     default :log_location, STDOUT
 
-    # Using `force_formatter` causes chef to default to formatter output when STDOUT is not a tty
+    # Using `force_formatter` causes seth to default to formatter output when STDOUT is not a tty
     default :force_formatter, false
 
-    # Using `force_logger` causes chef to default to logger output when STDOUT is a tty
+    # Using `force_logger` causes seth to default to logger output when STDOUT is a tty
     default :force_logger, false
 
     default :http_retry_count, 5
@@ -321,13 +321,13 @@ class Chef
 
     default :pid_file, nil
 
-    config_context :chef_zero do
+    config_context :seth_zero do
       config_strict_mode true
-      default(:enabled) { Chef::Config.local_mode }
+      default(:enabled) { Seth::Config.local_mode }
       default :host, 'localhost'
       default :port, 8889
     end
-    default :chef_server_url,   "https://localhost:443"
+    default :seth_server_url,   "https://localhost:443"
 
     default :rest_timeout, 300
     default :yum_timeout, 900
@@ -362,12 +362,12 @@ class Chef
     # SSL verification settings.
     default :ssl_verify_mode, :verify_none
 
-    # Whether or not to verify the SSL cert for HTTPS requests to the Chef
+    # Whether or not to verify the SSL cert for HTTPS requests to the Seth
     # server API. If set to `true`, the server's cert will be validated
     # regardless of the :ssl_verify_mode setting. This is set to `true` when
     # running in local-mode.
     # NOTE: This is a workaround until verify_peer is enabled by default.
-    default(:verify_api_cert) { Chef::Config.local_mode }
+    default(:verify_api_cert) { Seth::Config.local_mode }
 
     # Path to the default CA bundle files.
     default :ssl_ca_path, nil
@@ -382,20 +382,20 @@ class Chef
 
     # A directory that contains additional SSL certificates to trust. Any
     # certificates in this directory will be added to whatever CA bundle ruby
-    # is using. Use this to add self-signed certs for your Chef Server or local
+    # is using. Use this to add self-signed certs for your Seth Server or local
     # HTTP file servers.
     default(:trusted_certs_dir) { config_dir && path_join(config_dir, "trusted_certs") }
 
-    # Where should chef-solo download recipes from?
+    # Where should seth-solo download recipes from?
     default :recipe_url, nil
 
     # Sets the version of the signed header authentication protocol to use (see
     # the 'mixlib-authorization' project for more detail). Currently, versions
-    # 1.0 and 1.1 are available; however, the chef-server must first be
+    # 1.0 and 1.1 are available; however, the seth-server must first be
     # upgraded to support version 1.1 before clients can begin using it.
     #
     # Version 1.1 of the protocol is required when using a `node_name` greater
-    # than ~90 bytes (~90 ascii characters), so chef-client will automatically
+    # than ~90 bytes (~90 ascii characters), so seth-client will automatically
     # switch to using version 1.1 when `node_name` is too large for the 1.0
     # protocol. If you intend to use large node names, ensure that your server
     # supports version 1.1. Automatic detection of large node names means that
@@ -405,34 +405,34 @@ class Chef
     # automatic negotiation scheme.
     default :authentication_protocol_version, "1.0"
 
-    # This key will be used to sign requests to the Chef server. This location
-    # must be writable by Chef during initial setup when generating a client
+    # This key will be used to sign requests to the Seth server. This location
+    # must be writable by Seth during initial setup when generating a client
     # identity on the server.
     #
-    # The chef-server will look up the public key for the client using the
+    # The seth-server will look up the public key for the client using the
     # `node_name` of the client.
     #
-    # If chef-zero is enabled, this defaults to nil (no authentication).
-    default(:client_key) { chef_zero.enabled ? nil : platform_specific_path("/etc/chef/client.pem") }
+    # If seth-zero is enabled, this defaults to nil (no authentication).
+    default(:client_key) { seth_zero.enabled ? nil : platform_specific_path("/etc/chef/client.pem") }
 
     # This secret is used to decrypt encrypted data bag items.
     default(:encrypted_data_bag_secret) do
       # We have to check for the existence of the default file before setting it
-      # since +Chef::Config[:encrypted_data_bag_secret]+ is read by older
+      # since +Seth::Config[:encrypted_data_bag_secret]+ is read by older
       # bootstrap templates to determine if the local secret should be uploaded to
-      # node being bootstrapped. This should be removed in Chef 12.
-      if File.exist?(platform_specific_path("/etc/chef/encrypted_data_bag_secret"))
-        platform_specific_path("/etc/chef/encrypted_data_bag_secret")
+      # node being bootstrapped. This should be removed in Seth 12.
+      if File.exist?(platform_specific_path("/etc/seth/encrypted_data_bag_secret"))
+        platform_specific_path("/etc/seth/encrypted_data_bag_secret")
       else
         nil
       end
     end
 
-    # As of Chef 11.0, version "1" is the default encrypted data bag item
+    # As of Seth 11.0, version "1" is the default encrypted data bag item
     # format. Version "2" is available which adds encrypt-then-mac protection.
     # To maintain compatibility, versions other than 1 must be opt-in.
     #
-    # Set this to `2` if you have chef-client 11.6.0+ in your infrastructure:
+    # Set this to `2` if you have seth-client 11.6.0+ in your infrastructure:
     default :data_bag_encrypt_version, 1
 
     # When reading data bag items, any supported version is accepted. However,
@@ -443,22 +443,22 @@ class Chef
     # could downgrade an encrypted data bag to version 1 as part of an attack.
     default :data_bag_decrypt_minimum_version, 0
 
-    # If there is no file in the location given by `client_key`, chef-client
+    # If there is no file in the location given by `client_key`, seth-client
     # will temporarily use the "validator" identity to generate one. If the
     # `client_key` is not present and the `validation_key` is also not present,
-    # chef-client will not be able to authenticate to the server.
+    # seth-client will not be able to authenticate to the server.
     #
     # The `validation_key` is never used if the `client_key` exists.
     #
-    # If chef-zero is enabled, this defaults to nil (no authentication).
-    default(:validation_key) { chef_zero.enabled ? nil : platform_specific_path("/etc/chef/validation.pem") }
-    default :validation_client_name, "chef-validator"
+    # If seth-zero is enabled, this defaults to nil (no authentication).
+    default(:validation_key) { seth_zero.enabled ? nil : platform_specific_path("/etc/chef/validation.pem") }
+    default :validation_client_name, "seth-validator"
 
-    # When creating a new client via the validation_client account, Chef 11
+    # When creating a new client via the validation_client account, Seth 11
     # servers allow the client to generate a key pair locally and sent the
     # public key to the server. This is more secure and helps offload work from
     # the server, enhancing scalability. If enabled and the remote server
-    # implements only the Chef 10 API, client registration will not work
+    # implements only the Seth 10 API, client registration will not work
     # properly.
     #
     # The default value is `false` (Server generates client keys). Set to
@@ -487,14 +487,14 @@ class Chef
     # checked by storing files in this directory. `syntax_check_cache_path` is
     # the new (and preferred) configuration setting. If not set, knife will
     # fall back to using cache_options[:path], which is deprecated but exists in
-    # many client configs generated by pre-Chef-11 bootstrappers.
+    # many client configs generated by pre-Seth-11 bootstrappers.
     default(:syntax_check_cache_path) { cache_options[:path] }
 
     # Deprecated:
     default(:cache_options) { { :path => path_join(file_cache_path, "checksums") } }
 
-    # Set to false to silence Chef 11 deprecation warnings:
-    default :chef11_deprecation_warnings, true
+    # Set to false to silence Seth 11 deprecation warnings:
+    default :seth11_deprecation_warnings, true
 
     # knife configuration data
     config_context :knife do
@@ -512,7 +512,7 @@ class Chef
     end
 
     def self.set_defaults_for_windows
-      # Those lists of regular expressions define what chef considers a
+      # Those lists of regular expressions define what seth considers a
       # valid user and group name
       # From http://technet.microsoft.com/en-us/library/cc776019(WS.10).aspx
       principal_valid_regex_part = '[^"\/\\\\\[\]\:;|=,+*?<>]+'
@@ -523,7 +523,7 @@ class Chef
     end
 
     def self.set_defaults_for_nix
-      # Those lists of regular expressions define what chef considers a
+      # Those lists of regular expressions define what seth considers a
       # valid user and group name
       #
       # user/group cannot start with '-', '+' or '~'
@@ -534,7 +534,7 @@ class Chef
       default :group_valid_regex, [ /^[^-+~:,\t\r\n\f\0]+[^:,\t\r\n\f\0]*$/ ]
     end
 
-    # Those lists of regular expressions define what chef considers a
+    # Those lists of regular expressions define what seth considers a
     # valid user and group name
     if on_windows?
       set_defaults_for_windows
@@ -569,7 +569,7 @@ class Chef
     # the directory that files are going to reside.
     default :file_staging_uses_destdir, false
 
-    # Exit if another run is in progress and the chef-client is unable to
+    # Exit if another run is in progress and the seth-client is unable to
     # get the lock before time expires. If nil, no timeout is enforced. (Exits
     # immediately if 0.)
     default :run_lock_timeout, nil

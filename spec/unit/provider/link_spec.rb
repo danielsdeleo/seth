@@ -21,25 +21,25 @@ require 'ostruct'
 
 require 'spec_helper'
 
-if Chef::Platform.windows?
-  require 'chef/win32/file' #probably need this in spec_helper
+if Seth::Platform.windows?
+  require 'seth/win32/file' #probably need this in spec_helper
 end
 
-describe Chef::Resource::Link, :not_supported_on_win2k3 do
+describe Seth::Resource::Link, :not_supported_on_win2k3 do
   let(:provider) do
-    node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    run_context = Chef::RunContext.new(node, {}, @events)
-    Chef::Provider::Link.new(new_resource, run_context)
+    node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    run_context = Seth::RunContext.new(node, {}, @events)
+    Seth::Provider::Link.new(new_resource, run_context)
   end
   let(:new_resource) do
-    result = Chef::Resource::Link.new("#{CHEF_SPEC_DATA}/fofile-link")
+    result = Seth::Resource::Link.new("#{CHEF_SPEC_DATA}/fofile-link")
     result.to "#{CHEF_SPEC_DATA}/fofile"
     result
   end
 
   def canonicalize(path)
-    Chef::Platform.windows? ? path.gsub('/', '\\') : path
+    Seth::Platform.windows? ? path.gsub('/', '\\') : path
   end
 
   describe "when the target is a symlink" do
@@ -82,7 +82,7 @@ describe Chef::Resource::Link, :not_supported_on_win2k3 do
       # the functional tests for links.
       context 'when the desired state is identical' do
         let(:new_resource) do
-          result = Chef::Resource::Link.new("#{CHEF_SPEC_DATA}/fofile-link")
+          result = Seth::Resource::Link.new("#{CHEF_SPEC_DATA}/fofile-link")
           result.to "#{CHEF_SPEC_DATA}/fofile"
           result
         end
@@ -235,7 +235,7 @@ describe Chef::Resource::Link, :not_supported_on_win2k3 do
       # the functional tests for links.
       context 'when the desired state is identical' do
         let(:new_resource) do
-          result = Chef::Resource::Link.new("#{CHEF_SPEC_DATA}/fofile-link")
+          result = Seth::Resource::Link.new("#{CHEF_SPEC_DATA}/fofile-link")
           result.to "#{CHEF_SPEC_DATA}/fofile"
           result.link_type :hard
           result

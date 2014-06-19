@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/base_fs_dir'
-require 'chef/chef_fs/file_system/rest_list_dir'
-require 'chef/chef_fs/file_system/already_exists_error'
-require 'chef/chef_fs/file_system/must_delete_recursively_error'
-require 'chef/chef_fs/file_system/not_found_error'
-require 'chef/chef_fs/path_utils'
+require 'seth/chef_fs/file_system/base_fs_dir'
+require 'seth/chef_fs/file_system/rest_list_dir'
+require 'seth/chef_fs/file_system/already_exists_error'
+require 'seth/chef_fs/file_system/must_delete_recursively_error'
+require 'seth/chef_fs/file_system/not_found_error'
+require 'seth/chef_fs/path_utils'
 require 'fileutils'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class FileSystemEntry < BaseFSDir
         def initialize(name, parent, file_path = nil)
@@ -43,14 +43,14 @@ class Chef
           begin
             Dir.entries(file_path).sort.select { |entry| entry != '.' && entry != '..' }.map { |entry| make_child(entry) }
           rescue Errno::ENOENT
-            raise Chef::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 
         def create_child(child_name, file_contents=nil)
           child = make_child(child_name)
           if child.exists?
-            raise Chef::ChefFS::FileSystem::AlreadyExistsError.new(:create_child, child)
+            raise Seth::ChefFS::FileSystem::AlreadyExistsError.new(:create_child, child)
           end
           if file_contents
             child.write(file_contents)
@@ -58,7 +58,7 @@ class Chef
             begin
               Dir.mkdir(child.file_path)
             rescue Errno::EEXIST
-              raise Chef::ChefFS::FileSystem::AlreadyExistsError.new(:create_child, child)
+              raise Seth::ChefFS::FileSystem::AlreadyExistsError.new(:create_child, child)
             end
           end
           child
@@ -87,7 +87,7 @@ class Chef
           begin
             File.open(file_path, "rb") {|f| f.read}
           rescue Errno::ENOENT
-            raise Chef::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 

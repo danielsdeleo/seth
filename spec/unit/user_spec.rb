@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-require 'chef/user'
+require 'seth/user'
 require 'tempfile'
 
-describe Chef::User do
+describe Seth::User do
   before(:each) do
-    @user = Chef::User.new
+    @user = Seth::User.new
   end
 
   describe "initialize" do
-    it "should be a Chef::User" do
-      @user.should be_a_kind_of(Chef::User)
+    it "should be a Seth::User" do
+      @user.should be_a_kind_of(Seth::User)
     end
   end
 
@@ -163,11 +163,11 @@ describe Chef::User do
         "private_key" => "pandas",
         "password" => "password",
         "admin" => true }
-      @user = Chef::User.from_json(user.to_json)
+      @user = Seth::User.from_json(user.to_json)
     end
 
-    it "should deserialize to a Chef::User object" do
-      @user.should be_a_kind_of(Chef::User)
+    it "should deserialize to a Seth::User object" do
+      @user.should be_a_kind_of(Seth::User)
     end
 
     it "preserves the name" do
@@ -194,41 +194,41 @@ describe Chef::User do
 
   describe "API Interactions" do
     before (:each) do
-      @user = Chef::User.new
+      @user = Seth::User.new
       @user.name "foobar"
-      @http_client = double("Chef::REST mock")
-      Chef::REST.stub(:new).and_return(@http_client)
+      @http_client = double("Seth::REST mock")
+      Seth::REST.stub(:new).and_return(@http_client)
     end
 
     describe "list" do
       before(:each) do
-        Chef::Config[:chef_server_url] = "http://www.example.com"
+        Seth::Config[:seth_server_url] = "http://www.example.com"
         @osc_response = { "admin" => "http://www.example.com/users/admin"}
         @ohc_response = [ { "user" => { "username" => "admin" }} ]
-        Chef::User.stub(:load).with("admin").and_return(@user)
+        Seth::User.stub(:load).with("admin").and_return(@user)
         @osc_inflated_response = { "admin" => @user }
       end
 
       it "lists all clients on an OSC server" do
         @http_client.stub(:get_rest).with("users").and_return(@osc_response)
-        Chef::User.list.should == @osc_response
+        Seth::User.list.should == @osc_response
       end
 
       it "inflate all clients on an OSC server" do
         @http_client.stub(:get_rest).with("users").and_return(@osc_response)
-        Chef::User.list(true).should == @osc_inflated_response
+        Seth::User.list(true).should == @osc_inflated_response
       end
 
       it "lists all clients on an OHC/OPC server" do
         @http_client.stub(:get_rest).with("users").and_return(@ohc_response)
-        # We expect that Chef::User.list will give a consistent response
+        # We expect that Seth::User.list will give a consistent response
         # so OHC API responses should be transformed to OSC-style output.
-        Chef::User.list.should == @osc_response
+        Seth::User.list.should == @osc_response
       end
 
       it "inflate all clients on an OHC/OPC server" do
         @http_client.stub(:get_rest).with("users").and_return(@ohc_response)
-        Chef::User.list(true).should == @osc_inflated_response
+        Seth::User.list(true).should == @osc_inflated_response
       end
     end
 
@@ -243,7 +243,7 @@ describe Chef::User do
     describe "read" do
       it "loads a named user from the API" do
         @http_client.should_receive(:get_rest).with("users/foobar").and_return({"name" => "foobar", "admin" => true, "public_key" => "pubkey"})
-        user = Chef::User.load("foobar")
+        user = Seth::User.load("foobar")
         user.name.should == "foobar"
         user.admin.should == true
         user.public_key.should == "pubkey"

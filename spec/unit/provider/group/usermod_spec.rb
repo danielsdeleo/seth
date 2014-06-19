@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Group::Usermod do
+describe Seth::Provider::Group::Usermod do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Group.new("wheel")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Group.new("wheel")
     @new_resource.members [ "all", "your", "base" ]
     @new_resource.excluded_members [ ]
-    @provider = Chef::Provider::Group::Usermod.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Group::Usermod.new(@new_resource, @run_context)
     @provider.stub(:run_command)
   end
 
@@ -65,7 +65,7 @@ describe Chef::Provider::Group::Usermod do
         @provider.load_current_resource
         @provider.instance_variable_set("@group_exists", true)
         @provider.action = :modify
-        lambda { @provider.run_action(@provider.process_resource_requirements) }.should raise_error(Chef::Exceptions::Group, "setting group members directly is not supported by #{@provider.to_s}, must set append true in group")
+        lambda { @provider.run_action(@provider.process_resource_requirements) }.should raise_error(Seth::Exceptions::Group, "setting group members directly is not supported by #{@provider.to_s}, must set append true in group")
       end
 
       it "should raise an error when excluded_members are set" do
@@ -75,7 +75,7 @@ describe Chef::Provider::Group::Usermod do
         @provider.action = :modify
         @new_resource.stub(:append).and_return(true)
         @new_resource.stub(:excluded_members).and_return(["someone"])
-        lambda { @provider.run_action(@provider.process_resource_requirements) }.should raise_error(Chef::Exceptions::Group, "excluded_members is not supported by #{@provider.to_s}")
+        lambda { @provider.run_action(@provider.process_resource_requirements) }.should raise_error(Seth::Exceptions::Group, "excluded_members is not supported by #{@provider.to_s}")
       end
 
       platforms.each do |platform, flags|
@@ -104,7 +104,7 @@ describe Chef::Provider::Group::Usermod do
     it "should raise an error if the required binary /usr/sbin/usermod doesn't exist" do
       File.stub(:exists?).and_return(true)
       File.should_receive(:exists?).with("/usr/sbin/usermod").and_return(false)
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Group)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Group)
     end
 
     it "shouldn't raise an error if the required binaries exist" do

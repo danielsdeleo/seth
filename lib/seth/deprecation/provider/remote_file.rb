@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   module Deprecation
     module Provider
 
       # == Deprecation::Provider::RemoteFile
       # This module contains the deprecated functions of
-      # Chef::Provider::RemoteFile. These functions are refactored to different
-      # components. They are frozen and will be removed in Chef 12.
+      # Seth::Provider::RemoteFile. These functions are refactored to different
+      # components. They are frozen and will be removed in Seth 12.
       #
       module RemoteFile
 
@@ -32,23 +32,23 @@ class Chef
         end
 
         def matches_current_checksum?(candidate_file)
-          Chef::Log.debug "#{@new_resource} checking for file existence of #{@new_resource.path}"
+          Seth::Log.debug "#{@new_resource} checking for file existence of #{@new_resource.path}"
           if ::File.exists?(@new_resource.path)
-            Chef::Log.debug "#{@new_resource} file exists at #{@new_resource.path}"
+            Seth::Log.debug "#{@new_resource} file exists at #{@new_resource.path}"
             @new_resource.checksum(checksum(candidate_file.path))
-            Chef::Log.debug "#{@new_resource} target checksum: #{@current_resource.checksum}"
-            Chef::Log.debug "#{@new_resource} source checksum: #{@new_resource.checksum}"
+            Seth::Log.debug "#{@new_resource} target checksum: #{@current_resource.checksum}"
+            Seth::Log.debug "#{@new_resource} source checksum: #{@new_resource.checksum}"
 
             @new_resource.checksum == @current_resource.checksum
           else
-            Chef::Log.debug "#{@new_resource} creating #{@new_resource.path}"
+            Seth::Log.debug "#{@new_resource} creating #{@new_resource.path}"
             false
           end
         end
 
         def backup_new_resource
           if ::File.exists?(@new_resource.path)
-            Chef::Log.debug "#{@new_resource} checksum changed from #{@current_resource.checksum} to #{@new_resource.checksum}"
+            Seth::Log.debug "#{@new_resource} checksum changed from #{@current_resource.checksum} to #{@new_resource.checksum}"
             backup @new_resource.path
           end
         end
@@ -56,8 +56,8 @@ class Chef
         def source_file(source, current_checksum, &block)
           if absolute_uri?(source)
             fetch_from_uri(source, &block)
-          elsif !Chef::Config[:solo]
-            fetch_from_chef_server(source, current_checksum, &block)
+          elsif !Seth::Config[:solo]
+            fetch_from_seth_server(source, current_checksum, &block)
           else
             fetch_from_local_cookbook(source, &block)
           end
@@ -70,7 +70,7 @@ class Chef
           # probably be counter-productive.
           # 2. Some servers are misconfigured so that you GET $URL/file.tgz but
           # they respond with content type of tar and content encoding of gzip,
-          # which tricks Chef::REST into decompressing the response body. In this
+          # which tricks Seth::REST into decompressing the response body. In this
           # case you'd end up with a tar archive (no gzip) named, e.g., foo.tgz,
           # which is not what you wanted.
           if @new_resource.path =~ /gz$/ or source =~ /gz$/

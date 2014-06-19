@@ -1,6 +1,6 @@
 {
   "name": "test",
-  "json_class": "Chef::Node",
+  "json_class": "Seth::Node",
   "environment": "prod",
   "run_list": []
 }

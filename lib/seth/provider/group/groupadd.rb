@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Provider
     class Group
-      class Groupadd < Chef::Provider::Group
+      class Groupadd < Seth::Provider::Group
 
         def required_binaries
           [ "/usr/sbin/groupadd",
@@ -36,7 +36,7 @@ class Chef
           required_binaries.each do |required_binary|
             requirements.assert(:all_actions) do |a|
               a.assertion { ::File.exists?(required_binary) }
-              a.failure_message Chef::Exceptions::Group, "Could not find binary #{required_binary} for #{@new_resource}"
+              a.failure_message Seth::Exceptions::Group, "Could not find binary #{required_binary} for #{@new_resource}"
               # No whyrun alternative: this component should be available in the base install of any given system that uses it
             end
           end
@@ -72,7 +72,7 @@ class Chef
                 members_to_be_added << member if !@current_resource.members.include?(member)
               end
               members_to_be_added.each do |member|
-                Chef::Log.debug("#{@new_resource} appending member #{member} to group #{@new_resource.group_name}")
+                Seth::Log.debug("#{@new_resource} appending member #{member} to group #{@new_resource.group_name}")
                 add_member(member)
               end
             end
@@ -84,27 +84,27 @@ class Chef
               end
 
               members_to_be_removed.each do |member|
-                Chef::Log.debug("#{@new_resource} removing member #{member} from group #{@new_resource.group_name}")
+                Seth::Log.debug("#{@new_resource} removing member #{member} from group #{@new_resource.group_name}")
                 remove_member(member)
               end
             end
           else
             members_description = @new_resource.members.empty? ? "none" : @new_resource.members.join(", ")
-            Chef::Log.debug("#{@new_resource} setting group members to: #{members_description}")
+            Seth::Log.debug("#{@new_resource} setting group members to: #{members_description}")
             set_members(@new_resource.members)
           end
         end
 
         def add_member(member)
-          raise Chef::Exceptions::Group, "you must override add_member in #{self.to_s}"
+          raise Seth::Exceptions::Group, "you must override add_member in #{self.to_s}"
         end
 
         def remove_member(member)
-          raise Chef::Exceptions::Group, "you must override remove_member in #{self.to_s}"
+          raise Seth::Exceptions::Group, "you must override remove_member in #{self.to_s}"
         end
 
         def set_members(members)
-          raise Chef::Exceptions::Group, "you must override set_members in #{self.to_s}"
+          raise Seth::Exceptions::Group, "you must override set_members in #{self.to_s}"
         end
 
         # Little bit of magic as per Adam's useradd provider to pull the assign the command line flags
@@ -117,7 +117,7 @@ class Chef
             if @current_resource.send(field) != @new_resource.send(field)
               if @new_resource.send(field)
                 opts << " #{option} '#{@new_resource.send(field)}'"
-                Chef::Log.debug("#{@new_resource} set #{field.to_s} to #{@new_resource.send(field)}")
+                Seth::Log.debug("#{@new_resource} set #{field.to_s} to #{@new_resource.send(field)}")
               end
             end
           end

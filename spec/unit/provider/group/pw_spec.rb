@@ -18,20 +18,20 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Group::Pw do
+describe Seth::Provider::Group::Pw do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Group.new("wheel")
+    @new_resource = Seth::Resource::Group.new("wheel")
     @new_resource.gid 50
     @new_resource.members [ "root", "aj"]
 
-    @current_resource = Chef::Resource::Group.new("aj")
+    @current_resource = Seth::Resource::Group.new("aj")
     @current_resource.gid 50
     @current_resource.members [ "root", "aj"]
-    @provider = Chef::Provider::Group::Pw.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Group::Pw.new(@new_resource, @run_context)
     @provider.current_resource = @current_resource
   end
 
@@ -93,7 +93,7 @@ describe Chef::Provider::Group::Pw do
       end
 
       it "should log an appropriate message" do
-        Chef::Log.should_receive(:debug).with("group[wheel] removing group members: all,your,base")
+        Seth::Log.should_receive(:debug).with("group[wheel] removing group members: all,your,base")
         @provider.set_members_options
       end
 
@@ -109,7 +109,7 @@ describe Chef::Provider::Group::Pw do
       end
 
       it "should log an appropriate debug message" do
-        Chef::Log.should_receive(:debug).with("group[wheel] adding group members: all,your,base")
+        Seth::Log.should_receive(:debug).with("group[wheel] adding group members: all,your,base")
         @provider.set_members_options
       end
 
@@ -127,7 +127,7 @@ describe Chef::Provider::Group::Pw do
     end
     it "should raise an error if the required binary /usr/sbin/pw doesn't exist" do
       File.should_receive(:exists?).with("/usr/sbin/pw").and_return(false)
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Group)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Group)
     end
 
     it "shouldn't raise an error if /usr/sbin/pw exists" do

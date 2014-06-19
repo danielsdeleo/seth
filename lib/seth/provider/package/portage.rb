@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/resource/package'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/resource/package'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Portage < Chef::Provider::Package
+      class Portage < Seth::Provider::Package
         PACKAGE_NAME_PATTERN = %r{(?:([^/]+)/)?([^/]+)}
 
         def load_current_resource
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
 
           @current_resource.version(nil)
@@ -45,11 +45,11 @@ class Chef
             atoms = versions.map {|v| v.first }.sort
             categories = atoms.map {|v| v.split('/')[0] }.uniq
             if !category && categories.size > 1
-              raise Chef::Exceptions::Package, "Multiple packages found for #{@new_resource.package_name}: #{atoms.join(" ")}. Specify a category."
+              raise Seth::Exceptions::Package, "Multiple packages found for #{@new_resource.package_name}: #{atoms.join(" ")}. Specify a category."
             end
           elsif versions.size == 1
             @current_resource.version(versions.first.last)
-            Chef::Log.debug("#{@new_resource} current version #{$1}")
+            Seth::Log.debug("#{@new_resource} current version #{$1}")
           end
 
           @current_resource
@@ -81,7 +81,7 @@ class Chef
 
           if availables.size > 1
             # shouldn't happen if a category is specified so just use `package`
-            raise Chef::Exceptions::Package, "Multiple emerge results found for #{package}: #{availables.keys.join(" ")}. Specify a category."
+            raise Seth::Exceptions::Package, "Multiple emerge results found for #{package}: #{availables.keys.join(" ")}. Specify a category."
           end
 
           availables.values.first
@@ -96,7 +96,7 @@ class Chef
           end
 
           unless status.exitstatus == 0
-            raise Chef::Exceptions::Package, "emerge --search failed - #{status.inspect}!"
+            raise Seth::Exceptions::Package, "emerge --search failed - #{status.inspect}!"
           end
 
           @candidate_version

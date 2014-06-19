@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
-require 'chef/knife/core/node_presenter'
+require 'seth/knife'
+require 'seth/knife/core/node_presenter'
 
-class Chef
+class Seth
   class Knife
     class Search < Knife
 
       include Knife::Core::MultiAttributeReturnOption
 
       deps do
-        require 'chef/node'
-        require 'chef/environment'
-        require 'chef/api_client'
-        require 'chef/search/query'
+        require 'seth/node'
+        require 'seth/environment'
+        require 'seth/api_client'
+        require 'seth/search/query'
       end
 
       include Knife::Core::NodeFormattingOptions
@@ -80,7 +80,7 @@ class Chef
         end
 
 
-        q = Chef::Search::Query.new
+        q = Seth::Search::Query.new
         escaped_query = URI.escape(@query,
                            Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
 
@@ -99,7 +99,7 @@ class Chef
             result_count += 1
           end
         rescue Net::HTTPServerException => e
-          msg = Chef::JSONCompat.from_json(e.response.body)["error"].first
+          msg = Seth::JSONCompat.from_json(e.response.body)["error"].first
           ui.error("knife search failed: #{msg}")
           exit 1
         end

@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/win32/api'
-require 'chef/win32/api/system'
+require 'seth/win32/api'
+require 'seth/win32/api/system'
 require 'wmi-lite/wmi'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     class Version
-      include Chef::ReservedNames::Win32::API::Macros
-      include Chef::ReservedNames::Win32::API::System
+      include Seth::ReservedNames::Win32::API::Macros
+      include Seth::ReservedNames::Win32::API::System
 
       # Ruby implementation of
       # http://msdn.microsoft.com/en-us/library/ms724833(v=vs.85).aspx
@@ -70,7 +70,7 @@ class Chef
         # Obtain sku information for the purpose of identifying
         # datacenter, cluster, and core skus, the latter 2 only
         # exist in releases after Windows Server 2003
-        if ! Chef::Platform::windows_server_2003?
+        if ! Seth::Platform::windows_server_2003?
           @sku = get_product_info(@major_version, @minor_version, @sp_major_version, @sp_minor_version)
         else
           # The get_product_info API is not supported on Win2k3,
@@ -138,7 +138,7 @@ class Chef
         lp_version_info = OSVERSIONINFOEX.new
         lp_version_info[:dw_os_version_info_size] = OSVERSIONINFOEX.size
         unless GetVersionExW(lp_version_info)
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
         lp_version_info
       end

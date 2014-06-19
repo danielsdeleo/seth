@@ -16,24 +16,24 @@
 # limitations under the License.
 #
 
-require 'chef/deprecation/mixin/template'
+require 'seth/deprecation/mixin/template'
 
-class Chef
+class Seth
   module Deprecation
     module Provider
 
       # == Deprecation::Provider::Template
       # This module contains the deprecated functions of
-      # Chef::Provider::Template. These functions are refactored to different
-      # components. They are frozen and will be removed in Chef 12.
+      # Seth::Provider::Template. These functions are refactored to different
+      # components. They are frozen and will be removed in Seth 12.
       #
       module Template
 
-        include Chef::Deprecation::Mixin::Template
+        include Seth::Deprecation::Mixin::Template
 
         def template_finder
           @template_finder ||= begin
-            Chef::Provider::TemplateFinder.new(run_context, cookbook_name, node)
+            Seth::Provider::TemplateFinder.new(run_context, cookbook_name, node)
           end
         end
 
@@ -49,8 +49,8 @@ class Chef
 
         def rendered(rendered_template)
           @new_resource.checksum(checksum(rendered_template.path))
-          Chef::Log.debug("Current content's checksum:  #{@current_resource.checksum}")
-          Chef::Log.debug("Rendered content's checksum: #{@new_resource.checksum}")
+          Seth::Log.debug("Current content's checksum:  #{@current_resource.checksum}")
+          Seth::Log.debug("Rendered content's checksum: #{@new_resource.checksum}")
         end
 
         def content_matches?

@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::ClientDelete do
+describe Seth::Knife::ClientDelete do
   before(:each) do
-    @knife = Chef::Knife::ClientDelete.new
+    @knife = Seth::Knife::ClientDelete.new
     # defaults
     @knife.config = {
       :delete_validators => false
@@ -30,7 +30,7 @@ describe Chef::Knife::ClientDelete do
 
   describe 'run' do
     it 'should delete the client' do
-      @knife.should_receive(:delete_object).with(Chef::ApiClient, 'adam', 'client')
+      @knife.should_receive(:delete_object).with(Seth::ApiClient, 'adam', 'client')
       @knife.run
     end
 
@@ -44,10 +44,10 @@ describe Chef::Knife::ClientDelete do
 
   describe 'with a validator' do
     before(:each) do
-      Chef::Knife::UI.stub(:confirm).and_return(true)
+      Seth::Knife::UI.stub(:confirm).and_return(true)
       @knife.stub(:confirm).and_return(true)
-      @client = Chef::ApiClient.new
-      Chef::ApiClient.should_receive(:load).and_return(@client)
+      @client = Seth::ApiClient.new
+      Seth::ApiClient.should_receive(:load).and_return(@client)
     end
 
     it 'should delete non-validator client if --force is not set' do

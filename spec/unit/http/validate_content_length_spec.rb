@@ -1,6 +1,6 @@
 #
 # Author:: Serdar Sutay (<serdar@opscode.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,9 @@
 require 'spec_helper'
 require 'stringio'
 
-describe Chef::HTTP::ValidateContentLength do
-  class TestClient < Chef::HTTP
-    use Chef::HTTP::ValidateContentLength
+describe Seth::HTTP::ValidateContentLength do
+  class TestClient < Seth::HTTP
+    use Seth::HTTP::ValidateContentLength
   end
 
   let(:method) { "GET" }
@@ -84,8 +84,8 @@ describe Chef::HTTP::ValidateContentLength do
   let(:debug_output) { debug_stream.string }
 
   before(:each) {
-    Chef::Log.level = :debug
-    Chef::Log.stub(:debug) do |message|
+    Seth::Log.level = :debug
+    Seth::Log.stub(:debug) do |message|
       debug_stream.puts message
     end
   }
@@ -134,7 +134,7 @@ describe Chef::HTTP::ValidateContentLength do
         let(:request_type) { req_type.to_sym }
 
         it "should raise ContentLengthMismatch error" do
-          lambda { run_content_length_validation }.should raise_error(Chef::Exceptions::ContentLengthMismatch)
+          lambda { run_content_length_validation }.should raise_error(Seth::Exceptions::ContentLengthMismatch)
         end
       end
     end
@@ -144,7 +144,7 @@ describe Chef::HTTP::ValidateContentLength do
     let(:streaming_length) { 12 }
 
     it "should raise ContentLengthMismatch error" do
-      lambda { run_content_length_validation }.should raise_error(Chef::Exceptions::ContentLengthMismatch)
+      lambda { run_content_length_validation }.should raise_error(Seth::Exceptions::ContentLengthMismatch)
     end
   end
 

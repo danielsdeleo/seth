@@ -1,14 +1,14 @@
-require 'chef/chef_fs/knife'
+require 'seth/chef_fs/knife'
 
-class Chef
+class Seth
   class Knife
-    class Diff < Chef::ChefFS::Knife
+    class Diff < Seth::ChefFS::Knife
       banner "knife diff PATTERNS"
 
       category "path-based"
 
       deps do
-        require 'chef/chef_fs/command_line'
+        require 'seth/chef_fs/command_line'
       end
 
       option :recurse,
@@ -49,12 +49,12 @@ class Chef
         error = false
         begin
           patterns.each do |pattern|
-            found_error = Chef::ChefFS::CommandLine.diff_print(pattern, chef_fs, local_fs, config[:recurse] ? nil : 1, output_mode, proc { |entry| format_path(entry) }, config[:diff_filter], ui ) do |diff|
+            found_error = Seth::ChefFS::CommandLine.diff_print(pattern, seth_fs, local_fs, config[:recurse] ? nil : 1, output_mode, proc { |entry| format_path(entry) }, config[:diff_filter], ui ) do |diff|
               stdout.print diff
             end
             error = true if found_error
           end
-        rescue Chef::ChefFS::FileSystem::OperationFailedError => e
+        rescue Seth::ChefFS::FileSystem::OperationFailedError => e
           ui.error "Failed on #{format_path(e.entry)} in #{e.operation}: #{e.message}"
           error = true
         end

@@ -19,7 +19,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-describe Chef::Util::FileEdit do
+describe Seth::Util::FileEdit do
 
   let(:starting_content) do
     <<-EOF
@@ -99,19 +99,19 @@ twice
     f
   end
 
-  let(:fedit) { Chef::Util::FileEdit.new(target_file.path) }
+  let(:fedit) { Seth::Util::FileEdit.new(target_file.path) }
 
   after(:each) do
     target_file.close!
   end
 
   describe "initialiize" do
-    it "should create a new Chef::Util::FileEdit object" do
-      expect(fedit).to be_instance_of(Chef::Util::FileEdit)
+    it "should create a new Seth::Util::FileEdit object" do
+      expect(fedit).to be_instance_of(Seth::Util::FileEdit)
     end
 
     it "should throw an exception if the input file does not exist" do
-      expect{Chef::Util::FileEdit.new("nonexistfile")}.to raise_error(ArgumentError)
+      expect{Seth::Util::FileEdit.new("nonexistfile")}.to raise_error(ArgumentError)
     end
 
     # CHEF-5018: people have monkey patched this and it has accidentally been broken

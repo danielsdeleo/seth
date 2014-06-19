@@ -18,16 +18,16 @@
 # limitations under the License.
 #
 
-require 'chef/recipe'
-require 'chef/run_context'
-require 'chef/config'
-require 'chef/client'
-require 'chef/cookbook/cookbook_collection'
-require 'chef/cookbook_loader'
-require 'chef/run_list/run_list_expansion'
-require 'chef/formatters/base'
-require 'chef/formatters/doc'
-require 'chef/formatters/minimal'
+require 'seth/recipe'
+require 'seth/run_context'
+require 'seth/config'
+require 'seth/client'
+require 'seth/cookbook/cookbook_collection'
+require 'seth/cookbook_loader'
+require 'seth/run_list/run_list_expansion'
+require 'seth/formatters/base'
+require 'seth/formatters/doc'
+require 'seth/formatters/minimal'
 
 module Shell
   class ShellSession
@@ -42,8 +42,8 @@ module Shell
     attr_reader :node_attributes, :client
     def initialize
       @node_built = false
-      formatter = Chef::Formatters.new(Chef::Config.formatter, STDOUT, STDERR)
-      @events = Chef::EventDispatch::Dispatcher.new(formatter)
+      formatter = Seth::Formatters.new(Chef::Config.formatter, STDOUT, STDERR)
+      @events = Seth::EventDispatch::Dispatcher.new(formatter)
     end
 
     def node_built?
@@ -58,7 +58,7 @@ module Shell
         Shell::Extensions.extend_context_node(@node)
         rebuild_context
         node.consume_attributes(node_attributes) if node_attributes
-        @recipe = Chef::Recipe.new(nil, nil, run_context)
+        @recipe = Seth::Recipe.new(nil, nil, run_context)
         Shell::Extensions.extend_context_recipe(@recipe)
         @node_built = true
       end
@@ -86,7 +86,7 @@ module Shell
     end
 
     def save_node
-      raise "Not Supported! #{self.class.name} doesn't support #save_node, maybe you need to run chef-shell in client mode?"
+      raise "Not Supported! #{self.class.name} doesn't support #save_node, maybe you need to run seth-shell in client mode?"
     end
 
     def rebuild_context
@@ -127,7 +127,7 @@ module Shell
 
     def shorten_node_inspect
       def @node.inspect
-        "<Chef::Node:0x#{self.object_id.to_s(16)} @name=\"#{self.name}\">"
+        "<Seth::Node:0x#{self.object_id.to_s(16)} @name=\"#{self.name}\">"
       end
     end
 
@@ -142,16 +142,16 @@ module Shell
     session_type :standalone
 
     def rebuild_context
-      cookbook_collection = Chef::CookbookCollection.new({})
-      @run_context = Chef::RunContext.new(@node, cookbook_collection, @events) # no recipes
-      @run_context.load(Chef::RunList::RunListExpansionFromDisk.new("_default", [])) # empty recipe list
+      cookbook_collection = Seth::CookbookCollection.new({})
+      @run_context = Seth::RunContext.new(@node, cookbook_collection, @events) # no recipes
+      @run_context.load(Seth::RunList::RunListExpansionFromDisk.new("_default", [])) # empty recipe list
     end
 
     private
 
     def rebuild_node
-      Chef::Config[:solo] = true
-      @client = Chef::Client.new(nil, Chef::Config[:shell_config])
+      Seth::Config[:solo] = true
+      @client = Seth::Client.new(nil, Chef::Config[:shell_config])
       @client.run_ohai
       @client.load_node
       @client.build_node
@@ -168,22 +168,22 @@ module Shell
     end
 
     def rebuild_context
-      @run_status = Chef::RunStatus.new(@node, @events)
-      Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, Chef::Config[:cookbook_path]) }
-      cl = Chef::CookbookLoader.new(Chef::Config[:cookbook_path])
+      @run_status = Seth::RunStatus.new(@node, @events)
+      Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, Chef::Config[:cookbook_path]) }
+      cl = Seth::CookbookLoader.new(Chef::Config[:cookbook_path])
       cl.load_cookbooks
-      cookbook_collection = Chef::CookbookCollection.new(cl)
-      @run_context = Chef::RunContext.new(node, cookbook_collection, @events)
-      @run_context.load(Chef::RunList::RunListExpansionFromDisk.new("_default", []))
+      cookbook_collection = Seth::CookbookCollection.new(cl)
+      @run_context = Seth::RunContext.new(node, cookbook_collection, @events)
+      @run_context.load(Seth::RunList::RunListExpansionFromDisk.new("_default", []))
       @run_status.run_context = run_context
     end
 
     private
 
     def rebuild_node
-      # Tell the client we're chef solo so it won't try to contact the server
-      Chef::Config[:solo] = true
-      @client = Chef::Client.new(nil, Chef::Config[:shell_config])
+      # Tell the client we're seth solo so it won't try to contact the server
+      Seth::Config[:solo] = true
+      @client = Seth::Client.new(nil, Chef::Config[:shell_config])
       @client.run_ohai
       @client.load_node
       @client.build_node
@@ -200,21 +200,21 @@ module Shell
     end
 
     def rebuild_context
-      @run_status = Chef::RunStatus.new(@node, @events)
-      Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::RemoteFileVendor.new(manifest, Chef::REST.new(Chef::Config[:server_url])) }
+      @run_status = Seth::RunStatus.new(@node, @events)
+      Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::RemoteFileVendor.new(manifest, Chef::REST.new(Chef::Config[:server_url])) }
       cookbook_hash = @client.sync_cookbooks
-      cookbook_collection = Chef::CookbookCollection.new(cookbook_hash)
-      @run_context = Chef::RunContext.new(node, cookbook_collection, @events)
-      @run_context.load(@node.run_list.expand(@node.chef_environment))
+      cookbook_collection = Seth::CookbookCollection.new(cookbook_hash)
+      @run_context = Seth::RunContext.new(node, cookbook_collection, @events)
+      @run_context.load(@node.run_list.expand(@node.seth_environment))
       @run_status.run_context = run_context
     end
 
     private
 
     def rebuild_node
-      # Make sure the client knows this is not chef solo
-      Chef::Config[:solo] = false
-      @client = Chef::Client.new(nil, Chef::Config[:shell_config])
+      # Make sure the client knows this is not seth solo
+      Seth::Config[:solo] = false
+      @client = Seth::Client.new(nil, Chef::Config[:shell_config])
       @client.run_ohai
       @client.register
       @client.load_node
@@ -223,7 +223,7 @@ module Shell
 
   end
 
-  class DoppelGangerClient < Chef::Client
+  class DoppelGangerClient < Seth::Client
 
     attr_reader :node_name
 
@@ -241,19 +241,19 @@ module Shell
     # DoppelGanger implementation of build_node. preserves as many of the node's
     # attributes, and does not save updates to the server
     def build_node
-      Chef::Log.debug("Building node object for #{@node_name}")
-      @node = Chef::Node.find_or_create(node_name)
+      Seth::Log.debug("Building node object for #{@node_name}")
+      @node = Seth::Node.find_or_create(node_name)
       ohai_data = @ohai.data.merge(@node.automatic_attrs)
       @node.consume_external_attrs(ohai_data,nil)
       @run_list_expansion = @node.expand!('server')
       @expanded_run_list_with_versions = @run_list_expansion.recipes.with_version_constraints_strings
-      Chef::Log.info("Run List is [#{@node.run_list}]")
-      Chef::Log.info("Run List expands to [#{@expanded_run_list_with_versions.join(', ')}]")
+      Seth::Log.info("Run List is [#{@node.run_list}]")
+      Seth::Log.info("Run List expands to [#{@expanded_run_list_with_versions.join(', ')}]")
       @node
     end
 
     def register
-      @rest = Chef::REST.new(Chef::Config[:chef_server_url], Chef::Config[:node_name], Chef::Config[:client_key])
+      @rest = Seth::REST.new(Chef::Config[:seth_server_url], Chef::Config[:node_name], Chef::Config[:client_key])
     end
 
   end
@@ -267,7 +267,7 @@ module Shell
     end
 
     def assume_identity(node_name)
-      Chef::Config[:doppelganger] = @node_name = node_name
+      Seth::Config[:doppelganger] = @node_name = node_name
       reset!
     rescue Exception => e
       puts "#{e.class.name}: #{e.message}"
@@ -277,14 +277,14 @@ module Shell
       puts "failed to assume the identity of node '#{node_name}', resetting"
       puts "* " * 40
       puts
-      Chef::Config[:doppelganger] = false
+      Seth::Config[:doppelganger] = false
       @node_built = false
       Shell.session
     end
 
     def rebuild_node
-      # Make sure the client knows this is not chef solo
-      Chef::Config[:solo] = false
+      # Make sure the client knows this is not seth solo
+      Seth::Config[:solo] = false
       @client = DoppelGangerClient.new(@node_name)
       @client.run_ohai
       @client.register

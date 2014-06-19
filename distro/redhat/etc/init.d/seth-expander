@@ -1,32 +1,32 @@
 #!/bin/bash
 #
-# chef-expander Startup script for the Chef search indexer
+# seth-expander Startup script for the Seth search indexer
 #
 # chkconfig: - 95 05
-# description: Search indexer component of the Chef Server.
+# description: Search indexer component of the Seth Server.
 
 ### BEGIN INIT INFO
-# Provides: chef-expander
-# Required-Start: $local_fs $network $remote_fs chef-solr rabbitmq-server
-# Required-Stop: $local_fs $network $remote_fs chef-solr rabbitmq-server
+# Provides: seth-expander
+# Required-Start: $local_fs $network $remote_fs seth-solr rabbitmq-server
+# Required-Stop: $local_fs $network $remote_fs seth-solr rabbitmq-server
 # Should-Start: $named $time
 # Should-Stop: $named $time
-# Short-Description: Startup script for the Chef search indexer
-# Description: Search indexer component of the Chef Server.
+# Short-Description: Startup script for the Seth search indexer
+# Description: Search indexer component of the Seth Server.
 ### END INIT INFO
 
 # Source function library
 . /etc/init.d/functions
 
-exec="/usr/bin/chef-expander"
-prog="chef-expander"
+exec="/usr/bin/seth-expander"
+prog="seth-expander"
 
 [ -f /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 
-config=${CONFIG-/etc/chef/expander.rb}
-pidfile=${PIDFILE-/var/run/chef/expander.pid}
+config=${CONFIG-/etc/seth/expander.rb}
+pidfile=${PIDFILE-/var/run/seth/expander.pid}
 lockfile=${LOCKFILE-/var/lock/subsys/$prog}
-logfile=${LOGFILE-/var/log/chef/expander.log}
+logfile=${LOGFILE-/var/log/seth/expander.log}
 options=${OPTIONS-}
 
 start() {

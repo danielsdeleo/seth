@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>knife environment &mdash; chef-client Man Pages</title>
+    <title>knife environment &mdash; seth-client Man Pages</title>
     
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="shortcut icon" href="_static/chef.ico"/>
+    <link rel="shortcut icon" href="_static/seth.ico"/>
 
 
   </head>
   <body>
 <div style="background-color: #212c35; text-align: left; padding: 0px 0px 0px 0px">
-<a href="http://docs.opscode.com/"><img src="_static/chef_html_logo.png" border="0" alt="Chef"/></a>
+<a href="http://docs.opscode.com/"><img src="_static/seth_html_logo.png" border="0" alt="Seth"/></a>
 </div>
 
 
@@ -42,8 +42,8 @@
             
   <div class="section" id="knife-environment">
 <h1>knife environment<a class="headerlink" href="#knife-environment" title="Permalink to this headline">¶</a></h1>
-<p>An environment is a way to map an organization&#8217;s real-life workflow to what can be configured and managed when using Chef server. Every organization begins with a single environment called the <tt class="docutils literal"><span class="pre">_default</span></tt> environment, which cannot be modified (or deleted). Additional environments can be created to reflect each organization&#8217;s patterns and workflow. For example, creating <tt class="docutils literal"><span class="pre">production</span></tt>, <tt class="docutils literal"><span class="pre">staging</span></tt>, <tt class="docutils literal"><span class="pre">testing</span></tt>, and <tt class="docutils literal"><span class="pre">development</span></tt> environments. Generally, an environment is also associated with one (or more) cookbook versions.</p>
-<p>The <strong>knife environment</strong> subcommand is used to manage environments within a single organization on the Chef server.</p>
+<p>An environment is a way to map an organization&#8217;s real-life workflow to what can be configured and managed when using Seth server. Every organization begins with a single environment called the <tt class="docutils literal"><span class="pre">_default</span></tt> environment, which cannot be modified (or deleted). Additional environments can be created to reflect each organization&#8217;s patterns and workflow. For example, creating <tt class="docutils literal"><span class="pre">production</span></tt>, <tt class="docutils literal"><span class="pre">staging</span></tt>, <tt class="docutils literal"><span class="pre">testing</span></tt>, and <tt class="docutils literal"><span class="pre">development</span></tt> environments. Generally, an environment is also associated with one (or more) cookbook versions.</p>
+<p>The <strong>knife environment</strong> subcommand is used to manage environments within a single organization on the Seth server.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
@@ -117,14 +117,14 @@ yum                latest   latest
 xfs                latest   latest
 apt                latest   latest
 dmg                latest   latest
-chef_handler       latest   latest
+seth_handler       latest   latest
 windows            1.0.0    4.1.2
 </pre></div>
 </div>
 </div>
 <div class="section" id="create">
 <h2>create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add an environment object to the Chef server. When this argument is run, Knife will open $EDITOR to enable editing of the <tt class="docutils literal"><span class="pre">ENVIRONMENT</span></tt> description field (unless a description is specified as part of the command). When finished, Knife will add the environment to the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add an environment object to the Seth server. When this argument is run, Knife will open $EDITOR to enable editing of the <tt class="docutils literal"><span class="pre">ENVIRONMENT</span></tt> description field (unless a description is specified as part of the command). When finished, Knife will add the environment to the Chef server.</p>
 <div class="section" id="syntax">
 <h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -137,7 +137,7 @@ windows            1.0.0    4.1.2
 <p>This argument has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">-d</span> <span class="pre">DESCRIPTION</span></tt>, <tt class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></tt></dt>
-<dd>The description of the environment. This value will populate the description field for the environment on the Chef server.</dd>
+<dd>The description of the environment. This value will populate the description field for the environment on the Seth server.</dd>
 </dl>
 </div>
 <div class="section" id="examples">
@@ -152,7 +152,7 @@ windows            1.0.0    4.1.2
 </div>
 <div class="section" id="delete">
 <h2>delete<a class="headerlink" href="#delete" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">delete</span></tt> argument is used to delete an environment from a Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">delete</span></tt> argument is used to delete an environment from a Seth server.</p>
 <div class="section" id="id1">
 <h3>Syntax<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -177,7 +177,7 @@ windows            1.0.0    4.1.2
 </div>
 <div class="section" id="edit">
 <h2>edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit the attributes of an environment. When this argument is run, Knife will open $EDITOR to enable editing of <tt class="docutils literal"><span class="pre">ENVIRONMENT</span></tt> attributes. When finished, Knife will update the Chef server with those changes.</p>
+<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit the attributes of an environment. When this argument is run, Knife will open $EDITOR to enable editing of <tt class="docutils literal"><span class="pre">ENVIRONMENT</span></tt> attributes. When finished, Knife will update the Seth server with those changes.</p>
 <div class="section" id="id4">
 <h3>Syntax<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -233,7 +233,7 @@ windows            1.0.0    4.1.2
 </div>
 <div class="section" id="list">
 <h2>list<a class="headerlink" href="#list" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">list</span></tt> argument is used to list all of the environments that are currently available on the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">list</span></tt> argument is used to list all of the environments that are currently available on the Seth server.</p>
 <div class="section" id="id10">
 <h3>Syntax<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -287,11 +287,11 @@ windows            1.0.0    4.1.2
 </div>
 <p>to return:</p>
 <div class="highlight-bash"><div class="highlight"><pre>% knife environment show dev
-chef_type:            environment
+seth_type:            environment
 cookbook_versions:
 default_attributes:
 description:
-json_class:           Chef::Environment
+json_class:           Seth::Environment
 name:                 dev
 override_attributes:
 

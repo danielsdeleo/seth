@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class EnvironmentEdit < Knife
 
       deps do
-        require 'chef/environment'
-        require 'chef/json_compat'
+        require 'seth/environment'
+        require 'seth/json_compat'
       end
 
       banner "knife environment edit ENVIRONMENT (options)"
@@ -38,7 +38,7 @@ class Chef
           exit 1
         end
 
-        edit_object(Chef::Environment, env_name)
+        edit_object(Seth::Environment, env_name)
       end
     end
   end

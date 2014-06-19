@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::RegistryKey do
+describe Seth::Provider::RegistryKey do
 
   let(:value1) { { :name => "one", :type => :string, :data => "1" } }
   let(:key_path) { 'HKCU\Software\OpscodeNumbers' }
@@ -29,8 +29,8 @@ describe Chef::Provider::RegistryKey do
   let(:missing_key_path) {'HKCU\Software'}
 
   before(:each) do
-    Chef::Win32::Registry.any_instance.stub(:machine_architecture).and_return(:x86_64)
-    @registry = Chef::Win32::Registry.new()
+    Seth::Win32::Registry.any_instance.stub(:machine_architecture).and_return(:x86_64)
+    @registry = Seth::Win32::Registry.new()
 
     #Making the values for registry constants available on unix
     Object.send(:remove_const, 'Win32') if defined?(Win32)
@@ -58,8 +58,8 @@ describe Chef::Provider::RegistryKey do
 
     it "throws an exception if key does not exist" do
       @registry.should_receive(:get_hive_and_key).with(key_path).and_return([@hive_mock, key])
-      @registry.should_receive(:key_exists!).with(key_path).and_raise(Chef::Exceptions::Win32RegKeyMissing)
-      lambda{@registry.get_values(key_path)}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      @registry.should_receive(:key_exists!).with(key_path).and_raise(Seth::Exceptions::Win32RegKeyMissing)
+      lambda{@registry.get_values(key_path)}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
   end
 
@@ -94,8 +94,8 @@ describe Chef::Provider::RegistryKey do
     end
 
     it "should raise an exception if the key does not exist" do
-      @registry.should_receive(:key_exists!).with(key_path).and_raise(Chef::Exceptions::Win32RegKeyMissing)
-      lambda {@registry.set_value(key_path, value1)}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      @registry.should_receive(:key_exists!).with(key_path).and_raise(Seth::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.set_value(key_path, value1)}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
   end
 
@@ -110,7 +110,7 @@ describe Chef::Provider::RegistryKey do
 
     it "raises an exception if the key does not exist" do
       @registry.should_receive(:value_exists?).with(key_path, value1).and_return(true)
-      @registry.should_receive(:get_hive_and_key).with(key_path).and_raise(Chef::Exceptions::Win32RegKeyMissing)
+      @registry.should_receive(:get_hive_and_key).with(key_path).and_raise(Seth::Exceptions::Win32RegKeyMissing)
       @registry.delete_value(key_path, value1)
     end
 
@@ -132,7 +132,7 @@ describe Chef::Provider::RegistryKey do
 
     it "raises an exception if intermediate keys are missing and recursive is set to false" do
       @registry.should_receive(:keys_missing?).with(key_path).and_return(true)
-      lambda{@registry.create_key(key_path, false)}.should raise_error(Chef::Exceptions::Win32RegNoRecursive)
+      lambda{@registry.create_key(key_path, false)}.should raise_error(Seth::Exceptions::Win32RegNoRecursive)
     end
 
     it "does nothing if the key exists" do
@@ -176,7 +176,7 @@ describe Chef::Provider::RegistryKey do
       @registry.should_receive(:key_exists?).with(key_path).and_return(true)
       @registry.should_receive(:get_hive_and_key).with(key_path).and_return([@hive_mock, key])
       @registry.should_receive(:has_subkeys?).with(key_path).and_return(true)
-      lambda{@registry.delete_key(key_path, false)}.should raise_error(Chef::Exceptions::Win32RegNoRecursive)
+      lambda{@registry.delete_key(key_path, false)}.should raise_error(Seth::Exceptions::Win32RegNoRecursive)
     end
 
     it "deletes key if the key exists and has no subkeys" do
@@ -205,7 +205,7 @@ describe Chef::Provider::RegistryKey do
   describe "key_exists!" do
     it "throws an exception if the key_parent does not exist" do
       @registry.should_receive(:key_exists?).with(key_path).and_return(false)
-      lambda{@registry.key_exists!(key_path)}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      lambda{@registry.key_exists!(key_path)}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
   end
 
@@ -216,7 +216,7 @@ describe Chef::Provider::RegistryKey do
     end
 
     it "returns false if the hive does not exist" do
-      @registry.should_receive(:get_hive_and_key).with(key_path).and_raise(Chef::Exceptions::Win32RegHiveMissing)
+      @registry.should_receive(:get_hive_and_key).with(key_path).and_raise(Seth::Exceptions::Win32RegHiveMissing)
       @registry.hive_exists?(key_path) == false
     end
   end
@@ -239,8 +239,8 @@ describe Chef::Provider::RegistryKey do
     end
 
     it "throws an exception if the key does not exist" do
-      @registry.should_receive(:key_exists!).with(key_path).and_raise(Chef::Exceptions::Win32RegKeyMissing)
-      lambda {@registry.set_value(key_path, value1)}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      @registry.should_receive(:key_exists!).with(key_path).and_raise(Seth::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.set_value(key_path, value1)}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
   end
 
@@ -256,8 +256,8 @@ describe Chef::Provider::RegistryKey do
 
   describe "value_exists?" do
     it "throws an exception if the key does not exist" do
-      @registry.should_receive(:key_exists!).with(key_path).and_raise(Chef::Exceptions::Win32RegKeyMissing)
-      lambda {@registry.value_exists?(key_path, value1)}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      @registry.should_receive(:key_exists!).with(key_path).and_raise(Seth::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.value_exists?(key_path, value1)}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
 
     it "returns true if the value exists" do
@@ -279,8 +279,8 @@ describe Chef::Provider::RegistryKey do
 
   describe "data_exists?" do
     it "throws an exception if the key does not exist" do
-      @registry.should_receive(:key_exists!).with(key_path).and_raise(Chef::Exceptions::Win32RegKeyMissing)
-      lambda {@registry.data_exists?(key_path, value1)}.should raise_error(Chef::Exceptions::Win32RegKeyMissing)
+      @registry.should_receive(:key_exists!).with(key_path).and_raise(Seth::Exceptions::Win32RegKeyMissing)
+      lambda {@registry.data_exists?(key_path, value1)}.should raise_error(Seth::Exceptions::Win32RegKeyMissing)
     end
 
     it "returns true if the data exists" do
@@ -310,7 +310,7 @@ describe Chef::Provider::RegistryKey do
 
     it "throws an exception if the value does not exist" do
       @registry.should_receive(:value_exists?).with(key_path, value1).and_return(false)
-      lambda{@registry.value_exists!(key_path, value1)}.should raise_error(Chef::Exceptions::Win32RegValueMissing)
+      lambda{@registry.value_exists!(key_path, value1)}.should raise_error(Seth::Exceptions::Win32RegValueMissing)
     end
   end
 
@@ -322,7 +322,7 @@ describe Chef::Provider::RegistryKey do
 
     it "throws an exception if the data does not exist" do
       @registry.should_receive(:data_exists?).with(key_path, value1).and_return(false)
-      lambda{@registry.data_exists!(key_path, value1)}.should raise_error(Chef::Exceptions::Win32RegDataMissing)
+      lambda{@registry.data_exists!(key_path, value1)}.should raise_error(Seth::Exceptions::Win32RegDataMissing)
     end
   end
 
@@ -346,7 +346,7 @@ describe Chef::Provider::RegistryKey do
 
     it "throws an exception if value does not exist" do
       @registry.should_receive(:value_exists?).with(key_path, value1).and_return(false)
-      lambda{@registry.type_matches?(key_path, value1)}.should raise_error(Chef::Exceptions::Win32RegValueMissing)
+      lambda{@registry.type_matches?(key_path, value1)}.should raise_error(Seth::Exceptions::Win32RegValueMissing)
     end
   end
 
@@ -358,7 +358,7 @@ describe Chef::Provider::RegistryKey do
 
     it "throws an exception if the type does not match" do
       @registry.should_receive(:type_matches?).with(key_path, value1).and_return(false)
-      lambda{@registry.type_matches!(key_path, value1)}.should raise_error(Chef::Exceptions::Win32RegTypesMismatch)
+      lambda{@registry.type_matches!(key_path, value1)}.should raise_error(Seth::Exceptions::Win32RegTypesMismatch)
     end
   end
 

@@ -17,15 +17,15 @@
 #
 
 require 'pathname'
-require 'chef/mixin/shell_out'
-require 'chef/provider/user'
+require 'seth/mixin/shell_out'
+require 'seth/provider/user'
 
-class Chef
+class Seth
   class Provider
     class User
-      class Useradd < Chef::Provider::User
+      class Useradd < Seth::Provider::User
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         UNIVERSAL_OPTIONS = [[:comment, "-c"], [:gid, "-g"], [:password, "-p"], [:shell, "-s"], [:uid, "-u"]]
 
@@ -62,7 +62,7 @@ class Chef
             return false
           end
 
-          raise Chef::Exceptions::User, "Cannot determine if #{@new_resource} is locked!" if passwd_s.stdout.empty?
+          raise Seth::Exceptions::User, "Cannot determine if #{@new_resource} is locked!" if passwd_s.stdout.empty?
 
           status_line = passwd_s.stdout.split(' ')
           case status_line[1]
@@ -87,7 +87,7 @@ class Chef
               raise_lock_error = true
             end
 
-            raise Chef::Exceptions::User, "Cannot determine if #{new_resource} is locked!" if raise_lock_error
+            raise Seth::Exceptions::User, "Cannot determine if #{new_resource} is locked!" if raise_lock_error
           end
 
           @locked
@@ -118,10 +118,10 @@ class Chef
               end
               if updating_home?
                 if managing_home_dir?
-                  Chef::Log.debug("#{new_resource} managing the users home directory")
+                  Seth::Log.debug("#{new_resource} managing the users home directory")
                   opts << "-d" << new_resource.home << "-m"
                 else
-                  Chef::Log.debug("#{new_resource} setting home to #{new_resource.home}")
+                  Seth::Log.debug("#{new_resource} setting home to #{new_resource.home}")
                   opts << "-d" << new_resource.home
                 end
               end
@@ -133,7 +133,7 @@ class Chef
         def update_options(field, option, opts)
           if @current_resource.send(field).to_s != new_resource.send(field).to_s
             if new_resource.send(field)
-              Chef::Log.debug("#{new_resource} setting #{field} to #{new_resource.send(field)}")
+              Seth::Log.debug("#{new_resource} setting #{field} to #{new_resource.send(field)}")
               opts << option << new_resource.send(field).to_s
             end
           end

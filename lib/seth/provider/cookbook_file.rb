@@ -16,25 +16,25 @@
 # limitations under the License.
 #
 
-require 'chef/provider/file'
-require 'chef/deprecation/provider/cookbook_file'
-require 'chef/deprecation/warnings'
+require 'seth/provider/file'
+require 'seth/deprecation/provider/cookbook_file'
+require 'seth/deprecation/warnings'
 
-class Chef
+class Seth
   class Provider
-    class CookbookFile < Chef::Provider::File
+    class CookbookFile < Seth::Provider::File
 
-      extend Chef::Deprecation::Warnings
-      include Chef::Deprecation::Provider::CookbookFile
-      add_deprecation_warnings_for(Chef::Deprecation::Provider::CookbookFile.instance_methods)
+      extend Seth::Deprecation::Warnings
+      include Seth::Deprecation::Provider::CookbookFile
+      add_deprecation_warnings_for(Seth::Deprecation::Provider::CookbookFile.instance_methods)
 
       def initialize(new_resource, run_context)
-        @content_class = Chef::Provider::CookbookFile::Content
+        @content_class = Seth::Provider::CookbookFile::Content
         super
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::CookbookFile.new(@new_resource.name)
+        @current_resource = Seth::Resource::CookbookFile.new(@new_resource.name)
         super
       end
 

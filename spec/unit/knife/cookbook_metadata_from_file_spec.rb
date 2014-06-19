@@ -20,16 +20,16 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::CookbookMetadataFromFile do
+describe Seth::Knife::CookbookMetadataFromFile do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
+    Seth::Config[:node_name]  = "webmonkey.example.com"
     @src = File.expand_path(File.join(CHEF_SPEC_DATA, "metadata", "quick_start", "metadata.rb"))
     @tgt = File.expand_path(File.join(CHEF_SPEC_DATA, "metadata", "quick_start", "metadata.json"))
-    @knife = Chef::Knife::CookbookMetadataFromFile.new
+    @knife = Seth::Knife::CookbookMetadataFromFile.new
     @knife.name_args = [ @src ]
     @knife.stub(:to_json_pretty).and_return(true)
-    @md = Chef::Cookbook::Metadata.new
-    Chef::Cookbook::Metadata.stub(:new).and_return(@md)
+    @md = Seth::Cookbook::Metadata.new
+    Seth::Cookbook::Metadata.stub(:new).and_return(@md)
     $stdout.stub(:write)
   end
 
@@ -57,7 +57,7 @@ describe Chef::Knife::CookbookMetadataFromFile do
     end
 
     it "should generate json from the metadata" do
-      Chef::JSONCompat.should_receive(:to_json_pretty).with(@md)
+      Seth::JSONCompat.should_receive(:to_json_pretty).with(@md)
       @knife.run
     end
 

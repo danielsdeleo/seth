@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/provider/group/groupadd'
-require 'chef/mixin/shell_out'
+require 'seth/provider/group/groupadd'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Provider
     class Group
-      class Suse < Chef::Provider::Group::Groupadd
+      class Suse < Seth::Provider::Group::Groupadd
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         def load_current_resource
           super
@@ -34,7 +34,7 @@ class Chef
           super
           requirements.assert(:all_actions) do |a|
             a.assertion { ::File.exists?("/usr/sbin/groupmod") }
-            a.failure_message Chef::Exceptions::Group, "Could not find binary /usr/sbin/groupmod for #{@new_resource.name}"
+            a.failure_message Seth::Exceptions::Group, "Could not find binary /usr/sbin/groupmod for #{@new_resource.name}"
             # No whyrun alternative: this component should be available in the base install of any given system that uses it
           end
         end

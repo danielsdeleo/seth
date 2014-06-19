@@ -15,14 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/knife'
-require 'chef/application'
+require 'seth/knife'
+require 'seth/application'
 require 'mixlib/log'
 require 'ohai/config'
-require 'chef/monkey_patches/net_http.rb'
-require 'chef/monkey_patches/uri.rb'
+require 'seth/monkey_patches/net_http.rb'
+require 'seth/monkey_patches/uri.rb'
 
-class Chef::Application::Knife < Chef::Application
+class Seth::Application::Knife < Chef::Application
 
   NO_COMMAND_GIVEN = "You need to pass a sub-command (e.g., knife SUB-COMMAND)\n"
 
@@ -45,13 +45,13 @@ class Chef::Application::Knife < Chef::Application
   option :color,
     :long         => '--[no-]color',
     :boolean      => true,
-    :default      => !Chef::Platform.windows?,
+    :default      => !Seth::Platform.windows?,
     :description  => "Use colored output, defaults to false on Windows, true otherwise"
 
   option :environment,
     :short        => "-E ENVIRONMENT",
     :long         => "--environment ENVIRONMENT",
-    :description  => "Set the Chef environment (except for in searches, where this will be flagrantly ignored)"
+    :description  => "Set the Seth environment (except for in searches, where this will be flagrantly ignored)"
 
   option :editor,
     :short        => "-e EDITOR",
@@ -84,10 +84,10 @@ class Chef::Application::Knife < Chef::Application
     :description => "API Client Key",
     :proc => lambda { |path| File.expand_path(path, Dir.pwd) }
 
-  option :chef_server_url,
+  option :seth_server_url,
     :short => "-s URL",
     :long => "--server-url URL",
-    :description => "Chef Server URL"
+    :description => "Seth Server URL"
 
   option :yes,
     :short => "-y",
@@ -114,20 +114,20 @@ class Chef::Application::Knife < Chef::Application
     :description  => "Point knife commands at local repository instead of server",
     :boolean      => true
 
-  option :chef_zero_host,
-    :long         => "--chef-zero-host HOST",
-    :description  => "Host to start chef-zero on"
+  option :seth_zero_host,
+    :long         => "--seth-zero-host HOST",
+    :description  => "Host to start seth-zero on"
 
-  option :chef_zero_port,
-    :long         => "--chef-zero-port PORT",
-    :description  => "Port to start chef-zero on"
+  option :seth_zero_port,
+    :long         => "--seth-zero-port PORT",
+    :description  => "Port to start seth-zero on"
 
   option :version,
     :short        => "-v",
     :long         => "--version",
-    :description  => "Show chef version",
+    :description  => "Show seth version",
     :boolean      => true,
-    :proc         => lambda {|v| puts "Chef: #{::Chef::VERSION}"},
+    :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
     :exit         => 0
 
 
@@ -136,7 +136,7 @@ class Chef::Application::Knife < Chef::Application
     Mixlib::Log::Formatter.show_time = false
     validate_and_parse_options
     quiet_traps
-    Chef::Knife.run(ARGV, options)
+    Seth::Knife.run(ARGV, options)
     exit 0
   end
 
@@ -183,7 +183,7 @@ class Chef::Application::Knife < Chef::Application
   end
 
   def print_help_and_exit(exitcode=1, fatal_message=nil)
-    Chef::Log.error(fatal_message) if fatal_message
+    Seth::Log.error(fatal_message) if fatal_message
 
     begin
       self.parse_options
@@ -192,7 +192,7 @@ class Chef::Application::Knife < Chef::Application
     end
     puts self.opt_parser
     puts
-    Chef::Knife.list_commands
+    Seth::Knife.list_commands
     exit exitcode
   end
 

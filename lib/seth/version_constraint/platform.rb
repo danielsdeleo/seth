@@ -13,13 +13,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-require 'chef/version_constraint'
-require 'chef/version/platform'
+require 'seth/version_constraint'
+require 'seth/version/platform'
 
-class Chef
+class Seth
   class VersionConstraint
-    class Platform < Chef::VersionConstraint
-      VERSION_CLASS = Chef::Version::Platform
+    class Platform < Seth::VersionConstraint
+      VERSION_CLASS = Seth::Version::Platform
 
     end
   end

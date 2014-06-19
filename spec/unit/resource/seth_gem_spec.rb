@@ -19,29 +19,29 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::ChefGem, "initialize" do
+describe Seth::Resource::ChefGem, "initialize" do
 
   before(:each) do
-    @resource = Chef::Resource::ChefGem.new("foo")
+    @resource = Seth::Resource::ChefGem.new("foo")
   end
 
-  it "should return a Chef::Resource::ChefGem" do
-    @resource.should be_a_kind_of(Chef::Resource::ChefGem)
+  it "should return a Seth::Resource::ChefGem" do
+    @resource.should be_a_kind_of(Seth::Resource::ChefGem)
   end
 
-  it "should set the resource_name to :chef_gem" do
-    @resource.resource_name.should eql(:chef_gem)
+  it "should set the resource_name to :seth_gem" do
+    @resource.resource_name.should eql(:seth_gem)
   end
 
-  it "should set the provider to Chef::Provider::Package::Rubygems" do
-    @resource.provider.should eql(Chef::Provider::Package::Rubygems)
+  it "should set the provider to Seth::Provider::Package::Rubygems" do
+    @resource.provider.should eql(Seth::Provider::Package::Rubygems)
   end
 end
 
-describe Chef::Resource::ChefGem, "gem_binary" do
+describe Seth::Resource::ChefGem, "gem_binary" do
   before(:each) do
-    expect(RbConfig::CONFIG).to receive(:[]).with('bindir').and_return("/opt/chef/embedded/bin")
-    @resource = Chef::Resource::ChefGem.new("foo")
+    expect(RbConfig::CONFIG).to receive(:[]).with('bindir').and_return("/opt/seth/embedded/bin")
+    @resource = Seth::Resource::ChefGem.new("foo")
   end
 
   it "should raise an exception when gem_binary is set" do
@@ -49,6 +49,6 @@ describe Chef::Resource::ChefGem, "gem_binary" do
   end
 
   it "should set the gem_binary based on computing it from RbConfig" do
-    expect(@resource.gem_binary).to eql("/opt/chef/embedded/bin/gem")
+    expect(@resource.gem_binary).to eql("/opt/seth/embedded/bin/gem")
   end
 end

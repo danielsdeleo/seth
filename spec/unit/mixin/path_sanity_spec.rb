@@ -19,10 +19,10 @@
 require 'spec_helper'
 
 class PathSanityTestHarness
-  include Chef::Mixin::PathSanity
+  include Seth::Mixin::PathSanity
 end
 
-describe Chef::Mixin::PathSanity do
+describe Seth::Mixin::PathSanity do
 
   before do
     @sanity = PathSanityTestHarness.new
@@ -30,12 +30,12 @@ describe Chef::Mixin::PathSanity do
 
   describe "when enforcing path sanity" do
     before do
-      Chef::Config[:enforce_path_sanity] = true
+      Seth::Config[:enforce_path_sanity] = true
       @ruby_bindir = '/some/ruby/bin'
       @gem_bindir = '/some/gem/bin'
       Gem.stub(:bindir).and_return(@gem_bindir)
       RbConfig::CONFIG.stub(:[]).with('bindir').and_return(@ruby_bindir)
-      Chef::Platform.stub(:windows?).and_return(false)
+      Seth::Platform.stub(:windows?).and_return(false)
     end
 
     it "adds all useful PATHs even if environment is an empty hash" do
@@ -77,7 +77,7 @@ describe Chef::Mixin::PathSanity do
       gem_bindir = 'C:\gems\bin'
       Gem.stub(:bindir).and_return(gem_bindir)
       RbConfig::CONFIG.stub(:[]).with('bindir').and_return(ruby_bindir)
-      Chef::Platform.stub(:windows?).and_return(true)
+      Seth::Platform.stub(:windows?).and_return(true)
       env = {"PATH" => 'C:\Windows\system32;C:\mr\softie'}
       @sanity.enforce_path_sanity(env)
       env["PATH"].should == "C:\\Windows\\system32;C:\\mr\\softie;#{ruby_bindir};#{gem_bindir}"

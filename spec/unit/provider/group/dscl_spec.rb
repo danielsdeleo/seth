@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Group::Dscl do
+describe Seth::Provider::Group::Dscl do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Group.new("aj")
-    @current_resource = Chef::Resource::Group.new("aj")
-    @provider = Chef::Provider::Group::Dscl.new(@new_resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Group.new("aj")
+    @current_resource = Seth::Resource::Group.new("aj")
+    @provider = Seth::Provider::Group::Dscl.new(@new_resource, @run_context)
     @provider.current_resource = @current_resource
     @status = double("Process::Status", :exitstatus => 0)
     @pid = 2342
@@ -48,8 +48,8 @@ describe Chef::Provider::Group::Dscl do
 
   describe "safe_dscl" do
     before do
-      @node = Chef::Node.new
-      @provider = Chef::Provider::Group::Dscl.new(@node, @new_resource)
+      @node = Seth::Node.new
+      @provider = Seth::Provider::Group::Dscl.new(@node, @new_resource)
       @provider.stub(:dscl).and_return(["cmd", @status, "stdout", "stderr"])
     end
 
@@ -71,7 +71,7 @@ describe Chef::Provider::Group::Dscl do
       end
 
       it "should raise an exception for any other command" do
-        lambda { @provider.safe_dscl("cmd /Path arguments") }.should raise_error(Chef::Exceptions::Group)
+        lambda { @provider.safe_dscl("cmd /Path arguments") }.should raise_error(Seth::Exceptions::Group)
       end
     end
 
@@ -81,7 +81,7 @@ describe Chef::Provider::Group::Dscl do
       end
 
       it "should raise an exception" do
-        lambda { @provider.safe_dscl("cmd /Path arguments") }.should raise_error(Chef::Exceptions::Group)
+        lambda { @provider.safe_dscl("cmd /Path arguments") }.should raise_error(Seth::Exceptions::Group)
       end
     end
 
@@ -96,8 +96,8 @@ describe Chef::Provider::Group::Dscl do
 
   describe "get_free_gid" do
     before do
-      @node = Chef::Node.new
-      @provider = Chef::Provider::Group::Dscl.new(@node, @new_resource)
+      @node = Seth::Node.new
+      @provider = Seth::Provider::Group::Dscl.new(@node, @new_resource)
       @provider.stub(:safe_dscl).and_return("\naj      200\njt      201\n")
     end
 
@@ -118,8 +118,8 @@ describe Chef::Provider::Group::Dscl do
 
   describe "gid_used?" do
     before do
-      @node = Chef::Node.new
-      @provider = Chef::Provider::Group::Dscl.new(@node, @new_resource)
+      @node = Seth::Node.new
+      @provider = Seth::Provider::Group::Dscl.new(@node, @new_resource)
       @provider.stub(:safe_dscl).and_return("\naj      500\n")
     end
 
@@ -148,7 +148,7 @@ describe Chef::Provider::Group::Dscl do
       end
 
       it "should raise an exception if the new resources gid is already in use" do
-        lambda { @provider.set_gid }.should raise_error(Chef::Exceptions::Group)
+        lambda { @provider.set_gid }.should raise_error(Seth::Exceptions::Group)
       end
     end
 
@@ -191,7 +191,7 @@ describe Chef::Provider::Group::Dscl do
       end
 
       it "should log an appropriate message" do
-        Chef::Log.should_receive(:debug).with("group[aj] removing group members all your base")
+        Seth::Log.should_receive(:debug).with("group[aj] removing group members all your base")
         @provider.set_members
       end
 
@@ -209,7 +209,7 @@ describe Chef::Provider::Group::Dscl do
       end
 
       it "should log an appropriate debug message" do
-        Chef::Log.should_receive(:debug).with("group[aj] setting group members all, your, base")
+        Seth::Log.should_receive(:debug).with("group[aj] setting group members all, your, base")
         @provider.set_members
       end
 
@@ -243,7 +243,7 @@ describe Chef::Provider::Group::Dscl do
     it "raises an error if the required binary /usr/bin/dscl doesn't exist" do
       File.should_receive(:exists?).with("/usr/bin/dscl").and_return(false)
 
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Group)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Group)
     end
 
     it "doesn't raise an error if /usr/bin/dscl exists" do

@@ -16,28 +16,28 @@
 # limitations under the License.
 #
 
-require 'chef/http'
-require 'chef/http/authenticator'
-require 'chef/http/cookie_manager'
-require 'chef/http/decompressor'
-require 'chef/http/json_input'
-require 'chef/http/json_output'
-require 'chef/http/remote_request_id'
+require 'seth/http'
+require 'seth/http/authenticator'
+require 'seth/http/cookie_manager'
+require 'seth/http/decompressor'
+require 'seth/http/json_input'
+require 'seth/http/json_output'
+require 'seth/http/remote_request_id'
 
-class Chef
-  class ServerAPI < Chef::HTTP
+class Seth
+  class ServerAPI < Seth::HTTP
 
-    def initialize(url = Chef::Config[:chef_server_url], options = {})
-      options[:client_name] ||= Chef::Config[:node_name]
-      options[:signing_key_filename] ||= Chef::Config[:client_key]
+    def initialize(url = Seth::Config[:seth_server_url], options = {})
+      options[:client_name] ||= Seth::Config[:node_name]
+      options[:signing_key_filename] ||= Seth::Config[:client_key]
       super(url, options)
     end
 
-    use Chef::HTTP::JSONInput
-    use Chef::HTTP::JSONOutput
-    use Chef::HTTP::CookieManager
-    use Chef::HTTP::Decompressor
-    use Chef::HTTP::Authenticator
-    use Chef::HTTP::RemoteRequestID
+    use Seth::HTTP::JSONInput
+    use Seth::HTTP::JSONOutput
+    use Seth::HTTP::CookieManager
+    use Seth::HTTP::Decompressor
+    use Seth::HTTP::Authenticator
+    use Seth::HTTP::RemoteRequestID
   end
 end

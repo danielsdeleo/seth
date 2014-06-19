@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class ClientReregister < Knife
 
       deps do
-        require 'chef/api_client'
-        require 'chef/json_compat'
+        require 'seth/api_client'
+        require 'seth/json_compat'
       end
 
       banner "knife client reregister CLIENT (options)"
@@ -43,8 +43,8 @@ class Chef
           exit 1
         end
 
-        client = Chef::ApiClient.reregister(@client_name)
-        Chef::Log.debug("Updated client data: #{client.inspect}")
+        client = Seth::ApiClient.reregister(@client_name)
+        Seth::Log.debug("Updated client data: #{client.inspect}")
         key = client.private_key
         if config[:file]
           File.open(config[:file], "w") do |f|

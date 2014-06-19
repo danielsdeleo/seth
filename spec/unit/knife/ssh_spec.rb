@@ -20,19 +20,19 @@ require 'spec_helper'
 require 'net/ssh'
 require 'net/ssh/multi'
 
-describe Chef::Knife::Ssh do
+describe Seth::Knife::Ssh do
   before(:each) do
-    Chef::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+    Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
   end
 
   before do
-    @knife = Chef::Knife::Ssh.new
+    @knife = Seth::Knife::Ssh.new
     @knife.merge_configs
     @knife.config[:attribute] = "fqdn"
-    @node_foo = Chef::Node.new
+    @node_foo = Seth::Node.new
     @node_foo.automatic_attrs[:fqdn] = "foo.example.org"
     @node_foo.automatic_attrs[:ipaddress] = "10.0.0.1"
-    @node_bar = Chef::Node.new
+    @node_bar = Seth::Node.new
     @node_bar.automatic_attrs[:fqdn] = "bar.example.org"
     @node_bar.automatic_attrs[:ipaddress] = "10.0.0.2"
   end
@@ -41,12 +41,12 @@ describe Chef::Knife::Ssh do
     context "manual is set to false (default)" do
       before do
         @knife.config[:manual] = false
-        @query = Chef::Search::Query.new
+        @query = Seth::Search::Query.new
       end
 
       def configure_query(node_array)
         @query.stub(:search).and_return([node_array])
-        Chef::Search::Query.stub(:new).and_return(@query)
+        Seth::Search::Query.stub(:new).and_return(@query)
       end
 
       def self.should_return_specified_attributes
@@ -108,7 +108,7 @@ describe Chef::Knife::Ssh do
           @query.stub(:search).and_return([[@node_foo, @node_bar]])
           @node_foo.automatic_attrs[:fqdn] = nil
           @node_bar.automatic_attrs[:fqdn] = nil
-          Chef::Search::Query.stub(:new).and_return(@query)
+          Seth::Search::Query.stub(:new).and_return(@query)
         end
 
         it "should raise a specific error (CHEF-3402)" do
@@ -134,7 +134,7 @@ describe Chef::Knife::Ssh do
 
   describe "#configure_attribute" do
     before do
-      Chef::Config[:knife][:ssh_attribute] = nil
+      Seth::Config[:knife][:ssh_attribute] = nil
       @knife.config[:attribute] = nil
     end
 
@@ -144,7 +144,7 @@ describe Chef::Knife::Ssh do
     end
 
     it "should return the value set in the configuration file" do
-      Chef::Config[:knife][:ssh_attribute] = "config_file"
+      Seth::Config[:knife][:ssh_attribute] = "config_file"
       @knife.configure_attribute
       @knife.config[:attribute].should == "config_file"
     end
@@ -163,14 +163,14 @@ describe Chef::Knife::Ssh do
     end
 
     it "should set override_attribute to the value of attribute from the config file" do
-      Chef::Config[:knife][:ssh_attribute] = "config_file"
+      Seth::Config[:knife][:ssh_attribute] = "config_file"
       @knife.configure_attribute
       @knife.config[:attribute].should == "config_file"
       @knife.config[:override_attribute].should == "config_file"
     end
 
     it "should prefer the command line over the config file for the value of override_attribute" do
-      Chef::Config[:knife][:ssh_attribute] = "config_file"
+      Seth::Config[:knife][:ssh_attribute] = "config_file"
       @knife.config[:attribute] = "command_line"
       @knife.configure_attribute
       @knife.config[:override_attribute].should == "command_line"
@@ -266,9 +266,9 @@ describe Chef::Knife::Ssh do
 
   describe "#run" do
     before do
-      @query = Chef::Search::Query.new
+      @query = Seth::Search::Query.new
       @query.should_receive(:search).and_return([[@node_foo]])
-      Chef::Search::Query.stub(:new).and_return(@query)
+      Seth::Search::Query.stub(:new).and_return(@query)
       @knife.stub(:ssh_command).and_return(exit_code)
       @knife.name_args = ['*:*', 'false']
     end
@@ -347,7 +347,7 @@ describe Chef::Knife::Ssh do
     end
     context "when setting ssh_password in the config variable" do
       before(:each) do
-        Chef::Config[:knife][:ssh_password] = "my_knife_passw0rd"
+        Seth::Config[:knife][:ssh_password] = "my_knife_passw0rd"
       end
       context "when setting ssh_password_ng from knife ssh" do
         # in this case ssh_password_ng exists, but ssh_password does not

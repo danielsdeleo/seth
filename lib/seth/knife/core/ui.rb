@@ -19,14 +19,14 @@
 #
 
 require 'forwardable'
-require 'chef/platform/query_helpers'
-require 'chef/knife/core/generic_presenter'
+require 'seth/platform/query_helpers'
+require 'seth/knife/core/generic_presenter'
 require 'tempfile'
 
-class Chef
+class Seth
   class Knife
 
-    #==Chef::Knife::UI
+    #==Seth::Knife::UI
     # The User Interaction class used by knife.
     class UI
 
@@ -45,11 +45,11 @@ class Chef
 
       def initialize(stdout, stderr, stdin, config)
         @stdout, @stderr, @stdin, @config = stdout, stderr, stdin, config
-        @presenter = Chef::Knife::Core::GenericPresenter.new(self, config)
+        @presenter = Seth::Knife::Core::GenericPresenter.new(self, config)
       end
 
       # Creates a new +presenter_class+ object and uses it to format structured
-      # data for display. By default, a Chef::Knife::Core::GenericPresenter
+      # data for display. By default, a Seth::Knife::Core::GenericPresenter
       # object is used.
       def use_presenter(presenter_class)
         @presenter = presenter_class.new(self, config)
@@ -112,7 +112,7 @@ class Chef
       # determined by the value of `config[:color]`. When output is not to a
       # terminal, colored output is never used
       def color?
-        Chef::Config[:color] && stdout.tty? && !Chef::Platform.windows?
+        Seth::Config[:color] && stdout.tty? && !Chef::Platform.windows?
       end
 
       def ask(*args, &block)
@@ -163,7 +163,7 @@ class Chef
       end
 
       def edit_data(data, parse_output=true)
-        output = Chef::JSONCompat.to_json_pretty(data)
+        output = Seth::JSONCompat.to_json_pretty(data)
 
         if (!config[:disable_editing])
           Tempfile.open([ 'knife-edit-', '.json' ]) do |tf|
@@ -176,7 +176,7 @@ class Chef
           end
         end
 
-        parse_output ? Chef::JSONCompat.from_json(output) : output
+        parse_output ? Seth::JSONCompat.from_json(output) : output
       end
 
       def edit_object(klass, name)
@@ -194,8 +194,8 @@ class Chef
         # We wouldn't have to do these shenanigans if all the editable objects
         # implemented to_hash, or if to_json against a hash returned a string
         # with stable key order.
-        object_parsed_again = Chef::JSONCompat.from_json(Chef::JSONCompat.to_json(object), :create_additions => false)
-        output_parsed_again = Chef::JSONCompat.from_json(Chef::JSONCompat.to_json(output), :create_additions => false)
+        object_parsed_again = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(object), :create_additions => false)
+        output_parsed_again = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(output), :create_additions => false)
         if object_parsed_again != output_parsed_again
           output.save
           self.msg("Saved #{output}")
@@ -249,7 +249,7 @@ class Chef
 
       #
       # Not the ideal signature for a function but we need to stick with this
-      # for now until we get a chance to break our API in Chef 12.
+      # for now until we get a chance to break our API in Seth 12.
       #
       # question => Question to print  before asking for confirmation
       # append_instructions => Should print '? (Y/N)' as instructions

@@ -21,7 +21,7 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::UI do
+describe Seth::Knife::UI do
   before do
     @out, @err, @in = StringIO.new, StringIO.new, StringIO.new
     @config = {
@@ -29,7 +29,7 @@ describe Chef::Knife::UI do
       :yes => nil,
       :format => "summary",
     }
-    @ui = Chef::Knife::UI.new(@out, @err, @in, @config)
+    @ui = Seth::Knife::UI.new(@out, @err, @in, @config)
   end
 
   describe "edit" do
@@ -360,7 +360,7 @@ EOM
 
     describe "with --run-list passed" do
       it "should return the run list" do
-        input = Chef::Node.new
+        input = Seth::Node.new
         input.name("sample-node")
         input.run_list("role[monkey]", "role[churchmouse]")
         @ui.config[:run_list] = true
@@ -520,17 +520,17 @@ EOM
     it "asks a question and returns the answer provided by the user" do
       out = StringIO.new
       @ui.stub(:stdout).and_return(out)
-      @ui.stub(:stdin).and_return(StringIO.new("http://mychefserver.example.com\n"))
-      @ui.ask_question("your chef server URL?").should == "http://mychefserver.example.com"
-      out.string.should == "your chef server URL?"
+      @ui.stub(:stdin).and_return(StringIO.new("http://mysethserver.example.com\n"))
+      @ui.ask_question("your seth server URL?").should == "http://mychefserver.example.com"
+      out.string.should == "your seth server URL?"
     end
 
     it "suggests a default setting and returns the default when the user's response only contains whitespace" do
       out = StringIO.new
       @ui.stub(:stdout).and_return(out)
       @ui.stub(:stdin).and_return(StringIO.new(" \n"))
-      @ui.ask_question("your chef server URL? ", :default => 'http://localhost:4000').should == "http://localhost:4000"
-      out.string.should == "your chef server URL? [http://localhost:4000] "
+      @ui.ask_question("your seth server URL? ", :default => 'http://localhost:4000').should == "http://localhost:4000"
+      out.string.should == "your seth server URL? [http://localhost:4000] "
     end
   end
 

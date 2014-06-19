@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Ohai do
+describe Seth::Resource::Ohai do
 
   before(:each) do
-    @resource = Chef::Resource::Ohai.new("ohai_reload")
+    @resource = Seth::Resource::Ohai.new("ohai_reload")
   end
 
-  it "should create a new Chef::Resource::Ohai" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Ohai)
+  it "should create a new Seth::Resource::Ohai" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Ohai)
   end
 
   it "should have a resource name of :ohai" do

@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::CookbookMetadata do
+describe Seth::Knife::CookbookMetadata do
   before(:each) do
-    @knife = Chef::Knife::CookbookMetadata.new
+    @knife = Seth::Knife::CookbookMetadata.new
     @knife.name_args = ['foobar']
     @cookbook_dir = Dir.mktmpdir
     @json_data = '{ "version": "1.0.0" }'
@@ -51,9 +51,9 @@ describe Chef::Knife::CookbookMetadata do
     describe 'with -a or --all' do
       before(:each) do
         @knife.config[:all] = true
-        @foo = Chef::CookbookVersion.new('foo', '/tmp/blah')
+        @foo = Seth::CookbookVersion.new('foo', '/tmp/blah')
         @foo.version = '1.0.0'
-        @bar = Chef::CookbookVersion.new('bar', '/tmp/blah')
+        @bar = Seth::CookbookVersion.new('bar', '/tmp/blah')
         @bar.version = '2.0.0'
         @cookbook_loader = {
           "foo" => @foo,
@@ -65,15 +65,15 @@ describe Chef::Knife::CookbookMetadata do
       end
 
       it 'should generate the metadata for each cookbook' do
-        Chef::Config[:cookbook_path] = @cookbook_dir
-        Chef::CookbookLoader.should_receive(:new).with(@cookbook_dir).and_return(@cookbook_loader)
+        Seth::Config[:cookbook_path] = @cookbook_dir
+        Seth::CookbookLoader.should_receive(:new).with(@cookbook_dir).and_return(@cookbook_loader)
         @knife.run
       end
 
       describe 'and with -o or --cookbook-path' do
         it 'should look in the provided path and generate cookbook metadata' do
-          @knife.config[:cookbook_path] = '/opt/chef/cookbooks'
-          Chef::CookbookLoader.should_receive(:new).with('/opt/chef/cookbooks').and_return(@cookbook_loader)
+          @knife.config[:cookbook_path] = '/opt/seth/cookbooks'
+          Seth::CookbookLoader.should_receive(:new).with('/opt/seth/cookbooks').and_return(@cookbook_loader)
           @knife.run
         end
       end
@@ -110,24 +110,24 @@ describe Chef::Knife::CookbookMetadata do
     end
 
     it 'should generate the metatdata json from metatdata.rb' do
-      Chef::Cookbook::Metadata.stub(:new).and_return(@metadata_mock)
+      Seth::Cookbook::Metadata.stub(:new).and_return(@metadata_mock)
       @metadata_mock.should_receive(:name).with('foobar')
       @metadata_mock.should_receive(:from_file).with("#{@cookbook_dir}/foobar/metadata.rb")
       File.should_receive(:open).with("#{@cookbook_dir}/foobar/metadata.json", 'w').
                                  and_yield(@json_file_mock)
       @json_file_mock.should_receive(:write).with(@json_data)
-      Chef::JSONCompat.should_receive(:to_json_pretty).with(@metadata_mock).
+      Seth::JSONCompat.should_receive(:to_json_pretty).with(@metadata_mock).
                                                        and_return(@json_data)
       @knife.generate_metadata_from_file('foobar', "#{@cookbook_dir}/foobar/metadata.rb")
       @stdout.string.should match /generating metadata for foobar from #{@cookbook_dir}\/foobar\/metadata\.rb/im
     end
 
-    { Chef::Exceptions::ObsoleteDependencySyntax => 'obsolote dependency',
-      Chef::Exceptions::InvalidVersionConstraint => 'invalid version constraint'
+    { Seth::Exceptions::ObsoleteDependencySyntax => 'obsolote dependency',
+      Seth::Exceptions::InvalidVersionConstraint => 'invalid version constraint'
     }.each_pair do |klass, description|
       it "should print an error and exit when an #{description} syntax exception is encountered" do
         exception = klass.new("#{description} blah")
-        Chef::Cookbook::Metadata.stub(:new).and_raise(exception)
+        Seth::Cookbook::Metadata.stub(:new).and_raise(exception)
         lambda {
           @knife.generate_metadata_from_file('foobar', "#{@cookbook_dir}/foobar/metadata.rb")
         }.should raise_error(SystemExit)
@@ -144,7 +144,7 @@ describe Chef::Knife::CookbookMetadata do
                                    and_return(true)
       IO.should_receive(:read).with("#{@cookbook_dir}/foobar/metadata.json").
                                and_return(@json_data)
-      Chef::Cookbook::Metadata.should_receive(:validate_json).with(@json_data)
+      Seth::Cookbook::Metadata.should_receive(:validate_json).with(@json_data)
       @knife.validate_metadata_json(@cookbook_dir, 'foobar')
     end
 
@@ -152,12 +152,12 @@ describe Chef::Knife::CookbookMetadata do
       File.should_receive(:exist?).with("#{@cookbook_dir}/foobar/metadata.json").
                                    and_return(false)
       IO.should_not_receive(:read)
-      Chef::Cookbook::Metadata.should_not_receive(:validate_json)
+      Seth::Cookbook::Metadata.should_not_receive(:validate_json)
       @knife.validate_metadata_json(@cookbook_dir, 'foobar')
     end
 
-    { Chef::Exceptions::ObsoleteDependencySyntax => 'obsolote dependency',
-      Chef::Exceptions::InvalidVersionConstraint => 'invalid version constraint'
+    { Seth::Exceptions::ObsoleteDependencySyntax => 'obsolote dependency',
+      Seth::Exceptions::InvalidVersionConstraint => 'invalid version constraint'
     }.each_pair do |klass, description|
       it "should print an error and exit when an #{description} syntax exception is encountered" do
         File.should_receive(:exist?).with("#{@cookbook_dir}/foobar/metadata.json").
@@ -165,7 +165,7 @@ describe Chef::Knife::CookbookMetadata do
         IO.should_receive(:read).with("#{@cookbook_dir}/foobar/metadata.json").
                                  and_return(@json_data)
         exception = klass.new("#{description} blah")
-        Chef::Cookbook::Metadata.stub(:validate_json).and_raise(exception)
+        Seth::Cookbook::Metadata.stub(:validate_json).and_raise(exception)
         lambda {
           @knife.validate_metadata_json(@cookbook_dir, 'foobar')
         }.should raise_error(SystemExit)

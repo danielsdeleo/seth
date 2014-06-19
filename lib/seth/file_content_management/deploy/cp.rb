@@ -18,28 +18,28 @@
 
 #
 # PURPOSE: This strategy preserves the inode, and will preserve modes + ownership
-#          even if the user running chef cannot create that ownership (but has
+#          even if the user running seth cannot create that ownership (but has
 #          rights to the file).  It is vulnerable to crashes in the middle of
 #          writing the file which could result in corruption or zero-length files.
 #
 
-class Chef
+class Seth
   class FileContentManagement
     class Deploy
       #
       # PURPOSE: This strategy preserves the inode, and will preserve modes + ownership
-      #          even if the user running chef cannot create that ownership (but has
+      #          even if the user running seth cannot create that ownership (but has
       #          rights to the file).  It is vulnerable to crashes in the middle of
       #          writing the file which could result in corruption or zero-length files.
       #
       class Cp
         def create(file)
-          Chef::Log.debug("touching #{file} to create it")
+          Seth::Log.debug("touching #{file} to create it")
           FileUtils.touch(file)
         end
 
         def deploy(src, dst)
-          Chef::Log.debug("copying temporary file #{src} into place at #{dst}")
+          Seth::Log.debug("copying temporary file #{src} into place at #{dst}")
           FileUtils.cp(src, dst)
         end
       end

@@ -18,16 +18,16 @@
 #
 require 'spec_helper'
 
-describe Chef::Provider::Package::Aix do
+describe Seth::Provider::Package::Aix do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Package.new("samba.base")
+    @new_resource = Seth::Resource::Package.new("samba.base")
     @new_resource.source("/tmp/samba.base")
 
-    @provider = Chef::Provider::Package::Aix.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Package::Aix.new(@new_resource, @run_context)
     ::File.stub(:exists?).and_return(true)
   end
 
@@ -56,7 +56,7 @@ describe Chef::Provider::Package::Aix do
       ::File.stub(:exists?).and_return(false)
       @provider.define_resource_requirements
       @provider.load_current_resource
-      lambda { @provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Package)
     end
 
 
@@ -81,16 +81,16 @@ describe Chef::Provider::Package::Aix do
     end
 
     it "should raise an exception if the source is not set but we are installing" do
-      @new_resource = Chef::Resource::Package.new("samba.base")
-      @provider = Chef::Provider::Package::Aix.new(@new_resource, @run_context)
+      @new_resource = Seth::Resource::Package.new("samba.base")
+      @provider = Seth::Provider::Package::Aix.new(@new_resource, @run_context)
       @provider.stub(:popen4).and_return(@status)
-      lambda { @provider.run_action(:install) }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.run_action(:install) }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should raise an exception if installp/lslpp fails to run" do
       @status = double("Status", :exitstatus => -1)
       @provider.stub(:popen4).and_return(@status)
-      lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should return a current resource with a nil version if the package is not found" do
@@ -118,7 +118,7 @@ describe Chef::Provider::Package::Aix do
     it "should throw and exception if the exitstatus is not 0" do
       @status = double("Status", :exitstatus => 1)
       @provider.stub(:popen4).and_return(@status)
-      lambda { @provider.candidate_version }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.candidate_version }.should raise_error(Seth::Exceptions::Package)
     end
 
   end
@@ -132,8 +132,8 @@ describe Chef::Provider::Package::Aix do
     end
 
     it "should run  when the package is a path to install" do
-      @new_resource = Chef::Resource::Package.new("/tmp/samba.base")
-      @provider = Chef::Provider::Package::Aix.new(@new_resource, @run_context)
+      @new_resource = Seth::Resource::Package.new("/tmp/samba.base")
+      @provider = Seth::Provider::Package::Aix.new(@new_resource, @run_context)
       @new_resource.source.should == "/tmp/samba.base"
       @provider.should_receive(:run_command_with_systems_locale).with({
         :command => "installp -aYF -d /tmp/samba.base /tmp/samba.base"

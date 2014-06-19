@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-Chef::Knife::NodeFromFile.load_deps
+Seth::Knife::NodeFromFile.load_deps
 
-describe Chef::Knife::NodeFromFile do
+describe Seth::Knife::NodeFromFile do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::NodeFromFile.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::NodeFromFile.new
     @knife.config = {
       :print_after => nil
     }
     @knife.name_args = [ "adam.rb" ]
     @knife.stub(:output).and_return(true)
     @knife.stub(:confirm).and_return(true)
-    @node = Chef::Node.new()
+    @node = Seth::Node.new()
     @node.stub(:save)
     @knife.loader.stub(:load_from).and_return(@node)
     @stdout = StringIO.new

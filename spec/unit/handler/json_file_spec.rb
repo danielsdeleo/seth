@@ -18,9 +18,9 @@
 
 require 'spec_helper'
 
-describe Chef::Handler::JsonFile do
+describe Seth::Handler::JsonFile do
   before(:each) do
-    @handler = Chef::Handler::JsonFile.new(:the_sun => "will rise", :path => '/tmp/foobarbazqux')
+    @handler = Seth::Handler::JsonFile.new(:the_sun => "will rise", :path => '/tmp/foobarbazqux')
   end
 
   it "accepts arbitrary config options" do
@@ -35,14 +35,14 @@ describe Chef::Handler::JsonFile do
 
   describe "when reporting success" do
     before(:each) do
-      @node = Chef::Node.new
-      @events = Chef::EventDispatch::Dispatcher.new
-      @run_status = Chef::RunStatus.new(@node, @events)
+      @node = Seth::Node.new
+      @events = Seth::EventDispatch::Dispatcher.new
+      @run_status = Seth::RunStatus.new(@node, @events)
       @expected_time = Time.now
       Time.stub(:now).and_return(@expected_time, @expected_time + 5)
       @run_status.start_clock
       @run_status.stop_clock
-      @run_context = Chef::RunContext.new(@node, {}, @events)
+      @run_context = Seth::RunContext.new(@node, {}, @events)
       @run_status.run_context = @run_context
       @run_status.exception = Exception.new("Boy howdy!")
       @file_mock = StringIO.new
@@ -53,7 +53,7 @@ describe Chef::Handler::JsonFile do
     it "saves run status data to a file as JSON" do
       @handler.should_receive(:build_report_dir)
       @handler.run_report_unsafe(@run_status)
-      reported_data = Chef::JSONCompat.from_json(@file_mock.string)
+      reported_data = Seth::JSONCompat.from_json(@file_mock.string)
       reported_data['exception'].should == "Exception: Boy howdy!"
       reported_data['start_time'].should == @expected_time.to_s
       reported_data['end_time'].should == (@expected_time + 5).to_s

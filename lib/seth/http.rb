@@ -23,15 +23,15 @@
 
 require 'net/https'
 require 'uri'
-require 'chef/http/basic_client'
-require 'chef/monkey_patches/string'
-require 'chef/monkey_patches/net_http'
-require 'chef/config'
-require 'chef/exceptions'
+require 'seth/http/basic_client'
+require 'seth/monkey_patches/string'
+require 'seth/monkey_patches/net_http'
+require 'seth/config'
+require 'seth/exceptions'
 
-class Chef
+class Seth
 
-  # == Chef::HTTP
+  # == Seth::HTTP
   # Basic HTTP client, with support for adding features via middleware
   class HTTP
 
@@ -53,7 +53,7 @@ class Chef
         # stream handlers handle responses so must be applied in reverse order
         # (same as #apply_stream_complete_middleware or #apply_response_midddleware)
         @stream_handlers.reverse.inject(next_chunk) do |chunk, handler|
-          Chef::Log.debug("Chef::HTTP::StreamHandler calling #{handler.class}#handle_chunk")
+          Seth::Log.debug("Chef::HTTP::StreamHandler calling #{handler.class}#handle_chunk")
           handler.handle_chunk(chunk)
         end
       end
@@ -145,8 +145,8 @@ class Chef
     rescue Exception => exception
       log_failed_request(response, return_value) unless response.nil?
 
-      if exception.respond_to?(:chef_rest_request=)
-        exception.chef_rest_request = rest_request
+      if exception.respond_to?(:seth_rest_request=)
+        exception.seth_rest_request = rest_request
       end
       raise
     end
@@ -187,8 +187,8 @@ class Chef
       tempfile
     rescue Exception => e
       log_failed_request(response, return_value) unless response.nil?
-      if e.respond_to?(:chef_rest_request=)
-        e.chef_rest_request = rest_request
+      if e.respond_to?(:seth_rest_request=)
+        e.seth_rest_request = rest_request
       end
       raise
     end
@@ -216,21 +216,21 @@ class Chef
 
     def apply_request_middleware(method, url, headers, data)
       middlewares.inject([method, url, headers, data]) do |req_data, middleware|
-        Chef::Log.debug("Chef::HTTP calling #{middleware.class}#handle_request")
+        Seth::Log.debug("Chef::HTTP calling #{middleware.class}#handle_request")
         middleware.handle_request(*req_data)
       end
     end
 
     def apply_response_middleware(response, rest_request, return_value)
       middlewares.reverse.inject([response, rest_request, return_value]) do |res_data, middleware|
-        Chef::Log.debug("Chef::HTTP calling #{middleware.class}#handle_response")
+        Seth::Log.debug("Chef::HTTP calling #{middleware.class}#handle_response")
         middleware.handle_response(*res_data)
       end
     end
 
     def apply_stream_complete_middleware(response, rest_request, return_value)
       middlewares.reverse.inject([response, rest_request, return_value]) do |res_data, middleware|
-        Chef::Log.debug("Chef::HTTP calling #{middleware.class}#handle_stream_complete")
+        Seth::Log.debug("Chef::HTTP calling #{middleware.class}#handle_stream_complete")
         middleware.handle_stream_complete(*res_data)
       end
     end
@@ -239,7 +239,7 @@ class Chef
       return_value ||= {}
       error_message = "HTTP Request Returned #{response.code} #{response.message}: "
       error_message << (return_value["error"].respond_to?(:join) ? return_value["error"].join(", ") : return_value["error"].to_s)
-      Chef::Log.info(error_message)
+      Seth::Log.info(error_message)
     end
 
     def success_response?(response)
@@ -296,14 +296,14 @@ class Chef
         raise e
       rescue Errno::ECONNREFUSED
         if http_retry_count - http_attempts + 1 > 0
-          Chef::Log.error("Connection refused connecting to #{url}, retry #{http_attempts}/#{http_retry_count}")
+          Seth::Log.error("Connection refused connecting to #{url}, retry #{http_attempts}/#{http_retry_count}")
           sleep(http_retry_delay)
           retry
         end
         raise Errno::ECONNREFUSED, "Connection refused connecting to #{url}, giving up"
       rescue Timeout::Error
         if http_retry_count - http_attempts + 1 > 0
-          Chef::Log.error("Timeout connecting to #{url}, retry #{http_attempts}/#{http_retry_count}")
+          Seth::Log.error("Timeout connecting to #{url}, retry #{http_attempts}/#{http_retry_count}")
           sleep(http_retry_delay)
           retry
         end
@@ -311,7 +311,7 @@ class Chef
       rescue Net::HTTPFatalError => e
         if http_retry_count - http_attempts + 1 > 0
           sleep_time = 1 + (2 ** http_attempts) + rand(2 ** http_attempts)
-          Chef::Log.error("Server returned error for #{url}, retrying #{http_attempts}/#{http_retry_count} in #{sleep_time}s")
+          Seth::Log.error("Server returned error for #{url}, retrying #{http_attempts}/#{http_retry_count} in #{sleep_time}s")
           sleep(sleep_time)
           retry
         end
@@ -328,13 +328,13 @@ class Chef
     end
 
     def config
-      Chef::Config
+      Seth::Config
     end
 
     def follow_redirect
-      raise Chef::Exceptions::RedirectLimitExceeded if @redirects_followed >= redirect_limit
+      raise Seth::Exceptions::RedirectLimitExceeded if @redirects_followed >= redirect_limit
       @redirects_followed += 1
-      Chef::Log.debug("Following redirect #{@redirects_followed}/#{redirect_limit}")
+      Seth::Log.debug("Following redirect #{@redirects_followed}/#{redirect_limit}")
 
       yield
     ensure
@@ -353,16 +353,16 @@ class Chef
     def build_headers(method, url, headers={}, json_body=false)
       headers                 = @default_headers.merge(headers)
       headers['Content-Length'] = json_body.bytesize.to_s if json_body
-      headers.merge!(Chef::Config[:custom_http_headers]) if Chef::Config[:custom_http_headers]
+      headers.merge!(Seth::Config[:custom_http_headers]) if Chef::Config[:custom_http_headers]
       headers
     end
 
     def stream_to_tempfile(url, response)
-      tf = Tempfile.open("chef-rest")
-      if Chef::Platform.windows?
+      tf = Tempfile.open("seth-rest")
+      if Seth::Platform.windows?
         tf.binmode # required for binary files on Windows platforms
       end
-      Chef::Log.debug("Streaming download from #{url.to_s} to tempfile #{tf.path}")
+      Seth::Log.debug("Streaming download from #{url.to_s} to tempfile #{tf.path}")
       # Stolen from http://www.ruby-forum.com/topic/166423
       # Kudos to _why!
 
@@ -386,7 +386,7 @@ class Chef
     ############################################################################
 
     # This is only kept around to provide access to cache control data in
-    # lib/chef/provider/remote_file/http.rb
+    # lib/seth/provider/remote_file/http.rb
     # Find a better API.
     def last_response
       @last_response

@@ -25,9 +25,9 @@ shared_examples_for "an execute resource" do
     @resource = execute_resource
   end
 
-  it "should create a new Chef::Resource::Execute" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Execute)
+  it "should create a new Seth::Resource::Execute" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Execute)
   end
 
   it "should set the command to the first argument to new" do
@@ -35,9 +35,9 @@ shared_examples_for "an execute resource" do
   end
 
   it "should accept an array on instantiation, too" do
-    resource = Chef::Resource::Execute.new(%w{something else})
-    resource.should be_a_kind_of(Chef::Resource)
-    resource.should be_a_kind_of(Chef::Resource::Execute)
+    resource = Seth::Resource::Execute.new(%w{something else})
+    resource.should be_a_kind_of(Seth::Resource)
+    resource.should be_a_kind_of(Seth::Resource::Execute)
     resource.command.should eql(%w{something else})
   end
 

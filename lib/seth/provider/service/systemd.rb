@@ -16,24 +16,24 @@
 # limitations under the License.
 #
 
-require 'chef/resource/service'
-require 'chef/provider/service/simple'
-require 'chef/mixin/command'
+require 'seth/resource/service'
+require 'seth/provider/service/simple'
+require 'seth/mixin/command'
 
-class Chef::Provider::Service::Systemd < Chef::Provider::Service::Simple
+class Seth::Provider::Service::Systemd < Chef::Provider::Service::Simple
   def load_current_resource
-    @current_resource = Chef::Resource::Service.new(@new_resource.name)
+    @current_resource = Seth::Resource::Service.new(@new_resource.name)
     @current_resource.service_name(@new_resource.service_name)
     @status_check_success = true
 
     if @new_resource.status_command
-      Chef::Log.debug("#{@new_resource} you have specified a status command, running..")
+      Seth::Log.debug("#{@new_resource} you have specified a status command, running..")
 
       begin
         if run_command_with_systems_locale(:command => @new_resource.status_command) == 0
           @current_resource.running(true)
         end
-      rescue Chef::Exceptions::Exec
+      rescue Seth::Exceptions::Exec
         @status_check_success = false
         @current_resource.running(false)
         @current_resource.enabled(false)
@@ -59,7 +59,7 @@ class Chef::Provider::Service::Systemd < Chef::Provider::Service::Simple
 
   def start_service
     if @current_resource.running
-      Chef::Log.debug("#{@new_resource} already running, not starting")
+      Seth::Log.debug("#{@new_resource} already running, not starting")
     else
       if @new_resource.start_command
         super
@@ -71,7 +71,7 @@ class Chef::Provider::Service::Systemd < Chef::Provider::Service::Simple
 
   def stop_service
     unless @current_resource.running
-      Chef::Log.debug("#{@new_resource} not running, not stopping")
+      Seth::Log.debug("#{@new_resource} not running, not stopping")
     else
       if @new_resource.stop_command
         super

@@ -16,4 +16,4 @@
 # limitations under the License.
 #
 
-require 'chef/shell/ext'
+require 'seth/shell/ext'

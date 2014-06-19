@@ -18,13 +18,13 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Ifconfig do
+describe Seth::Resource::Ifconfig do
 
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @resource = Chef::Resource::Ifconfig.new("fakey_fakerton", @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @resource = Seth::Resource::Ifconfig.new("fakey_fakerton", @run_context)
   end
 
   describe "when it has target, hardware address, inet address, and a mask" do
@@ -54,9 +54,9 @@ describe Chef::Resource::Ifconfig do
     end
 
     it "should use an ordinary Provider::Ifconfig as a provider for #{platform} #{version}" do
-      @resource.provider_for_action(:add).should be_a_kind_of(Chef::Provider::Ifconfig)
-      @resource.provider_for_action(:add).should_not be_a_kind_of(Chef::Provider::Ifconfig::Debian)
-      @resource.provider_for_action(:add).should_not be_a_kind_of(Chef::Provider::Ifconfig::Redhat)
+      @resource.provider_for_action(:add).should be_a_kind_of(Seth::Provider::Ifconfig)
+      @resource.provider_for_action(:add).should_not be_a_kind_of(Seth::Provider::Ifconfig::Debian)
+      @resource.provider_for_action(:add).should_not be_a_kind_of(Seth::Provider::Ifconfig::Redhat)
     end
   end
 
@@ -67,7 +67,7 @@ describe Chef::Resource::Ifconfig do
     end
 
     it "should use an Provider::Ifconfig::Redhat as a provider for #{platform} #{version}" do
-      @resource.provider_for_action(:add).should be_a_kind_of(Chef::Provider::Ifconfig::Redhat)
+      @resource.provider_for_action(:add).should be_a_kind_of(Seth::Provider::Ifconfig::Redhat)
     end
   end
 
@@ -78,7 +78,7 @@ describe Chef::Resource::Ifconfig do
     end
 
     it "should use an Ifconfig::Debian as a provider for #{platform} #{version}" do
-      @resource.provider_for_action(:add).should be_a_kind_of(Chef::Provider::Ifconfig::Debian)
+      @resource.provider_for_action(:add).should be_a_kind_of(Seth::Provider::Ifconfig::Debian)
     end
   end
 

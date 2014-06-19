@@ -17,17 +17,17 @@
 #
 
 
-require 'chef/exceptions'
-require 'chef/log'
-require 'chef/provider'
-require 'chef/mixin/shell_out'
+require 'seth/exceptions'
+require 'seth/log'
+require 'seth/provider'
+require 'seth/mixin/shell_out'
 require 'fileutils'
 
-class Chef
+class Seth
   class Provider
-    class Git < Chef::Provider
+    class Git < Seth::Provider
 
-      include Chef::Mixin::ShellOut
+      include Seth::Mixin::ShellOut
 
       def whyrun_supported?
         true
@@ -35,7 +35,7 @@ class Chef
 
       def load_current_resource
         @resolved_reference = nil
-        @current_resource = Chef::Resource::Git.new(@new_resource.name)
+        @current_resource = Seth::Resource::Git.new(@new_resource.name)
         if current_revision = find_current_revision
           @current_resource.revision current_revision
         end
@@ -47,14 +47,14 @@ class Chef
           dirname = ::File.dirname(@new_resource.destination)
           a.assertion { ::File.directory?(dirname) }
           a.whyrun("Directory #{dirname} does not exist, this run will fail unless it has been previously created. Assuming it would have been created.")
-          a.failure_message(Chef::Exceptions::MissingParentDirectory,
+          a.failure_message(Seth::Exceptions::MissingParentDirectory,
             "Cannot clone #{@new_resource} to #{@new_resource.destination}, the enclosing directory #{dirname} does not exist")
         end
 
 
         requirements.assert(:all_actions) do |a|
           a.assertion { !(@new_resource.revision =~ /^origin\//) }
-          a.failure_message Chef::Exceptions::InvalidRemoteGitReference,
+          a.failure_message Seth::Exceptions::InvalidRemoteGitReference,
              "Deploying remote branches is not supported. " +
              "Specify the remote branch as a local branch for " +
              "the git repository you're deploying from " +
@@ -66,7 +66,7 @@ class Chef
           # we do in the course of a run is likely to create a valid target_revision
           # if we can't resolve it up front.
           a.assertion { target_revision != nil }
-          a.failure_message Chef::Exceptions::UnresolvableGitReference,
+          a.failure_message Seth::Exceptions::UnresolvableGitReference,
             "Unable to parse SHA reference for '#{@new_resource.revision}' in repository '#{@new_resource.repository}'. " +
             "Verify your (case-sensitive) repository URL and revision.\n" +
             "`git ls-remote` output: #{@resolved_reference}"
@@ -82,7 +82,7 @@ class Chef
           enable_submodules
           add_remotes
         else
-          Chef::Log.debug "#{@new_resource} checkout destination #{@new_resource.destination} already exists or is a non-empty directory"
+          Seth::Log.debug "#{@new_resource} checkout destination #{@new_resource.destination} already exists or is a non-empty directory"
         end
       end
 
@@ -95,11 +95,11 @@ class Chef
 
       def action_sync
         if existing_git_clone?
-          Chef::Log.debug "#{@new_resource} current revision: #{@current_resource.revision} target revision: #{target_revision}"
+          Seth::Log.debug "#{@new_resource} current revision: #{@current_resource.revision} target revision: #{target_revision}"
           unless current_revision_matches_target_revision?
             fetch_updates
             enable_submodules
-            Chef::Log.info "#{@new_resource} updated to revision #{target_revision}"
+            Seth::Log.info "#{@new_resource} updated to revision #{target_revision}"
           end
           add_remotes
         else
@@ -117,7 +117,7 @@ class Chef
       end
 
       def find_current_revision
-        Chef::Log.debug("#{@new_resource} finding current git revision")
+        Seth::Log.debug("#{@new_resource} finding current git revision")
         if ::File.exist?(::File.join(cwd, ".git"))
           # 128 is returned when we're not in a git repo. this is fine
           result = shell_out!('git rev-parse HEAD', :cwd => cwd, :returns => [0,128]).stdout.strip
@@ -129,7 +129,7 @@ class Chef
         if (@new_resource.additional_remotes.length > 0)
           @new_resource.additional_remotes.each_pair do |remote_name, remote_url|
             converge_by("add remote #{remote_name} from #{remote_url}") do
-              Chef::Log.info "#{@new_resource} adding git remote #{remote_name} = #{remote_url}"
+              Seth::Log.info "#{@new_resource} adding git remote #{remote_name} = #{remote_url}"
               setup_remote_tracking_branches(remote_name, remote_url)
             end
           end
@@ -144,7 +144,7 @@ class Chef
           args << "-o #{remote}" unless remote == 'origin'
           args << "--depth #{@new_resource.depth}" if @new_resource.depth
 
-          Chef::Log.info "#{@new_resource} cloning repo #{@new_resource.repository} to #{@new_resource.destination}"
+          Seth::Log.info "#{@new_resource} cloning repo #{@new_resource.repository} to #{@new_resource.destination}"
 
           clone_cmd = "git clone #{args.join(' ')} \"#{@new_resource.repository}\" \"#{@new_resource.destination}\""
           shell_out!(clone_cmd, run_options)
@@ -157,17 +157,17 @@ class Chef
         converge_by("checkout ref #{sha_ref} branch #{@new_resource.revision}") do
           # checkout into a local branch rather than a detached HEAD
           shell_out!("git checkout -b #{@new_resource.checkout_branch} #{sha_ref}", run_options(:cwd => @new_resource.destination))
-          Chef::Log.info "#{@new_resource} checked out branch: #{@new_resource.revision} onto: #{@new_resource.checkout_branch} reference: #{sha_ref}"
+          Seth::Log.info "#{@new_resource} checked out branch: #{@new_resource.revision} onto: #{@new_resource.checkout_branch} reference: #{sha_ref}"
         end
       end
 
       def enable_submodules
         if @new_resource.enable_submodules
           converge_by("enable git submodules for #{@new_resource}") do
-            Chef::Log.info "#{@new_resource} synchronizing git submodules"
+            Seth::Log.info "#{@new_resource} synchronizing git submodules"
             command = "git submodule sync"
             shell_out!(command, run_options(:cwd => @new_resource.destination))
-            Chef::Log.info "#{@new_resource} enabling git submodules"
+            Seth::Log.info "#{@new_resource} enabling git submodules"
             # the --recursive flag means we require git 1.6.5+ now, see CHEF-1827
             command = "git submodule update --init --recursive"
             shell_out!(command, run_options(:cwd => @new_resource.destination))
@@ -180,14 +180,14 @@ class Chef
         converge_by("fetch updates for #{@new_resource.remote}") do
           # since we're in a local branch already, just reset to specified revision rather than merge
           fetch_command = "git fetch #{@new_resource.remote} && git fetch #{@new_resource.remote} --tags && git reset --hard #{target_revision}"
-          Chef::Log.debug "Fetching updates from #{new_resource.remote} and resetting to revision #{target_revision}"
+          Seth::Log.debug "Fetching updates from #{new_resource.remote} and resetting to revision #{target_revision}"
           shell_out!(fetch_command, run_options(:cwd => @new_resource.destination))
         end
       end
 
       def setup_remote_tracking_branches(remote_name, remote_url)
         converge_by("set up remote tracking branches for #{remote_url} at #{remote_name}") do
-          Chef::Log.debug "#{@new_resource} configuring remote tracking branches for repository #{remote_url} "+
+          Seth::Log.debug "#{@new_resource} configuring remote tracking branches for repository #{remote_url} "+
             "at remote #{remote_name}"
           check_remote_command = "git config --get remote.#{remote_name}.url"
           remote_status = shell_out!(check_remote_command, run_options(:cwd => @new_resource.destination, :returns => [0,1,2]))
@@ -234,7 +234,7 @@ class Chef
       alias :revision_slug :target_revision
 
       def remote_resolve_reference
-        Chef::Log.debug("#{@new_resource} resolving remote reference")
+        Seth::Log.debug("#{@new_resource} resolving remote reference")
         # The sha pointed to by an annotated tag is identified by the
         # '^{}' suffix appended to the tag. In order to resolve
         # annotated tags, we have to search for "revision*" and
@@ -277,12 +277,12 @@ class Chef
           run_opts[:user] = @new_resource.user
           # Certain versions of `git` misbehave if git configuration is
           # inaccessible in $HOME. We need to ensure $HOME matches the
-          # user who is executing `git` not the user running Chef.
+          # user who is executing `git` not the user running Seth.
           env['HOME'] = begin
             require 'etc'
             Etc.getpwnam(@new_resource.user).dir
           rescue ArgumentError # user not found
-            raise Chef::Exceptions::User, "Could not determine HOME for specified user '#{@new_resource.user}' for resource '#{@new_resource.name}'"
+            raise Seth::Exceptions::User, "Could not determine HOME for specified user '#{@new_resource.user}' for resource '#{@new_resource.name}'"
           end
         end
         run_opts[:group] = @new_resource.group if @new_resource.group

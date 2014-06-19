@@ -18,18 +18,18 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Upstart do
+describe Seth::Provider::Service::Upstart do
   before(:each) do
-    @node =Chef::Node.new
+    @node =Seth::Node.new
     @node.name('upstarter')
     @node.automatic_attrs[:platform] = 'ubuntu'
     @node.automatic_attrs[:platform_version] = '9.10'
 
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::Service.new("rsyslog")
-    @provider = Chef::Provider::Service::Upstart.new(@new_resource, @run_context)
+    @new_resource = Seth::Resource::Service.new("rsyslog")
+    @provider = Seth::Provider::Service::Upstart.new(@new_resource, @run_context)
   end
 
   describe "when first created" do
@@ -39,22 +39,22 @@ describe Chef::Provider::Service::Upstart do
 
     it "should return /etc/event.d as the upstart job directory when running on Ubuntu 9.04" do
       @node.automatic_attrs[:platform_version] = '9.04'
-      #Chef::Platform.stub(:find_platform_and_version).and_return([ "ubuntu", "9.04" ])
-      @provider = Chef::Provider::Service::Upstart.new(@new_resource, @run_context)
+      #Seth::Platform.stub(:find_platform_and_version).and_return([ "ubuntu", "9.04" ])
+      @provider = Seth::Provider::Service::Upstart.new(@new_resource, @run_context)
       @provider.instance_variable_get(:@upstart_job_dir).should == "/etc/event.d"
       @provider.instance_variable_get(:@upstart_conf_suffix).should == ""
     end
 
     it "should return /etc/init as the upstart job directory when running on Ubuntu 9.10" do
       @node.automatic_attrs[:platform_version] = '9.10'
-      @provider = Chef::Provider::Service::Upstart.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Service::Upstart.new(@new_resource, @run_context)
       @provider.instance_variable_get(:@upstart_job_dir).should == "/etc/init"
       @provider.instance_variable_get(:@upstart_conf_suffix).should == ".conf"
     end
 
     it "should return /etc/init as the upstart job directory by default" do
       @node.automatic_attrs[:platform_version] = '9000'
-      @provider = Chef::Provider::Service::Upstart.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Service::Upstart.new(@new_resource, @run_context)
       @provider.instance_variable_get(:@upstart_job_dir).should == "/etc/init"
       @provider.instance_variable_get(:@upstart_conf_suffix).should == ".conf"
     end
@@ -64,8 +64,8 @@ describe Chef::Provider::Service::Upstart do
     before(:each) do
       @node.automatic_attrs[:command] = {:ps => "ps -ax"}
 
-      @current_resource = Chef::Resource::Service.new("rsyslog")
-      Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      @current_resource = Seth::Resource::Service.new("rsyslog")
+      Seth::Resource::Service.stub(:new).and_return(@current_resource)
 
       @status = double("Status", :exitstatus => 0)
       @provider.stub(:popen4).and_return(@status)
@@ -79,7 +79,7 @@ describe Chef::Provider::Service::Upstart do
     end
 
     it "should create a current resource with the name of the new resource" do
-      Chef::Resource::Service.should_receive(:new).and_return(@current_resource)
+      Seth::Resource::Service.should_receive(:new).and_return(@current_resource)
       @provider.load_current_resource
     end
 
@@ -90,7 +90,7 @@ describe Chef::Provider::Service::Upstart do
 
     it "should not change the service name when parameters are specified" do
       @new_resource.parameters({ "OSD_ID" => "2" })
-      @provider = Chef::Provider::Service::Upstart.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Service::Upstart.new(@new_resource, @run_context)
       @provider.current_resource = @current_resource
       @new_resource.service_name.should == @current_resource.service_name
     end
@@ -135,8 +135,8 @@ describe Chef::Provider::Service::Upstart do
       end
     end
 
-    it "should set running to false if it catches a Chef::Exceptions::Exec" do
-      @provider.stub(:popen4).and_yield(@pid, @stdin, @stdout, @stderr).and_raise(Chef::Exceptions::Exec)
+    it "should set running to false if it catches a Seth::Exceptions::Exec" do
+      @provider.stub(:popen4).and_yield(@pid, @stdin, @stdout, @stderr).and_raise(Seth::Exceptions::Exec)
       @current_resource.should_receive(:running).with(false)
       @provider.load_current_resource
     end
@@ -170,30 +170,30 @@ describe Chef::Provider::Service::Upstart do
 
     describe "when a status command has been specified" do
       before do
-        @new_resource.stub(:status_command).and_return("/bin/chefhasmonkeypants status")
+        @new_resource.stub(:status_command).and_return("/bin/sethhasmonkeypants status")
       end
 
       it "should run the services status command if one has been specified" do
-        @provider.stub(:run_command_with_systems_locale).with({:command => "/bin/chefhasmonkeypants status"}).and_return(0)
+        @provider.stub(:run_command_with_systems_locale).with({:command => "/bin/sethhasmonkeypants status"}).and_return(0)
         @current_resource.should_receive(:running).with(true)
         @provider.load_current_resource
       end
 
       it "should track state when the user-provided status command fails" do
-        @provider.stub(:popen4).and_yield(@pid, @stdin, @stdout, @stderr).and_raise(Chef::Exceptions::Exec)
+        @provider.stub(:popen4).and_yield(@pid, @stdin, @stdout, @stderr).and_raise(Seth::Exceptions::Exec)
         @provider.load_current_resource
         @provider.instance_variable_get("@command_success").should == false
       end
 
-      it "should set running to false if it catches a Chef::Exceptions::Exec when using a status command" do
-        @provider.stub(:popen4).and_yield(@pid, @stdin, @stdout, @stderr).and_raise(Chef::Exceptions::Exec)
+      it "should set running to false if it catches a Seth::Exceptions::Exec when using a status command" do
+        @provider.stub(:popen4).and_yield(@pid, @stdin, @stdout, @stderr).and_raise(Seth::Exceptions::Exec)
         @current_resource.should_receive(:running).with(false)
         @provider.load_current_resource
       end
     end
 
     it "should track state when we fail to obtain service status via upstart_state" do
-      @provider.should_receive(:upstart_state).and_raise Chef::Exceptions::Exec
+      @provider.should_receive(:upstart_state).and_raise Seth::Exceptions::Exec
       @provider.load_current_resource
       @provider.instance_variable_get("@command_success").should == false
     end
@@ -207,15 +207,15 @@ describe Chef::Provider::Service::Upstart do
 
   describe "enable and disable service" do
     before(:each) do
-      @current_resource = Chef::Resource::Service.new('rsyslog')
-      Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      @current_resource = Seth::Resource::Service.new('rsyslog')
+      Seth::Resource::Service.stub(:new).and_return(@current_resource)
       @provider.current_resource = @current_resource
-      Chef::Util::FileEdit.stub(:new)
+      Seth::Util::FileEdit.stub(:new)
     end
 
     it "should enable the service if it is not enabled" do
       @file = Object.new
-      Chef::Util::FileEdit.stub(:new).and_return(@file)
+      Seth::Util::FileEdit.stub(:new).and_return(@file)
       @current_resource.stub(:enabled).and_return(false)
       @file.should_receive(:search_file_replace)
       @file.should_receive(:write_file)
@@ -224,7 +224,7 @@ describe Chef::Provider::Service::Upstart do
 
     it "should disable the service if it is enabled" do
       @file = Object.new
-      Chef::Util::FileEdit.stub(:new).and_return(@file)
+      Seth::Util::FileEdit.stub(:new).and_return(@file)
       @current_resource.stub(:enabled).and_return(true)
       @file.should_receive(:search_file_replace)
       @file.should_receive(:write_file)
@@ -235,9 +235,9 @@ describe Chef::Provider::Service::Upstart do
 
   describe "start and stop service" do
     before(:each) do
-      @current_resource = Chef::Resource::Service.new('rsyslog')
+      @current_resource = Seth::Resource::Service.new('rsyslog')
 
-      Chef::Resource::Service.stub(:new).and_return(@current_resource)
+      Seth::Resource::Service.stub(:new).and_return(@current_resource)
       @provider.current_resource = @current_resource
     end
 
@@ -259,9 +259,9 @@ describe Chef::Provider::Service::Upstart do
     end
 
     it "should pass parameters to the start command if they are provided" do
-      @new_resource = Chef::Resource::Service.new("rsyslog")
+      @new_resource = Seth::Resource::Service.new("rsyslog")
       @new_resource.parameters({ "OSD_ID" => "2" })
-      @provider = Chef::Provider::Service::Upstart.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Service::Upstart.new(@new_resource, @run_context)
       @provider.current_resource = @current_resource
       @provider.should_receive(:run_command_with_systems_locale).with({:command => "/sbin/start rsyslog OSD_ID=2"}).and_return(0)
       @provider.start_service()

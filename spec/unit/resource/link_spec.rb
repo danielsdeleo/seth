@@ -19,16 +19,16 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Link do
+describe Seth::Resource::Link do
 
   before(:each) do
-    Chef::Resource::Link.any_instance.should_receive(:verify_links_supported!).and_return(true)
-    @resource = Chef::Resource::Link.new("fakey_fakerton")
+    Seth::Resource::Link.any_instance.should_receive(:verify_links_supported!).and_return(true)
+    @resource = Seth::Resource::Link.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::Link" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Link)
+  it "should create a new Seth::Resource::Link" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Link)
   end
 
   it "should have a name" do

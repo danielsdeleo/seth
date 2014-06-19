@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Chef::ResourceDefinition do
+describe Seth::ResourceDefinition do
   before(:each) do
-    @def = Chef::ResourceDefinition.new()
+    @def = Seth::ResourceDefinition.new()
   end
 
   describe "initialize" do
-    it "should be a Chef::ResourceDefinition" do
-      @def.should be_a_kind_of(Chef::ResourceDefinition)
+    it "should be a Seth::ResourceDefinition" do
+      @def.should be_a_kind_of(Seth::ResourceDefinition)
     end
 
     it "should not initialize a new node if one is not provided" do
@@ -33,24 +33,24 @@ describe Chef::ResourceDefinition do
     end
 
     it "should accept a node as an argument" do
-      node = Chef::Node.new
+      node = Seth::Node.new
       node.name("bobo")
-      @def = Chef::ResourceDefinition.new(node)
+      @def = Seth::ResourceDefinition.new(node)
       @def.node.name.should == "bobo"
     end
   end
 
   describe "node" do
     it "should set the node with node=" do
-      node = Chef::Node.new
+      node = Seth::Node.new
       node.name("bobo")
       @def.node = node
       @def.node.name.should == "bobo"
     end
 
     it "should return the node" do
-      @def.node = Chef::Node.new
-      @def.node.should be_a_kind_of(Chef::Node)
+      @def.node = Seth::Node.new
+      @def.node.should be_a_kind_of(Seth::Node)
     end
   end
 

@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::File do
-  include_context Chef::Resource::File
+describe Seth::Resource::File do
+  include_context Seth::Resource::File
 
   let(:file_base) { "file_spec" }
   let(:expected_content) { "Don't fear the ruby." }
 
   def create_resource
-    events = Chef::EventDispatch::Dispatcher.new
-    node = Chef::Node.new
-    run_context = Chef::RunContext.new(node, {}, events)
-    resource = Chef::Resource::File.new(path, run_context)
+    events = Seth::EventDispatch::Dispatcher.new
+    node = Seth::Node.new
+    run_context = Seth::RunContext.new(node, {}, events)
+    resource = Seth::Resource::File.new(path, run_context)
     resource
   end
 
@@ -43,7 +43,7 @@ describe Chef::Resource::File do
   end
 
   let(:unmanaged_content) do
-    "This is file content that is not managed by chef"
+    "This is file content that is not managed by seth"
   end
 
   let(:current_resource) do

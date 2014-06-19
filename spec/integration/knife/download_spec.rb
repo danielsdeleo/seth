@@ -16,15 +16,15 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'chef/knife/download'
-require 'chef/knife/diff'
+require 'seth/knife/download'
+require 'seth/knife/diff'
 
 describe 'knife download' do
   extend IntegrationSupport
   include KnifeSupport
 
   context 'without versioned cookbooks' do
-    when_the_chef_server "has one of each thing" do
+    when_the_seth_server "has one of each thing" do
       client 'x', {}
       cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"' }
       data_bag 'x', { 'y' => {} }
@@ -44,8 +44,8 @@ describe 'knife download' do
 
         it 'knife download downloads everything' do
           knife('download /').should_succeed <<EOM
-Created /clients/chef-validator.json
-Created /clients/chef-webui.json
+Created /clients/seth-validator.json
+Created /clients/seth-webui.json
 Created /clients/x.json
 Created /cookbooks/x
 Created /cookbooks/x/metadata.rb
@@ -63,17 +63,17 @@ EOM
       end
 
       when_the_repository 'has an identical copy of each thing' do
-        file 'clients/chef-validator.json', { 'validator' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'clients/chef-webui.json', { 'admin' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'clients/x.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+        file 'clients/seth-validator.json', { 'validator' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'clients/seth-webui.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'clients/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
         file 'cookbooks/x/metadata.rb', 'version "1.0.0"'
         file 'data_bags/x/y.json', {}
-        file 'environments/_default.json', { "description" => "The default Chef environment" }
+        file 'environments/_default.json', { "description" => "The default Seth environment" }
         file 'environments/x.json', {}
         file 'nodes/x.json', {}
         file 'roles/x.json', {}
-        file 'users/admin.json', { 'admin' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'users/x.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+        file 'users/admin.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'users/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
         it 'knife download makes no changes' do
           knife('download /').should_succeed ''
@@ -88,13 +88,13 @@ EOM
         context 'except the role file' do
           file 'roles/x.json', <<EOM
 {
-  "chef_type": "role",
+  "seth_type": "role",
   "default_attributes": {
   },
   "description": "blarghle",
   "env_run_lists": {
   },
-  "json_class": "Chef::Role",
+  "json_class": "Seth::Role",
   "name": "x",
   "override_attributes": {
   },
@@ -117,12 +117,12 @@ EOM
         context 'except the role file is textually different, but not ACTUALLY different' do
           file 'roles/x.json', <<EOM
 {
-  "chef_type": "role",
+  "seth_type": "role",
   "default_attributes": {
   },
   "env_run_lists": {
   },
-  "json_class": "Chef::Role",
+  "json_class": "Seth::Role",
   "name": "x",
   "description": "",
   "override_attributes": {
@@ -139,7 +139,7 @@ EOM
         end
 
         context 'as well as one extra copy of each thing' do
-          file 'clients/y.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+          file 'clients/y.json', { 'public_key' => SethZero::PUBLIC_KEY }
           file 'cookbooks/x/blah.rb', ''
           file 'cookbooks/y/metadata.rb', 'version "1.0.0"'
           file 'data_bags/x/z.json', {}
@@ -147,7 +147,7 @@ EOM
           file 'environments/y.json', {}
           file 'nodes/y.json', {}
           file 'roles/y.json', {}
-          file 'users/y.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+          file 'users/y.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
           it 'knife download does nothing' do
             knife('download /').should_succeed ''
@@ -185,8 +185,8 @@ EOM
         it 'knife download creates the extra files' do
           knife('download /').should_succeed <<EOM
 Created /clients
-Created /clients/chef-validator.json
-Created /clients/chef-webui.json
+Created /clients/seth-validator.json
+Created /clients/seth-webui.json
 Created /clients/x.json
 Created /cookbooks
 Created /cookbooks/x
@@ -211,8 +211,8 @@ EOM
         it 'knife download --no-diff creates the extra files' do
           knife('download --no-diff /').should_succeed <<EOM
 Created /clients
-Created /clients/chef-validator.json
-Created /clients/chef-webui.json
+Created /clients/seth-validator.json
+Created /clients/seth-webui.json
 Created /clients/x.json
 Created /cookbooks
 Created /cookbooks/x
@@ -245,7 +245,7 @@ EOM
 
     # Test download of an item when the other end doesn't even have the container
     when_the_repository 'is empty' do
-      when_the_chef_server 'has two data bag items' do
+      when_the_seth_server 'has two data bag items' do
         data_bag 'x', { 'y' => {}, 'z' => {} }
 
         it 'knife download of one data bag item itself succeeds' do
@@ -287,7 +287,7 @@ EOM
 }
 EOM
 
-      when_the_chef_server 'has a modified, unmodified, added and deleted data bag item' do
+      when_the_seth_server 'has a modified, unmodified, added and deleted data bag item' do
         data_bag 'x', {
           'added' => {},
           'modified' => { 'foo' => 'bar' },
@@ -383,7 +383,7 @@ EOM
       file 'cookbooks/x/metadata.rb', 'version "1.0.0"'
       file 'cookbooks/x/z.rb', ''
 
-      when_the_chef_server 'has a modified, added and deleted file for the cookbook' do
+      when_the_seth_server 'has a modified, added and deleted file for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version  "1.0.0"', 'y.rb' => 'hi' }
 
         it 'knife download of a modified file succeeds' do
@@ -439,7 +439,7 @@ EOM
       file 'cookbooks/x/metadata.rb', 'version "1.0.0"'
       file 'cookbooks/x/onlyin1.0.0.rb', 'old_text'
 
-      when_the_chef_server 'has a later version for the cookbook' do
+      when_the_seth_server 'has a later version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => '' }
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
@@ -453,7 +453,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has an earlier version for the cookbook' do
+      when_the_seth_server 'has an earlier version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => ''}
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
         it 'knife download /cookbooks/x downloads the updated file' do
@@ -464,7 +464,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has a later version for the cookbook, and no current version' do
+      when_the_seth_server 'has a later version for the cookbook, and no current version' do
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
         it 'knife download /cookbooks/x downloads the latest version' do
@@ -477,7 +477,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has an earlier version for the cookbook, and no current version' do
+      when_the_seth_server 'has an earlier version for the cookbook, and no current version' do
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
 
         it 'knife download /cookbooks/x downloads the old version' do
@@ -491,7 +491,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has an environment' do
+    when_the_seth_server 'has an environment' do
       environment 'x', {}
       when_the_repository 'has an environment with bad JSON' do
         file 'environments/x.json', '{'
@@ -520,7 +520,7 @@ EOM
   end # without versioned cookbooks
 
   with_versioned_cookbooks do
-    when_the_chef_server "has one of each thing" do
+    when_the_seth_server "has one of each thing" do
       client 'x', {}
       cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"' }
       data_bag 'x', { 'y' => {} }
@@ -540,8 +540,8 @@ EOM
 
         it 'knife download downloads everything' do
           knife('download /').should_succeed <<EOM
-Created /clients/chef-validator.json
-Created /clients/chef-webui.json
+Created /clients/seth-validator.json
+Created /clients/seth-webui.json
 Created /clients/x.json
 Created /cookbooks/x-1.0.0
 Created /cookbooks/x-1.0.0/metadata.rb
@@ -559,17 +559,17 @@ EOM
       end
 
       when_the_repository 'has an identical copy of each thing' do
-        file 'clients/chef-validator.json', { 'validator' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'clients/chef-webui.json', { 'admin' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'clients/x.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+        file 'clients/seth-validator.json', { 'validator' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'clients/seth-webui.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'clients/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
         file 'cookbooks/x-1.0.0/metadata.rb', 'version "1.0.0"'
         file 'data_bags/x/y.json', {}
-        file 'environments/_default.json', { "description" => "The default Chef environment" }
+        file 'environments/_default.json', { "description" => "The default Seth environment" }
         file 'environments/x.json', {}
         file 'nodes/x.json', {}
         file 'roles/x.json', {}
-        file 'users/admin.json', { 'admin' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'users/x.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+        file 'users/admin.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'users/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
         it 'knife download makes no changes' do
           knife('download /').should_succeed ''
@@ -593,12 +593,12 @@ EOM
         context 'except the role file is textually different, but not ACTUALLY different' do
           file 'roles/x.json', <<EOM
 {
-  "chef_type": "role" ,
+  "seth_type": "role" ,
   "default_attributes": {
   },
   "env_run_lists": {
   },
-  "json_class": "Chef::Role",
+  "json_class": "Seth::Role",
   "name": "x",
   "description": "",
   "override_attributes": {
@@ -615,7 +615,7 @@ EOM
         end
 
         context 'as well as one extra copy of each thing' do
-          file 'clients/y.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+          file 'clients/y.json', { 'public_key' => SethZero::PUBLIC_KEY }
           file 'cookbooks/x-1.0.0/blah.rb', ''
           file 'cookbooks/x-2.0.0/metadata.rb', 'version "2.0.0"'
           file 'cookbooks/y-1.0.0/metadata.rb', 'version "1.0.0"'
@@ -624,7 +624,7 @@ EOM
           file 'environments/y.json', {}
           file 'nodes/y.json', {}
           file 'roles/y.json', {}
-          file 'users/y.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+          file 'users/y.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
           it 'knife download does nothing' do
             knife('download /').should_succeed ''
@@ -664,8 +664,8 @@ EOM
         it 'knife download creates the extra files' do
           knife('download /').should_succeed <<EOM
 Created /clients
-Created /clients/chef-validator.json
-Created /clients/chef-webui.json
+Created /clients/seth-validator.json
+Created /clients/seth-webui.json
 Created /clients/x.json
 Created /cookbooks
 Created /cookbooks/x-1.0.0
@@ -698,7 +698,7 @@ EOM
 
     # Test download of an item when the other end doesn't even have the container
     when_the_repository 'is empty' do
-      when_the_chef_server 'has two data bag items' do
+      when_the_seth_server 'has two data bag items' do
         data_bag 'x', { 'y' => {}, 'z' => {} }
 
         it 'knife download of one data bag item itself succeeds' do
@@ -731,7 +731,7 @@ EOM
 }
 EOM
 
-      when_the_chef_server 'has a modified, unmodified, added and deleted data bag item' do
+      when_the_seth_server 'has a modified, unmodified, added and deleted data bag item' do
         data_bag 'x', {
           'added' => {},
           'modified' => { 'foo' => 'bar' },
@@ -827,7 +827,7 @@ EOM
       file 'cookbooks/x-1.0.0/metadata.rb', 'version "1.0.0"'
       file 'cookbooks/x-1.0.0/z.rb', ''
 
-      when_the_chef_server 'has a modified, added and deleted file for the cookbook' do
+      when_the_seth_server 'has a modified, added and deleted file for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version  "1.0.0"', 'y.rb' => 'hi' }
 
         it 'knife download of a modified file succeeds' do
@@ -883,7 +883,7 @@ EOM
       file 'cookbooks/x-1.0.0/metadata.rb', 'version "1.0.0"'
       file 'cookbooks/x-1.0.0/onlyin1.0.0.rb', 'old_text'
 
-      when_the_chef_server 'has a later version for the cookbook' do
+      when_the_seth_server 'has a later version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => '' }
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
@@ -898,7 +898,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has an earlier version for the cookbook' do
+      when_the_seth_server 'has an earlier version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => ''}
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
         it 'knife download /cookbooks downloads the updated file' do
@@ -912,7 +912,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has a later version for the cookbook, and no current version' do
+      when_the_seth_server 'has a later version for the cookbook, and no current version' do
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
         it 'knife download /cookbooks/x downloads the latest version' do
@@ -926,7 +926,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has an earlier version for the cookbook, and no current version' do
+      when_the_seth_server 'has an earlier version for the cookbook, and no current version' do
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
 
         it 'knife download --purge /cookbooks downloads the old version and deletes the new version' do
@@ -941,7 +941,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has an environment' do
+    when_the_seth_server 'has an environment' do
       environment 'x', {}
       when_the_repository 'has an environment with bad JSON' do
         file 'environments/x.json', '{'
@@ -969,15 +969,15 @@ EOM
     end
   end # with versioned cookbooks
 
-  when_the_chef_server 'has a cookbook' do
+  when_the_seth_server 'has a cookbook' do
     cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"' }
 
     when_the_repository 'is empty' do
       it 'knife download /cookbooks/x signs all requests', :ruby_gte_19_only do
 
         # Check that BasicClient.request() always gets called with X-OPS-USERID
-        original_new = Chef::HTTP::BasicClient.method(:new)
-        Chef::HTTP::BasicClient.should_receive(:new) do |args|
+        original_new = Seth::HTTP::BasicClient.method(:new)
+        Seth::HTTP::BasicClient.should_receive(:new) do |args|
           new_result = original_new.call(*args)
           original_request = new_result.method(:request)
           new_result.should_receive(:request) do |method, url, body, headers, &response_handler|

@@ -1,8 +1,8 @@
 require 'thread'
-require 'chef/chef_fs/parallelizer/parallel_enumerable'
+require 'seth/chef_fs/parallelizer/parallel_enumerable'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     # Tries to balance several guarantees, in order of priority:
     # - don't get deadlocked
     # - provide results in desired order

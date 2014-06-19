@@ -1,20 +1,20 @@
 require 'spec_helper'
-require 'chef/cookbook/synchronizer'
-require 'chef/cookbook_version'
+require 'seth/cookbook/synchronizer'
+require 'seth/cookbook_version'
 
-describe Chef::CookbookCacheCleaner do
+describe Seth::CookbookCacheCleaner do
   describe "when cleaning up unused cookbook components" do
 
     before do
-      @cleaner = Chef::CookbookCacheCleaner.instance
+      @cleaner = Seth::CookbookCacheCleaner.instance
       @cleaner.reset!
     end
 
     it "removes all files that belong to unused cookbooks" do
     end
 
-    it "removes all files not validated during the chef run" do
-      file_cache = double("Chef::FileCache with files from unused cookbooks")
+    it "removes all files not validated during the seth run" do
+      file_cache = double("Seth::FileCache with files from unused cookbooks")
       unused_template_files = %w{cookbooks/unused/templates/default/foo.conf.erb cookbooks/unused/tempaltes/default/bar.conf.erb}
       valid_cached_cb_files = %w{cookbooks/valid1/recipes/default.rb cookbooks/valid2/recipes/default.rb}
       @cleaner.mark_file_as_valid('cookbooks/valid1/recipes/default.rb')
@@ -27,13 +27,13 @@ describe Chef::CookbookCacheCleaner do
       @cleaner.cleanup_file_cache
     end
 
-    describe "on chef-solo" do
+    describe "on seth-solo" do
       before do
-        Chef::Config[:solo] = true
+        Seth::Config[:solo] = true
       end
 
       after do
-        Chef::Config[:solo] = false
+        Seth::Config[:solo] = false
       end
 
       it "does not remove anything" do
@@ -47,28 +47,28 @@ describe Chef::CookbookCacheCleaner do
   end
 end
 
-describe Chef::CookbookSynchronizer do
+describe Seth::CookbookSynchronizer do
   before do
     segments = [ :resources, :providers, :recipes, :definitions, :libraries, :attributes, :files, :templates, :root_files ]
     @cookbook_manifest = {}
-    @cookbook_a = Chef::CookbookVersion.new("cookbook_a")
+    @cookbook_a = Seth::CookbookVersion.new("cookbook_a")
     @cookbook_a_manifest = segments.inject({}) {|h, segment| h[segment.to_s] = []; h}
     @cookbook_a_default_recipe = { "path" => "recipes/default.rb",
-                                   "url"  => "http://chef.example.com/abc123",
+                                   "url"  => "http://seth.example.com/abc123",
                                    "checksum" => "abc123" }
     @cookbook_a_manifest["recipes"] = [ @cookbook_a_default_recipe ]
 
     @cookbook_a_default_attrs  = { "path" => "attributes/default.rb",
-                                   "url"  => "http://chef.example.com/abc456",
+                                   "url"  => "http://seth.example.com/abc456",
                                    "checksum" => "abc456" }
     @cookbook_a_manifest["attributes"] = [ @cookbook_a_default_attrs ]
-    @cookbook_a_manifest["templates"] = [{"path" => "templates/default/apache2.conf.erb", "url" => "http://chef.example.com/ffffff"}]
-    @cookbook_a_manifest["files"] = [{"path" => "files/default/megaman.conf", "url" => "http://chef.example.com/megaman.conf"}]
+    @cookbook_a_manifest["templates"] = [{"path" => "templates/default/apache2.conf.erb", "url" => "http://seth.example.com/ffffff"}]
+    @cookbook_a_manifest["files"] = [{"path" => "files/default/megaman.conf", "url" => "http://seth.example.com/megaman.conf"}]
     @cookbook_a.manifest = @cookbook_a_manifest
     @cookbook_manifest["cookbook_a"] = @cookbook_a
 
-    @events = Chef::EventDispatch::Dispatcher.new
-    @synchronizer = Chef::CookbookSynchronizer.new(@cookbook_manifest, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @synchronizer = Seth::CookbookSynchronizer.new(@cookbook_manifest, @events)
   end
 
   it "lists the cookbook names" do
@@ -81,13 +81,13 @@ describe Chef::CookbookSynchronizer do
 
   context "when the cache contains unneeded cookbooks" do
     before do
-      @file_cache = double("Chef::FileCache with files from unused cookbooks")
+      @file_cache = double("Seth::FileCache with files from unused cookbooks")
       @valid_cached_cb_files = %w{cookbooks/valid1/recipes/default.rb cookbooks/valid2/recipes/default.rb}
       @obsolete_cb_files = %w{cookbooks/old1/recipes/default.rb cookbooks/old2/recipes/default.rb}
 
       @cookbook_hash = {"valid1"=> {}, "valid2" => {}}
 
-      @synchronizer = Chef::CookbookSynchronizer.new(@cookbook_hash, @events)
+      @synchronizer = Seth::CookbookSynchronizer.new(@cookbook_hash, @events)
     end
 
     it "removes unneeded cookbooks" do
@@ -105,8 +105,8 @@ describe Chef::CookbookSynchronizer do
       # the state is a PITA and tests for this behavior are above.
       @synchronizer.stub(:clear_obsoleted_cookbooks)
 
-      @server_api = double("Chef::REST (mock)")
-      @file_cache = double("Chef::FileCache (mock)")
+      @server_api = double("Seth::REST (mock)")
+      @file_cache = double("Seth::FileCache (mock)")
       @synchronizer.stub(:server_api).and_return(@server_api)
       @synchronizer.stub(:cache).and_return(@file_cache)
 
@@ -132,7 +132,7 @@ describe Chef::CookbookSynchronizer do
 
         # Fetch and copy default.rb recipe
         @server_api.should_receive(:get_rest).
-          with('http://chef.example.com/abc123', true).
+          with('http://seth.example.com/abc123', true).
           and_return(@cookbook_a_default_recipe_tempfile)
         @file_cache.should_receive(:move_to).
           with("/tmp/cookbook_a_recipes_default_rb", "cookbooks/cookbook_a/recipes/default.rb")
@@ -142,7 +142,7 @@ describe Chef::CookbookSynchronizer do
 
         # Fetch and copy default.rb attribute file
         @server_api.should_receive(:get_rest).
-          with('http://chef.example.com/abc456', true).
+          with('http://seth.example.com/abc456', true).
           and_return(@cookbook_a_default_attribute_tempfile)
         @file_cache.should_receive(:move_to).
           with("/tmp/cookbook_a_attributes_default_rb", "cookbooks/cookbook_a/attributes/default.rb")
@@ -158,15 +158,15 @@ describe Chef::CookbookSynchronizer do
       it "does not fetch templates or cookbook files" do
         # Implicitly tested in previous test; this test is just for behavior specification.
         @server_api.should_not_receive(:get_rest).
-          with('http://chef.example.com/ffffff', true)
+          with('http://seth.example.com/ffffff', true)
 
         @synchronizer.sync_cookbooks
       end
 
-      context "Chef::Config[:no_lazy_load] is true" do
+      context "Seth::Config[:no_lazy_load] is true" do
         before do
-          Chef::Config[:no_lazy_load] = true
-          @synchronizer = Chef::CookbookSynchronizer.new(@cookbook_manifest, @events)
+          Seth::Config[:no_lazy_load] = true
+          @synchronizer = Seth::CookbookSynchronizer.new(@cookbook_manifest, @events)
           @synchronizer.stub(:server_api).and_return(@server_api)
           @synchronizer.stub(:cache).and_return(@file_cache)
           @synchronizer.stub(:clear_obsoleted_cookbooks)
@@ -178,7 +178,7 @@ describe Chef::CookbookSynchronizer do
         end
 
         after do
-          Chef::Config[:no_lazy_load] = false
+          Seth::Config[:no_lazy_load] = false
         end
 
         it "fetches templates and cookbook files" do
@@ -190,7 +190,7 @@ describe Chef::CookbookSynchronizer do
             and_return(false)
 
           @server_api.should_receive(:get_rest).
-            with('http://chef.example.com/megaman.conf', true).
+            with('http://seth.example.com/megaman.conf', true).
             and_return(@cookbook_a_file_default_tempfile)
           @file_cache.should_receive(:move_to).
             with("/tmp/cookbook_a_file_default_tempfile", "cookbooks/cookbook_a/files/default/megaman.conf")
@@ -199,7 +199,7 @@ describe Chef::CookbookSynchronizer do
             and_return("/file-cache/cookbooks/cookbook_a/default/megaman.conf")
 
           @server_api.should_receive(:get_rest).
-            with('http://chef.example.com/ffffff', true).
+            with('http://seth.example.com/ffffff', true).
             and_return(@cookbook_a_template_default_tempfile)
           @file_cache.should_receive(:move_to).
             with("/tmp/cookbook_a_template_default_tempfile", "cookbooks/cookbook_a/templates/default/apache2.conf.erb")
@@ -225,7 +225,7 @@ describe Chef::CookbookSynchronizer do
 
         # Fetch and copy default.rb recipe
         @server_api.should_receive(:get_rest).
-          with('http://chef.example.com/abc123', true).
+          with('http://seth.example.com/abc123', true).
           and_return(@cookbook_a_default_recipe_tempfile)
         @file_cache.should_receive(:move_to).
           with("/tmp/cookbook_a_recipes_default_rb", "cookbooks/cookbook_a/recipes/default.rb")
@@ -235,13 +235,13 @@ describe Chef::CookbookSynchronizer do
           and_return("/file-cache/cookbooks/cookbook_a/recipes/default.rb")
 
         # Current file has fff000, want abc123
-        Chef::CookbookVersion.should_receive(:checksum_cookbook_file).
+        Seth::CookbookVersion.should_receive(:checksum_cookbook_file).
           with("/file-cache/cookbooks/cookbook_a/recipes/default.rb").
           and_return("fff000")
 
         # Fetch and copy default.rb attribute file
         @server_api.should_receive(:get_rest).
-          with('http://chef.example.com/abc456', true).
+          with('http://seth.example.com/abc456', true).
           and_return(@cookbook_a_default_attribute_tempfile)
         @file_cache.should_receive(:move_to).
           with("/tmp/cookbook_a_attributes_default_rb", "cookbooks/cookbook_a/attributes/default.rb")
@@ -251,7 +251,7 @@ describe Chef::CookbookSynchronizer do
           and_return("/file-cache/cookbooks/cookbook_a/attributes/default.rb")
 
         # Current file has fff000, want abc456
-        Chef::CookbookVersion.should_receive(:checksum_cookbook_file).
+        Seth::CookbookVersion.should_receive(:checksum_cookbook_file).
           with("/file-cache/cookbooks/cookbook_a/attributes/default.rb").
           and_return("fff000")
       end
@@ -272,12 +272,12 @@ describe Chef::CookbookSynchronizer do
           and_return(true)
 
         # Current file has abc123, want abc123
-        Chef::CookbookVersion.should_receive(:checksum_cookbook_file).
+        Seth::CookbookVersion.should_receive(:checksum_cookbook_file).
           with("/file-cache/cookbooks/cookbook_a/recipes/default.rb").
           and_return("abc123")
 
         # Current file has abc456, want abc456
-        Chef::CookbookVersion.should_receive(:checksum_cookbook_file).
+        Seth::CookbookVersion.should_receive(:checksum_cookbook_file).
           with("/file-cache/cookbooks/cookbook_a/attributes/default.rb").
           and_return("abc456")
 

@@ -18,9 +18,9 @@
 #
 
 
-class Chef
+class Seth
   class Cookbook
-    # == Chef::Cookbook::FileVendor
+    # == Seth::Cookbook::FileVendor
     # This class handles fetching of cookbook files based on specificity.
     class FileVendor
 
@@ -31,7 +31,7 @@ class Chef
       # Factory method that creates the appropriate kind of
       # Cookbook::FileVendor to serve the contents of the manifest
       def self.create_from_manifest(manifest)
-        raise "Must call Chef::Cookbook::FileVendor.on_create before calling create_from_manifest factory" unless defined?(@instance_creator)
+        raise "Must call Seth::Cookbook::FileVendor.on_create before calling create_from_manifest factory" unless defined?(@instance_creator)
         @instance_creator.call(manifest)
       end
 

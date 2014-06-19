@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class UserList < Knife
 
       deps do
-        require 'chef/user'
-        require 'chef/json_compat'
+        require 'seth/user'
+        require 'seth/json_compat'
       end
 
       banner "knife user list (options)"
@@ -35,7 +35,7 @@ class Chef
         :description => "Show corresponding URIs"
 
       def run
-        output(format_list_for_display(Chef::User.list))
+        output(format_list_for_display(Seth::User.list))
       end
     end
   end

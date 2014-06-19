@@ -19,19 +19,19 @@
 require 'spec_helper'
 
 if windows?
-  require 'chef/win32/security'
+  require 'seth/win32/security'
   require 'tmpdir'
   require 'fileutils'
 end
 
-describe 'Chef::ReservedNames::Win32::Security', :windows_only do
+describe 'Seth::ReservedNames::Win32::Security', :windows_only do
 
   def monkeyfoo
     File.join(CHEF_SPEC_DATA, "monkeyfoo").gsub("/", "\\")
   end
 
   before :all do
-    @test_tempdir = File.join(Dir::tmpdir, "cheftests", "chef_win32_security")
+    @test_tempdir = File.join(Dir::tmpdir, "sethtests", "chef_win32_security")
     FileUtils.mkdir_p(@test_tempdir)
     @monkeyfoo = File.join(@test_tempdir, "monkeyfoo.txt")
   end
@@ -50,7 +50,7 @@ describe 'Chef::ReservedNames::Win32::Security', :windows_only do
 
   it "should not leak when retrieving and reading the ACE from a file", :volatile do
     lambda {
-      sids = Chef::ReservedNames::Win32::Security::SecurableObject.new(@monkeyfoo).security_descriptor.dacl.select { |ace| ace.sid }
+      sids = Seth::ReservedNames::Win32::Security::SecurableObject.new(@monkeyfoo).security_descriptor.dacl.select { |ace| ace.sid }
       GC.start
     }.should_not leak_memory(:warmup => 50, :iterations => 100)
   end
@@ -58,9 +58,9 @@ describe 'Chef::ReservedNames::Win32::Security', :windows_only do
   it "should not leak when creating a new ACL and setting it on a file", :volatile do
     securable_object = Security::SecurableObject.new(@monkeyfoo)
     lambda {
-      securable_object.dacl = Chef::ReservedNames::Win32::Security::ACL.create([
-        Chef::ReservedNames::Win32::Security::ACE.access_allowed(Chef::ReservedNames::Win32::Security::SID.Everyone, Chef::ReservedNames::Win32::API::Security::GENERIC_READ),
-        Chef::ReservedNames::Win32::Security::ACE.access_denied(Chef::ReservedNames::Win32::Security::SID.from_account("Users"), Chef::ReservedNames::Win32::API::Security::GENERIC_ALL)
+      securable_object.dacl = Seth::ReservedNames::Win32::Security::ACL.create([
+        Seth::ReservedNames::Win32::Security::ACE.access_allowed(Chef::ReservedNames::Win32::Security::SID.Everyone, Chef::ReservedNames::Win32::API::Security::GENERIC_READ),
+        Seth::ReservedNames::Win32::Security::ACE.access_denied(Chef::ReservedNames::Win32::Security::SID.from_account("Users"), Chef::ReservedNames::Win32::API::Security::GENERIC_ALL)
       ])
       GC.start
     }.should_not leak_memory(:warmup => 50, :iterations => 100)

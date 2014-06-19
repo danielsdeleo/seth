@@ -20,20 +20,20 @@
 
 require 'forwardable'
 
-require 'chef/config'
-require 'chef/mixin/params_validate'
-require 'chef/mixin/from_file'
-require 'chef/data_bag'
-require 'chef/mash'
-require 'chef/json_compat'
+require 'seth/config'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/from_file'
+require 'seth/data_bag'
+require 'seth/mash'
+require 'seth/json_compat'
 
-class Chef
+class Seth
   class DataBagItem
 
     extend Forwardable
 
-    include Chef::Mixin::FromFile
-    include Chef::Mixin::ParamsValidate
+    include Seth::Mixin::FromFile
+    include Seth::Mixin::ParamsValidate
 
     VALID_ID = /^[\.\-[:alnum:]_]+$/
 
@@ -48,18 +48,18 @@ class Chef
 
     attr_reader :raw_data
 
-    # Create a new Chef::DataBagItem
+    # Create a new Seth::DataBagItem
     def initialize
       @data_bag = nil
       @raw_data = Mash.new
     end
 
-    def chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
-    def self.chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def self.seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
     def raw_data
@@ -104,7 +104,7 @@ class Chef
 
     def to_hash
       result = self.raw_data
-      result["chef_type"] = "data_bag_item"
+      result["seth_type"] = "data_bag_item"
       result["data_bag"] = self.data_bag
       result
     end
@@ -114,7 +114,7 @@ class Chef
       result = {
         "name" => self.object_name,
         "json_class" => self.class.name,
-        "chef_type" => "data_bag_item",
+        "seth_type" => "data_bag_item",
         "data_bag" => self.data_bag,
         "raw_data" => self.raw_data
       }
@@ -127,12 +127,12 @@ class Chef
       item
     end
 
-    # Create a Chef::DataBagItem from JSON
+    # Create a Seth::DataBagItem from JSON
     def self.json_create(o)
       bag_item = new
       bag_item.data_bag(o["data_bag"])
       o.delete("data_bag")
-      o.delete("chef_type")
+      o.delete("seth_type")
       o.delete("json_class")
       o.delete("name")
 
@@ -142,11 +142,11 @@ class Chef
 
     # Load a Data Bag Item by name via either the RESTful API or local data_bag_path if run in solo mode
     def self.load(data_bag, name)
-      if Chef::Config[:solo]
-        bag = Chef::DataBag.load(data_bag)
+      if Seth::Config[:solo]
+        bag = Seth::DataBag.load(data_bag)
         item = bag[name]
       else
-        item = Chef::REST.new(Chef::Config[:chef_server_url]).get_rest("data/#{data_bag}/#{name}")
+        item = Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("data/#{data_bag}/#{name}")
       end
 
       if item.kind_of?(DataBagItem)
@@ -159,15 +159,15 @@ class Chef
     end
 
     def destroy(data_bag=data_bag, databag_item=name)
-      chef_server_rest.delete_rest("data/#{data_bag}/#{databag_item}")
+      seth_server_rest.delete_rest("data/#{data_bag}/#{databag_item}")
     end
 
     # Save this Data Bag Item via RESTful API
     def save(item_id=@raw_data['id'])
-      r = chef_server_rest
+      r = seth_server_rest
       begin
-        if Chef::Config[:why_run]
-          Chef::Log.warn("In whyrun mode, so NOT performing data bag item save.")
+        if Seth::Config[:why_run]
+          Seth::Log.warn("In whyrun mode, so NOT performing data bag item save.")
         else
           r.put_rest("data/#{data_bag}/#{item_id}", self)
         end
@@ -180,7 +180,7 @@ class Chef
 
     # Create this Data Bag Item via RESTful API
     def create
-      chef_server_rest.post_rest("data/#{data_bag}", self)
+      seth_server_rest.post_rest("data/#{data_bag}", self)
       self
     end
 

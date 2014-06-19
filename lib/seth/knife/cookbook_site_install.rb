@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 require 'shellwords'
 
-class Chef
+class Seth
   class Knife
 
     class CookbookSiteInstall < Knife
 
       deps do
-        require 'chef/mixin/shell_out'
-        require 'chef/knife/core/cookbook_scm_repo'
-        require 'chef/cookbook/metadata'
+        require 'seth/mixin/shell_out'
+        require 'seth/knife/core/cookbook_scm_repo'
+        require 'seth/cookbook/metadata'
       end
 
       banner "knife cookbook site install COOKBOOK [VERSION] (options)"
@@ -63,12 +63,12 @@ class Chef
       attr_reader :vendor_path
 
       def run
-        extend Chef::Mixin::ShellOut
+        extend Seth::Mixin::ShellOut
 
         if config[:cookbook_path]
-          Chef::Config[:cookbook_path] = config[:cookbook_path]
+          Seth::Config[:cookbook_path] = config[:cookbook_path]
         else
-          config[:cookbook_path] = Chef::Config[:cookbook_path]
+          config[:cookbook_path] = Seth::Config[:cookbook_path]
         end
 
         @cookbook_name = parse_name_args!
@@ -109,7 +109,7 @@ class Chef
 
 
         unless config[:no_deps]
-          md = Chef::Cookbook::Metadata.new
+          md = Seth::Cookbook::Metadata.new
           md.from_file(File.join(@install_path, @cookbook_name, "metadata.rb"))
           md.dependencies.each do |cookbook, version_list|
             # Doesn't do versions.. yet
@@ -135,7 +135,7 @@ class Chef
       end
 
       def download_cookbook_to(download_path)
-        downloader = Chef::Knife::CookbookSiteDownload.new
+        downloader = Seth::Knife::CookbookSiteDownload.new
         downloader.config[:file] = download_path
         downloader.name_args = name_args
         downloader.run

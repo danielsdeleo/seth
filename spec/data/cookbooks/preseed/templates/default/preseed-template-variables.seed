@@ -1,1 +1,1 @@
-chef-integration-test chef-integration-test/sample-var string "<%= @template_variable -%>"
+seth-integration-test chef-integration-test/sample-var string "<%= @template_variable -%>"

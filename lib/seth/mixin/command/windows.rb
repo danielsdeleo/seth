@@ -24,7 +24,7 @@ else
   require 'open3'
 end
 
-class Chef
+class Seth
   module Mixin
     module Command
       module Windows

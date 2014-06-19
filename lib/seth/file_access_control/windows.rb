@@ -17,14 +17,14 @@
 # limitations under the License.
 #
 
-require 'chef/win32/security'
+require 'seth/win32/security'
 
-class Chef
+class Seth
   class FileAccessControl
     module Windows
-      include Chef::ReservedNames::Win32::API::Security
+      include Seth::ReservedNames::Win32::API::Security
 
-      Security = Chef::ReservedNames::Win32::Security
+      Security = Seth::ReservedNames::Win32::Security
       ACL = Security::ACL
       ACE = Security::ACE
       SID = Security::SID
@@ -106,9 +106,9 @@ class Chef
       def securable_object
         @securable_object ||= begin
           if file.kind_of?(String)
-            so = Chef::ReservedNames::Win32::Security::SecurableObject.new(file.dup)
+            so = Seth::ReservedNames::Win32::Security::SecurableObject.new(file.dup)
           end
-          raise ArgumentError, "'file' must be a valid path or object of type 'Chef::ReservedNames::Win32::Security::SecurableObject'" unless so.kind_of? Chef::ReservedNames::Win32::Security::SecurableObject
+          raise ArgumentError, "'file' must be a valid path or object of type 'Seth::ReservedNames::Win32::Security::SecurableObject'" unless so.kind_of? Chef::ReservedNames::Win32::Security::SecurableObject
           so
         end
       end
@@ -137,11 +137,11 @@ class Chef
             dacl = ACL.create(existing_dacl.select { |ace| !ace.inherited? })
           end
           securable_object.set_dacl(dacl, inherits)
-          Chef::Log.info("#{log_string} permissions changed to #{dacl} with inherits of #{inherits}")
+          Seth::Log.info("#{log_string} permissions changed to #{dacl} with inherits of #{inherits}")
           modified
         elsif dacl && !acls_equal(dacl, existing_dacl)
           securable_object.dacl = dacl
-          Chef::Log.info("#{log_string} permissions changed to #{dacl}")
+          Seth::Log.info("#{log_string} permissions changed to #{dacl}")
           modified
         end
       end
@@ -153,7 +153,7 @@ class Chef
 
       def set_group!
         if (group = target_group)
-          Chef::Log.info("#{log_string} group changed to #{group}")
+          Seth::Log.info("#{log_string} group changed to #{group}")
           securable_object.group = group
           modified
         end
@@ -172,7 +172,7 @@ class Chef
 
       def set_owner!
         if owner = target_owner
-          Chef::Log.info("#{log_string} owner changed to #{owner}")
+          Seth::Log.info("#{log_string} owner changed to #{owner}")
           securable_object.owner = owner
           modified
         end
@@ -223,7 +223,7 @@ class Chef
         # Configure child inheritence only if the resource is some
         # type of a directory.
         #
-        if resource.is_a? Chef::Resource::Directory
+        if resource.is_a? Seth::Resource::Directory
           case rights[:applies_to_children]
           when :containers_only
             flags |= CONTAINER_INHERIT_ACE
@@ -287,20 +287,20 @@ class Chef
           if owner
             acls += mode_ace(owner, (mode & 0700) >> 6)
           elsif mode & 0700 != 0
-            Chef::Log.warn("Mode #{sprintf("%03o", mode)} includes bits for the owner, but owner is not specified")
+            Seth::Log.warn("Mode #{sprintf("%03o", mode)} includes bits for the owner, but owner is not specified")
           end
 
           group = target_group
           if group
             acls += mode_ace(group, (mode & 070) >> 3)
           elsif mode & 070 != 0
-            Chef::Log.warn("Mode #{sprintf("%03o", mode)} includes bits for the group, but group is not specified")
+            Seth::Log.warn("Mode #{sprintf("%03o", mode)} includes bits for the group, but group is not specified")
           end
 
           acls += mode_ace(SID.Everyone, (mode & 07))
         end
 
-        acls.nil? ? nil : Chef::ReservedNames::Win32::Security::ACL.create(acls)
+        acls.nil? ? nil : Seth::ReservedNames::Win32::Security::ACL.create(acls)
       end
 
       def target_group

@@ -16,9 +16,9 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'chef/knife/delete'
-require 'chef/knife/list'
-require 'chef/knife/raw'
+require 'seth/knife/delete'
+require 'seth/knife/list'
+require 'seth/knife/raw'
 
 describe 'knife delete' do
   extend IntegrationSupport
@@ -49,8 +49,8 @@ EOM
   let :server_everything do
     <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /cookbooks/x
@@ -73,8 +73,8 @@ EOM
   let :server_nothing do
     <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /cookbooks
 /data_bags
 /environments
@@ -98,7 +98,7 @@ EOM
 EOM
   end
 
-  when_the_chef_server "has one of each thing" do
+  when_the_seth_server "has one of each thing" do
     client 'x', '{}'
     cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"' }
     data_bag 'x', { 'y' => '{}' }
@@ -130,8 +130,8 @@ EOM
         knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
         knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /data_bags
@@ -193,8 +193,8 @@ EOM
         knife('delete -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
         knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /data_bags
@@ -225,8 +225,8 @@ ERROR: /data_bags/empty (local) must be deleted recursively!  Pass -r to knife d
 EOM
           knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /cookbooks/x
@@ -282,8 +282,8 @@ EOM
         knife('delete --both -r /data_bags/x').should_succeed "Deleted /data_bags/x\n"
         knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /cookbooks/x
@@ -323,8 +323,8 @@ EOM
         knife('delete --both /environments/x.json').should_succeed "Deleted /environments/x.json\n"
         knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /cookbooks/x
@@ -366,8 +366,8 @@ EOM
         knife('delete --both /roles/x.json').should_succeed "Deleted /roles/x.json\n"
         knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /cookbooks/x
@@ -486,8 +486,8 @@ EOM
         knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
         knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /data_bags
@@ -517,8 +517,8 @@ EOM
         knife('delete --both -r /data_bags/x').should_succeed "Deleted /data_bags/x\n"
         knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /cookbooks/x
@@ -542,8 +542,8 @@ EOM
         knife('delete --both /environments/x.json').should_succeed "Deleted /environments/x.json\n"
         knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /cookbooks/x
@@ -568,8 +568,8 @@ EOM
         knife('delete --both /roles/x.json').should_succeed "Deleted /roles/x.json\n"
         knife('list -Rf /').should_succeed <<EOM
 /clients
-/clients/chef-validator.json
-/clients/chef-webui.json
+/clients/seth-validator.json
+/clients/seth-webui.json
 /clients/x.json
 /cookbooks
 /cookbooks/x
@@ -637,8 +637,8 @@ EOM
           knife('delete').should_fail "FATAL: Must specify at least one argument.  If you want to delete everything in this directory, type \"knife delete --recurse .\"\n", :stdout => /USAGE/
           knife('list -Rf /').should_succeed <<EOM
 clients
-clients/chef-validator.json
-clients/chef-webui.json
+clients/seth-validator.json
+clients/seth-webui.json
 clients/x.json
 cookbooks
 cookbooks/x
@@ -671,7 +671,7 @@ EOM
     end
   end
 
-  when_the_chef_server 'is empty' do
+  when_the_seth_server 'is empty' do
     when_the_repository 'has one of each thing' do
       file 'clients/x.json', {}
       file 'cookbooks/x/metadata.rb', ''
@@ -848,8 +848,8 @@ EOM
           knife('delete').should_fail "FATAL: Must specify at least one argument.  If you want to delete everything in this directory, type \"knife delete --recurse .\"\n", :stdout => /USAGE/
           knife('list -Rf /').should_succeed <<EOM
 clients
-clients/chef-validator.json
-clients/chef-webui.json
+clients/seth-validator.json
+clients/seth-webui.json
 cookbooks
 data_bags
 environments
@@ -887,7 +887,7 @@ EOM
     file 'cookbooks/x/metadata.rb', 'version "1.0.0"'
     file 'cookbooks/x/onlyin1.0.0.rb', 'old_text'
 
-    when_the_chef_server 'has a later version for the cookbook' do
+    when_the_seth_server 'has a later version for the cookbook' do
       cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => '' }
       cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
@@ -899,7 +899,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has an earlier version for the cookbook' do
+    when_the_seth_server 'has an earlier version for the cookbook' do
       cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => ''}
       cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
 
@@ -910,7 +910,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has a later version for the cookbook, and no current version' do
+    when_the_seth_server 'has a later version for the cookbook, and no current version' do
       cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
       it 'knife delete --both /cookbooks/x deletes the server and client version of the cookbook' do
@@ -920,7 +920,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has an earlier version for the cookbook, and no current version' do
+    when_the_seth_server 'has an earlier version for the cookbook, and no current version' do
       cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
 
       it 'knife delete --both /cookbooks/x deletes the server and client version of the cookbook' do
@@ -932,7 +932,7 @@ EOM
   end
 
   when_the_repository 'is empty' do
-    when_the_chef_server 'has two versions of a cookbook' do
+    when_the_seth_server 'has two versions of a cookbook' do
       cookbook 'x', '2.0.11', { 'metadata.rb' => 'version "2.0.11"' }
       cookbook 'x', '11.0.0', { 'metadata.rb' => 'version "11.0.0"' }
       it 'knife delete deletes the latest version' do

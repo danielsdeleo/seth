@@ -29,11 +29,11 @@ end
 
 def run_context
   @run_context ||= begin
-    node = Chef::Node.new
+    node = Seth::Node.new
     node.default[:platform] = ohai[:platform]
     node.default[:platform_version] = ohai[:platform_version]
-    events = Chef::EventDispatch::Dispatcher.new
-    Chef::RunContext.new(node, {}, events)
+    events = Seth::EventDispatch::Dispatcher.new
+    Seth::RunContext.new(node, {}, events)
   end
 end
 

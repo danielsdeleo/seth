@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef::Knife::Exec < Chef::Knife
+class Seth::Knife::Exec < Chef::Knife
 
   banner "knife exec [SCRIPT] (options)"
 
   option :exec,
     :short => "-E CODE",
     :long => "--exec CODE",
-    :description => "a string of Chef code to execute"
+    :description => "a string of Seth code to execute"
 
   option :script_path,
     :short => "-p PATH:PATH",
@@ -34,15 +34,15 @@ class Chef::Knife::Exec < Chef::Knife
     :proc => lambda { |o| o.split(":") }
 
   deps do
-    require 'chef/shell/ext'
+    require 'seth/shell/ext'
   end
 
   def run
-    config[:script_path] ||= Array(Chef::Config[:script_path])
+    config[:script_path] ||= Array(Seth::Config[:script_path])
 
-    # Default script paths are chef-repo/.chef/scripts and ~/.chef/scripts
-    config[:script_path] << File.join(Chef::Knife.chef_config_dir, 'scripts') if Chef::Knife.chef_config_dir
-    config[:script_path] << File.join(ENV['HOME'], '.chef', 'scripts') if ENV['HOME']
+    # Default script paths are seth-repo/.chef/scripts and ~/.chef/scripts
+    config[:script_path] << File.join(Seth::Knife.seth_config_dir, 'scripts') if Chef::Knife.chef_config_dir
+    config[:script_path] << File.join(ENV['HOME'], '.seth', 'scripts') if ENV['HOME']
 
     scripts = Array(name_args)
     context = Object.new
@@ -67,15 +67,15 @@ class Chef::Knife::Exec < Chef::Knife
 
     # Failing that, try searching the script path. If we can't find
     # anything, fail gracefully.
-    Chef::Log.debug("Searching script_path: #{config[:script_path].inspect}")
+    Seth::Log.debug("Searching script_path: #{config[:script_path].inspect}")
 
     config[:script_path].each do |path|
       path = File.expand_path(path)
       test = File.join(path, x)
-      Chef::Log.debug("Testing: #{test}")
+      Seth::Log.debug("Testing: #{test}")
       if File.exists?(test)
         script = test
-        Chef::Log.debug("Found: #{test}")
+        Seth::Log.debug("Found: #{test}")
         return script
       end
     end

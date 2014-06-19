@@ -18,23 +18,23 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::RemoteDirectory do
-  include_context Chef::Resource::Directory
+describe Seth::Resource::RemoteDirectory do
+  include_context Seth::Resource::Directory
 
   let(:directory_base) { "directory_spec" }
   let(:default_mode) { ((0100777 - File.umask) & 07777).to_s(8) }
 
   def create_resource
     cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-    Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
-    node = Chef::Node.new
-    cl = Chef::CookbookLoader.new(cookbook_repo)
+    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
+    node = Seth::Node.new
+    cl = Seth::CookbookLoader.new(cookbook_repo)
     cl.load_cookbooks
-    cookbook_collection = Chef::CookbookCollection.new(cl)
-    events = Chef::EventDispatch::Dispatcher.new
-    run_context = Chef::RunContext.new(node, cookbook_collection, events)
+    cookbook_collection = Seth::CookbookCollection.new(cl)
+    events = Seth::EventDispatch::Dispatcher.new
+    run_context = Seth::RunContext.new(node, cookbook_collection, events)
 
-    resource = Chef::Resource::RemoteDirectory.new(path, run_context)
+    resource = Seth::Resource::RemoteDirectory.new(path, run_context)
     resource.source "remotedir"
     resource.cookbook('openldap')
     resource

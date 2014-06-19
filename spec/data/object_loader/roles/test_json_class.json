@@ -1,6 +1,6 @@
 {
   "name": "test",
-  "json_class": "Chef::Role",
+  "json_class": "Seth::Role",
   "description": "prod",
   "run_list": []
 }

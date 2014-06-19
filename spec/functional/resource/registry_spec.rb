@@ -17,30 +17,30 @@
 # limitations under the License.
 #
 
-require "chef/win32/registry"
-require "chef/resource_reporter"
+require "seth/win32/registry"
+require "seth/resource_reporter"
 require "spec_helper"
 
-describe Chef::Resource::RegistryKey, :unix_only do
+describe Seth::Resource::RegistryKey, :unix_only do
   before(:all) do
-    events = Chef::EventDispatch::Dispatcher.new
-    node = Chef::Node.new
+    events = Seth::EventDispatch::Dispatcher.new
+    node = Seth::Node.new
     ohai = Ohai::System.new
     ohai.all_plugins
     node.consume_external_attrs(ohai.data,{})
-    run_context = Chef::RunContext.new(node, {}, events)
-    @resource = Chef::Resource::RegistryKey.new("HKCU\\Software", run_context)
+    run_context = Seth::RunContext.new(node, {}, events)
+    @resource = Seth::Resource::RegistryKey.new("HKCU\\Software", run_context)
   end
   context "when load_current_resource is run on a non-windows node" do
     it "throws an exception because you don't have a windows registry (derp)" do
       @resource.key("HKCU\\Software\\Opscode")
       @resource.values([{:name=>"Color", :type=>:string, :data=>"Orange"}])
-      lambda{@resource.run_action(:create)}.should raise_error(Chef::Exceptions::Win32NotWindows)
+      lambda{@resource.run_action(:create)}.should raise_error(Seth::Exceptions::Win32NotWindows)
     end
   end
 end
 
-describe Chef::Resource::RegistryKey, :windows_only do
+describe Seth::Resource::RegistryKey, :windows_only do
 
   # parent and key must be single keys, not paths
   let(:parent) { 'Opscode' }
@@ -94,15 +94,15 @@ describe Chef::Resource::RegistryKey, :windows_only do
   end
 
   before(:all) do
-    @events = Chef::EventDispatch::Dispatcher.new
-    @node = Chef::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @node = Seth::Node.new
     ohai = Ohai::System.new
     ohai.all_plugins
     @node.consume_external_attrs(ohai.data,{})
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::RegistryKey.new(resource_name, @run_context)
-    @registry = Chef::Win32::Registry.new(@run_context)
+    @new_resource = Seth::Resource::RegistryKey.new(resource_name, @run_context)
+    @registry = Seth::Win32::Registry.new(@run_context)
 
     reset_registry
   end
@@ -111,14 +111,14 @@ describe Chef::Resource::RegistryKey, :windows_only do
   before do
     @node.name("windowsbox")
 
-    @rest_client = double("Chef::REST (mock)")
+    @rest_client = double("Seth::REST (mock)")
     @rest_client.stub(:create_url).and_return("reports/nodes/windowsbox/runs/#{@run_id}");
     @rest_client.stub(:raw_http_request).and_return({"result"=>"ok"});
     @rest_client.stub(:post_rest).and_return({"uri"=>"https://example.com/reports/nodes/windowsbox/runs/#{@run_id}"});
 
-    @resource_reporter = Chef::ResourceReporter.new(@rest_client)
+    @resource_reporter = Seth::ResourceReporter.new(@rest_client)
     @events.register(@resource_reporter)
-    @run_status = Chef::RunStatus.new(@node, @events)
+    @run_status = Seth::RunStatus.new(@node, @events)
     @resource_reporter.run_started(@run_status)
     @run_id = @resource_reporter.run_id
 
@@ -180,19 +180,19 @@ describe Chef::Resource::RegistryKey, :windows_only do
 
     it "creates subkey if parent exists" do
       @new_resource.key(reg_child + '\OpscodeTest')
-      @new_resource.values([{:name=>"Chef", :type=>:multi_string, :data=>["OpscodeOrange", "Rules"]}])
+      @new_resource.values([{:name=>"Seth", :type=>:multi_string, :data=>["OpscodeOrange", "Rules"]}])
       @new_resource.recursive(false)
       @new_resource.run_action(:create)
 
       @registry.key_exists?(reg_child + '\OpscodeTest').should == true
-      @registry.value_exists?(reg_child + '\OpscodeTest', {:name=>"Chef", :type=>:multi_string, :data=>["OpscodeOrange", "Rules"]}).should == true
+      @registry.value_exists?(reg_child + '\OpscodeTest', {:name=>"Seth", :type=>:multi_string, :data=>["OpscodeOrange", "Rules"]}).should == true
     end
 
     it "gives error if action create and parent does not exist and recursive is set to false" do
       @new_resource.key(reg_child + '\Missing1\Missing2')
       @new_resource.values([{:name=>"OC", :type=>:string, :data=>"MissingData"}])
       @new_resource.recursive(false)
-      lambda{@new_resource.run_action(:create)}.should raise_error(Chef::Exceptions::Win32RegNoRecursive)
+      lambda{@new_resource.run_action(:create)}.should raise_error(Seth::Exceptions::Win32RegNoRecursive)
     end
 
     it "creates missing keys if action create and parent does not exist and recursive is set to true" do
@@ -258,7 +258,7 @@ describe Chef::Resource::RegistryKey, :windows_only do
 
     context "while running in whyrun mode" do
       before (:each) do
-        Chef::Config[:why_run] = true
+        Seth::Config[:why_run] = true
       end
 
       it "does not throw an exception if the keys do not exist but recursive is set to false" do
@@ -313,19 +313,19 @@ describe Chef::Resource::RegistryKey, :windows_only do
 
     it "creates subkey if parent exists" do
       @new_resource.key(reg_child + '\Pyrovile')
-      @new_resource.values([{:name=>"Chef", :type=>:multi_string, :data=>["OpscodeOrange", "Rules"]}])
+      @new_resource.values([{:name=>"Seth", :type=>:multi_string, :data=>["OpscodeOrange", "Rules"]}])
       @new_resource.recursive(false)
       @new_resource.run_action(:create_if_missing)
 
       @registry.key_exists?(reg_child + '\Pyrovile').should == true
-      @registry.value_exists?(reg_child + '\Pyrovile', {:name=>"Chef", :type=>:multi_string, :data=>["OpscodeOrange", "Rules"]}).should == true
+      @registry.value_exists?(reg_child + '\Pyrovile', {:name=>"Seth", :type=>:multi_string, :data=>["OpscodeOrange", "Rules"]}).should == true
     end
 
     it "gives error if action create and parent does not exist and recursive is set to false" do
       @new_resource.key(reg_child + '\Sontaran\Sontar')
       @new_resource.values([{:name=>"OC", :type=>:string, :data=>"MissingData"}])
       @new_resource.recursive(false)
-      lambda{@new_resource.run_action(:create_if_missing)}.should raise_error(Chef::Exceptions::Win32RegNoRecursive)
+      lambda{@new_resource.run_action(:create_if_missing)}.should raise_error(Seth::Exceptions::Win32RegNoRecursive)
     end
 
     it "creates missing keys if action create and parent does not exist and recursive is set to true" do
@@ -369,7 +369,7 @@ describe Chef::Resource::RegistryKey, :windows_only do
 
     context "while running in whyrun mode" do
       before (:each) do
-        Chef::Config[:why_run] = true
+        Seth::Config[:why_run] = true
       end
 
       it "does not throw an exception if the keys do not exist but recursive is set to false" do
@@ -462,7 +462,7 @@ describe Chef::Resource::RegistryKey, :windows_only do
 
     context "while running in whyrun mode" do
       before (:each) do
-        Chef::Config[:why_run] = true
+        Seth::Config[:why_run] = true
       end
       it "does nothing if the action is delete" do
         @new_resource.key(reg_parent + '\OpscodeWhyRun')
@@ -502,7 +502,7 @@ describe Chef::Resource::RegistryKey, :windows_only do
     it "raises an exception if the key has subkeys and recursive == false" do
       @new_resource.key(reg_parent)
       @new_resource.recursive(false)
-      lambda{@new_resource.run_action(:delete_key)}.should raise_error(Chef::Exceptions::Win32RegNoRecursive)
+      lambda{@new_resource.run_action(:delete_key)}.should raise_error(Seth::Exceptions::Win32RegNoRecursive)
     end
 
     it "ignores the values under a key" do
@@ -539,7 +539,7 @@ describe Chef::Resource::RegistryKey, :windows_only do
     end
     context "while running in whyrun mode" do
       before (:each) do
-        Chef::Config[:why_run] = true
+        Seth::Config[:why_run] = true
       end
 
       it "does not throw an exception if the key has subkeys but recursive is set to false" do

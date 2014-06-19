@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/formatters/error_inspectors/api_error_formatting'
+require 'seth/formatters/error_inspectors/api_error_formatting'
 
-class Chef
+class Seth
   module Formatters
     module ErrorInspectors
 
@@ -45,10 +45,10 @@ class Chef
             humanize_http_exception(error_description)
           when *NETWORK_ERROR_CLASSES
             describe_network_errors(error_description)
-          when Chef::Exceptions::PrivateKeyMissing
+          when Seth::Exceptions::PrivateKeyMissing
             error_description.section("Private Key Not Found:",<<-E)
 Your private key could not be loaded. If the key file exists, ensure that it is
-readable by chef-client.
+readable by seth-client.
 E
             error_description.section("Relevant Config Settings:",<<-E)
 client_key        "#{api_key}"
@@ -95,10 +95,10 @@ E
         # redirect.
         def describe_404_error(error_description)
           error_description.section("Resource Not Found:",<<-E)
-The server returned a HTTP 404. This usually indicates that your chef_server_url is incorrect.
+The server returned a HTTP 404. This usually indicates that your seth_server_url is incorrect.
 E
           error_description.section("Relevant Config Settings:",<<-E)
-chef_server_url "#{server_url}"
+seth_server_url "#{server_url}"
 E
         end
 
@@ -111,7 +111,7 @@ E
         end
 
         def server_url
-          config[:chef_server_url]
+          config[:seth_server_url]
         end
 
         def clock_skew?

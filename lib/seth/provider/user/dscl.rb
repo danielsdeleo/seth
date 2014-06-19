@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
-require 'chef/provider/user'
+require 'seth/mixin/shell_out'
+require 'seth/provider/user'
 require 'openssl'
 
-class Chef
+class Seth
   class Provider
     class User
-      class Dscl < Chef::Provider::User
-        include Chef::Mixin::ShellOut
+      class Dscl < Seth::Provider::User
+        include Seth::Mixin::ShellOut
 
         NFS_HOME_DIRECTORY        = %r{^NFSHomeDirectory: (.*)$}
         AUTHENTICATION_AUTHORITY  = %r{^AuthenticationAuthority: (.*)$}
@@ -36,8 +36,8 @@ class Chef
         def safe_dscl(*args)
           result = dscl(*args)
           return "" if ( args.first =~ /^delete/ ) && ( result.exitstatus != 0 )
-          raise(Chef::Exceptions::DsclCommandFailed,"dscl error: #{result.inspect}") unless result.exitstatus == 0
-          raise(Chef::Exceptions::DsclCommandFailed,"dscl error: #{result.inspect}") if result.stdout =~ /No such key: /
+          raise(Seth::Exceptions::DsclCommandFailed,"dscl error: #{result.inspect}") unless result.exitstatus == 0
+          raise(Seth::Exceptions::DsclCommandFailed,"dscl error: #{result.inspect}") if result.stdout =~ /No such key: /
           return result.stdout
         end
 
@@ -71,7 +71,7 @@ class Chef
         def set_uid
           @new_resource.uid(get_free_uid) if (@new_resource.uid.nil? || @new_resource.uid == '')
           if uid_used?(@new_resource.uid)
-            raise(Chef::Exceptions::RequestedUIDUnavailable, "uid #{@new_resource.uid} is already in use")
+            raise(Seth::Exceptions::RequestedUIDUnavailable, "uid #{@new_resource.uid} is already in use")
           end
           safe_dscl("create /Users/#{@new_resource.username} UniqueID #{@new_resource.uid}")
         end
@@ -117,7 +117,7 @@ class Chef
           if @new_resource.password
             shadow_hash = nil
 
-            Chef::Log.debug("#{new_resource} updating password")
+            Seth::Log.debug("#{new_resource} updating password")
             if osx_shadow_hash?(@new_resource.password)
               shadow_hash = @new_resource.password.upcase
             else
@@ -147,7 +147,7 @@ class Chef
 
         def load_current_resource
           super
-          raise Chef::Exceptions::User, "Could not find binary /usr/bin/dscl for #{@new_resource}" unless ::File.exists?("/usr/bin/dscl")
+          raise Seth::Exceptions::User, "Could not find binary /usr/bin/dscl for #{@new_resource}" unless ::File.exists?("/usr/bin/dscl")
         end
 
         def create_user
@@ -182,8 +182,8 @@ class Chef
           unless @new_resource.gid && @new_resource.gid.to_s.match(/^\d+$/)
             begin
               possible_gid = safe_dscl("read /Groups/#{@new_resource.gid} PrimaryGroupID").split(" ").last
-            rescue Chef::Exceptions::DsclCommandFailed => e
-              raise Chef::Exceptions::GroupIDNotFound.new("Group not found for #{@new_resource.gid} when creating user #{@new_resource.username}")
+            rescue Seth::Exceptions::DsclCommandFailed => e
+              raise Seth::Exceptions::GroupIDNotFound.new("Group not found for #{@new_resource.gid} when creating user #{@new_resource.username}")
             end
             @new_resource.gid(possible_gid) if possible_gid && possible_gid.match(/^\d+$/)
           end
@@ -245,7 +245,7 @@ class Chef
 
         def validate_home_dir_specification!
           unless @new_resource.home =~ /^\//
-            raise(Chef::Exceptions::InvalidHomeDirectory,"invalid path spec for User: '#{@new_resource.username}', home directory: '#{@new_resource.home}'")
+            raise(Seth::Exceptions::InvalidHomeDirectory,"invalid path spec for User: '#{@new_resource.username}', home directory: '#{@new_resource.home}'")
           end
         end
 
@@ -259,13 +259,13 @@ class Chef
 
         def ditto_home
           skel = "/System/Library/User Template/English.lproj"
-          raise(Chef::Exceptions::User,"can't find skel at: #{skel}") unless ::File.exists?(skel)
+          raise(Seth::Exceptions::User,"can't find skel at: #{skel}") unless ::File.exists?(skel)
           shell_out! "ditto '#{skel}' '#{@new_resource.home}'"
           ::FileUtils.chown_R(@new_resource.username,@new_resource.gid.to_s,@new_resource.home)
         end
 
         def move_home
-          Chef::Log.debug("#{@new_resource} moving #{self} home from #{@current_resource.home} to #{@new_resource.home}")
+          Seth::Log.debug("#{@new_resource} moving #{self} home from #{@current_resource.home} to #{@new_resource.home}")
 
           src = @current_resource.home
           FileUtils.mkdir_p(@new_resource.home)

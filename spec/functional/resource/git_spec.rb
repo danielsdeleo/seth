@@ -17,13 +17,13 @@
 #
 
 require 'spec_helper'
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 require 'tmpdir'
 require 'shellwords'
 
 # Deploy relies heavily on symlinks, so it doesn't work on windows.
-describe Chef::Resource::Git do
-  include Chef::Mixin::ShellOut
+describe Seth::Resource::Git do
+  include Seth::Mixin::ShellOut
   let(:file_cache_path) { Dir.mktmpdir }
   # Some versions of git complains when the deploy directory is
   # already created. Here we intentionally don't create the deploy
@@ -32,14 +32,14 @@ describe Chef::Resource::Git do
   let(:deploy_directory) { File.join(base_dir_path, make_tmpname("git_base")) }
 
   let(:node) do
-    Chef::Node.new.tap do |n|
+    Seth::Node.new.tap do |n|
       n.name "rspec-test"
       n.consume_external_attrs(@ohai.data, {})
     end
   end
 
-  let(:event_dispatch) { Chef::EventDispatch::Dispatcher.new }
-  let(:run_context) { Chef::RunContext.new(node, {}, event_dispatch) }
+  let(:event_dispatch) { Seth::EventDispatch::Dispatcher.new }
+  let(:run_context) { Seth::RunContext.new(node, {}, event_dispatch) }
 
   # These tests use git's bundle feature, which is a way to export an entire
   # git repo (or subset of commits) as a single file.
@@ -73,15 +73,15 @@ E
   end
 
   before(:each) do
-    Chef::Log.level = :warn # silence git command live streams
-    @old_file_cache_path = Chef::Config[:file_cache_path]
+    Seth::Log.level = :warn # silence git command live streams
+    @old_file_cache_path = Seth::Config[:file_cache_path]
     shell_out!("git clone \"#{git_bundle_repo}\" example", :cwd => origin_repo_dir)
     File.open("#{origin_repo}/.git/config", "a+") {|f| f.print(git_user_config) }
-    Chef::Config[:file_cache_path] = file_cache_path
+    Seth::Config[:file_cache_path] = file_cache_path
   end
 
   after(:each) do
-    Chef::Config[:file_cache_path] = @old_file_cache_path
+    Seth::Config[:file_cache_path] = @old_file_cache_path
     FileUtils.remove_entry_secure deploy_directory if File.exist?(deploy_directory)
     FileUtils.remove_entry_secure file_cache_path
   end
@@ -104,7 +104,7 @@ E
     end
 
     it "clones a repository with a space in the path" do
-      Chef::Resource::Git.new(deploy_directory, run_context).tap do |r|
+      Seth::Resource::Git.new(deploy_directory, run_context).tap do |r|
         r.repository "#{path_with_spaces}/example-repo.gitbundle"
       end.run_action(:sync)
     end
@@ -112,7 +112,7 @@ E
 
   context "when deploying from an annotated tag" do
     let(:basic_git_resource) do
-      Chef::Resource::Git.new(deploy_directory, run_context).tap do |r|
+      Seth::Resource::Git.new(deploy_directory, run_context).tap do |r|
         r.repository origin_repo
         r.revision "v1.0.0"
       end
@@ -121,7 +121,7 @@ E
     # We create a copy of the basic_git_resource so that we can run
     # the resource again and verify that it doesn't update.
     let(:copy_git_resource) do
-      Chef::Resource::Git.new(deploy_directory, run_context).tap do |r|
+      Seth::Resource::Git.new(deploy_directory, run_context).tap do |r|
         r.repository origin_repo
         r.revision "v1.0.0"
       end
@@ -150,7 +150,7 @@ E
 
   context "when deploying from a SHA revision" do
     let(:basic_git_resource) do
-      Chef::Resource::Git.new(deploy_directory, run_context).tap do |r|
+      Seth::Resource::Git.new(deploy_directory, run_context).tap do |r|
         r.repository git_bundle_repo
       end
     end
@@ -158,7 +158,7 @@ E
     # We create a copy of the basic_git_resource so that we can run
     # the resource again and verify that it doesn't update.
     let(:copy_git_resource) do
-      Chef::Resource::Git.new(deploy_directory, run_context).tap do |r|
+      Seth::Resource::Git.new(deploy_directory, run_context).tap do |r|
         r.repository origin_repo
       end
     end
@@ -191,7 +191,7 @@ E
 
   context "when deploying from a revision named 'HEAD'" do
     let(:basic_git_resource) do
-      Chef::Resource::Git.new(deploy_directory, run_context).tap do |r|
+      Seth::Resource::Git.new(deploy_directory, run_context).tap do |r|
         r.repository origin_repo
         r.revision 'HEAD'
       end
@@ -206,7 +206,7 @@ E
 
   context "when deploying from the default revision" do
     let(:basic_git_resource) do
-      Chef::Resource::Git.new(deploy_directory, run_context).tap do |r|
+      Seth::Resource::Git.new(deploy_directory, run_context).tap do |r|
         r.repository origin_repo
         # use default
       end
@@ -226,14 +226,14 @@ E
     end
 
     let(:basic_git_resource) do
-      Chef::Resource::Git.new(deploy_directory, run_context).tap do |r|
+      Seth::Resource::Git.new(deploy_directory, run_context).tap do |r|
         r.repository origin_repo
         r.revision 'HEAD'
       end
     end
 
     let(:git_resource_default_rev) do
-      Chef::Resource::Git.new(deploy_directory, run_context).tap do |r|
+      Seth::Resource::Git.new(deploy_directory, run_context).tap do |r|
         r.repository origin_repo
         # use default of revision
       end

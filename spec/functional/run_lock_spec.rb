@@ -16,12 +16,12 @@
 # limitations under the License.
 
 require File.expand_path('../../spec_helper', __FILE__)
-require 'chef/client'
+require 'seth/client'
 
-describe Chef::RunLock do
+describe Seth::RunLock do
 
   # This behavior works on windows, but the tests use fork :(
-  describe "when locking the chef-client run", :unix_only => true do
+  describe "when locking the seth-client run", :unix_only => true do
 
     ##
     # Lockfile location and helpers
@@ -31,7 +31,7 @@ describe Chef::RunLock do
       "/tmp/#{Kernel.rand(Time.now.to_i + Process.pid)}"
     end
 
-    let(:lockfile){ "#{random_temp_root}/this/long/path/does/not/exist/chef-client-running.pid" }
+    let(:lockfile){ "#{random_temp_root}/this/long/path/does/not/exist/seth-client-running.pid" }
 
     # make sure to start with a clean slate.
     before(:each){ FileUtils.rm_r(random_temp_root) if File.exist?(random_temp_root) }
@@ -160,7 +160,7 @@ describe Chef::RunLock do
 
     ##
     # Run lock is the system under test
-    let!(:run_lock) { Chef::RunLock.new(lockfile) }
+    let!(:run_lock) { Seth::RunLock.new(lockfile) }
 
     it "creates the full path to the lockfile" do
       lambda { run_lock.acquire }.should_not raise_error
@@ -172,7 +172,7 @@ describe Chef::RunLock do
       (run_lock.runlock.fcntl(Fcntl::F_GETFD, 0) & Fcntl::FD_CLOEXEC).should == Fcntl::FD_CLOEXEC
     end
 
-    it "allows only one chef client run per lockfile" do
+    it "allows only one seth client run per lockfile" do
       # First process, gets the lock and keeps it.
       p1 = fork do
         run_lock.acquire

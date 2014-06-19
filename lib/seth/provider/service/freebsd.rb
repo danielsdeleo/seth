@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
-require 'chef/resource/service'
-require 'chef/provider/service/init'
-require 'chef/mixin/command'
+require 'seth/mixin/shell_out'
+require 'seth/resource/service'
+require 'seth/provider/service/init'
+require 'seth/mixin/command'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Freebsd < Chef::Provider::Service::Init
+      class Freebsd < Seth::Provider::Service::Init
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         def load_current_resource
-          @current_resource = Chef::Resource::Service.new(@new_resource.name)
+          @current_resource = Seth::Resource::Service.new(@new_resource.name)
           @current_resource.service_name(@new_resource.service_name)
           @rcd_script_found = true
           @enabled_state_found = false
@@ -42,7 +42,7 @@ class Chef
             @rcd_script_found = false
             return
           end
-          Chef::Log.debug("#{@current_resource} found at #{@init_command}")
+          Seth::Log.debug("#{@current_resource} found at #{@init_command}")
           determine_current_status!
           # Default to disabled if the service doesn't currently exist
           # at all
@@ -61,7 +61,7 @@ class Chef
             end
           end
           unless @current_resource.enabled
-            Chef::Log.debug("#{@new_resource.name} enable/disable state unknown")
+            Seth::Log.debug("#{@new_resource.name} enable/disable state unknown")
             @current_resource.enabled false
           end
 
@@ -72,7 +72,7 @@ class Chef
           shared_resource_requirements
           requirements.assert(:start, :enable, :reload, :restart) do |a|
             a.assertion { @rcd_script_found }
-            a.failure_message Chef::Exceptions::Service, "#{@new_resource}: unable to locate the rc.d script"
+            a.failure_message Seth::Exceptions::Service, "#{@new_resource}: unable to locate the rc.d script"
           end
 
           requirements.assert(:all_actions) do |a|
@@ -84,7 +84,7 @@ class Chef
 
           requirements.assert(:start, :enable, :reload, :restart) do |a|
             a.assertion { @rcd_script_found && service_enable_variable_name != nil }
-            a.failure_message Chef::Exceptions::Service, "Could not find the service name in #{@init_command} and rcvar"
+            a.failure_message Seth::Exceptions::Service, "Could not find the service name in #{@init_command} and rcvar"
             # No recovery in whyrun mode - the init file is present but not correct.
           end
         end
@@ -144,7 +144,7 @@ class Chef
             end
             # some scripts support multiple instances through symlinks such as openvpn.
             # We should get the service name from rcvar.
-            Chef::Log.debug("name=\"service\" not found at #{@init_command}. falling back to rcvar")
+            Seth::Log.debug("name=\"service\" not found at #{@init_command}. falling back to rcvar")
             sn = shell_out!("#{@init_command} rcvar").stdout[/(\w+_enable)=/, 1]
             return sn
           end

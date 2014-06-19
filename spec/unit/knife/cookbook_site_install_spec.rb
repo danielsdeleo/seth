@@ -18,17 +18,17 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_helper"))
 
-describe Chef::Knife::CookbookSiteInstall do
+describe Seth::Knife::CookbookSiteInstall do
   before(:each) do
-    require 'chef/knife/core/cookbook_scm_repo'
+    require 'seth/knife/core/cookbook_scm_repo'
     @stdout = StringIO.new
-    @knife = Chef::Knife::CookbookSiteInstall.new
+    @knife = Seth::Knife::CookbookSiteInstall.new
     @knife.ui.stub(:stdout).and_return(@stdout)
     @knife.config = {}
-    if Chef::Platform.windows?
-      @install_path = 'C:/tmp/chef'
+    if Seth::Platform.windows?
+      @install_path = 'C:/tmp/seth'
     else
-      @install_path = '/var/tmp/chef'
+      @install_path = '/var/tmp/seth'
     end
     @knife.config[:cookbook_path] = [ @install_path ]
 
@@ -57,7 +57,7 @@ describe Chef::Knife::CookbookSiteInstall do
     @repo = double(:sanity_check => true, :reset_to_default_state => true,
                  :prepare_to_import => true, :finalize_updates_to => true,
                  :merge_updates_from => true)
-    Chef::Knife::CookbookSCMRepo.stub(:new).and_return(@repo)
+    Seth::Knife::CookbookSCMRepo.stub(:new).and_return(@repo)
   end
 
 

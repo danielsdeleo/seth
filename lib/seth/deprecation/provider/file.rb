@@ -17,20 +17,20 @@
 #
 
 
-class Chef
+class Seth
   module Deprecation
     module Provider
 
       # == Deprecation::Provider::File
       # This module contains the deprecated functions of
-      # Chef::Provider::File. These functions are refactored to different
-      # components. They are frozen and will be removed in Chef 12.
+      # Seth::Provider::File. These functions are refactored to different
+      # components. They are frozen and will be removed in Seth 12.
       #
       module File
 
         def diff_current_from_content(new_content)
           result = nil
-          Tempfile.open("chef-diff") do |file|
+          Tempfile.open("seth-diff") do |file|
             file.write new_content
             file.close
             result = diff_current file.path
@@ -41,7 +41,7 @@ class Chef
         def is_binary?(path)
           ::File.open(path) do |file|
 
-            buff = file.read(Chef::Config[:diff_filesize_threshold])
+            buff = file.read(Seth::Config[:diff_filesize_threshold])
             buff = "" if buff.nil?
             return buff !~ /^[\r[:print:]]*$/
           end
@@ -50,7 +50,7 @@ class Chef
         def diff_current(temp_path)
           suppress_resource_reporting = false
 
-          return [ "(diff output suppressed by config)" ] if Chef::Config[:diff_disabled]
+          return [ "(diff output suppressed by config)" ] if Seth::Config[:diff_disabled]
           return [ "(no temp file with new content, diff output suppressed)" ] unless ::File.exists?(temp_path)  # should never happen?
 
           # solaris does not support diff -N, so create tempfile to diff against if we are creating a new file
@@ -58,12 +58,12 @@ class Chef
                           @current_resource.path
                         else
                           suppress_resource_reporting = true  # suppress big diffs going to resource reporting service
-                          tempfile = Tempfile.new('chef-tempfile')
+                          tempfile = Tempfile.new('seth-tempfile')
                           tempfile.path
                         end
 
-          diff_filesize_threshold = Chef::Config[:diff_filesize_threshold]
-          diff_output_threshold = Chef::Config[:diff_output_threshold]
+          diff_filesize_threshold = Seth::Config[:diff_filesize_threshold]
+          diff_output_threshold = Seth::Config[:diff_output_threshold]
 
           if ::File.size(target_path) > diff_filesize_threshold || ::File.size(temp_path) > diff_filesize_threshold
             return [ "(file sizes exceed #{diff_filesize_threshold} bytes, diff output suppressed)" ]
@@ -102,7 +102,7 @@ class Chef
         end
 
         def setup_acl
-          return if Chef::Platform.windows?
+          return if Seth::Platform.windows?
           acl_scanner = ScanAccessControl.new(@new_resource, @current_resource)
           acl_scanner.set_all!
         end
@@ -119,7 +119,7 @@ class Chef
             converge_by(description) do
               backup @new_resource.path if ::File.exists?(@new_resource.path)
               ::File.open(@new_resource.path, "w") {|f| f.write @new_resource.content }
-              Chef::Log.info("#{@new_resource} contents updated")
+              Seth::Log.info("#{@new_resource} contents updated")
             end
           end
         end
@@ -129,7 +129,7 @@ class Chef
             @new_resource.checksum(checksum(path))
           end
 
-          if Chef::Platform.windows?
+          if Seth::Platform.windows?
             # TODO: To work around CHEF-3554, add support for Windows
             # equivalent, or implicit resource reporting won't work for
             # Windows.
@@ -154,9 +154,9 @@ class Chef
           Tempfile.open(::File.basename(@new_resource.name)) do |tempfile|
             yield tempfile
 
-            temp_res = Chef::Resource::CookbookFile.new(@new_resource.name)
+            temp_res = Seth::Resource::CookbookFile.new(@new_resource.name)
             temp_res.path(tempfile.path)
-            ac = Chef::FileAccessControl.new(temp_res, @new_resource, self)
+            ac = Seth::FileAccessControl.new(temp_res, @new_resource, self)
             ac.set_all!
             FileUtils.mv(tempfile.path, @new_resource.path)
           end
@@ -167,25 +167,25 @@ class Chef
           if @new_resource.backup != false && @new_resource.backup > 0 && ::File.exist?(file)
             time = Time.now
             savetime = time.strftime("%Y%m%d%H%M%S")
-            backup_filename = "#{@new_resource.path}.chef-#{savetime}"
+            backup_filename = "#{@new_resource.path}.seth-#{savetime}"
             backup_filename = backup_filename.sub(/^([A-Za-z]:)/, "") #strip drive letter on Windows
             # if :file_backup_path is nil, we fallback to the old behavior of
             # keeping the backup in the same directory. We also need to to_s it
             # so we don't get a type error around implicit to_str conversions.
-            prefix = Chef::Config[:file_backup_path].to_s
+            prefix = Seth::Config[:file_backup_path].to_s
             backup_path = ::File.join(prefix, backup_filename)
-            FileUtils.mkdir_p(::File.dirname(backup_path)) if Chef::Config[:file_backup_path]
+            FileUtils.mkdir_p(::File.dirname(backup_path)) if Seth::Config[:file_backup_path]
             FileUtils.cp(file, backup_path, :preserve => true)
-            Chef::Log.info("#{@new_resource} backed up to #{backup_path}")
+            Seth::Log.info("#{@new_resource} backed up to #{backup_path}")
 
             # Clean up after the number of backups
             slice_number = @new_resource.backup
-            backup_files = Dir[::File.join(prefix, ".#{@new_resource.path}.chef-*")].sort { |a,b| b <=> a }
+            backup_files = Dir[::File.join(prefix, ".#{@new_resource.path}.seth-*")].sort { |a,b| b <=> a }
             if backup_files.length >= @new_resource.backup
               remainder = backup_files.slice(slice_number..-1)
               remainder.each do |backup_to_delete|
                 FileUtils.rm(backup_to_delete)
-                Chef::Log.info("#{@new_resource} removed backup at #{backup_to_delete}")
+                Seth::Log.info("#{@new_resource} removed backup at #{backup_to_delete}")
               end
             end
           end

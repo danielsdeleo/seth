@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::ClientEdit do
+describe Seth::Knife::ClientEdit do
   before(:each) do
-    @knife = Chef::Knife::ClientEdit.new
+    @knife = Seth::Knife::ClientEdit.new
     @knife.name_args = [ 'adam' ]
   end
 
   describe 'run' do
     it 'should edit the client' do
-      @knife.should_receive(:edit_object).with(Chef::ApiClient, 'adam')
+      @knife.should_receive(:edit_object).with(Seth::ApiClient, 'adam')
       @knife.run
     end
 

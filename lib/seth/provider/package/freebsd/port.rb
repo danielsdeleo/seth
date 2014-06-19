@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package/freebsd/base'
+require 'seth/provider/package/freebsd/base'
 
-class Chef
+class Seth
   class Provider
     class Package
       module Freebsd
@@ -46,7 +46,7 @@ class Chef
             if supports_ports?
               makefile_variable_value("PORTVERSION", port_dir)
             else
-              raise Chef::Exceptions::Package, "Ports collection could not be found"
+              raise Seth::Exceptions::Package, "Ports collection could not be found"
             end
           end
 

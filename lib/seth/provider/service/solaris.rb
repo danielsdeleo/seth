@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
-require 'chef/provider/service'
-require 'chef/resource/service'
-require 'chef/mixin/command'
+require 'seth/mixin/shell_out'
+require 'seth/provider/service'
+require 'seth/resource/service'
+require 'seth/mixin/command'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Solaris < Chef::Provider::Service
-        include Chef::Mixin::ShellOut
+      class Solaris < Seth::Provider::Service
+        include Seth::Mixin::ShellOut
         attr_reader :maintenance
 
         def initialize(new_resource, run_context=nil)
@@ -37,10 +37,10 @@ class Chef
 
 
         def load_current_resource
-          @current_resource = Chef::Resource::Service.new(@new_resource.name)
+          @current_resource = Seth::Resource::Service.new(@new_resource.name)
           @current_resource.service_name(@new_resource.service_name)
           unless ::File.exists? "/bin/svcs"
-            raise Chef::Exceptions::Service, "/bin/svcs does not exist!"
+            raise Seth::Exceptions::Service, "/bin/svcs does not exist!"
           end
           @status = service_status.enabled
           @current_resource

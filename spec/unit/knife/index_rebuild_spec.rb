@@ -18,10 +18,10 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::IndexRebuild do
+describe Seth::Knife::IndexRebuild do
 
-  let(:knife){Chef::Knife::IndexRebuild.new}
-  let(:rest_client){double(Chef::REST)}
+  let(:knife){Seth::Knife::IndexRebuild.new}
+  let(:rest_client){double(Seth::REST)}
 
   let(:stub_rest!) do
     knife.should_receive(:rest).and_return(rest_client)
@@ -48,35 +48,35 @@ describe Chef::Knife::IndexRebuild do
       rest_client.stub(:get_rest).and_raise(http_server_exception)
     end
 
-    context "against a Chef 11 server" do
-      let(:api_header_value){"flavor=osc;version=11.0.0;erchef=1.2.3"}
+    context "against a Seth 11 server" do
+      let(:api_header_value){"flavor=osc;version=11.0.0;erseth=1.2.3"}
       it "retrieves API information" do
-        knife.grab_api_info.should == {"flavor" => "osc", "version" => "11.0.0", "erchef" => "1.2.3"}
+        knife.grab_api_info.should == {"flavor" => "osc", "version" => "11.0.0", "erseth" => "1.2.3"}
       end
-    end # Chef 11
+    end # Seth 11
 
-    context "against a Chef 10 server" do
+    context "against a Seth 10 server" do
       let(:api_header_value){nil}
       it "finds no API information" do
         knife.grab_api_info.should == {}
       end
-    end # Chef 10
+    end # Seth 10
   end # grab_api_info
 
   context "#unsupported_version?" do
-    context "with Chef 11 API metadata" do
+    context "with Seth 11 API metadata" do
       it "is unsupported" do
-        knife.unsupported_version?({"version" => "11.0.0", "flavor" => "osc", "erchef" => "1.2.3"}).should be_true
+        knife.unsupported_version?({"version" => "11.0.0", "flavor" => "osc", "erseth" => "1.2.3"}).should be_true
       end
 
       it "only truly relies on the version being non-nil" do
-        knife.unsupported_version?({"version" => "1", "flavor" => "osc", "erchef" => "1.2.3"}).should be_true
+        knife.unsupported_version?({"version" => "1", "flavor" => "osc", "erseth" => "1.2.3"}).should be_true
       end
     end
 
-    context "with Chef 10 API metadata" do
+    context "with Seth 10 API metadata" do
       it "is supported" do
-        # Chef 10 will have no metadata
+        # Seth 10 will have no metadata
         knife.unsupported_version?({}).should be_false
       end
     end
@@ -89,11 +89,11 @@ describe Chef::Knife::IndexRebuild do
       server_specific_stubs!
     end
 
-    context "against a Chef 11 server" do
+    context "against a Seth 11 server" do
       let(:api_info) do
         {"flavor" => "osc",
           "version" => "11.0.0",
-          "erchef" => "1.2.3"
+          "erseth" => "1.2.3"
         }
       end
       let(:server_specific_stubs!) do
@@ -106,7 +106,7 @@ describe Chef::Knife::IndexRebuild do
       end
     end
 
-    context "against a Chef 10 server" do
+    context "against a Seth 10 server" do
       let(:api_info){ {} }
       let(:server_specific_stubs!) do
         stub_rest!

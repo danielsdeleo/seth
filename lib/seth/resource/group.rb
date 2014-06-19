@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
-    class Group < Chef::Resource
+    class Group < Seth::Resource
 
       identity_attr :group_name
 

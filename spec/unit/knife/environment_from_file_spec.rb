@@ -19,16 +19,16 @@
 
 require 'spec_helper'
 
-Chef::Knife::EnvironmentFromFile.load_deps
+Seth::Knife::EnvironmentFromFile.load_deps
 
-describe Chef::Knife::EnvironmentFromFile do
+describe Seth::Knife::EnvironmentFromFile do
   before(:each) do
-    @knife = Chef::Knife::EnvironmentFromFile.new
+    @knife = Seth::Knife::EnvironmentFromFile.new
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
     @knife.name_args = [ "spec.rb" ]
 
-    @environment = Chef::Environment.new
+    @environment = Seth::Environment.new
     @environment.name("spec")
     @environment.description("runs the unit tests")
     @environment.cookbook_versions({"apt" => "= 1.2.3"})

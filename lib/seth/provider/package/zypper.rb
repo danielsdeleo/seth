@@ -19,45 +19,45 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/resource/package'
-require 'chef/mixin/shell_out'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/resource/package'
+require 'seth/mixin/shell_out'
 require 'singleton'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Zypper < Chef::Provider::Package
+      class Zypper < Seth::Provider::Package
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         def load_current_resource
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
 
           is_installed=false
           is_out_of_date=false
           version=''
           oud_version=''
-          Chef::Log.debug("#{@new_resource} checking zypper")
+          Seth::Log.debug("#{@new_resource} checking zypper")
           status = popen4("zypper --non-interactive info #{@new_resource.package_name}") do |pid, stdin, stdout, stderr|
             stdout.each do |line|
               case line
               when /^Version: (.+)$/
                 version = $1
-                Chef::Log.debug("#{@new_resource} version #{$1}")
+                Seth::Log.debug("#{@new_resource} version #{$1}")
               when /^Installed: Yes$/
                 is_installed=true
-                Chef::Log.debug("#{@new_resource} is installed")
+                Seth::Log.debug("#{@new_resource} is installed")
 
               when /^Installed: No$/
                 is_installed=false
-                Chef::Log.debug("#{@new_resource} is not installed")
+                Seth::Log.debug("#{@new_resource} is not installed")
               when /^Status: out-of-date \(version (.+) installed\)$/
                 is_out_of_date=true
                 oud_version=$1
-                Chef::Log.debug("#{@new_resource} out of date version #{$1}")
+                Seth::Log.debug("#{@new_resource} out of date version #{$1}")
               end
             end
           end
@@ -78,7 +78,7 @@ class Chef
           end
 
           unless status.exitstatus == 0
-            raise Chef::Exceptions::Package, "zypper failed - #{status.inspect}!"
+            raise Seth::Exceptions::Package, "zypper failed - #{status.inspect}!"
           end
 
           @current_resource
@@ -116,13 +116,13 @@ class Chef
         end
 
         def gpg_checks()
-          case Chef::Config[:zypper_check_gpg]
+          case Seth::Config[:zypper_check_gpg]
           when true
             ""
           when false
             " --no-gpg-checks"
           when nil
-            Chef::Log.warn("Chef::Config[:zypper_check_gpg] was not set. " +
+            Seth::Log.warn("Chef::Config[:zypper_check_gpg] was not set. " +
               "All packages will be installed without gpg signature checks. " +
               "This is a security hazard.")
             " --no-gpg-checks"

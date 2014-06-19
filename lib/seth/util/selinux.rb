@@ -20,9 +20,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Util
     #
     # IMPORTANT: We assume that selinux utilities are installed on an
@@ -31,10 +31,10 @@ class Chef
     #
     module Selinux
 
-      include Chef::Mixin::ShellOut
+      include Seth::Mixin::ShellOut
 
       # We want to initialize below variables once during a
-      # chef-client run therefore they are class variables.
+      # seth-client run therefore they are class variables.
       @@selinux_enabled = nil
       @@restorecon_path = nil
       @@selinuxenabled_path = nil
@@ -48,10 +48,10 @@ class Chef
         if restorecon_path
           restorecon_command = recursive ? "#{restorecon_path} -R -r" : "#{restorecon_path} -R"
           restorecon_command += " \"#{file_path}\""
-          Chef::Log.debug("Restoring selinux security content with #{restorecon_command}")
+          Seth::Log.debug("Restoring selinux security content with #{restorecon_command}")
           shell_out!(restorecon_command)
         else
-          Chef::Log.warn "Can not find 'restorecon' on the system. Skipping selinux security context restore."
+          Seth::Log.warn "Can not find 'restorecon' on the system. Skipping selinux security context restore."
         end
       end
 

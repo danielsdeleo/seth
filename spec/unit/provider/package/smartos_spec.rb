@@ -20,18 +20,18 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "spec_helper"))
 require 'ostruct'
 
-describe Chef::Provider::Package::SmartOS, "load_current_resource" do
+describe Seth::Provider::Package::SmartOS, "load_current_resource" do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource     = Chef::Resource::Package.new("varnish")
-    @current_resource = Chef::Resource::Package.new("varnish")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource     = Seth::Resource::Package.new("varnish")
+    @current_resource = Seth::Resource::Package.new("varnish")
 
 
 	  @status = double("Status", :exitstatus => 0)
-		@provider = Chef::Provider::Package::SmartOS.new(@new_resource, @run_context)
-		Chef::Resource::Package.stub(:new).and_return(@current_resource)
+		@provider = Seth::Provider::Package::SmartOS.new(@new_resource, @run_context)
+		Seth::Resource::Package.stub(:new).and_return(@current_resource)
 		@stdin = StringIO.new
 		@stdout = "varnish-2.1.5nb2\n"
 		@stderr = StringIO.new
@@ -43,7 +43,7 @@ describe Chef::Provider::Package::SmartOS, "load_current_resource" do
 
     it "should create a current resource with the name of the new_resource" do
 			@provider.should_receive(:shell_out!).and_return(@shell_out)
-			Chef::Resource::Package.should_receive(:new).and_return(@current_resource)
+			Seth::Resource::Package.should_receive(:new).and_return(@current_resource)
 			@provider.load_current_resource
     end
 

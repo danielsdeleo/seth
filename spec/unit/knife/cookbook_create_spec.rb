@@ -19,10 +19,10 @@
 require 'spec_helper'
 require 'tmpdir'
 
-describe Chef::Knife::CookbookCreate do
+describe Seth::Knife::CookbookCreate do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::CookbookCreate.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::CookbookCreate.new
     @knife.config = {}
     @knife.name_args = ["foobar"]
     @stdout = StringIO.new
@@ -247,7 +247,7 @@ describe Chef::Knife::CookbookCreate do
 
     context "when the cookbooks path is set to nil" do
       before do
-        Chef::Config[:cookbook_path] = nil
+        Seth::Config[:cookbook_path] = nil
       end
 
       it "should throw an argument error" do

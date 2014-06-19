@@ -17,15 +17,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class DataBagShow < Knife
 
       deps do
-        require 'chef/data_bag'
-        require 'chef/encrypted_data_bag_item'
+        require 'seth/data_bag'
+        require 'seth/encrypted_data_bag_item'
       end
 
       banner "knife data bag show BAG [ITEM] (options)"
@@ -35,18 +35,18 @@ class Chef
         :short => "-s SECRET",
         :long  => "--secret ",
         :description => "The secret key to use to decrypt data bag item values",
-        :proc => Proc.new { |s| Chef::Config[:knife][:secret] = s }
+        :proc => Proc.new { |s| Seth::Config[:knife][:secret] = s }
 
       option :secret_file,
         :long => "--secret-file SECRET_FILE",
         :description => "A file containing the secret key to use to decrypt data bag item values",
-        :proc => Proc.new { |sf| Chef::Config[:knife][:secret_file] = sf }
+        :proc => Proc.new { |sf| Seth::Config[:knife][:secret_file] = sf }
 
       def read_secret
         if config[:secret]
           config[:secret]
         else
-          Chef::EncryptedDataBagItem.load_secret(config[:secret_file])
+          Seth::EncryptedDataBagItem.load_secret(config[:secret_file])
         end
       end
 
@@ -62,15 +62,15 @@ class Chef
         display = case @name_args.length
         when 2
           if use_encryption
-            raw = Chef::EncryptedDataBagItem.load(@name_args[0],
+            raw = Seth::EncryptedDataBagItem.load(@name_args[0],
                                                   @name_args[1],
                                                   read_secret)
             format_for_display(raw.to_hash)
           else
-            format_for_display(Chef::DataBagItem.load(@name_args[0], @name_args[1]).raw_data)
+            format_for_display(Seth::DataBagItem.load(@name_args[0], @name_args[1]).raw_data)
           end
         when 1
-          format_list_for_display(Chef::DataBag.load(@name_args[0]))
+          format_list_for_display(Seth::DataBag.load(@name_args[0]))
         else
           stdout.puts opt_parser
           exit(1)

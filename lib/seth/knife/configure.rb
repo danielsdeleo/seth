@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class Configure < Knife
-      attr_reader :chef_server, :new_client_name, :admin_client_name, :admin_client_key
-      attr_reader :chef_repo, :new_client_key, :validation_client_name, :validation_key
+      attr_reader :seth_server, :new_client_name, :admin_client_name, :admin_client_key
+      attr_reader :seth_repo, :new_client_key, :validation_client_name, :validation_key
 
       deps do
         require 'ohai'
-        Chef::Knife::ClientCreate.load_deps
-        Chef::Knife::UserCreate.load_deps
+        Seth::Knife::ClientCreate.load_deps
+        Seth::Knife::UserCreate.load_deps
       end
 
       banner "knife configure (options)"
@@ -35,7 +35,7 @@ class Chef
       option :repository,
         :short => "-r REPO",
         :long => "--repository REPO",
-        :description => "The path to the chef-repo"
+        :description => "The path to the seth-repo"
 
       option :initial,
         :short => "-i",
@@ -53,23 +53,23 @@ class Chef
 
       option :validation_client_name,
         :long => "--validation-client-name NAME",
-        :description => "The name of the validation client, typically a client named chef-validator"
+        :description => "The name of the validation client, typically a client named seth-validator"
 
       option :validation_key,
         :long => "--validation-key PATH",
         :description => "The path to the validation key used by the client, typically a file named validation.pem"
 
-      def configure_chef
+      def configure_seth
         # We are just faking out the system so that you can do this without a key specified
-        Chef::Config[:node_name] = 'woot'
+        Seth::Config[:node_name] = 'woot'
         super
-        Chef::Config[:node_name] = nil
+        Seth::Config[:node_name] = nil
       end
 
       def run
         ask_user_for_config_path
 
-        FileUtils.mkdir_p(chef_config_path)
+        FileUtils.mkdir_p(seth_config_path)
 
         ask_user_for_config
 
@@ -81,20 +81,20 @@ node_name                '#{new_client_name}'
 client_key               '#{new_client_key}'
 validation_client_name   '#{validation_client_name}'
 validation_key           '#{validation_key}'
-chef_server_url          '#{chef_server}'
-syntax_check_cache_path  '#{File.join(chef_config_path, "syntax_check_cache")}'
+seth_server_url          '#{chef_server}'
+syntax_check_cache_path  '#{File.join(seth_config_path, "syntax_check_cache")}'
 EOH
-          unless chef_repo.empty?
-            f.puts "cookbook_path [ '#{chef_repo}/cookbooks' ]"
+          unless seth_repo.empty?
+            f.puts "cookbook_path [ '#{seth_repo}/cookbooks' ]"
           end
         end
 
         if config[:initial]
           ui.msg("Creating initial API user...")
-          Chef::Config[:chef_server_url] = chef_server
-          Chef::Config[:node_name] = admin_client_name
-          Chef::Config[:client_key] = admin_client_key
-          user_create = Chef::Knife::UserCreate.new
+          Seth::Config[:seth_server_url] = chef_server
+          Seth::Config[:node_name] = admin_client_name
+          Seth::Config[:client_key] = admin_client_key
+          user_create = Seth::Knife::UserCreate.new
           user_create.name_args = [ new_client_name ]
           user_create.config[:user_password] = config[:user_password] ||
             ui.ask("Please enter a password for the new user: ") {|q| q.echo = false}
@@ -123,7 +123,7 @@ EOH
       end
 
       def ask_user_for_config_path
-        config[:config_file] ||= ask_question("Where should I put the config file? ", :default => "#{Chef::Config[:user_home]}/.chef/knife.rb")
+        config[:config_file] ||= ask_question("Where should I put the config file? ", :default => "#{Seth::Config[:user_home]}/.seth/knife.rb")
         # have to use expand path to expand the tilde character to the user's home
         config[:config_file] = File.expand_path(config[:config_file])
         if File.exists?(config[:config_file])
@@ -133,21 +133,21 @@ EOH
 
       def ask_user_for_config
         server_name = guess_servername
-        @chef_server            = config[:chef_server_url] || ask_question("Please enter the chef server URL: ", :default => "https://#{server_name}:443")
+        @seth_server            = config[:chef_server_url] || ask_question("Please enter the chef server URL: ", :default => "https://#{server_name}:443")
         if config[:initial]
           @new_client_name        = config[:node_name] || ask_question("Please enter a name for the new user: ", :default => Etc.getlogin)
           @admin_client_name      = config[:admin_client_name] || ask_question("Please enter the existing admin name: ", :default => 'admin')
-          @admin_client_key       = config[:admin_client_key] || ask_question("Please enter the location of the existing admin's private key: ", :default => '/etc/chef-server/admin.pem')
+          @admin_client_key       = config[:admin_client_key] || ask_question("Please enter the location of the existing admin's private key: ", :default => '/etc/seth-server/admin.pem')
           @admin_client_key       = File.expand_path(@admin_client_key)
         else
           @new_client_name        = config[:node_name] || ask_question("Please enter an existing username or clientname for the API: ", :default => Etc.getlogin)
         end
-        @validation_client_name = config[:validation_client_name] || ask_question("Please enter the validation clientname: ", :default => 'chef-validator')
-        @validation_key         = config[:validation_key] || ask_question("Please enter the location of the validation key: ", :default => '/etc/chef-server/chef-validator.pem')
+        @validation_client_name = config[:validation_client_name] || ask_question("Please enter the validation clientname: ", :default => 'seth-validator')
+        @validation_key         = config[:validation_key] || ask_question("Please enter the location of the validation key: ", :default => '/etc/seth-server/chef-validator.pem')
         @validation_key         = File.expand_path(@validation_key)
-        @chef_repo              = config[:repository] || ask_question("Please enter the path to a chef repository (or leave blank): ")
+        @seth_repo              = config[:repository] || ask_question("Please enter the path to a chef repository (or leave blank): ")
 
-        @new_client_key = config[:client_key] || File.join(chef_config_path, "#{@new_client_name}.pem")
+        @new_client_key = config[:client_key] || File.join(seth_config_path, "#{@new_client_name}.pem")
         @new_client_key = File.expand_path(@new_client_key)
       end
 
@@ -163,7 +163,7 @@ EOH
         config[:config_file]
       end
 
-      def chef_config_path
+      def seth_config_path
         File.dirname(config_file)
       end
     end

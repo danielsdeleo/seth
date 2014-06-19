@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/log'
-require 'chef/mixin/command'
-require 'chef/provider'
+require 'seth/log'
+require 'seth/mixin/command'
+require 'seth/provider'
 
-class Chef
+class Seth
   class Provider
-    class Cron < Chef::Provider
-      include Chef::Mixin::Command
+    class Cron < Seth::Provider
+      include Seth::Mixin::Command
 
       SPECIAL_TIME_VALUES = [:reboot, :yearly, :annually, :monthly, :weekly, :daily, :midnight, :hourly]
       CRON_ATTRIBUTES = [:minute, :hour, :day, :month, :weekday, :time, :command, :mailto, :path, :shell, :home, :environment]
@@ -46,15 +46,15 @@ class Chef
 
       def load_current_resource
         crontab_lines = []
-        @current_resource = Chef::Resource::Cron.new(@new_resource.name)
+        @current_resource = Seth::Resource::Cron.new(@new_resource.name)
         @current_resource.user(@new_resource.user)
         @cron_exists = false
         if crontab = read_crontab
           cron_found = false
           crontab.each_line do |line|
             case line.chomp
-            when "# Chef Name: #{@new_resource.name}"
-              Chef::Log.debug("Found cron '#{@new_resource.name}'")
+            when "# Seth Name: #{@new_resource.name}"
+              Seth::Log.debug("Found cron '#{@new_resource.name}'")
               cron_found = true
               @cron_exists = true
               next
@@ -79,13 +79,13 @@ class Chef
               end
               next
             else
-              cron_found=false # We've got a Chef comment with no following crontab line
+              cron_found=false # We've got a Seth comment with no following crontab line
               next
             end
           end
-          Chef::Log.debug("Cron '#{@new_resource.name}' not found") unless @cron_exists
+          Seth::Log.debug("Cron '#{@new_resource.name}' not found") unless @cron_exists
         else
-          Chef::Log.debug("Cron empty for '#{@new_resource.user}'")
+          Seth::Log.debug("Cron empty for '#{@new_resource.user}'")
           @cron_empty = true
         end
 
@@ -107,12 +107,12 @@ class Chef
 
         if @cron_exists
           unless cron_different?
-            Chef::Log.debug("Skipping existing cron entry '#{@new_resource.name}'")
+            Seth::Log.debug("Skipping existing cron entry '#{@new_resource.name}'")
             return
           end
           read_crontab.each_line do |line|
             case line.chomp
-            when "# Chef Name: #{@new_resource.name}"
+            when "# Seth Name: #{@new_resource.name}"
               cron_found = true
               next
             when ENV_PATTERN
@@ -125,7 +125,7 @@ class Chef
                 next
               end
             else
-              if cron_found # We've got a Chef comment with no following crontab line
+              if cron_found # We've got a Seth comment with no following crontab line
                 crontab << newcron
                 cron_found = false
               end
@@ -133,12 +133,12 @@ class Chef
             crontab << line
           end
 
-          # Handle edge case where the Chef comment is the last line in the current crontab
+          # Handle edge case where the Seth comment is the last line in the current crontab
           crontab << newcron if cron_found
 
           converge_by("update crontab entry for #{@new_resource}") do
             write_crontab crontab
-            Chef::Log.info("#{@new_resource} updated crontab entry")
+            Seth::Log.info("#{@new_resource} updated crontab entry")
           end
 
         else
@@ -147,7 +147,7 @@ class Chef
 
           converge_by("add crontab entry for #{@new_resource}") do
             write_crontab crontab
-            Chef::Log.info("#{@new_resource} added crontab entry")
+            Seth::Log.info("#{@new_resource} added crontab entry")
           end
         end
       end
@@ -158,7 +158,7 @@ class Chef
           cron_found = false
           read_crontab.each_line do |line|
             case line.chomp
-            when "# Chef Name: #{@new_resource.name}"
+            when "# Seth Name: #{@new_resource.name}"
               cron_found = true
               next
             when ENV_PATTERN
@@ -169,7 +169,7 @@ class Chef
                 next
               end
             else
-              # We've got a Chef comment with no following crontab line
+              # We've got a Seth comment with no following crontab line
               cron_found = false
             end
             crontab << line
@@ -178,7 +178,7 @@ class Chef
             "save unmodified crontab"
           converge_by(description) do
             write_crontab crontab
-            Chef::Log.info("#{@new_resource} deleted crontab entry")
+            Seth::Log.info("#{@new_resource} deleted crontab entry")
           end
         end
       end
@@ -199,7 +199,7 @@ class Chef
           crontab = stdout.read
         end
         if status.exitstatus > 1
-          raise Chef::Exceptions::Cron, "Error determining state of #{@new_resource.name}, exit: #{status.exitstatus}"
+          raise Seth::Exceptions::Cron, "Error determining state of #{@new_resource.name}, exit: #{status.exitstatus}"
         end
         crontab
       end
@@ -212,17 +212,17 @@ class Chef
           rescue Errno::EPIPE => e
             # popen4 could yield while child has already died.
             write_exception = true
-            Chef::Log.debug("#{e.message}")
+            Seth::Log.debug("#{e.message}")
           end
         end
         if status.exitstatus > 0 || write_exception
-          raise Chef::Exceptions::Cron, "Error updating state of #{@new_resource.name}, exit: #{status.exitstatus}"
+          raise Seth::Exceptions::Cron, "Error updating state of #{@new_resource.name}, exit: #{status.exitstatus}"
         end
       end
 
       def get_crontab_entry
         newcron = ""
-        newcron << "# Chef Name: #{new_resource.name}\n"
+        newcron << "# Seth Name: #{new_resource.name}\n"
         [ :mailto, :path, :shell, :home ].each do |v|
           newcron << "#{v.to_s.upcase}=#{@new_resource.send(v)}\n" if @new_resource.send(v)
         end

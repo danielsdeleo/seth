@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
-    class Cat < Chef::Resource
+    class Cat < Seth::Resource
 
       attr_accessor :action
 

@@ -18,11 +18,11 @@
 
 require 'spec_helper'
 
-describe Chef::RunList::RunListExpansion do
+describe Seth::RunList::RunListExpansion do
   before do
-    @run_list = Chef::RunList.new
+    @run_list = Seth::RunList.new
     @run_list << 'recipe[lobster]' << 'role[rage]' << 'recipe[fist]'
-    @expansion = Chef::RunList::RunListExpansion.new("_default", @run_list.run_list_items)
+    @expansion = Seth::RunList::RunListExpansion.new("_default", @run_list.run_list_items)
   end
 
   describe "before expanding the run list" do
@@ -49,11 +49,11 @@ describe Chef::RunList::RunListExpansion do
 
   describe "after applying a role with environment-specific run lists" do
     before do
-      @rage_role = Chef::Role.new.tap do |r|
+      @rage_role = Seth::Role.new.tap do |r|
         r.name("rage")
         r.env_run_lists('_default' => [], "prod" => ["recipe[prod-only]"])
       end
-      @expansion = Chef::RunList::RunListExpansion.new("prod", @run_list.run_list_items)
+      @expansion = Seth::RunList::RunListExpansion.new("prod", @run_list.run_list_items)
       @expansion.should_receive(:fetch_role).and_return(@rage_role)
       @expansion.expand
     end
@@ -66,7 +66,7 @@ describe Chef::RunList::RunListExpansion do
 
   describe "after applying a role" do
     before do
-      @expansion.stub(:fetch_role).and_return(Chef::Role.new)
+      @expansion.stub(:fetch_role).and_return(Seth::Role.new)
       @expansion.inflate_role('rage', "role[base]")
     end
 
@@ -81,11 +81,11 @@ describe Chef::RunList::RunListExpansion do
 
   describe "after expanding a run list" do
     before do
-      @first_role = Chef::Role.new
+      @first_role = Seth::Role.new
       @first_role.run_list('role[mollusk]')
       @first_role.default_attributes({'foo' => 'bar'})
       @first_role.override_attributes({'baz' => 'qux'})
-      @second_role = Chef::Role.new
+      @second_role = Seth::Role.new
       @second_role.run_list('recipe[crabrevenge]')
       @second_role.default_attributes({'foo' => 'boo'})
       @second_role.override_attributes({'baz' => 'bux'})

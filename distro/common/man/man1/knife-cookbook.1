@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-COOKBOOK" "1" "Chef 11.12.0" "" "knife cookbook"
+.TH "KNIFE-COOKBOOK" "1" "Seth 11.12.0" "" "knife cookbook"
 .SH NAME
 knife-cookbook \- The man page for the knife cookbook subcommand.
 .
@@ -40,7 +40,7 @@ Definitions that allow the creation of reusable collections of resources
 .IP \(bu 2
 File distributions
 .IP \(bu 2
-Libraries that extend the chef\-client and/or provide helpers to Ruby code
+Libraries that extend the seth\-client and/or provide helpers to Ruby code
 .IP \(bu 2
 Recipes that specify which resources to manage and the order in which those resources will be applied
 .IP \(bu 2
@@ -53,14 +53,14 @@ Versions
 Metadata about recipes (including dependencies), version constraints, supported platforms, and so on
 .UNINDENT
 .sp
-The \fBknife cookbook\fP subcommand is used to interact with cookbooks that are located on the Chef server or the local chef\-repo\&.
+The \fBknife cookbook\fP subcommand is used to interact with cookbooks that are located on the Seth server or the local seth\-repo\&.
 .SH COMMON OPTIONS
 .sp
 The following options may be used with any of the arguments available to the \fBknife cookbook\fP subcommand:
 .INDENT 0.0
 .TP
-.B \fB\-\-chef\-zero\-port PORT\fP
-The port on which chef\-zero will listen.
+.B \fB\-\-seth\-zero\-port PORT\fP
+The port on which seth\-zero will listen.
 .TP
 .B \fB\-c CONFIG_FILE\fP, \fB\-\-config CONFIG_FILE\fP
 The configuration file to use.
@@ -84,7 +84,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Chef server\&.
+The private key that Knife will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -93,22 +93,22 @@ Indicates whether colored output will be used.
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-s URL\fP, \fB\-\-server\-url URL\fP
-The URL for the Chef server\&.
+The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Chef server\&. Authentication will fail if the user name does not match the private key.
+The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
-The version of the chef\-client\&.
+The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the chef\-client will be run in local mode, which allows all commands that work against the Chef server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
 .UNINDENT
 .SH BULK DELETE
 .sp
@@ -134,7 +134,7 @@ This argument has the following options:
 .INDENT 0.0
 .TP
 .B \fB\-p\fP, \fB\-\-purge\fP
-Indicates that a cookbook (or cookbook version) will be removed entirely from the Chef server\&. This action should be used carefully because only one copy of any single file is stored on the Chef server\&. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.
+Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server\&. This action should be used carefully because only one copy of any single file is stored on the Chef server\&. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -182,7 +182,7 @@ cookbook/templates/default
 .UNINDENT
 .UNINDENT
 .sp
-After the cookbook is created, it can be uploaded to the Chef server using the \fBknife upload\fP argument.
+After the cookbook is created, it can be uploaded to the Seth server using the \fBknife upload\fP argument.
 .sp
 \fBSyntax\fP
 .sp
@@ -248,7 +248,7 @@ to return something like:
 .UNINDENT
 .SH DELETE
 .sp
-The \fBdelete\fP argument is used to delete a specified cookbook or cookbook version on the Chef server (and not locally).
+The \fBdelete\fP argument is used to delete a specified cookbook or cookbook version on the Seth server (and not locally).
 .sp
 \fBSyntax\fP
 .sp
@@ -276,7 +276,7 @@ Indicates that a cookbook and every version of that cookbook will be deleted.
 The version of a cookbook to be deleted. If a cookbook has only one version, this option does not need to be specified. If a cookbook has more than one version and this option is not specified, Knife will prompt for a version.
 .TP
 .B \fB\-p\fP, \fB\-\-purge\fP
-Indicates that a cookbook (or cookbook version) will be removed entirely from the Chef server\&. This action should be used carefully because only one copy of any single file is stored on the Chef server\&. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.
+Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server\&. This action should be used carefully because only one copy of any single file is stored on the Chef server\&. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -306,7 +306,7 @@ $ knife cookbook delete smartmon 0.8
 Type \fBY\fP to confirm a deletion.
 .SH DOWNLOAD
 .sp
-The \fBdownload\fP argument is used to download a cookbook from the Chef server to the current working directory.
+The \fBdownload\fP argument is used to download a cookbook from the Seth server to the current working directory.
 .sp
 \fBSyntax\fP
 .sp
@@ -352,7 +352,7 @@ $ knife cookbook download smartmon
 .UNINDENT
 .SH LIST
 .sp
-The \fBlist\fP argument is used to view a list of cookbooks that are currently available on the Chef server\&. The list will contain only the most recent version for each cookbook by default.
+The \fBlist\fP argument is used to view a list of cookbooks that are currently available on the Seth server\&. The list will contain only the most recent version for each cookbook by default.
 .sp
 \fBSyntax\fP
 .sp
@@ -562,12 +562,12 @@ attributes:
   path:         attributes/default.rb
   specificity:  default
   url:          https://somelongurlhere.com
-chef_type:      cookbook_version
+seth_type:      cookbook_version
 cookbook_name:  getting\-started
 definitions:    []
 files:          []
 frozen?:        false
-json_class:     Chef::CookbookVersion
+json_class:     Seth::CookbookVersion
 libraries:      []
 .ft P
 .fi
@@ -593,8 +593,8 @@ to return something like:
 .nf
 .ft C
 checksum:     a29d6f254577b830091f140c3a78b1fe
-name:         chef\-getting\-started.txt.erb
-path:         templates/default/chef\-getting\-started.txt.erb
+name:         seth\-getting\-started.txt.erb
+path:         templates/default/seth\-getting\-started.txt.erb
 specificity:  default
 url:          https://someurlhere.com
 .ft P
@@ -658,19 +658,19 @@ $ knife cookbook test cookbook_name
 .UNINDENT
 .SH UPLOAD
 .sp
-The \fBupload\fP argument is used to upload one or more cookbooks (and any files that are associated with those cookbooks) from a local repository to the Chef server\&. Only files that do not already exist on the Chef server will be uploaded.
+The \fBupload\fP argument is used to upload one or more cookbooks (and any files that are associated with those cookbooks) from a local repository to the Seth server\&. Only files that do not already exist on the Chef server will be uploaded.
 .sp
 \fBNOTE:\fP
 .INDENT 0.0
 .INDENT 3.5
-Use a \&.chefignore file to prevent the upload of specific files and file types, such as temporary files or files placed in folders by version control systems. The \&.chefignore file must be located in the root of the cookbook repository and must use rules similar to filename globbing (as defined by the Ruby \fBFile.fnmatch\fP syntax).
+Use a \&.sethignore file to prevent the upload of specific files and file types, such as temporary files or files placed in folders by version control systems. The \&.chefignore file must be located in the root of the cookbook repository and must use rules similar to filename globbing (as defined by the Ruby \fBFile.fnmatch\fP syntax).
 .UNINDENT
 .UNINDENT
 .sp
 \fBNOTE:\fP
 .INDENT 0.0
 .INDENT 3.5
-Empty directories are not uploaded to the Chef server\&. To upload an empty directory, create a "dot" file\-\-\-e.g. \fB\&.keep\fP\-\-\-in that directory to ensure that the directory itself is not empty.
+Empty directories are not uploaded to the Seth server\&. To upload an empty directory, create a "dot" file\-\-\-e.g. \fB\&.keep\fP\-\-\-in that directory to ensure that the directory itself is not empty.
 .UNINDENT
 .UNINDENT
 .sp
@@ -765,6 +765,6 @@ ERROR: Version 0.1.6 of cookbook redis is frozen. Use \-\-force to override.
 .UNINDENT
 .UNINDENT
 .SH AUTHOR
-Chef
+Seth
 .\" Generated by docutils manpage writer.
 .

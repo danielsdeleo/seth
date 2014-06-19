@@ -19,14 +19,14 @@
 require 'spec_helper'
 
 class TinyClass
-  include Chef::Mixin::ParamsValidate
+  include Seth::Mixin::ParamsValidate
 
   def music(is_good=true)
     is_good
   end
 end
 
-describe Chef::Mixin::ParamsValidate do
+describe Seth::Mixin::ParamsValidate do
   before(:each) do
      @vo = TinyClass.new()
   end
@@ -336,7 +336,7 @@ describe Chef::Mixin::ParamsValidate do
     lambda do
       @vo.validate({:not_blank => ""},
                    {:not_blank => {:cannot_be => :nil, :cannot_be => :empty}})
-    end.should raise_error(Chef::Exceptions::ValidationFailed)
+    end.should raise_error(Seth::Exceptions::ValidationFailed)
   end
 
   it "should set and return a value, then return the same value" do
@@ -370,21 +370,21 @@ describe Chef::Mixin::ParamsValidate do
   end
 
   it "should allow DelayedEvaluator instance to be set for value regardless of restriction" do
-    value = Chef::DelayedEvaluator.new{ 'test' }
+    value = Seth::DelayedEvaluator.new{ 'test' }
     @vo.set_or_return(:test, value, {:kind_of => Numeric})
   end
 
   it "should raise an error when delayed evaluated attribute is not valid" do
-    value = Chef::DelayedEvaluator.new{ 'test' }
+    value = Seth::DelayedEvaluator.new{ 'test' }
     @vo.set_or_return(:test, value, {:kind_of => Numeric})
     lambda do
       @vo.set_or_return(:test, nil, {:kind_of => Numeric})
-    end.should raise_error(Chef::Exceptions::ValidationFailed)
+    end.should raise_error(Seth::Exceptions::ValidationFailed)
   end
 
   it "should create DelayedEvaluator instance when #lazy is used" do
     @vo.set_or_return(:delayed, @vo.lazy{ 'test' }, {})
-    @vo.instance_variable_get(:@delayed).should be_a(Chef::DelayedEvaluator)
+    @vo.instance_variable_get(:@delayed).should be_a(Seth::DelayedEvaluator)
   end
 
   it "should execute block on each call when DelayedEvaluator" do

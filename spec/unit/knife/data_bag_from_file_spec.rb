@@ -18,18 +18,18 @@
 
 require 'spec_helper'
 
-require 'chef/data_bag_item'
-require 'chef/encrypted_data_bag_item'
+require 'seth/data_bag_item'
+require 'seth/encrypted_data_bag_item'
 require 'tempfile'
 require 'json'
 
-Chef::Knife::DataBagFromFile.load_deps
+Seth::Knife::DataBagFromFile.load_deps
 
-describe Chef::Knife::DataBagFromFile do
+describe Seth::Knife::DataBagFromFile do
   before :each do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::DataBagFromFile.new
-    @rest = double("Chef::REST")
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::DataBagFromFile.new
+    @rest = double("Seth::REST")
     @knife.stub(:rest).and_return(@rest)
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
@@ -63,8 +63,8 @@ describe Chef::Knife::DataBagFromFile do
 
   it "loads from a file and saves" do
     @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
-    dbag = Chef::DataBagItem.new
-    Chef::DataBagItem.stub(:new).and_return(dbag)
+    dbag = Seth::DataBagItem.new
+    Seth::DataBagItem.stub(:new).and_return(dbag)
     dbag.should_receive(:save)
     @knife.run
 
@@ -76,8 +76,8 @@ describe Chef::Knife::DataBagFromFile do
     @knife.name_args = [ 'bag_name', @db_file.path, @db_file2.path ]
     @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
     @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file2.path).and_return(@plain_data)
-    dbag = Chef::DataBagItem.new
-    Chef::DataBagItem.stub(:new).and_return(dbag)
+    dbag = Seth::DataBagItem.new
+    Seth::DataBagItem.stub(:new).and_return(dbag)
     dbag.should_receive(:save).twice
     @knife.run
 
@@ -90,8 +90,8 @@ describe Chef::Knife::DataBagFromFile do
     @knife.name_args = [ 'bag_name', @db_folder ]
     @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
     @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file2.path).and_return(@plain_data)
-    dbag = Chef::DataBagItem.new
-    Chef::DataBagItem.stub(:new).and_return(dbag)
+    dbag = Seth::DataBagItem.new
+    Seth::DataBagItem.stub(:new).and_return(dbag)
     dbag.should_receive(:save).twice
     @knife.run
   end
@@ -116,8 +116,8 @@ describe Chef::Knife::DataBagFromFile do
         and_return(@plain_data)
       @knife.loader.should_receive(:load_from).with("data_bags", "bag_name2", File.basename(@db_file3.path)).
         and_return(@plain_data)
-      dbag = Chef::DataBagItem.new
-      Chef::DataBagItem.stub(:new).and_return(dbag)
+      dbag = Seth::DataBagItem.new
+      Seth::DataBagItem.stub(:new).and_return(dbag)
       dbag.should_receive(:save).exactly(3).times
       @knife.run
     end
@@ -127,8 +127,8 @@ describe Chef::Knife::DataBagFromFile do
       @knife.stub(:config).and_return({:all => true})
       @knife.loader.should_receive(:load_from).with("data_bags", "bag_name2", File.basename(@db_file3.path)).
         and_return(@plain_data)
-      dbag = Chef::DataBagItem.new
-      Chef::DataBagItem.stub(:new).and_return(dbag)
+      dbag = Seth::DataBagItem.new
+      Seth::DataBagItem.stub(:new).and_return(dbag)
       dbag.should_receive(:save)
       @knife.run
       dbag.data_bag.should == 'bag_name2'
@@ -140,12 +140,12 @@ describe Chef::Knife::DataBagFromFile do
   describe "encrypted data bag items" do
     before(:each) do
       @secret = "abc123SECRET"
-      @enc_data = Chef::EncryptedDataBagItem.encrypt_data_bag_item(@plain_data,
+      @enc_data = Seth::EncryptedDataBagItem.encrypt_data_bag_item(@plain_data,
                                                                    @secret)
 
       # Random IV is used each time the data bag item is encrypted, so values
       # will not be equal if we re-encrypt.
-      Chef::EncryptedDataBagItem.should_receive(:encrypt_data_bag_item).and_return(@enc_data)
+      Seth::EncryptedDataBagItem.should_receive(:encrypt_data_bag_item).and_return(@enc_data)
 
       @secret_file = Tempfile.new("encrypted_data_bag_secret_file_test")
       @secret_file.puts(@secret)
@@ -161,8 +161,8 @@ describe Chef::Knife::DataBagFromFile do
       @knife.stub(:config).and_return({:secret => @secret})
 
       @knife.loader.should_receive(:load_from).with("data_bags", "bag_name", @db_file.path).and_return(@plain_data)
-      dbag = Chef::DataBagItem.new
-      Chef::DataBagItem.stub(:new).and_return(dbag)
+      dbag = Seth::DataBagItem.new
+      Seth::DataBagItem.stub(:new).and_return(dbag)
       dbag.should_receive(:save)
       @knife.run
       dbag.data_bag.should == 'bag_name'
@@ -173,8 +173,8 @@ describe Chef::Knife::DataBagFromFile do
       @knife.stub(:config).and_return({:secret_file => @secret_file.path})
 
       @knife.loader.stub(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
-      dbag = Chef::DataBagItem.new
-      Chef::DataBagItem.stub(:new).and_return(dbag)
+      dbag = Seth::DataBagItem.new
+      Seth::DataBagItem.stub(:new).and_return(dbag)
       dbag.should_receive(:save)
       @knife.run
       dbag.data_bag.should == 'bag_name'

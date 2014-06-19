@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/util/windows'
+require 'seth/util/windows'
 
 #wrapper around a subset of the NetUser* APIs.
-#nothing Chef specific, but not complete enough to be its own gem, so util for now.
-class Chef::Util::Windows::NetUser < Chef::Util::Windows
+#nothing Seth specific, but not complete enough to be its own gem, so util for now.
+class Seth::Util::Windows::NetUser < Chef::Util::Windows
 
   private
 

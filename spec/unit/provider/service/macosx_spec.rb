@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Service::Macosx do
+describe Seth::Provider::Service::Macosx do
   describe ".gather_plist_dirs" do
     context "when HOME directory is set" do
       before do
@@ -42,9 +42,9 @@ describe Chef::Provider::Service::Macosx do
   end
 
   context "when service name is given as" do
-    let(:node) { Chef::Node.new }
-    let(:events) {Chef::EventDispatch::Dispatcher.new}
-    let(:run_context) { Chef::RunContext.new(node, {}, events) }
+    let(:node) { Seth::Node.new }
+    let(:events) {Seth::EventDispatch::Dispatcher.new}
+    let(:run_context) { Seth::RunContext.new(node, {}, events) }
     let(:provider) { described_class.new(new_resource, run_context) }
     let(:launchctl_stdout) { StringIO.new }
     let(:plutil_stdout) { String.new <<-XML }
@@ -77,8 +77,8 @@ XML
       end
 
       context "#{service_name}" do
-        let(:new_resource) { Chef::Resource::Service.new(service_name) }
-        let!(:current_resource) { Chef::Resource::Service.new(service_name) }
+        let(:new_resource) { Seth::Resource::Service.new(service_name) }
+        let!(:current_resource) { Seth::Resource::Service.new(service_name) }
 
         describe "#load_current_resource" do
 
@@ -110,11 +110,11 @@ XML
             end
 
             it "errors if action is :enable" do
-              lambda { run_resource_setup_for_action(:enable) }.should raise_error(Chef::Exceptions::Service)
+              lambda { run_resource_setup_for_action(:enable) }.should raise_error(Seth::Exceptions::Service)
             end
 
             it "errors if action is :disable" do
-              lambda { run_resource_setup_for_action(:disable) }.should raise_error(Chef::Exceptions::Service)
+              lambda { run_resource_setup_for_action(:disable) }.should raise_error(Seth::Exceptions::Service)
             end
           end
 
@@ -149,7 +149,7 @@ SVC_LIST
               Dir.stub(:glob).and_return(["/Users/igor/Library/LaunchAgents/io.redis.redis-server.plist"], [])
             end
             it "should throw an exception when reload action is attempted" do
-              lambda {provider.run_action(:reload)}.should raise_error(Chef::Exceptions::UnsupportedAction)
+              lambda {provider.run_action(:reload)}.should raise_error(Seth::Exceptions::UnsupportedAction)
             end
           end
           context "when launchctl returns empty service pid" do
@@ -211,14 +211,14 @@ SVC_LIST
                                              "/Users/wtf/something.plist"])
                 provider.load_current_resource
                 provider.define_resource_requirements
-                lambda { provider.process_resource_requirements }.should raise_error(Chef::Exceptions::Service)
+                lambda { provider.process_resource_requirements }.should raise_error(Seth::Exceptions::Service)
               end
             end
           end
         end
         describe "#start_service" do
           before do
-            Chef::Resource::Service.stub(:new).and_return(current_resource)
+            Seth::Resource::Service.stub(:new).and_return(current_resource)
             provider.load_current_resource
             current_resource.stub(:running).and_return(false)
           end
@@ -232,7 +232,7 @@ SVC_LIST
 
           it "shows warning message if service is already running" do
             current_resource.stub(:running).and_return(true)
-            Chef::Log.should_receive(:debug).with("service[#{service_name}] already running, not starting")
+            Seth::Log.should_receive(:debug).with("service[#{service_name}] already running, not starting")
 
             provider.start_service
           end
@@ -249,7 +249,7 @@ SVC_LIST
 
         describe "#stop_service" do
           before do
-            Chef::Resource::Service.stub(:new).and_return(current_resource)
+            Seth::Resource::Service.stub(:new).and_return(current_resource)
 
             provider.load_current_resource
             current_resource.stub(:running).and_return(true)
@@ -264,7 +264,7 @@ SVC_LIST
 
           it "shows warning message if service is not running" do
             current_resource.stub(:running).and_return(false)
-            Chef::Log.should_receive(:debug).with("service[#{service_name}] not running, not stopping")
+            Seth::Log.should_receive(:debug).with("service[#{service_name}] not running, not stopping")
 
             provider.stop_service
           end
@@ -281,7 +281,7 @@ SVC_LIST
 
         describe "#restart_service" do
           before do
-            Chef::Resource::Service.stub(:new).and_return(current_resource)
+            Seth::Resource::Service.stub(:new).and_return(current_resource)
 
             provider.load_current_resource
             current_resource.stub(:running).and_return(true)

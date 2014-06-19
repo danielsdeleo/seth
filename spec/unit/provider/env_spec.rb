@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Env do
+describe Seth::Provider::Env do
 
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Env.new("FOO")
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Env.new("FOO")
     @new_resource.value("bar")
-    @provider = Chef::Provider::Env.new(@new_resource, @run_context)
+    @provider = Seth::Provider::Env.new(@new_resource, @run_context)
   end
 
   it "assumes the key_name exists by default" do
@@ -36,7 +36,7 @@ describe Chef::Provider::Env do
   describe "when loading the current status" do
     before do
       #@current_resource = @new_resource.clone
-      #Chef::Resource::Env.stub(:new).and_return(@current_resource)
+      #Seth::Resource::Env.stub(:new).and_return(@current_resource)
       @provider.current_resource = @current_resource
       @provider.stub(:env_value).with("FOO").and_return("bar")
       @provider.stub(:env_key_exists).and_return(true)
@@ -65,7 +65,7 @@ describe Chef::Provider::Env do
     end
 
     it "should return the current resource" do
-      @provider.load_current_resource.should be_a_kind_of(Chef::Resource::Env)
+      @provider.load_current_resource.should be_a_kind_of(Seth::Resource::Env)
     end
   end
 
@@ -165,15 +165,15 @@ describe Chef::Provider::Env do
       @provider.action_modify
     end
 
-    it "should raise a Chef::Exceptions::Env if the key doesn't exist" do
+    it "should raise a Seth::Exceptions::Env if the key doesn't exist" do
       @provider.key_exists = false
-      lambda { @provider.action_modify }.should raise_error(Chef::Exceptions::Env)
+      lambda { @provider.action_modify }.should raise_error(Seth::Exceptions::Env)
     end
   end
 
   describe "delete_element" do
     before(:each) do
-      @current_resource = Chef::Resource::Env.new("FOO")
+      @current_resource = Seth::Resource::Env.new("FOO")
 
       @new_resource.delim ";"
       @new_resource.value "C:/bar/bin"

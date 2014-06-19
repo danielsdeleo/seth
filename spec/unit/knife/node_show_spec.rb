@@ -18,10 +18,10 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::NodeShow do
+describe Seth::Knife::NodeShow do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::NodeShow.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::NodeShow.new
     @knife.config = {
       :attribute => nil,
       :run_list => nil,
@@ -29,13 +29,13 @@ describe Chef::Knife::NodeShow do
     }
     @knife.name_args = [ "adam" ]
     @knife.stub(:output).and_return(true)
-    @node = Chef::Node.new()
-    Chef::Node.stub(:load).and_return(@node)
+    @node = Seth::Node.new()
+    Seth::Node.stub(:load).and_return(@node)
   end
 
   describe "run" do
     it "should load the node" do
-      Chef::Node.should_receive(:load).with("adam").and_return(@node)
+      Seth::Node.should_receive(:load).with("adam").and_return(@node)
       @knife.run
     end
 

@@ -17,20 +17,20 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/mixin/params_validate'
-require 'chef/mixin/from_file'
-require 'chef/mash'
-require 'chef/json_compat'
-require 'chef/search/query'
+require 'seth/config'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/from_file'
+require 'seth/mash'
+require 'seth/json_compat'
+require 'seth/search/query'
 
-class Chef
+class Seth
   class ApiClient
 
-    include Chef::Mixin::FromFile
-    include Chef::Mixin::ParamsValidate
+    include Seth::Mixin::FromFile
+    include Seth::Mixin::ParamsValidate
 
-    # Create a new Chef::ApiClient object.
+    # Create a new Seth::ApiClient object.
     def initialize
       @name = ''
       @public_key = nil
@@ -111,7 +111,7 @@ class Chef
         "validator" => @validator,
         "admin" => @admin,
         'json_class' => self.class.name,
-        "chef_type" => "client"
+        "seth_type" => "client"
       }
       result["private_key"] = @private_key if @private_key
       result
@@ -125,7 +125,7 @@ class Chef
     end
 
     def self.json_create(o)
-      client = Chef::ApiClient.new
+      client = Seth::ApiClient.new
       client.name(o["name"] || o["clientname"])
       client.private_key(o["private_key"]) if o.key?("private_key")
       client.public_key(o["public_key"])
@@ -135,7 +135,7 @@ class Chef
     end
 
     def self.http_api
-      Chef::REST.new(Chef::Config[:chef_server_url])
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
     def self.reregister(name)
@@ -146,7 +146,7 @@ class Chef
     def self.list(inflate=false)
       if inflate
         response = Hash.new
-        Chef::Search::Query.new.search(:client) do |n|
+        Seth::Search::Query.new.search(:client) do |n|
           n = self.json_create(n) if n.instance_of?(Hash)
           response[n.name] = n
         end
@@ -159,7 +159,7 @@ class Chef
     # Load a client by name via the API
     def self.load(name)
       response = http_api.get("clients/#{name}")
-      if response.kind_of?(Chef::ApiClient)
+      if response.kind_of?(Seth::ApiClient)
         response
       else
         json_create(response)
@@ -206,12 +206,12 @@ class Chef
     end
 
     def inspect
-      "Chef::ApiClient name:'#{name}' admin:'#{admin.inspect}' validator:'#{validator}' " +
+      "Seth::ApiClient name:'#{name}' admin:'#{admin.inspect}' validator:'#{validator}' " +
       "public_key:'#{public_key}' private_key:'#{private_key}'"
     end
 
     def http_api
-      @http_api ||= Chef::REST.new(Chef::Config[:chef_server_url])
+      @http_api ||= Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
   end

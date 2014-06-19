@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-require 'chef/win32/api'
+require 'seth/win32/api'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     module API
       module Memory
-        extend Chef::ReservedNames::Win32::API
+        extend Seth::ReservedNames::Win32::API
 
         ###############################################
         # Win32 API Constants

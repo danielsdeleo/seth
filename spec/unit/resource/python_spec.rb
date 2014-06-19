@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Python do
+describe Seth::Resource::Python do
 
   before(:each) do
-    @resource = Chef::Resource::Python.new("fakey_fakerton")
+    @resource = Seth::Resource::Python.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::Python" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::Python)
+  it "should create a new Seth::Resource::Python" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::Python)
   end
 
   it "should have a resource name of :python" do

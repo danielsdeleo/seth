@@ -17,11 +17,11 @@
 #
 
 require 'spec_helper'
-require 'chef/role'
+require 'seth/role'
 
-describe Chef::Role do
+describe Seth::Role do
   before(:each) do
-    @role = Chef::Role.new
+    @role = Seth::Role.new
     @role.name("ops_master")
   end
 
@@ -52,12 +52,12 @@ describe Chef::Role do
       before do
         @role.name("base")
         @role.run_list(%w{ recipe[nagios::client] recipe[tims-acl::bork]})
-        @role.env_run_list["prod"] = Chef::RunList.new(*(@role.run_list.to_a << "recipe[prod-base]"))
-        @role.env_run_list["dev"]  = Chef::RunList.new
+        @role.env_run_list["prod"] = Seth::RunList.new(*(@role.run_list.to_a << "recipe[prod-base]"))
+        @role.env_run_list["dev"]  = Seth::RunList.new
       end
 
       it "uses the default run list as *the* run_list" do
-        @role.run_list.should == Chef::RunList.new("recipe[nagios::client]", "recipe[tims-acl::bork]")
+        @role.run_list.should == Seth::RunList.new("recipe[nagios::client]", "recipe[tims-acl::bork]")
       end
 
       it "gives the default run list as the when getting the _default run list" do
@@ -65,7 +65,7 @@ describe Chef::Role do
       end
 
       it "gives an environment specific run list" do
-        @role.run_list_for("prod").should == Chef::RunList.new("recipe[nagios::client]", "recipe[tims-acl::bork]", "recipe[prod-base]")
+        @role.run_list_for("prod").should == Seth::RunList.new("recipe[nagios::client]", "recipe[tims-acl::bork]", "recipe[prod-base]")
       end
 
       it "gives the default run list when no run list exists for the given environment" do
@@ -73,11 +73,11 @@ describe Chef::Role do
       end
 
       it "gives the environment specific run list even if it is empty" do
-        @role.run_list_for("dev").should == Chef::RunList.new
+        @role.run_list_for("dev").should == Seth::RunList.new
       end
 
       it "env_run_lists can only be set with _default run list in it" do
-        long_exception_name = Chef::Exceptions::InvalidEnvironmentRunListSpecification
+        long_exception_name = Seth::Exceptions::InvalidEnvironmentRunListSpecification
         lambda {@role.env_run_lists({})}.should raise_error(long_exception_name)
       end
 
@@ -143,7 +143,7 @@ describe Chef::Role do
       @role.default_attributes({ :el_groupo => 'nuevo' })
       @role.override_attributes({ :deloused => 'in the comatorium' })
 
-      @example = Chef::Role.new
+      @example = Seth::Role.new
       @example.name('newname')
       @example.description('Really Great band!')
       @example.run_list('alpha', 'bravo', 'role[alpha]')
@@ -168,11 +168,11 @@ describe Chef::Role do
       @role.run_list('one', 'two', 'role[a]')
       @role.default_attributes({ :el_groupo => 'nuevo' })
       @role.override_attributes({ :deloused => 'in the comatorium' })
-      @serialized_role = Chef::JSONCompat.to_json(@role)
+      @serialized_role = Seth::JSONCompat.to_json(@role)
     end
 
     it "should serialize to a json hash" do
-      Chef::JSONCompat.to_json(@role).should match(/^\{.+\}$/)
+      Seth::JSONCompat.to_json(@role).should match(/^\{.+\}$/)
     end
 
     it "includes the name in the JSON output" do
@@ -192,7 +192,7 @@ describe Chef::Role do
     end
 
     it "should include 'run_list'" do
-      #Activesupport messes with Chef json formatting
+      #Activesupport messes with Seth json formatting
       #This test should pass with and without activesupport
       @serialized_role.should =~ /"run_list":\["recipe\[one\]","recipe\[two\]","role\[a\]"\]/
     end
@@ -200,11 +200,11 @@ describe Chef::Role do
     describe "and it has per-environment run lists" do
       before do
         @role.env_run_lists("_default" => ['one', 'two', 'role[a]'], "production" => ['role[monitoring]', 'role[auditing]', 'role[apache]'], "dev" => ["role[nginx]"])
-        @serialized_role = Chef::JSONCompat.from_json(Chef::JSONCompat.to_json(@role), :create_additions => false)
+        @serialized_role = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(@role), :create_additions => false)
       end
 
       it "includes the per-environment run lists" do
-        #Activesupport messes with Chef json formatting
+        #Activesupport messes with Seth json formatting
         #This test should pass with and without activesupport
         @serialized_role["env_run_lists"]["production"].should == ['role[monitoring]', 'role[auditing]', 'role[apache]']
         @serialized_role["env_run_lists"]["dev"].should == ["role[nginx]"]
@@ -224,11 +224,11 @@ describe Chef::Role do
       @role.run_list('one', 'two', 'role[a]')
       @role.default_attributes({ 'el_groupo' => 'nuevo' })
       @role.override_attributes({ 'deloused' => 'in the comatorium' })
-      @deserial = Chef::JSONCompat.from_json(Chef::JSONCompat.to_json(@role))
+      @deserial = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(@role))
     end
 
-    it "should deserialize to a Chef::Role object" do
-      @deserial.should be_a_kind_of(Chef::Role)
+    it "should deserialize to a Seth::Role object" do
+      @deserial.should be_a_kind_of(Seth::Role)
     end
 
     %w{
@@ -251,99 +251,99 @@ EOR
 
   describe "when loading from disk" do
     before do
-      default_cache_path = windows? ? 'C:\chef' : '/var/chef'
-      Chef::Config.stub(:cache_path).and_return(default_cache_path)
+      default_cache_path = windows? ? 'C:\seth' : '/var/chef'
+      Seth::Config.stub(:cache_path).and_return(default_cache_path)
     end
 
-    it "should return a Chef::Role object from JSON" do
-      Dir.should_receive(:glob).and_return(["#{Chef::Config[:role_path]}/memes", "#{Chef::Config[:role_path]}/memes/lolcat.json"])
-      file_path = File.join(Chef::Config[:role_path], 'memes/lolcat.json')
+    it "should return a Seth::Role object from JSON" do
+      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes", "#{Chef::Config[:role_path]}/memes/lolcat.json"])
+      file_path = File.join(Seth::Config[:role_path], 'memes/lolcat.json')
       File.should_receive(:exists?).with(file_path).exactly(1).times.and_return(true)
-      IO.should_receive(:read).with(file_path).and_return('{"name": "ceiling_cat", "json_class": "Chef::Role" }')
-      @role.should be_a_kind_of(Chef::Role)
+      IO.should_receive(:read).with(file_path).and_return('{"name": "ceiling_cat", "json_class": "Seth::Role" }')
+      @role.should be_a_kind_of(Seth::Role)
       @role.class.from_disk("lolcat")
     end
 
-    it "should return a Chef::Role object from a Ruby DSL" do
-      Dir.should_receive(:glob).and_return(["#{Chef::Config[:role_path]}/memes", "#{Chef::Config[:role_path]}/memes/lolcat.rb"])
-      rb_path = File.join(Chef::Config[:role_path], 'memes/lolcat.rb')
+    it "should return a Seth::Role object from a Ruby DSL" do
+      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes", "#{Chef::Config[:role_path]}/memes/lolcat.rb"])
+      rb_path = File.join(Seth::Config[:role_path], 'memes/lolcat.rb')
       File.should_receive(:exists?).with(rb_path).exactly(2).times.and_return(true)
       File.should_receive(:readable?).with(rb_path).exactly(1).times.and_return(true)
       IO.should_receive(:read).with(rb_path).and_return(ROLE_DSL)
-      @role.should be_a_kind_of(Chef::Role)
+      @role.should be_a_kind_of(Seth::Role)
       @role.class.from_disk("lolcat")
     end
 
-    it "should prefer a Chef::Role Object from JSON over one from a Ruby DSL" do
-      Dir.should_receive(:glob).and_return(["#{Chef::Config[:role_path]}/memes", "#{Chef::Config[:role_path]}/memes/lolcat.json", "#{Chef::Config[:role_path]}/memes/lolcat.rb"])
-      js_path = File.join(Chef::Config[:role_path], 'memes/lolcat.json')
-      rb_path = File.join(Chef::Config[:role_path], 'memes/lolcat.rb')
+    it "should prefer a Seth::Role Object from JSON over one from a Ruby DSL" do
+      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes", "#{Chef::Config[:role_path]}/memes/lolcat.json", "#{Chef::Config[:role_path]}/memes/lolcat.rb"])
+      js_path = File.join(Seth::Config[:role_path], 'memes/lolcat.json')
+      rb_path = File.join(Seth::Config[:role_path], 'memes/lolcat.rb')
       File.should_receive(:exists?).with(js_path).exactly(1).times.and_return(true)
       File.should_not_receive(:exists?).with(rb_path)
-      IO.should_receive(:read).with(js_path).and_return('{"name": "ceiling_cat", "json_class": "Chef::Role" }')
-      @role.should be_a_kind_of(Chef::Role)
+      IO.should_receive(:read).with(js_path).and_return('{"name": "ceiling_cat", "json_class": "Seth::Role" }')
+      @role.should be_a_kind_of(Seth::Role)
       @role.class.from_disk("lolcat")
     end
 
     it "should raise an exception if the file does not exist" do
-      Dir.should_receive(:glob).and_return(["#{Chef::Config[:role_path]}/meme.rb"])
+      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/meme.rb"])
       File.should_not_receive(:exists?)
-      lambda {@role.class.from_disk("lolcat")}.should raise_error(Chef::Exceptions::RoleNotFound)
+      lambda {@role.class.from_disk("lolcat")}.should raise_error(Seth::Exceptions::RoleNotFound)
     end
 
     it "should raise an exception if two files exist with the same name" do
-      Dir.should_receive(:glob).and_return(["#{Chef::Config[:role_path]}/memes/lolcat.rb", "#{Chef::Config[:role_path]}/lolcat.rb"])
+      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes/lolcat.rb", "#{Chef::Config[:role_path]}/lolcat.rb"])
       File.should_not_receive(:exists?)
-      lambda {@role.class.from_disk("lolcat")}.should raise_error(Chef::Exceptions::DuplicateRole)
+      lambda {@role.class.from_disk("lolcat")}.should raise_error(Seth::Exceptions::DuplicateRole)
     end
   end
 
   describe "when loading from disk and role_path is an array" do
 
     before(:each) do
-      Chef::Config[:role_path] = ['/path1', '/path/path2']
+      Seth::Config[:role_path] = ['/path1', '/path/path2']
     end
 
-    it "should return a Chef::Role object from JSON" do
+    it "should return a Seth::Role object from JSON" do
       Dir.should_receive(:glob).with(File.join('/path1', '**', '**')).exactly(1).times.and_return(['/path1/lolcat.json'])
       File.should_receive(:exists?).with('/path1/lolcat.json').exactly(1).times.and_return(true)
-      IO.should_receive(:read).with('/path1/lolcat.json').and_return('{"name": "ceiling_cat", "json_class": "Chef::Role" }')
-      @role.should be_a_kind_of(Chef::Role)
+      IO.should_receive(:read).with('/path1/lolcat.json').and_return('{"name": "ceiling_cat", "json_class": "Seth::Role" }')
+      @role.should be_a_kind_of(Seth::Role)
       @role.class.from_disk("lolcat")
     end
 
-    it "should return a Chef::Role object from JSON when role is in the second path" do
+    it "should return a Seth::Role object from JSON when role is in the second path" do
       Dir.should_receive(:glob).with(File.join('/path1', '**', '**')).exactly(1).times.and_return([])
       Dir.should_receive(:glob).with(File.join('/path/path2', '**', '**')).exactly(1).times.and_return(['/path/path2/lolcat.json'])
       File.should_receive(:exists?).with('/path/path2/lolcat.json').exactly(1).times.and_return(true)
-      IO.should_receive(:read).with('/path/path2/lolcat.json').and_return('{"name": "ceiling_cat", "json_class": "Chef::Role" }')
-      @role.should be_a_kind_of(Chef::Role)
+      IO.should_receive(:read).with('/path/path2/lolcat.json').and_return('{"name": "ceiling_cat", "json_class": "Seth::Role" }')
+      @role.should be_a_kind_of(Seth::Role)
       @role.class.from_disk("lolcat")
     end
 
-    it "should return a Chef::Role object from a Ruby DSL" do
+    it "should return a Seth::Role object from a Ruby DSL" do
       Dir.should_receive(:glob).with(File.join('/path1', '**', '**')).exactly(1).times.and_return(['/path1/lolcat.rb'])
       File.should_receive(:exists?).with('/path1/lolcat.rb').exactly(2).times.and_return(true)
       File.should_receive(:readable?).with('/path1/lolcat.rb').and_return(true)
       IO.should_receive(:read).with('/path1/lolcat.rb').exactly(1).times.and_return(ROLE_DSL)
-      @role.should be_a_kind_of(Chef::Role)
+      @role.should be_a_kind_of(Seth::Role)
       @role.class.from_disk("lolcat")
     end
 
-    it "should return a Chef::Role object from a Ruby DSL when role is in the second path" do
+    it "should return a Seth::Role object from a Ruby DSL when role is in the second path" do
       Dir.should_receive(:glob).with(File.join('/path1', '**', '**')).exactly(1).times.and_return([])
       Dir.should_receive(:glob).with(File.join('/path/path2', '**', '**')).exactly(1).times.and_return(['/path/path2/lolcat.rb'])
       File.should_receive(:exists?).with('/path/path2/lolcat.rb').exactly(2).times.and_return(true)
       File.should_receive(:readable?).with('/path/path2/lolcat.rb').and_return(true)
       IO.should_receive(:read).with('/path/path2/lolcat.rb').exactly(1).times.and_return(ROLE_DSL)
-      @role.should be_a_kind_of(Chef::Role)
+      @role.should be_a_kind_of(Seth::Role)
       @role.class.from_disk("lolcat")
     end
 
     it "should raise an exception if the file does not exist" do
       Dir.should_receive(:glob).with(File.join('/path1', '**', '**')).exactly(1).times.and_return([])
       Dir.should_receive(:glob).with(File.join('/path/path2', '**', '**')).exactly(1).times.and_return([])
-      lambda {@role.class.from_disk("lolcat")}.should raise_error(Chef::Exceptions::RoleNotFound)
+      lambda {@role.class.from_disk("lolcat")}.should raise_error(Seth::Exceptions::RoleNotFound)
     end
 
   end

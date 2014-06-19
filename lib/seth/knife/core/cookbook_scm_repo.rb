@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Knife
     class CookbookSCMRepo
 
       DIRTY_REPO = /^[\s]+M/
 
-      include Chef::Mixin::ShellOut
+      include Seth::Mixin::ShellOut
 
       attr_reader :repo_path
       attr_reader :default_branch
@@ -75,7 +75,7 @@ class Chef
       end
 
       def prepare_to_import(cookbook_name)
-        branch = "chef-vendor-#{cookbook_name}"
+        branch = "seth-vendor-#{cookbook_name}"
         if branch_exists?(branch)
           ui.info("Pristine copy branch (#{branch}) exists, switching to it.")
           git("checkout #{branch}")
@@ -100,7 +100,7 @@ class Chef
       end
 
       def merge_updates_from(cookbook_name, version)
-        branch = "chef-vendor-#{cookbook_name}"
+        branch = "seth-vendor-#{cookbook_name}"
         Dir.chdir(repo_path) do
           if system("git merge #{branch}")
             ui.info("Cookbook #{cookbook_name} version #{version} successfully installed")

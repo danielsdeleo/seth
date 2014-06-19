@@ -18,28 +18,28 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Group::Groupmod do
+describe Seth::Provider::Group::Groupmod do
     before do
-      @node = Chef::Node.new
-      @events = Chef::EventDispatch::Dispatcher.new
-      @run_context = Chef::RunContext.new(@node, {}, @events)
-      @new_resource = Chef::Resource::Group.new("wheel")
+      @node = Seth::Node.new
+      @events = Seth::EventDispatch::Dispatcher.new
+      @run_context = Seth::RunContext.new(@node, {}, @events)
+      @new_resource = Seth::Resource::Group.new("wheel")
       @new_resource.gid 123
       @new_resource.members %w{lobster rage fist}
       @new_resource.append false
-      @provider = Chef::Provider::Group::Groupmod.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Group::Groupmod.new(@new_resource, @run_context)
     end
 
   describe "manage_group" do
     describe "when determining the current group state" do
       it "should raise an error if the required binary /usr/sbin/group doesn't exist" do
         File.should_receive(:exists?).with("/usr/sbin/group").and_return(false)
-        lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::Group)
+        lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::Group)
       end
       it "should raise an error if the required binary /usr/sbin/user doesn't exist" do
         File.should_receive(:exists?).with("/usr/sbin/group").and_return(true)
         File.should_receive(:exists?).with("/usr/sbin/user").and_return(false)
-        lambda { @provider.load_current_resource }.should raise_error(Chef::Exceptions::Group)
+        lambda { @provider.load_current_resource }.should raise_error(Seth::Exceptions::Group)
       end
 
       it "shouldn't raise an error if the required binaries exist" do
@@ -61,7 +61,7 @@ describe Chef::Provider::Group::Groupmod do
         end
 
         it "logs a message and sets group's members to 'none', then removes existing group members" do
-          Chef::Log.should_receive(:debug).with("group[wheel] setting group members to: none")
+          Seth::Log.should_receive(:debug).with("group[wheel] setting group members to: none")
           @provider.should_receive(:shell_out!).with("group mod -n wheel_bak wheel")
           @provider.should_receive(:shell_out!).with("group add -g '123' -o wheel")
           @provider.should_receive(:shell_out!).with("group del wheel_bak")
@@ -76,7 +76,7 @@ describe Chef::Provider::Group::Groupmod do
         end
 
         it "logs a message and does not modify group membership" do
-          Chef::Log.should_receive(:debug).with("group[wheel] not changing group members, the group has no members to add")
+          Seth::Log.should_receive(:debug).with("group[wheel] not changing group members, the group has no members to add")
           @provider.should_not_receive(:shell_out!)
           @provider.manage_group
         end
@@ -89,7 +89,7 @@ describe Chef::Provider::Group::Groupmod do
         end
 
         it "updates group membership correctly" do
-          Chef::Log.stub(:debug)
+          Seth::Log.stub(:debug)
           @provider.should_receive(:shell_out!).with("group mod -n wheel_bak wheel")
           @provider.should_receive(:shell_out!).with("user mod -G wheel lobster")
           @provider.should_receive(:shell_out!).with("group add -g '123' -o wheel")
@@ -103,7 +103,7 @@ describe Chef::Provider::Group::Groupmod do
   describe "create_group" do
     describe "when creating a new group" do
       before do
-        @current_resource = Chef::Resource::Group.new("wheel")
+        @current_resource = Seth::Resource::Group.new("wheel")
         @provider.current_resource = @current_resource
       end
 

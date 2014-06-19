@@ -18,16 +18,16 @@
 
 require 'spec_helper'
 
-describe Chef::Application do
+describe Seth::Application do
   before do
     @original_argv = ARGV.dup
     ARGV.clear
-    Chef::Log.logger = Logger.new(StringIO.new)
-    @app = Chef::Application.new
+    Seth::Log.logger = Logger.new(StringIO.new)
+    @app = Seth::Application.new
     @app.stub(:trap)
     Dir.stub(:chdir).and_return(0)
     @app.stub(:reconfigure)
-    Chef::Log.init(STDERR)
+    Seth::Log.init(STDERR)
   end
 
   after do
@@ -36,14 +36,14 @@ describe Chef::Application do
 
   describe "reconfigure" do
     before do
-      @app = Chef::Application.new
-      @app.stub(:configure_chef).and_return(true)
+      @app = Seth::Application.new
+      @app.stub(:configure_seth).and_return(true)
       @app.stub(:configure_logging).and_return(true)
       @app.stub(:configure_proxy_environment_variables).and_return(true)
     end
 
-    it "should configure chef" do
-      @app.should_receive(:configure_chef).and_return(true)
+    it "should configure seth" do
+      @app.should_receive(:configure_seth).and_return(true)
       @app.reconfigure
     end
 
@@ -58,16 +58,16 @@ describe Chef::Application do
     end
   end
 
-  describe Chef::Application do
+  describe Seth::Application do
     before do
-      @app = Chef::Application.new
+      @app = Seth::Application.new
     end
 
     describe "run" do
       before do
         @app.stub(:setup_application).and_return(true)
         @app.stub(:run_application).and_return(true)
-        @app.stub(:configure_chef).and_return(true)
+        @app.stub(:configure_seth).and_return(true)
         @app.stub(:configure_logging).and_return(true)
       end
 
@@ -88,25 +88,25 @@ describe Chef::Application do
     end
   end
 
-  describe "configure_chef" do
+  describe "configure_seth" do
     before do
       # Silence warnings when no config file exists
-      Chef::Log.stub(:warn)
+      Seth::Log.stub(:warn)
 
-      @app = Chef::Application.new
-      #Chef::Config.stub(:merge!).and_return(true)
+      @app = Seth::Application.new
+      #Seth::Config.stub(:merge!).and_return(true)
       @app.stub(:parse_options).and_return(true)
     end
 
     it "should parse the commandline options" do
       @app.should_receive(:parse_options).and_return(true)
-      @app.config[:config_file] = "/etc/chef/default.rb" #have a config file set, to prevent triggering error block
-      @app.configure_chef
+      @app.config[:config_file] = "/etc/seth/default.rb" #have a config file set, to prevent triggering error block
+      @app.configure_seth
     end
 
     describe "when a config_file is present" do
       let(:config_content) { "rspec_ran('true')" }
-      let(:config_location) { "/etc/chef/default.rb" }
+      let(:config_location) { "/etc/seth/default.rb" }
 
       let(:config_location_pathname) do
         p = Pathname.new(config_location)
@@ -125,15 +125,15 @@ describe Chef::Application do
           and_return(config_content)
       end
 
-      it "should configure chef::config from a file" do
-        Chef::Config.should_receive(:from_string).with(config_content, config_location)
-        @app.configure_chef
+      it "should configure seth::config from a file" do
+        Seth::Config.should_receive(:from_string).with(config_content, config_location)
+        @app.configure_seth
       end
 
-      it "should merge the local config hash into chef::config" do
-        #File.should_receive(:open).with("/etc/chef/default.rb").and_yield(@config_file)
-        @app.configure_chef
-        Chef::Config.rspec_ran.should == "true"
+      it "should merge the local config hash into seth::config" do
+        #File.should_receive(:open).with("/etc/seth/default.rb").and_yield(@config_file)
+        @app.configure_seth
+        Seth::Config.rspec_ran.should == "true"
       end
 
     end
@@ -144,40 +144,40 @@ describe Chef::Application do
       end
 
       it "should emit a warning" do
-        Chef::Config.should_not_receive(:from_file).with("/etc/chef/default.rb")
-        Chef::Log.should_receive(:warn).with("No config file found or specified on command line, using command line options.")
-        @app.configure_chef
+        Seth::Config.should_not_receive(:from_file).with("/etc/seth/default.rb")
+        Seth::Log.should_receive(:warn).with("No config file found or specified on command line, using command line options.")
+        @app.configure_seth
       end
     end
 
     describe "when the config file is set and not found" do
       before do
-        @app.config[:config_file] = "/etc/chef/notfound"
+        @app.config[:config_file] = "/etc/seth/notfound"
       end
       it "should use the passed in command line options and defaults" do
-        Chef::Config.should_receive(:merge!)
-        @app.configure_chef
+        Seth::Config.should_receive(:merge!)
+        @app.configure_seth
       end
     end
   end
 
   describe "when configuring the logger" do
     before do
-      @app = Chef::Application.new
-      Chef::Log.stub(:init)
+      @app = Seth::Application.new
+      Seth::Log.stub(:init)
     end
 
-    it "should initialise the chef logger" do
-      Chef::Log.stub(:level=)
+    it "should initialise the seth logger" do
+      Seth::Log.stub(:level=)
       @monologger = double("Monologger")
-      MonoLogger.should_receive(:new).with(Chef::Config[:log_location]).and_return(@monologger)
-      Chef::Log.should_receive(:init).with(@monologger)
+      MonoLogger.should_receive(:new).with(Seth::Config[:log_location]).and_return(@monologger)
+      Seth::Log.should_receive(:init).with(@monologger)
       @app.configure_logging
     end
 
     it "should raise fatals if log location is invalid" do
-      Chef::Config[:log_location] = "/tmp/non-existing-dir/logfile"
-      Chef::Log.should_receive(:fatal).at_least(:once)
+      Seth::Config[:log_location] = "/tmp/non-existing-dir/logfile"
+      Seth::Log.should_receive(:fatal).at_least(:once)
       Process.should_receive(:exit)
       @app.configure_logging
     end
@@ -190,17 +190,17 @@ describe Chef::Application do
 
         it "configures the log level to :warn" do
           @app.configure_logging
-          Chef::Log.level.should == :warn
+          Seth::Log.level.should == :warn
         end
 
         context "when force_logger is configured" do
           before do
-            Chef::Config[:force_logger] = true
+            Seth::Config[:force_logger] = true
           end
 
           it "configures the log level to info" do
             @app.configure_logging
-            Chef::Log.level.should == :info
+            Seth::Log.level.should == :info
           end
         end
       end
@@ -212,16 +212,16 @@ describe Chef::Application do
 
         it "configures the log level to :info" do
           @app.configure_logging
-          Chef::Log.level.should == :info
+          Seth::Log.level.should == :info
         end
 
         context "when force_formatter is configured" do
           before do
-            Chef::Config[:force_formatter] = true
+            Seth::Config[:force_formatter] = true
           end
           it "sets the log level to :warn" do
             @app.configure_logging
-            Chef::Log.level.should == :warn
+            Seth::Log.level.should == :warn
           end
         end
       end
@@ -233,7 +233,7 @@ describe Chef::Application do
 
     context "when log_level is :auto" do
       before do
-        Chef::Config[:log_level] = :auto
+        Seth::Config[:log_level] = :auto
       end
 
       it_behaves_like "log_level_is_auto"
@@ -250,7 +250,7 @@ describe Chef::Application do
 
     shared_examples_for "setting ENV['http_proxy']" do
       before do
-        Chef::Config[:http_proxy] = http_proxy
+        Seth::Config[:http_proxy] = http_proxy
       end
 
       it "should set ENV['http_proxy']" do
@@ -258,9 +258,9 @@ describe Chef::Application do
         @env['http_proxy'].should == "http://#{address}:#{port}"
       end
 
-      describe "when Chef::Config[:http_proxy_user] is set" do
+      describe "when Seth::Config[:http_proxy_user] is set" do
         before do
-          Chef::Config[:http_proxy_user] = "username"
+          Seth::Config[:http_proxy_user] = "username"
         end
 
         it "should set ENV['http_proxy'] with the username" do
@@ -270,7 +270,7 @@ describe Chef::Application do
 
         context "when :http_proxy_user contains '@' and/or ':'" do
           before do
-            Chef::Config[:http_proxy_user] = "my:usern@me"
+            Seth::Config[:http_proxy_user] = "my:usern@me"
           end
 
           it "should set ENV['http_proxy'] with the escaped username" do
@@ -279,9 +279,9 @@ describe Chef::Application do
           end
         end
 
-        describe "when Chef::Config[:http_proxy_pass] is set" do
+        describe "when Seth::Config[:http_proxy_pass] is set" do
           before do
-            Chef::Config[:http_proxy_pass] = "password"
+            Seth::Config[:http_proxy_pass] = "password"
           end
 
           it "should set ENV['http_proxy'] with the password" do
@@ -291,7 +291,7 @@ describe Chef::Application do
 
           context "when :http_proxy_pass contains '@' and/or ':'" do
             before do
-              Chef::Config[:http_proxy_pass] = ":P@ssword101"
+              Seth::Config[:http_proxy_pass] = ":P@ssword101"
             end
 
             it "should set ENV['http_proxy'] with the escaped password" do
@@ -302,10 +302,10 @@ describe Chef::Application do
         end
       end
 
-      describe "when Chef::Config[:http_proxy_pass] is set (but not Chef::Config[:http_proxy_user])" do
+      describe "when Seth::Config[:http_proxy_pass] is set (but not Chef::Config[:http_proxy_user])" do
         before do
-          Chef::Config[:http_proxy_user] = nil
-          Chef::Config[:http_proxy_pass] = "password"
+          Seth::Config[:http_proxy_user] = nil
+          Seth::Config[:http_proxy_pass] = "password"
         end
 
         it "should set ENV['http_proxy']" do
@@ -325,9 +325,9 @@ describe Chef::Application do
         @app.stub(:configure_no_proxy).and_return(true)
       end
 
-      describe "when Chef::Config[:http_proxy] is not set" do
+      describe "when Seth::Config[:http_proxy] is not set" do
         before do
-          Chef::Config[:http_proxy] = nil
+          Seth::Config[:http_proxy] = nil
         end
 
         it "should not set ENV['http_proxy']" do
@@ -336,7 +336,7 @@ describe Chef::Application do
         end
       end
 
-      describe "when Chef::Config[:http_proxy] is set" do
+      describe "when Seth::Config[:http_proxy] is set" do
         context "when given an FQDN" do
           let(:address) { "proxy.example.org" }
           let(:port) { 8080 }
@@ -371,21 +371,21 @@ describe Chef::Application do
 
         context "when given the full proxy in :http_proxy only" do
           before do
-            Chef::Config[:http_proxy] = "http://username:password@proxy.example.org:2222"
-            Chef::Config[:http_proxy_user] = nil
-            Chef::Config[:http_proxy_pass] = nil
+            Seth::Config[:http_proxy] = "http://username:password@proxy.example.org:2222"
+            Seth::Config[:http_proxy_user] = nil
+            Seth::Config[:http_proxy_pass] = nil
           end
 
           it "should set ENV['http_proxy']" do
             @app.configure_proxy_environment_variables
-            @env['http_proxy'].should == Chef::Config[:http_proxy]
+            @env['http_proxy'].should == Seth::Config[:http_proxy]
           end
         end
 
         context "when the config options aren't URI compliant" do
-          it "raises Chef::Exceptions::BadProxyURI" do
-            Chef::Config[:http_proxy] = "http://proxy.bad_example.org/:8080"
-            expect { @app.configure_proxy_environment_variables }.to raise_error(Chef::Exceptions::BadProxyURI)
+          it "raises Seth::Exceptions::BadProxyURI" do
+            Seth::Config[:http_proxy] = "http://proxy.bad_example.org/:8080"
+            expect { @app.configure_proxy_environment_variables }.to raise_error(Seth::Exceptions::BadProxyURI)
           end
         end
       end
@@ -395,26 +395,26 @@ describe Chef::Application do
   describe "class method: fatal!" do
     before do
       STDERR.stub(:puts).with("FATAL: blah").and_return(true)
-      Chef::Log.stub(:fatal).and_return(true)
+      Seth::Log.stub(:fatal).and_return(true)
       Process.stub(:exit).and_return(true)
     end
 
     it "should log an error message to the logger" do
-      Chef::Log.should_receive(:fatal).with("blah").and_return(true)
-      Chef::Application.fatal! "blah"
+      Seth::Log.should_receive(:fatal).with("blah").and_return(true)
+      Seth::Application.fatal! "blah"
     end
 
     describe "when an exit code is supplied" do
       it "should exit with the given exit code" do
         Process.should_receive(:exit).with(-100).and_return(true)
-        Chef::Application.fatal! "blah", -100
+        Seth::Application.fatal! "blah", -100
       end
     end
 
     describe "when an exit code is not supplied" do
       it "should exit with the default exit code" do
         Process.should_receive(:exit).with(-1).and_return(true)
-        Chef::Application.fatal! "blah"
+        Seth::Application.fatal! "blah"
       end
     end
 
@@ -422,21 +422,21 @@ describe Chef::Application do
 
   describe "setup_application" do
     before do
-      @app = Chef::Application.new
+      @app = Seth::Application.new
     end
 
     it "should raise an error" do
-      lambda { @app.setup_application }.should raise_error(Chef::Exceptions::Application)
+      lambda { @app.setup_application }.should raise_error(Seth::Exceptions::Application)
     end
   end
 
   describe "run_application" do
     before do
-      @app = Chef::Application.new
+      @app = Seth::Application.new
     end
 
     it "should raise an error" do
-      lambda { @app.run_application }.should raise_error(Chef::Exceptions::Application)
+      lambda { @app.run_application }.should raise_error(Seth::Exceptions::Application)
     end
   end
 
@@ -444,9 +444,9 @@ describe Chef::Application do
     it "should warn for bad config file path" do
       @app.config[:config_file] = "/tmp/non-existing-dir/file"
       config_file_regexp = Regexp.new @app.config[:config_file]
-      Chef::Log.should_receive(:warn).at_least(:once).with(config_file_regexp).and_return(true)
-      Chef::Log.stub(:warn).and_return(true)
-      @app.configure_chef
+      Seth::Log.should_receive(:warn).at_least(:once).with(config_file_regexp).and_return(true)
+      Seth::Log.stub(:warn).and_return(true)
+      @app.configure_seth
     end
   end
 
@@ -455,19 +455,19 @@ describe Chef::Application do
       Process.should_receive(:exit)
     end
 
-    def raises_informative_fatals_on_configure_chef
+    def raises_informative_fatals_on_configure_seth
       config_file_regexp = Regexp.new @app.config[:config_file]
-      Chef::Log.should_receive(:fatal).
+      Seth::Log.should_receive(:fatal).
         with(/Configuration error/)
-      Chef::Log.should_receive(:fatal).
+      Seth::Log.should_receive(:fatal).
         with(config_file_regexp).
         at_least(1).times
-      @app.configure_chef
+      @app.configure_seth
     end
 
     describe "when config file exists but contains errors" do
       def create_config_file(text)
-        @config_file = Tempfile.new("rspec-chef-config")
+        @config_file = Tempfile.new("rspec-seth-config")
         @config_file.write(text)
         @config_file.close
         @app.config[:config_file] = @config_file.path
@@ -479,7 +479,7 @@ describe Chef::Application do
 
       it "should raise informative fatals for badly written config" do
         create_config_file("text that should break the config parsing")
-        raises_informative_fatals_on_configure_chef
+        raises_informative_fatals_on_configure_seth
       end
     end
   end

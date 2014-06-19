@@ -18,28 +18,28 @@
 
 require 'spec_helper'
 
-require 'chef/cookbook_uploader'
-require 'chef/cookbook_site_streaming_uploader'
+require 'seth/cookbook_uploader'
+require 'seth/cookbook_site_streaming_uploader'
 
-describe Chef::Knife::CookbookSiteShare do
+describe Seth::Knife::CookbookSiteShare do
 
   before(:each) do
-    @knife = Chef::Knife::CookbookSiteShare.new
+    @knife = Seth::Knife::CookbookSiteShare.new
     @knife.name_args = ['cookbook_name', 'AwesomeSausage']
 
-    @cookbook = Chef::CookbookVersion.new('cookbook_name')
+    @cookbook = Seth::CookbookVersion.new('cookbook_name')
 
-    @cookbook_loader = double('Chef::CookbookLoader')
+    @cookbook_loader = double('Seth::CookbookLoader')
     @cookbook_loader.stub(:cookbook_exists?).and_return(true)
     @cookbook_loader.stub(:[]).and_return(@cookbook)
-    Chef::CookbookLoader.stub(:new).and_return(@cookbook_loader)
+    Seth::CookbookLoader.stub(:new).and_return(@cookbook_loader)
 
-    @cookbook_uploader = Chef::CookbookUploader.new('herpderp', File.join(CHEF_SPEC_DATA, 'cookbooks'), :rest => "norest")
-    Chef::CookbookUploader.stub(:new).and_return(@cookbook_uploader)
+    @cookbook_uploader = Seth::CookbookUploader.new('herpderp', File.join(CHEF_SPEC_DATA, 'cookbooks'), :rest => "norest")
+    Seth::CookbookUploader.stub(:new).and_return(@cookbook_uploader)
     @cookbook_uploader.stub(:validate_cookbooks).and_return(true)
-    Chef::CookbookSiteStreamingUploader.stub(:create_build_dir).and_return(Dir.mktmpdir)
+    Seth::CookbookSiteStreamingUploader.stub(:create_build_dir).and_return(Dir.mktmpdir)
 
-    Chef::Mixin::Command.stub(:run_command).and_return(true)
+    Seth::Mixin::Command.stub(:run_command).and_return(true)
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
   end
@@ -76,14 +76,14 @@ describe Chef::Knife::CookbookSiteShare do
     end
 
     it 'should make a tarball of the cookbook' do
-      Chef::Mixin::Command.should_receive(:run_command) { |args|
+      Seth::Mixin::Command.should_receive(:run_command) { |args|
         args[:command].should match /tar -czf/
       }
       @knife.run
     end
 
     it 'should exit and log to error when the tarball creation fails' do
-      Chef::Mixin::Command.stub(:run_command).and_raise(Chef::Exceptions::Exec)
+      Seth::Mixin::Command.stub(:run_command).and_raise(Chef::Exceptions::Exec)
       @knife.ui.should_receive(:error)
       lambda { @knife.run }.should raise_error(SystemExit)
     end
@@ -99,7 +99,7 @@ describe Chef::Knife::CookbookSiteShare do
 
     before(:each) do
       @upload_response = double('Net::HTTPResponse')
-      Chef::CookbookSiteStreamingUploader.stub(:post).and_return(@upload_response)
+      Seth::CookbookSiteStreamingUploader.stub(:post).and_return(@upload_response)
 
       @stdout = StringIO.new
       @stderr = StringIO.new
@@ -112,7 +112,7 @@ describe Chef::Knife::CookbookSiteShare do
       response_text = {:uri => 'http://cookbooks.opscode.com/cookbooks/cookbook_name'}.to_json
       @upload_response.stub(:body).and_return(response_text)
       @upload_response.stub(:code).and_return(201)
-      Chef::CookbookSiteStreamingUploader.should_receive(:post).with(/cookbooks\.opscode\.com/, anything(), anything(), anything())
+      Seth::CookbookSiteStreamingUploader.should_receive(:post).with(/cookbooks\.opscode\.com/, anything(), anything(), anything())
       @knife.run
     end
 

@@ -1,8 +1,8 @@
-require 'chef/chef_fs/data_handler/data_handler_base'
-require 'chef/cookbook/metadata'
+require 'seth/chef_fs/data_handler/data_handler_base'
+require 'seth/cookbook/metadata'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module DataHandler
       class CookbookDataHandler < DataHandlerBase
         def normalize(cookbook, entry)
@@ -12,8 +12,8 @@ class Chef
             'name' => "#{name}-#{version}",
             'version' => version,
             'cookbook_name' => name,
-            'json_class' => 'Chef::CookbookVersion',
-            'chef_type' => 'cookbook_version',
+            'json_class' => 'Seth::CookbookVersion',
+            'seth_type' => 'cookbook_version',
             'frozen?' => false,
             'metadata' => {}
           })
@@ -27,8 +27,8 @@ class Chef
           return key == 'cookbook_name' || key == 'version'
         end
 
-        def chef_class
-          Chef::Cookbook::Metadata
+        def seth_class
+          Seth::Cookbook::Metadata
         end
 
         # Not using this yet, so not sure if to_ruby will be useful.

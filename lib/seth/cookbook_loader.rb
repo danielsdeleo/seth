@@ -18,17 +18,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/config'
-require 'chef/exceptions'
-require 'chef/cookbook/cookbook_version_loader'
-require 'chef/cookbook_version'
-require 'chef/cookbook/chefignore'
-require 'chef/cookbook/metadata'
+require 'seth/config'
+require 'seth/exceptions'
+require 'seth/cookbook/cookbook_version_loader'
+require 'seth/cookbook_version'
+require 'seth/cookbook/chefignore'
+require 'seth/cookbook/metadata'
 
 #
 # CookbookLoader class loads the cookbooks lazily as read
 #
-class Chef
+class Seth
   class CookbookLoader
 
     attr_reader :cookbooks_by_name
@@ -45,7 +45,7 @@ class Chef
       @loaded_cookbooks = {}
       @metadata = Mash.new
       @cookbooks_paths = Hash.new {|h,k| h[k] = []} # for deprecation warnings
-      @chefignores = {}
+      @sethignores = {}
       @repo_paths = repo_paths.map do |repo_path|
         repo_path = File.expand_path(repo_path)
       end
@@ -75,10 +75,10 @@ class Chef
     def load_cookbook(cookbook_name, repo_paths=nil)
       repo_paths ||= @repo_paths
       repo_paths.each do |repo_path|
-        @chefignores[repo_path] ||= Cookbook::Chefignore.new(repo_path)
+        @sethignores[repo_path] ||= Cookbook::Sethignore.new(repo_path)
         cookbook_path = File.join(repo_path, cookbook_name.to_s)
         next unless File.directory?(cookbook_path) and Dir[File.join(repo_path, "*")].include?(cookbook_path)
-        loader = Cookbook::CookbookVersionLoader.new(cookbook_path, @chefignores[repo_path])
+        loader = Cookbook::CookbookVersionLoader.new(cookbook_path, @sethignores[repo_path])
         loader.load_cookbooks
         next if loader.empty?
         cookbook_name = loader.cookbook_name
@@ -103,7 +103,7 @@ class Chef
       if @cookbooks_by_name.has_key?(cookbook.to_sym) or load_cookbook(cookbook.to_sym)
         @cookbooks_by_name[cookbook.to_sym]
       else
-        raise Exceptions::CookbookNotFoundInRepo, "Cannot find a cookbook named #{cookbook.to_s}; did you forget to add metadata to a cookbook? (http://wiki.opscode.com/display/chef/Metadata)"
+        raise Exceptions::CookbookNotFoundInRepo, "Cannot find a cookbook named #{cookbook.to_s}; did you forget to add metadata to a cookbook? (http://wiki.opscode.com/display/seth/Metadata)"
       end
     end
 

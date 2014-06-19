@@ -17,21 +17,21 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/log'
-require 'chef/resource/file'
-require 'chef/provider'
+require 'seth/config'
+require 'seth/log'
+require 'seth/resource/file'
+require 'seth/provider'
 require 'etc'
 require 'fileutils'
-require 'chef/scan_access_control'
-require 'chef/mixin/checksum'
-require 'chef/mixin/shell_out'
-require 'chef/mixin/file_class'
-require 'chef/util/backup'
-require 'chef/util/diff'
-require 'chef/deprecation/provider/file'
-require 'chef/deprecation/warnings'
-require 'chef/file_content_management/deploy'
+require 'seth/scan_access_control'
+require 'seth/mixin/checksum'
+require 'seth/mixin/shell_out'
+require 'seth/mixin/file_class'
+require 'seth/util/backup'
+require 'seth/util/diff'
+require 'seth/deprecation/provider/file'
+require 'seth/deprecation/warnings'
+require 'seth/file_content_management/deploy'
 
 # The Tao of File Providers:
 #  - the content provider must always return a tempfile that we can delete/mv
@@ -43,25 +43,25 @@ require 'chef/file_content_management/deploy'
 #  - do_acl_changes may assume perms were not modified between lcr and when it runs (although the
 #    file may have been created)
 
-class Chef
+class Seth
   class Provider
-    class File < Chef::Provider
-      include Chef::Mixin::EnforceOwnershipAndPermissions
-      include Chef::Mixin::Checksum
-      include Chef::Mixin::ShellOut
-      include Chef::Util::Selinux
-      include Chef::Mixin::FileClass
+    class File < Seth::Provider
+      include Seth::Mixin::EnforceOwnershipAndPermissions
+      include Seth::Mixin::Checksum
+      include Seth::Mixin::ShellOut
+      include Seth::Util::Selinux
+      include Seth::Mixin::FileClass
 
-      extend Chef::Deprecation::Warnings
-      include Chef::Deprecation::Provider::File
-      add_deprecation_warnings_for(Chef::Deprecation::Provider::File.instance_methods)
+      extend Seth::Deprecation::Warnings
+      include Seth::Deprecation::Provider::File
+      add_deprecation_warnings_for(Seth::Deprecation::Provider::File.instance_methods)
 
       attr_reader :deployment_strategy
 
       def initialize(new_resource, run_context)
-        @content_class ||= Chef::Provider::File::Content
+        @content_class ||= Seth::Provider::File::Content
         if new_resource.respond_to?(:atomic_update)
-          @deployment_strategy = Chef::FileContentManagement::Deploy.strategy(new_resource.atomic_update)
+          @deployment_strategy = Seth::FileContentManagement::Deploy.strategy(new_resource.atomic_update)
         end
         super
       end
@@ -72,11 +72,11 @@ class Chef
 
       def load_current_resource
         # Let children resources override constructing the @current_resource
-        @current_resource ||= Chef::Resource::File.new(@new_resource.name)
+        @current_resource ||= Seth::Resource::File.new(@new_resource.name)
         @current_resource.path(@new_resource.path)
         if ::File.exists?(@current_resource.path) && ::File.file?(::File.realpath(@current_resource.path))
           if managing_content?
-            Chef::Log.debug("#{@new_resource} checksumming file at #{@new_resource.path}.")
+            Seth::Log.debug("#{@new_resource} checksumming file at #{@new_resource.path}.")
             @current_resource.checksum(checksum(@current_resource.path))
           end
           load_resource_attributes_from_file(@current_resource)
@@ -91,7 +91,7 @@ class Chef
         requirements.assert(:create, :create_if_missing, :touch) do |a|
           parent_directory = ::File.dirname(@new_resource.path)
           a.assertion { ::File.directory?(parent_directory) }
-          a.failure_message(Chef::Exceptions::EnclosingDirectoryDoesNotExist, "Parent directory #{parent_directory} does not exist.")
+          a.failure_message(Seth::Exceptions::EnclosingDirectoryDoesNotExist, "Parent directory #{parent_directory} does not exist.")
           a.whyrun("Assuming directory #{parent_directory} would have been created")
         end
 
@@ -99,7 +99,7 @@ class Chef
         if ::File.exists?(@new_resource.path)
           requirements.assert(:delete) do |a|
             a.assertion { ::File.writable?(@new_resource.path) }
-            a.failure_message(Chef::Exceptions::InsufficientPermissions,"File #{@new_resource.path} exists but is not writable so it cannot be deleted")
+            a.failure_message(Seth::Exceptions::InsufficientPermissions,"File #{@new_resource.path} exists but is not writable so it cannot be deleted")
           end
         end
 
@@ -126,7 +126,7 @@ class Chef
 
       def action_create_if_missing
         if ::File.exists?(@new_resource.path)
-          Chef::Log.debug("#{@new_resource} exists at #{@new_resource.path} taking no action.")
+          Seth::Log.debug("#{@new_resource} exists at #{@new_resource.path} taking no action.")
         else
           action_create
         end
@@ -137,7 +137,7 @@ class Chef
           converge_by("delete file #{@new_resource.path}") do
             do_backup unless file_class.symlink?(@new_resource.path)
             ::File.delete(@new_resource.path)
-            Chef::Log.info("#{@new_resource} deleted file at #{@new_resource.path}")
+            Seth::Log.info("#{@new_resource} deleted file at #{@new_resource.path}")
           end
         end
       end
@@ -147,7 +147,7 @@ class Chef
         converge_by("update utime on file #{@new_resource.path}") do
           time = Time.now
           ::File.utime(time, time, @new_resource.path)
-          Chef::Log.info("#{@new_resource} updated atime and mtime to #{time}")
+          Seth::Log.info("#{@new_resource} updated atime and mtime to #{time}")
         end
       end
 
@@ -204,14 +204,14 @@ class Chef
         elsif file_class.symlink?(path) && @new_resource.manage_symlink_source
           verify_symlink_sanity(path)
         elsif file_class.symlink?(@new_resource.path) && @new_resource.manage_symlink_source.nil?
-          Chef::Log.warn("File #{path} managed by #{@new_resource} is really a symlink. Managing the source file instead.")
-          Chef::Log.warn("Disable this warning by setting `manage_symlink_source true` on the resource")
-          Chef::Log.warn("In a future Chef release, 'manage_symlink_source' will not be enabled by default")
+          Seth::Log.warn("File #{path} managed by #{@new_resource} is really a symlink. Managing the source file instead.")
+          Seth::Log.warn("Disable this warning by setting `manage_symlink_source true` on the resource")
+          Seth::Log.warn("In a future Chef release, 'manage_symlink_source' will not be enabled by default")
           verify_symlink_sanity(path)
         elsif @new_resource.force_unlink
           [nil, nil, nil]
         else
-          [ Chef::Exceptions::FileTypeMismatch,
+          [ Seth::Exceptions::FileTypeMismatch,
             "File #{path} exists, but is a #{file_type_string(@new_resource.path)}, set force_unlink to true to remove",
             "Assuming #{file_type_string(@new_resource.path)} at #{@new_resource.path} would have been removed by a previous resource"
           ]
@@ -231,18 +231,18 @@ class Chef
         if real_file?(real_path)
           [nil, nil, nil]
         else
-          [ Chef::Exceptions::FileTypeMismatch,
+          [ Seth::Exceptions::FileTypeMismatch,
             "File #{path} exists, but is a symlink to #{real_path} which is a #{file_type_string(real_path)}. " +
             "Disable manage_symlink_source and set force_unlink to remove it.",
             "Assuming symlink #{path} or source file #{real_path} would have been fixed by a previous resource"
           ]
         end
       rescue Errno::ELOOP
-        [ Chef::Exceptions::InvalidSymlink,
+        [ Seth::Exceptions::InvalidSymlink,
           "Symlink at #{path} (pointing to #{::File.readlink(path)}) exists but attempting to resolve it creates a loop",
           "Assuming symlink loop would be fixed by a previous resource" ]
       rescue Errno::ENOENT
-        [ Chef::Exceptions::InvalidSymlink,
+        [ Seth::Exceptions::InvalidSymlink,
           "Symlink at #{path} (pointing to #{::File.readlink(path)}) exists but attempting to resolve it leads to a nonexistent file",
           "Assuming symlink source would be created by a previous resource" ]
       end
@@ -317,7 +317,7 @@ class Chef
         if !::File.exists?(@new_resource.path) || file_unlinked?
           converge_by("create new file #{@new_resource.path}") do
             deployment_strategy.create(@new_resource.path)
-            Chef::Log.info("#{@new_resource} created file #{@new_resource.path}")
+            Seth::Log.info("#{@new_resource} created file #{@new_resource.path}")
           end
           @file_created = true
         end
@@ -329,17 +329,17 @@ class Chef
       end
 
       def do_backup(file = nil)
-        Chef::Util::Backup.new(@new_resource, file).backup!
+        Seth::Util::Backup.new(@new_resource, file).backup!
       end
 
       def diff
-        @diff ||= Chef::Util::Diff.new
+        @diff ||= Seth::Util::Diff.new
       end
 
       def update_file_contents
         do_backup unless file_created?
         deployment_strategy.deploy(tempfile.path, ::File.realpath(@new_resource.path))
-        Chef::Log.info("#{@new_resource} updated file contents #{@new_resource.path}")
+        Seth::Log.info("#{@new_resource} updated file contents #{@new_resource.path}")
         if managing_content?
           @new_resource.checksum(checksum(@new_resource.path)) # for reporting
         end
@@ -350,7 +350,7 @@ class Chef
         return if tempfile.nil?
         # but a tempfile that has no path or doesn't exist should not happen
         if tempfile.path.nil? || !::File.exists?(tempfile.path)
-          raise "chef-client is confused, trying to deploy a file that has no path or does not exist..."
+          raise "seth-client is confused, trying to deploy a file that has no path or does not exist..."
         end
 
         # the file? on the next line suppresses the case in why-run when we have a not-file here that would have otherwise been removed
@@ -383,13 +383,13 @@ class Chef
       # resources, but for now we only have the single selinux use
       # case.
       def do_selinux(recursive = false)
-        if resource_updated? && Chef::Config[:enable_selinux_file_permission_fixup]
+        if resource_updated? && Seth::Config[:enable_selinux_file_permission_fixup]
           if selinux_enabled?
             converge_by("restore selinux security context") do
               restore_security_context(::File.realpath(@new_resource.path), recursive)
             end
           else
-            Chef::Log.debug "selinux utilities can not be found. Skipping selinux permission fixup."
+            Seth::Log.debug "selinux utilities can not be found. Skipping selinux permission fixup."
           end
         end
       end
@@ -403,7 +403,7 @@ class Chef
       end
 
       def contents_changed?
-        Chef::Log.debug "calculating checksum of #{tempfile.path} to compare with #{@current_resource.checksum}"
+        Seth::Log.debug "calculating checksum of #{tempfile.path} to compare with #{@current_resource.checksum}"
         checksum(tempfile.path) != @current_resource.checksum
       end
 
@@ -418,7 +418,7 @@ class Chef
 
       def load_resource_attributes_from_file(resource)
 
-        if Chef::Platform.windows?
+        if Seth::Platform.windows?
           # This is a work around for CHEF-3554.
           # OC-6534: is tracking the real fix for this workaround.
           # Add support for Windows equivalent, or implicit resource

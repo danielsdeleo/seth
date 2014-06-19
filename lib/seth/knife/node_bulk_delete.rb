@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class NodeBulkDelete < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife node bulk delete REGEX (options)"
@@ -63,10 +63,10 @@ class Chef
       end
 
       def all_nodes
-        node_uris_by_name = Chef::Node.list
+        node_uris_by_name = Seth::Node.list
 
         node_uris_by_name.keys.inject({}) do |nodes_by_name, name|
-          nodes_by_name[name] = Chef::Node.new.tap {|n| n.name(name)}
+          nodes_by_name[name] = Seth::Node.new.tap {|n| n.name(name)}
           nodes_by_name
         end
       end

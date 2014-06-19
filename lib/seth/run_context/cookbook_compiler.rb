@@ -17,16 +17,16 @@
 #
 
 require 'set'
-require 'chef/log'
-require 'chef/recipe'
-require 'chef/resource/lwrp_base'
-require 'chef/provider/lwrp_base'
-require 'chef/resource_definition_list'
+require 'seth/log'
+require 'seth/recipe'
+require 'seth/resource/lwrp_base'
+require 'seth/provider/lwrp_base'
+require 'seth/resource_definition_list'
 
-class Chef
+class Seth
   class RunContext
 
-    # Implements the compile phase of the chef run by loading/eval-ing files
+    # Implements the compile phase of the seth run by loading/eval-ing files
     # from cookbooks in the correct order and in the correct context.
     class CookbookCompiler
       attr_reader :events
@@ -39,12 +39,12 @@ class Chef
         @cookbook_order = nil
       end
 
-      # Chef::Node object for the current run.
+      # Seth::Node object for the current run.
       def node
         @run_context.node
       end
 
-      # Chef::CookbookCollection object for the current run
+      # Seth::CookbookCollection object for the current run
       def cookbook_collection
         @run_context.cookbook_collection
       end
@@ -55,7 +55,7 @@ class Chef
         @run_context.definitions
       end
 
-      # Run the compile phase of the chef run. Loads files in the following order:
+      # Run the compile phase of the seth run. Loads files in the following order:
       # * Libraries
       # * Attributes
       # * LWRPs
@@ -84,10 +84,10 @@ class Chef
           ordered_cookbooks = []
           seen_cookbooks = {}
           run_list_expansion.recipes.each do |recipe|
-            cookbook = Chef::Recipe.parse_recipe_name(recipe).first
+            cookbook = Seth::Recipe.parse_recipe_name(recipe).first
             add_cookbook_with_deps(ordered_cookbooks, seen_cookbooks, cookbook)
           end
-          Chef::Log.debug("Cookbooks to compile: #{ordered_cookbooks.inspect}")
+          Seth::Log.debug("Cookbooks to compile: #{ordered_cookbooks.inspect}")
           ordered_cookbooks
         end
       end
@@ -138,7 +138,7 @@ class Chef
         run_list_expansion.recipes.each do |recipe|
           begin
             @run_context.load_recipe(recipe)
-          rescue Chef::Exceptions::RecipeNotFound => e
+          rescue Seth::Exceptions::RecipeNotFound => e
             @events.recipe_not_found(e)
             raise
           rescue Exception => e
@@ -176,7 +176,7 @@ class Chef
       end
 
       def load_attribute_file(cookbook_name, filename)
-        Chef::Log.debug("Node #{node.name} loading cookbook #{cookbook_name}'s attribute file #{filename}")
+        Seth::Log.debug("Node #{node.name} loading cookbook #{cookbook_name}'s attribute file #{filename}")
         attr_file_basename = ::File.basename(filename, ".rb")
         node.include_attribute("#{cookbook_name}::#{attr_file_basename}")
       rescue Exception => e
@@ -187,7 +187,7 @@ class Chef
       def load_libraries_from_cookbook(cookbook_name)
         files_in_cookbook_by_segment(cookbook_name, :libraries).each do |filename|
           begin
-            Chef::Log.debug("Loading cookbook #{cookbook_name}'s library file: #{filename}")
+            Seth::Log.debug("Loading cookbook #{cookbook_name}'s library file: #{filename}")
             Kernel.load(filename)
             @events.library_file_loaded(filename)
           rescue Exception => e
@@ -207,8 +207,8 @@ class Chef
       end
 
       def load_lwrp_provider(cookbook_name, filename)
-        Chef::Log.debug("Loading cookbook #{cookbook_name}'s providers from #{filename}")
-        Chef::Provider::LWRPBase.build_from_file(cookbook_name, filename, self)
+        Seth::Log.debug("Loading cookbook #{cookbook_name}'s providers from #{filename}")
+        Seth::Provider::LWRPBase.build_from_file(cookbook_name, filename, self)
         @events.lwrp_file_loaded(filename)
       rescue Exception => e
         @events.lwrp_file_load_failed(filename, e)
@@ -216,8 +216,8 @@ class Chef
       end
 
       def load_lwrp_resource(cookbook_name, filename)
-        Chef::Log.debug("Loading cookbook #{cookbook_name}'s resources from #{filename}")
-        Chef::Resource::LWRPBase.build_from_file(cookbook_name, filename, self)
+        Seth::Log.debug("Loading cookbook #{cookbook_name}'s resources from #{filename}")
+        Seth::Resource::LWRPBase.build_from_file(cookbook_name, filename, self)
         @events.lwrp_file_loaded(filename)
       rescue Exception => e
         @events.lwrp_file_load_failed(filename, e)
@@ -228,11 +228,11 @@ class Chef
       def load_resource_definitions_from_cookbook(cookbook_name)
         files_in_cookbook_by_segment(cookbook_name, :definitions).each do |filename|
           begin
-            Chef::Log.debug("Loading cookbook #{cookbook_name}'s definitions from #{filename}")
-            resourcelist = Chef::ResourceDefinitionList.new
+            Seth::Log.debug("Loading cookbook #{cookbook_name}'s definitions from #{filename}")
+            resourcelist = Seth::ResourceDefinitionList.new
             resourcelist.from_file(filename)
             definitions.merge!(resourcelist.defines) do |key, oldval, newval|
-              Chef::Log.info("Overriding duplicate definition #{key}, new definition found in #{filename}")
+              Seth::Log.info("Overriding duplicate definition #{key}, new definition found in #{filename}")
               newval
             end
             @events.definition_file_loaded(filename)
@@ -280,7 +280,7 @@ class Chef
 
       # Given a +recipe_name+, finds the file associated with the recipe.
       def resolve_recipe(recipe_name)
-        cookbook_name, recipe_short_name = Chef::Recipe.parse_recipe_name(recipe_name)
+        cookbook_name, recipe_short_name = Seth::Recipe.parse_recipe_name(recipe_name)
         cookbook = cookbook_collection[cookbook_name]
         cookbook.recipe_filenames_by_name[recipe_short_name]
       end

@@ -19,10 +19,10 @@
 require 'spec_helper'
 
 if windows?
-  require 'chef/win32/file' #probably need this in spec_helper
+  require 'seth/win32/file' #probably need this in spec_helper
 end
 
-describe Chef::Resource::Link do
+describe Seth::Resource::Link do
   let(:file_base) { "file_spec" }
 
   let(:expect_updated?) {true}
@@ -78,40 +78,40 @@ describe Chef::Resource::Link do
 
   def symlink(a, b)
     if windows?
-      Chef::ReservedNames::Win32::File.symlink(a, b)
+      Seth::ReservedNames::Win32::File.symlink(a, b)
     else
       File.symlink(a, b)
     end
   end
   def symlink?(file)
     if windows?
-      Chef::ReservedNames::Win32::File.symlink?(file)
+      Seth::ReservedNames::Win32::File.symlink?(file)
     else
       File.symlink?(file)
     end
   end
   def readlink(file)
     if windows?
-      Chef::ReservedNames::Win32::File.readlink(file)
+      Seth::ReservedNames::Win32::File.readlink(file)
     else
       File.readlink(file)
     end
   end
   def link(a, b)
     if windows?
-      Chef::ReservedNames::Win32::File.link(a, b)
+      Seth::ReservedNames::Win32::File.link(a, b)
     else
       File.link(a, b)
     end
   end
 
   def create_resource
-    node = Chef::Node.new
-    events = Chef::EventDispatch::Dispatcher.new
+    node = Seth::Node.new
+    events = Seth::EventDispatch::Dispatcher.new
     cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-    cookbook_collection = Chef::CookbookCollection.new(Chef::CookbookLoader.new(cookbook_repo))
-    run_context = Chef::RunContext.new(node, cookbook_collection, events)
-    resource = Chef::Resource::Link.new(target_file, run_context)
+    cookbook_collection = Seth::CookbookCollection.new(Chef::CookbookLoader.new(cookbook_repo))
+    run_context = Seth::RunContext.new(node, cookbook_collection, events)
+    resource = Seth::Resource::Link.new(target_file, run_context)
     resource.to(to)
     resource
   end
@@ -123,7 +123,7 @@ describe Chef::Resource::Link do
   describe "when supported on platform", :not_supported_on_win2k3 do
     shared_examples_for 'delete errors out' do
       it 'delete errors out' do
-        lambda { resource.run_action(:delete) }.should raise_error(Chef::Exceptions::Link)
+        lambda { resource.run_action(:delete) }.should raise_error(Seth::Exceptions::Link)
         (File.exist?(target_file) || symlink?(target_file)).should be_true
       end
     end
@@ -132,7 +132,7 @@ describe Chef::Resource::Link do
       describe 'the :delete action' do
         before(:each) do
           @info = []
-          Chef::Log.stub(:info) { |msg| @info << msg }
+          Seth::Log.stub(:info) { |msg| @info << msg }
           resource.run_action(:delete)
         end
 
@@ -153,7 +153,7 @@ describe Chef::Resource::Link do
       describe 'the :delete action' do
         before(:each) do
           @info = []
-          Chef::Log.stub(:info) { |msg| @info << msg }
+          Seth::Log.stub(:info) { |msg| @info << msg }
           resource.run_action(:delete)
         end
 
@@ -174,7 +174,7 @@ describe Chef::Resource::Link do
       describe 'the :create action' do
         before(:each) do
           @info = []
-          Chef::Log.stub(:info) { |msg| @info << msg }
+          Seth::Log.stub(:info) { |msg| @info << msg }
           resource.run_action(:create)
         end
 
@@ -195,7 +195,7 @@ describe Chef::Resource::Link do
       describe 'the :create action' do
         before(:each) do
           @info = []
-          Chef::Log.stub(:info) { |msg| @info << msg }
+          Seth::Log.stub(:info) { |msg| @info << msg }
           resource.run_action(:create)
         end
 
@@ -216,7 +216,7 @@ describe Chef::Resource::Link do
       describe 'the :create action' do
         before(:each) do
           @info = []
-          Chef::Log.stub(:info) { |msg| @info << msg }
+          Seth::Log.stub(:info) { |msg| @info << msg }
           resource.run_action(:create)
         end
         it 'preserves the hard link' do
@@ -241,7 +241,7 @@ describe Chef::Resource::Link do
       describe 'the :create action' do
         before(:each) do
           @info = []
-          Chef::Log.stub(:info) { |msg| @info << msg }
+          Seth::Log.stub(:info) { |msg| @info << msg }
           resource.run_action(:create)
         end
         it 'links to the target file' do
@@ -519,7 +519,7 @@ describe Chef::Resource::Link do
           it 'ignores them' do
             resource.run_action(:create)
             if windows?
-              Chef::ReservedNames::Win32::Security.get_named_security_info(target_file).owner.should_not == SID.Guest
+              Seth::ReservedNames::Win32::Security.get_named_security_info(target_file).owner.should_not == SID.Guest
             else
               File.lstat(target_file).uid.should_not == Etc.getpwnam('nobody').uid
             end
@@ -532,7 +532,7 @@ describe Chef::Resource::Link do
         end
         context 'and the link does not yet exist' do
           it 'create errors out' do
-            lambda { resource.run_action(:create) }.should raise_error(windows? ? Chef::Exceptions::Win32APIError : Errno::EPERM)
+            lambda { resource.run_action(:create) }.should raise_error(windows? ? Seth::Exceptions::Win32APIError : Errno::EPERM)
           end
           include_context 'delete is noop'
         end
@@ -602,7 +602,7 @@ describe Chef::Resource::Link do
 
   describe "when not supported on platform", :win2k3_only do
     it "raises error" do
-      lambda {resource}.should raise_error(Chef::Exceptions::Win32APIFunctionNotImplemented)
+      lambda {resource}.should raise_error(Seth::Exceptions::Win32APIFunctionNotImplemented)
     end
   end
 end

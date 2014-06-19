@@ -1,5 +1,5 @@
 
-class Chef
+class Seth
   class Provider
 
     # {

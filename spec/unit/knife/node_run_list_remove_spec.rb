@@ -18,13 +18,13 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::NodeRunListRemove do
+describe Seth::Knife::NodeRunListRemove do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::NodeRunListRemove.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::NodeRunListRemove.new
     @knife.config[:print_after] = nil
     @knife.name_args = [ "adam", "role[monkey]" ]
-    @node = Chef::Node.new()
+    @node = Seth::Node.new()
     @node.name("knifetest-node")
     @node.run_list << "role[monkey]"
     @node.stub(:save).and_return(true)
@@ -32,12 +32,12 @@ describe Chef::Knife::NodeRunListRemove do
     @knife.ui.stub(:output).and_return(true)
     @knife.ui.stub(:confirm).and_return(true)
 
-    Chef::Node.stub(:load).and_return(@node)
+    Seth::Node.stub(:load).and_return(@node)
   end
 
   describe "run" do
     it "should load the node" do
-      Chef::Node.should_receive(:load).with("adam").and_return(@node)
+      Seth::Node.should_receive(:load).with("adam").and_return(@node)
       @knife.run
     end
 

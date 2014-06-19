@@ -17,22 +17,22 @@
 #
 
 require 'spec_helper'
-require 'chef/exceptions'
+require 'seth/exceptions'
 
-describe Chef::Provider::Ifconfig::Redhat do
+describe Seth::Provider::Ifconfig::Redhat do
   before do
-    @node = Chef::Node.new
-    @cookbook_collection = Chef::CookbookCollection.new([])
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
+    @node = Seth::Node.new
+    @cookbook_collection = Seth::CookbookCollection.new([])
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
     #This new_resource can be called anything --> it is not the same as in ifconfig.rb
-    @new_resource = Chef::Resource::Ifconfig.new("10.0.0.1", @run_context)
+    @new_resource = Seth::Resource::Ifconfig.new("10.0.0.1", @run_context)
     @new_resource.mask "255.255.254.0"
     @new_resource.metric "1"
     @new_resource.mtu "1500"
     @new_resource.device "eth0"
-    @provider = Chef::Provider::Ifconfig::Redhat.new(@new_resource, @run_context)
-    @current_resource = Chef::Resource::Ifconfig.new("10.0.0.1", @run_context)
+    @provider = Seth::Provider::Ifconfig::Redhat.new(@new_resource, @run_context)
+    @current_resource = Seth::Resource::Ifconfig.new("10.0.0.1", @run_context)
 
     status = double("Status", :exitstatus => 0)
     @provider.instance_variable_set("@status", status)

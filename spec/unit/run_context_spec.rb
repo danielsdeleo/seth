@@ -21,18 +21,18 @@
 require 'spec_helper'
 require 'support/lib/library_load_order'
 
-Chef::Log.level = :debug
+Seth::Log.level = :debug
 
-describe Chef::RunContext do
+describe Seth::RunContext do
   before(:each) do
-    @chef_repo_path = File.expand_path(File.join(CHEF_SPEC_DATA, "run_context", "cookbooks"))
-    cl = Chef::CookbookLoader.new(@chef_repo_path)
+    @seth_repo_path = File.expand_path(File.join(CHEF_SPEC_DATA, "run_context", "cookbooks"))
+    cl = Seth::CookbookLoader.new(@seth_repo_path)
     cl.load_cookbooks
-    @cookbook_collection = Chef::CookbookCollection.new(cl)
-    @node = Chef::Node.new
+    @cookbook_collection = Seth::CookbookCollection.new(cl)
+    @node = Seth::Node.new
     @node.run_list << "test" << "test::one" << "test::two"
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
   end
 
   it "has a cookbook collection" do
@@ -48,8 +48,8 @@ describe Chef::RunContext do
 
       # Each invocation reloads LWRPs, which triggers constant redefinition
       # warnings. In real usage this isn't an issue because of fork mode.
-      if Chef::Provider.const_defined?(:TestProvider)
-        Chef::Provider.send(:remove_const, :TestProvider)
+      if Seth::Provider.const_defined?(:TestProvider)
+        Seth::Provider.send(:remove_const, :TestProvider)
       end
 
       @node.run_list << "test" << "test::one" << "test::two"
@@ -90,24 +90,24 @@ describe Chef::RunContext do
       @node.should_receive(:loaded_recipe).with(:ancient, "aliens")
       lambda do
         @run_context.include_recipe("ancient::aliens")
-      # In CHEF-5120, this becomes a Chef::Exceptions::MissingCookbookDependency error:
-      end.should raise_error(Chef::Exceptions::CookbookNotFound)
+      # In CHEF-5120, this becomes a Seth::Exceptions::MissingCookbookDependency error:
+      end.should raise_error(Seth::Exceptions::CookbookNotFound)
     end
 
   end
 
   describe "querying the contents of cookbooks" do
     before do
-      @chef_repo_path = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-      cl = Chef::CookbookLoader.new(@chef_repo_path)
+      @seth_repo_path = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
+      cl = Seth::CookbookLoader.new(@seth_repo_path)
       cl.load_cookbooks
-      @cookbook_collection = Chef::CookbookCollection.new(cl)
-      @node = Chef::Node.new
+      @cookbook_collection = Seth::CookbookCollection.new(cl)
+      @node = Seth::Node.new
       @node.set[:platform] = "ubuntu"
       @node.set[:platform_version] = "13.04"
       @node.name("testing")
-      @events = Chef::EventDispatch::Dispatcher.new
-      @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
+      @events = Seth::EventDispatch::Dispatcher.new
+      @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
     end
 
 
@@ -119,7 +119,7 @@ describe Chef::RunContext do
     it "errors when querying for a template in a not-available cookbook" do
       expect do
         @run_context.has_template_in_cookbook?("no-such-cookbook", "foo.erb")
-      end.to raise_error(Chef::Exceptions::CookbookNotFound)
+      end.to raise_error(Seth::Exceptions::CookbookNotFound)
     end
 
     it "queries whether a given cookbook has a specific cookbook_file" do
@@ -130,7 +130,7 @@ describe Chef::RunContext do
     it "errors when querying for a cookbook_file in a not-available cookbook" do
       expect do
         @run_context.has_cookbook_file_in_cookbook?("no-such-cookbook", "foo.txt")
-      end.to raise_error(Chef::Exceptions::CookbookNotFound)
+      end.to raise_error(Seth::Exceptions::CookbookNotFound)
     end
   end
 

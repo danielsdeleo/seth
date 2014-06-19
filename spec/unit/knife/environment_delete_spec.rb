@@ -18,20 +18,20 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::EnvironmentDelete do
+describe Seth::Knife::EnvironmentDelete do
   before(:each) do
-    @knife = Chef::Knife::EnvironmentDelete.new
+    @knife = Seth::Knife::EnvironmentDelete.new
     @knife.stub(:msg).and_return true
     @knife.stub(:output).and_return true
     @knife.stub(:show_usage).and_return true
     @knife.stub(:confirm).and_return true
     @knife.name_args = [ "production" ]
 
-    @environment = Chef::Environment.new
+    @environment = Seth::Environment.new
     @environment.name("production")
     @environment.description("Please delete me")
     @environment.stub(:destroy).and_return true
-    Chef::Environment.stub(:load).and_return @environment
+    Seth::Environment.stub(:load).and_return @environment
   end
 
   it "should confirm that you want to delete" do
@@ -40,7 +40,7 @@ describe Chef::Knife::EnvironmentDelete do
   end
 
   it "should load the environment" do
-    Chef::Environment.should_receive(:load).with("production")
+    Seth::Environment.should_receive(:load).with("production")
     @knife.run
   end
 

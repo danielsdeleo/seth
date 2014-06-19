@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/win32/api/process'
-require 'chef/win32/api/psapi'
-require 'chef/win32/api/system'
-require 'chef/win32/error'
+require 'seth/win32/api/process'
+require 'seth/win32/api/psapi'
+require 'seth/win32/api/system'
+require 'seth/win32/error'
 
-class Chef
+class Seth
   module ReservedNames::Win32
     class Handle
-      extend Chef::ReservedNames::Win32::API::Process
+      extend Seth::ReservedNames::Win32::API::Process
 
       # See http://msdn.microsoft.com/en-us/library/windows/desktop/ms683179(v=vs.85).aspx
       # The handle value returned by the GetCurrentProcess function is the pseudo handle (HANDLE)-1 (which is 0xFFFFFFFF)
@@ -46,7 +46,7 @@ class Chef
 
       def self.close_handle(handle)
         unless CloseHandle(handle)
-          Chef::ReservedNames::Win32::Error.raise!
+          Seth::ReservedNames::Win32::Error.raise!
         end
       end
 

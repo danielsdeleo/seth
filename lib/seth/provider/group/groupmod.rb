@@ -16,19 +16,19 @@
 # limitations under the License.
 #
 
-require 'chef/mixin/shell_out'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Provider
     class Group
-      class Groupmod < Chef::Provider::Group
+      class Groupmod < Seth::Provider::Group
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         def load_current_resource
           super
           [ "group", "user" ].each do |binary|
-            raise Chef::Exceptions::Group, "Could not find binary /usr/sbin/#{binary} for #{@new_resource}" unless ::File.exists?("/usr/sbin/#{binary}")
+            raise Seth::Exceptions::Group, "Could not find binary /usr/sbin/#{binary} for #{@new_resource}" unless ::File.exists?("/usr/sbin/#{binary}")
           end
         end
 
@@ -70,13 +70,13 @@ class Chef
               end
             end
 
-            Chef::Log.debug("#{@new_resource} not changing group members, the group has no members to add") if members_to_be_added.empty?
+            Seth::Log.debug("#{@new_resource} not changing group members, the group has no members to add") if members_to_be_added.empty?
 
             add_group_members(members_to_be_added)
           else
             # We are resetting the members of a group so use the same trick
             reset_group_membership
-            Chef::Log.debug("#{@new_resource} setting group members to: none") if @new_resource.members.empty?
+            Seth::Log.debug("#{@new_resource} setting group members to: none") if @new_resource.members.empty?
             add_group_members(@new_resource.members)
           end
         end
@@ -88,7 +88,7 @@ class Chef
 
         # Adds a list of usernames to the group using `user mod`
         def add_group_members(members)
-          Chef::Log.debug("#{@new_resource} adding members #{members.join(', ')}") if !members.empty?
+          Seth::Log.debug("#{@new_resource} adding members #{members.join(', ')}") if !members.empty?
           members.each do |user|
             shell_out!("user mod -G #{@new_resource.group_name} #{user}")
           end

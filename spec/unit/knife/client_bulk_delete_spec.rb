@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::ClientBulkDelete do
+describe Seth::Knife::ClientBulkDelete do
   let(:stdout_io) { StringIO.new }
   let(:stdout) {stdout_io.string}
   let(:stderr_io) { StringIO.new }
   let(:stderr) { stderr_io.string }
 
   let(:knife) {
-    k = Chef::Knife::ClientBulkDelete.new
+    k = Seth::Knife::ClientBulkDelete.new
     k.name_args = name_args
     k.config = option_args
     k.ui.stub(:stdout).and_return(stdout_io)
@@ -45,7 +45,7 @@ describe Chef::Knife::ClientBulkDelete do
     clients = Hash.new
 
     nonvalidator_client_names.each do |client_name|
-      client = Chef::ApiClient.new()
+      client = Seth::ApiClient.new()
       client.name(client_name)
       client.stub(:destroy).and_return(true)
       clients[client_name] = client
@@ -59,7 +59,7 @@ describe Chef::Knife::ClientBulkDelete do
     clients = Hash.new
 
     validator_client_names.each do |validator_client_name|
-      validator_client = Chef::ApiClient.new()
+      validator_client = Seth::ApiClient.new()
       validator_client.name(validator_client_name)
       validator_client.stub(:validator).and_return(true)
       validator_client.stub(:destroy).and_return(true)
@@ -75,7 +75,7 @@ describe Chef::Knife::ClientBulkDelete do
   }
 
   before(:each) do
-    Chef::ApiClient.stub(:list).and_return(clients)
+    Seth::ApiClient.stub(:list).and_return(clients)
   end
 
   describe "run" do
@@ -89,7 +89,7 @@ describe Chef::Knife::ClientBulkDelete do
 
     describe "with any clients" do
       it "should get the list of the clients" do
-        Chef::ApiClient.should_receive(:list)
+        Seth::ApiClient.should_receive(:list)
         knife.run
       end
 

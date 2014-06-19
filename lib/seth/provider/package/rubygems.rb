@@ -17,10 +17,10 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/resource/package'
-require 'chef/mixin/get_source_from_package'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/resource/package'
+require 'seth/mixin/get_source_from_package'
 
 # Class methods on Gem are defined in rubygems
 require 'rubygems'
@@ -43,10 +43,10 @@ require 'rubygems/dependency_installer'
 require 'rubygems/uninstaller'
 require 'rubygems/specification'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Rubygems < Chef::Provider::Package
+      class Rubygems < Seth::Provider::Package
         class GemEnvironment
           # HACK: trigger gem config load early. Otherwise it can get lazy
           # loaded during operations where we've set Gem.sources to an
@@ -220,7 +220,7 @@ class Chef
           # Set rubygems' user interaction to ConsoleUI or SilentUI depending
           # on our current debug level
           def with_correct_verbosity
-            Gem::DefaultUserInteraction.ui = Chef::Log.debug? ? Gem::ConsoleUI.new : Gem::SilentUI.new
+            Gem::DefaultUserInteraction.ui = Seth::Log.debug? ? Gem::ConsoleUI.new : Gem::SilentUI.new
             yield
           end
 
@@ -235,7 +235,7 @@ class Chef
           private
 
           def logger
-            Chef::Log.logger
+            Seth::Log.logger
           end
 
         end
@@ -273,7 +273,7 @@ class Chef
             @platform_cache ||= {}
           end
 
-          include Chef::Mixin::ShellOut
+          include Seth::Mixin::ShellOut
 
           attr_reader :gem_binary_location
 
@@ -352,16 +352,16 @@ class Chef
 
         end
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         attr_reader :gem_env
         attr_reader :cleanup_gem_env
 
         def logger
-          Chef::Log.logger
+          Seth::Log.logger
         end
 
-        include Chef::Mixin::GetSourceFromPackage
+        include Seth::Mixin::GetSourceFromPackage
 
         def initialize(new_resource, run_context=nil)
           super
@@ -373,9 +373,9 @@ class Chef
               raise ArgumentError, msg
             end
             @gem_env = AlternateGemEnvironment.new(new_resource.gem_binary)
-            Chef::Log.debug("#{@new_resource} using gem '#{new_resource.gem_binary}'")
-          elsif is_omnibus? && (!@new_resource.instance_of? Chef::Resource::ChefGem)
-            # Opscode Omnibus - The ruby that ships inside omnibus is only used for Chef
+            Seth::Log.debug("#{@new_resource} using gem '#{new_resource.gem_binary}'")
+          elsif is_omnibus? && (!@new_resource.instance_of? Seth::Resource::ChefGem)
+            # Opscode Omnibus - The ruby that ships inside omnibus is only used for Seth
             # Default to installing somewhere more functional
             if new_resource.options && new_resource.options.kind_of?(Hash)
               msg = "options should be a string instead of a hash\n"
@@ -385,21 +385,21 @@ class Chef
             gem_location = find_gem_by_path
             @new_resource.gem_binary gem_location
             @gem_env = AlternateGemEnvironment.new(gem_location)
-            Chef::Log.debug("#{@new_resource} using gem '#{gem_location}'")
+            Seth::Log.debug("#{@new_resource} using gem '#{gem_location}'")
           else
             @gem_env = CurrentGemEnvironment.new
             @cleanup_gem_env = false
-            Chef::Log.debug("#{@new_resource} using gem from running ruby environment")
+            Seth::Log.debug("#{@new_resource} using gem from running ruby environment")
           end
         end
 
         def is_omnibus?
-          if RbConfig::CONFIG['bindir'] =~ %r!/opt/(opscode|chef)/embedded/bin!
-            Chef::Log.debug("#{@new_resource} detected omnibus installation in #{RbConfig::CONFIG['bindir']}")
+          if RbConfig::CONFIG['bindir'] =~ %r!/opt/(opscode|seth)/embedded/bin!
+            Seth::Log.debug("#{@new_resource} detected omnibus installation in #{RbConfig::CONFIG['bindir']}")
             # Omnibus installs to a static path because of linking on unix, find it.
             true
-          elsif RbConfig::CONFIG['bindir'].sub(/^[\w]:/, '')  == "/opscode/chef/embedded/bin"
-            Chef::Log.debug("#{@new_resource} detected omnibus installation in #{RbConfig::CONFIG['bindir']}")
+          elsif RbConfig::CONFIG['bindir'].sub(/^[\w]:/, '')  == "/opscode/seth/embedded/bin"
+            Seth::Log.debug("#{@new_resource} detected omnibus installation in #{RbConfig::CONFIG['bindir']}")
             # windows, with the drive letter removed
             true
           else
@@ -408,10 +408,10 @@ class Chef
         end
 
         def find_gem_by_path
-          Chef::Log.debug("#{@new_resource} searching for 'gem' binary in path: #{ENV['PATH']}")
+          Seth::Log.debug("#{@new_resource} searching for 'gem' binary in path: #{ENV['PATH']}")
           separator = ::File::ALT_SEPARATOR ? ::File::ALT_SEPARATOR : ::File::SEPARATOR
           path_to_first_gem = ENV['PATH'].split(::File::PATH_SEPARATOR).select { |path| ::File.exists?(path + separator + "gem") }.first
-          raise Chef::Exceptions::FileNotFound, "Unable to find 'gem' binary in path: #{ENV['PATH']}" if path_to_first_gem.nil?
+          raise Seth::Exceptions::FileNotFound, "Unable to find 'gem' binary in path: #{ENV['PATH']}" if path_to_first_gem.nil?
           path_to_first_gem + separator + "gem"
         end
 
@@ -426,7 +426,7 @@ class Chef
           scheme = nil if scheme =~ /^[a-z]$/
           %w{http https}.include?(scheme)
         rescue URI::InvalidURIError
-          Chef::Log.debug("#{@new_resource} failed to parse source '#{@new_resource.source}' as a URI, assuming a local path")
+          Seth::Log.debug("#{@new_resource} failed to parse source '#{@new_resource.source}' as a URI, assuming a local path")
           false
         end
 
@@ -465,7 +465,7 @@ class Chef
         end
 
         def load_current_resource
-          @current_resource = Chef::Resource::Package::GemPackage.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package::GemPackage.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
           if current_spec = current_version
             @current_resource.version(current_spec.version.to_s)

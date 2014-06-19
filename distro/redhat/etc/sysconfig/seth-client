@@ -1,9 +1,9 @@
-# Configuration file for the chef-client service
+# Configuration file for the seth-client service
 
-#CONFIG=/etc/chef/client.rb
-#PIDFILE=/var/run/chef/client.pid
-#LOCKFILE=/var/lock/subsys/chef-client
-#LOGFILE=/var/log/chef/client.log
+#CONFIG=/etc/seth/client.rb
+#PIDFILE=/var/run/seth/client.pid
+#LOCKFILE=/var/lock/subsys/seth-client
+#LOGFILE=/var/log/seth/client.log
 # Sleep interval between runs.
 # This value is in seconds.
 #INTERVAL=1800
@@ -11,5 +11,5 @@
 # from contacting the server at the exact same time.
 # This value is in seconds.
 #SPLAY=20
-# Any additional chef-client options.
+# Any additional seth-client options.
 #OPTIONS=

@@ -1,6 +1,6 @@
 #
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,22 +17,22 @@
 #
 
 require 'spec_helper'
-require 'chef/dsl/recipe'
+require 'seth/dsl/recipe'
 
 
 RecipeDSLExampleClass = Struct.new(:cookbook_name, :recipe_name)
 class RecipeDSLExampleClass
-  include Chef::DSL::Recipe
+  include Seth::DSL::Recipe
 end
 
 RecipeDSLBaseAPI = Struct.new(:cookbook_name, :recipe_name)
 class RecipeDSLExampleSubclass < RecipeDSLBaseAPI
-  include Chef::DSL::Recipe
+  include Seth::DSL::Recipe
 end
 
-# TODO: most of DSL::Recipe's implementation is tested in Chef::Recipe's tests,
+# TODO: most of DSL::Recipe's implementation is tested in Seth::Recipe's tests,
 # move those to here.
-describe Chef::DSL::Recipe do
+describe Seth::DSL::Recipe do
 
   let(:cookbook_name) { "example_cb" }
   let(:recipe_name) { "example_recipe" }

@@ -17,19 +17,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef'
-require 'chef/application'
-require 'chef/client'
-require 'chef/config'
-require 'chef/log'
+require 'seth'
+require 'seth/application'
+require 'seth/client'
+require 'seth/config'
+require 'seth/log'
 require 'fileutils'
 require 'tempfile'
-require 'chef/providers'
-require 'chef/resources'
+require 'seth/providers'
+require 'seth/resources'
 
-class Chef::Application::Apply < Chef::Application
+class Seth::Application::Apply < Chef::Application
 
-  banner "Usage: chef-apply [RECIPE_FILE] [-e RECIPE_TEXT] [-s]"
+  banner "Usage: seth-apply [RECIPE_FILE] [-e RECIPE_TEXT] [-s]"
 
 
   option :execute,
@@ -63,9 +63,9 @@ class Chef::Application::Apply < Chef::Application
   option :version,
     :short        => "-v",
     :long         => "--version",
-    :description  => "Show chef version",
+    :description  => "Show seth version",
     :boolean      => true,
-    :proc         => lambda {|v| puts "Chef: #{::Chef::VERSION}"},
+    :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
     :exit         => 0
 
   option :why_run,
@@ -77,7 +77,7 @@ class Chef::Application::Apply < Chef::Application
   option :color,
     :long         => '--[no-]color',
     :boolean      => true,
-    :default      => !Chef::Platform.windows?,
+    :default      => !Seth::Platform.windows?,
     :description  => "Use colored output, defaults to enabled"
 
   def initialize
@@ -86,7 +86,7 @@ class Chef::Application::Apply < Chef::Application
 
   def reconfigure
     parse_options
-    Chef::Config.merge!(config)
+    Seth::Config.merge!(config)
     configure_logging
     configure_proxy_environment_variables
   end
@@ -94,7 +94,7 @@ class Chef::Application::Apply < Chef::Application
   def read_recipe_file(file_name)
     recipe_path = file_name
     unless File.exist?(recipe_path)
-      Chef::Application.fatal!("No file exists at #{recipe_path}", 1)
+      Seth::Application.fatal!("No file exists at #{recipe_path}", 1)
     end
     recipe_path = File.expand_path(recipe_path)
     recipe_fh = open(recipe_path)
@@ -103,17 +103,17 @@ class Chef::Application::Apply < Chef::Application
   end
 
   def get_recipe_and_run_context
-    Chef::Config[:solo] = true
-    @chef_client = Chef::Client.new
-    @chef_client.run_ohai
-    @chef_client.load_node
-    @chef_client.build_node
-    run_context = if @chef_client.events.nil?
-                    Chef::RunContext.new(@chef_client.node, {})
+    Seth::Config[:solo] = true
+    @seth_client = Seth::Client.new
+    @seth_client.run_ohai
+    @seth_client.load_node
+    @seth_client.build_node
+    run_context = if @seth_client.events.nil?
+                    Seth::RunContext.new(@seth_client.node, {})
                   else
-                    Chef::RunContext.new(@chef_client.node, {}, @chef_client.events)
+                    Seth::RunContext.new(@seth_client.node, {}, @chef_client.events)
                   end
-    recipe = Chef::Recipe.new("(chef-apply cookbook)", "(chef-apply recipe)", run_context)
+    recipe = Seth::Recipe.new("(seth-apply cookbook)", "(chef-apply recipe)", run_context)
     [recipe, run_context]
   end
 
@@ -126,7 +126,7 @@ class Chef::Application::Apply < Chef::Application
     @recipe_filename = @recipe_fh.path
   end
 
-  def run_chef_recipe
+  def run_seth_recipe
     if config[:execute]
       @recipe_text = config[:execute]
       temp_recipe_file
@@ -139,7 +139,7 @@ class Chef::Application::Apply < Chef::Application
     end
     recipe,run_context = get_recipe_and_run_context
     recipe.instance_eval(@recipe_text, @recipe_filename, 1)
-    runner = Chef::Runner.new(run_context)
+    runner = Seth::Runner.new(run_context)
     begin
       runner.converge
     ensure
@@ -150,13 +150,13 @@ class Chef::Application::Apply < Chef::Application
   def run_application
     begin
       parse_options
-      run_chef_recipe
-      Chef::Application.exit! "Exiting", 0
+      run_seth_recipe
+      Seth::Application.exit! "Exiting", 0
     rescue SystemExit => e
       raise
     rescue Exception => e
-      Chef::Application.debug_stacktrace(e)
-      Chef::Application.fatal!("#{e.class}: #{e.message}", 1)
+      Seth::Application.debug_stacktrace(e)
+      Seth::Application.fatal!("#{e.class}: #{e.message}", 1)
     end
   end
 

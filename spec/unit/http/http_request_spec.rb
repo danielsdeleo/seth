@@ -1,6 +1,6 @@
 #
 # Author:: Klaas Jan Wierenga (<k.j.wierenga@gmail.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,36 +18,36 @@
 
 require 'spec_helper'
 
-describe Chef::HTTP::HTTPRequest do
+describe Seth::HTTP::HTTPRequest do
 
   context "with HTTP url scheme" do
 
     it "should not include port 80 in Host header" do
-      request = Chef::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com'), '')
+      request = Seth::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com'), '')
 
       request.headers['Host'].should eql('dummy.com')
     end
 
     it "should not include explicit port 80 in Host header" do
-      request = Chef::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:80'), '')
+      request = Seth::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:80'), '')
 
       request.headers['Host'].should eql('dummy.com')
     end
 
     it "should include explicit port 8000 in Host header" do
-      request = Chef::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:8000'), '')
+      request = Seth::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:8000'), '')
 
       request.headers['Host'].should eql('dummy.com:8000')
     end
 
     it "should include explicit 443 port in Host header" do
-      request = Chef::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:443'), '')
+      request = Seth::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:443'), '')
 
       request.headers['Host'].should eql('dummy.com:443')
     end
 
     it "should pass on explicit Host header unchanged" do
-      request = Chef::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:8000'), '', { 'Host' => 'yourhost.com:8888' })
+      request = Seth::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:8000'), '', { 'Host' => 'yourhost.com:8888' })
 
       request.headers['Host'].should eql('yourhost.com:8888')
     end
@@ -57,25 +57,25 @@ describe Chef::HTTP::HTTPRequest do
   context "with HTTPS url scheme" do
 
     it "should not include port 443 in Host header" do
-      request = Chef::HTTP::HTTPRequest.new(:GET, URI('https://dummy.com'), '')
+      request = Seth::HTTP::HTTPRequest.new(:GET, URI('https://dummy.com'), '')
 
       request.headers['Host'].should eql('dummy.com')
     end
 
     it "should include explicit port 80 in Host header" do
-      request = Chef::HTTP::HTTPRequest.new(:GET, URI('https://dummy.com:80'), '')
+      request = Seth::HTTP::HTTPRequest.new(:GET, URI('https://dummy.com:80'), '')
 
       request.headers['Host'].should eql('dummy.com:80')
     end
 
     it "should include explicit port 8000 in Host header" do
-      request = Chef::HTTP::HTTPRequest.new(:GET, URI('https://dummy.com:8000'), '')
+      request = Seth::HTTP::HTTPRequest.new(:GET, URI('https://dummy.com:8000'), '')
 
       request.headers['Host'].should eql('dummy.com:8000')
     end
 
     it "should not include explicit port 443 in Host header" do
-      request = Chef::HTTP::HTTPRequest.new(:GET, URI('https://dummy.com:443'), '')
+      request = Seth::HTTP::HTTPRequest.new(:GET, URI('https://dummy.com:443'), '')
 
       request.headers['Host'].should eql('dummy.com')
     end
@@ -83,7 +83,7 @@ describe Chef::HTTP::HTTPRequest do
   end
 
   it "should pass on explicit Host header unchanged" do
-    request = Chef::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:8000'), '', { 'Host' => 'myhost.com:80' })
+    request = Seth::HTTP::HTTPRequest.new(:GET, URI('http://dummy.com:8000'), '', { 'Host' => 'myhost.com:80' })
 
     request.headers['Host'].should eql('myhost.com:80')
   end

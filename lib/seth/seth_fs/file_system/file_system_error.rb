@@ -16,8 +16,8 @@
 # limitations under the License.
 #
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class FileSystemError < StandardError
         def initialize(entry, cause = nil)

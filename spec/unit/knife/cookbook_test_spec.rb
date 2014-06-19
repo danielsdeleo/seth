@@ -19,17 +19,17 @@
 #
 
 require 'spec_helper'
-Chef::Knife::CookbookTest.load_deps
+Seth::Knife::CookbookTest.load_deps
 
-describe Chef::Knife::CookbookTest do
+describe Seth::Knife::CookbookTest do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::CookbookTest.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::CookbookTest.new
     @knife.config[:cookbook_path] = File.join(CHEF_SPEC_DATA,'cookbooks')
     @knife.cookbook_loader.stub(:cookbook_exists?).and_return(true)
     @cookbooks = []
     %w{tats central_market jimmy_johns pho}.each do |cookbook_name|
-      @cookbooks << Chef::CookbookVersion.new(cookbook_name)
+      @cookbooks << Seth::CookbookVersion.new(cookbook_name)
     end
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
@@ -57,8 +57,8 @@ describe Chef::Knife::CookbookTest do
       @knife.name_args = ["example"]
       @knife.config[:cookbook_path].should_not be_empty
       Array(@knife.config[:cookbook_path]).reverse.each do |path|
-        @knife.should_receive(:test_ruby).with(an_instance_of(Chef::Cookbook::SyntaxCheck))
-        @knife.should_receive(:test_templates).with(an_instance_of(Chef::Cookbook::SyntaxCheck))
+        @knife.should_receive(:test_ruby).with(an_instance_of(Seth::Cookbook::SyntaxCheck))
+        @knife.should_receive(:test_templates).with(an_instance_of(Seth::Cookbook::SyntaxCheck))
       end
       @knife.run
     end

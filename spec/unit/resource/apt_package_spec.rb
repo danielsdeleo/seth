@@ -18,22 +18,22 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::AptPackage, "initialize" do
+describe Seth::Resource::AptPackage, "initialize" do
 
   before(:each) do
-    @resource = Chef::Resource::AptPackage.new("foo")
+    @resource = Seth::Resource::AptPackage.new("foo")
   end
 
-  it "should return a Chef::Resource::AptPackage" do
-    @resource.should be_a_kind_of(Chef::Resource::AptPackage)
+  it "should return a Seth::Resource::AptPackage" do
+    @resource.should be_a_kind_of(Seth::Resource::AptPackage)
   end
 
   it "should set the resource_name to :apt_package" do
     @resource.resource_name.should eql(:apt_package)
   end
 
-  it "should set the provider to Chef::Provider::Package::Apt" do
-    @resource.provider.should eql(Chef::Provider::Package::Apt)
+  it "should set the provider to Seth::Provider::Package::Apt" do
+    @resource.provider.should eql(Seth::Provider::Package::Apt)
   end
 
   it "should support default_release" do

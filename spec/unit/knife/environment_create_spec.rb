@@ -18,24 +18,24 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::EnvironmentCreate do
+describe Seth::Knife::EnvironmentCreate do
   before(:each) do
-    @knife = Chef::Knife::EnvironmentCreate.new
+    @knife = Seth::Knife::EnvironmentCreate.new
     @knife.stub(:msg).and_return true
     @knife.stub(:output).and_return true
     @knife.stub(:show_usage).and_return true
     @knife.name_args = [ "production" ]
 
-    @environment = Chef::Environment.new
+    @environment = Seth::Environment.new
     @environment.stub(:save)
 
-    Chef::Environment.stub(:new).and_return @environment
+    Seth::Environment.stub(:new).and_return @environment
     @knife.stub(:edit_data).and_return @environment
   end
 
   describe "run" do
     it "should create a new environment" do
-      Chef::Environment.should_receive(:new)
+      Seth::Environment.should_receive(:new)
       @knife.run
     end
 

@@ -19,15 +19,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::RubyBlock do
+describe Seth::Resource::RubyBlock do
 
   before(:each) do
-    @resource = Chef::Resource::RubyBlock.new("fakey_fakerton")
+    @resource = Seth::Resource::RubyBlock.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::RubyBlock" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::RubyBlock)
+  it "should create a new Seth::Resource::RubyBlock" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::RubyBlock)
   end
 
   it "should have a default action of 'create'" do

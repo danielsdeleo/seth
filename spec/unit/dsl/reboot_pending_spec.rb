@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-require "chef/dsl/reboot_pending"
+require "seth/dsl/reboot_pending"
 require "spec_helper"
 
-describe Chef::DSL::RebootPending do
+describe Seth::DSL::RebootPending do
   describe "reboot_pending?" do
     describe "in isoloation" do
-      let(:recipe) { Object.new.extend(Chef::DSL::RebootPending) }
+      let(:recipe) { Object.new.extend(Seth::DSL::RebootPending) }
 
       before do
         recipe.stub(:platform?).and_return(false)
@@ -77,22 +77,22 @@ describe Chef::DSL::RebootPending do
       context "platform is not supported" do
         it 'should raise an exception' do
           recipe.stub_chain(:node, :[]).with(:platform).and_return('msdos')
-          expect { recipe.reboot_pending? }.to raise_error(Chef::Exceptions::UnsupportedPlatform)
+          expect { recipe.reboot_pending? }.to raise_error(Seth::Exceptions::UnsupportedPlatform)
         end
       end
     end # describe in isolation
 
     describe "in a recipe" do
       it "responds to reboot_pending?" do
-        # Chef::Recipe.new(cookbook_name, recipe_name, run_context(node, cookbook_collection, events))
-        recipe = Chef::Recipe.new(nil,nil,Chef::RunContext.new(Chef::Node.new, {}, nil))
+        # Seth::Recipe.new(cookbook_name, recipe_name, run_context(node, cookbook_collection, events))
+        recipe = Seth::Recipe.new(nil,nil,Chef::RunContext.new(Chef::Node.new, {}, nil))
         expect(recipe).to respond_to(:reboot_pending?)
       end
     end # describe in a recipe
 
     describe "in a resource" do
       it "responds to reboot_pending?" do
-        resource = Chef::Resource::new("Crackerjack::Timing", nil)
+        resource = Seth::Resource::new("Crackerjack::Timing", nil)
         expect(resource).to respond_to(:reboot_pending?)
       end
     end # describe in a resource

@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-Chef::Knife::RoleFromFile.load_deps
+Seth::Knife::RoleFromFile.load_deps
 
-describe Chef::Knife::RoleFromFile do
+describe Seth::Knife::RoleFromFile do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::RoleFromFile.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::RoleFromFile.new
     @knife.config = {
       :print_after => nil
     }
     @knife.name_args = [ "adam.rb" ]
     @knife.stub(:output).and_return(true)
     @knife.stub(:confirm).and_return(true)
-    @role = Chef::Role.new()
+    @role = Seth::Role.new()
     @role.stub(:save)
     @knife.loader.stub(:load_from).and_return(@role)
     @stdout = StringIO.new

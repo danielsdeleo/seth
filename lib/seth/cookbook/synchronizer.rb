@@ -1,8 +1,8 @@
-require 'chef/client'
-require 'chef/util/threaded_job_queue'
+require 'seth/client'
+require 'seth/util/threaded_job_queue'
 require 'singleton'
 
-class Chef
+class Seth
 
   # Keep track of the filenames that we use in both eager cookbook
   # downloading (during sync_cookbooks) and lazy (during the run
@@ -10,14 +10,14 @@ class Chef
   # cache.
   class CookbookCacheCleaner
 
-    # Setup a notification to clear the valid_cache_entries when a Chef client
+    # Setup a notification to clear the valid_cache_entries when a Seth client
     # run starts
-    Chef::Client.when_run_starts do |run_status|
+    Seth::Client.when_run_starts do |run_status|
       instance.reset!
     end
 
     # Register a notification to cleanup unused files from cookbooks
-    Chef::Client.when_run_completes_successfully do |run_status|
+    Seth::Client.when_run_completes_successfully do |run_status|
       instance.cleanup_file_cache
     end
 
@@ -36,16 +36,16 @@ class Chef
     end
 
     def cache
-      Chef::FileCache
+      Seth::FileCache
     end
 
     def cleanup_file_cache
-      unless Chef::Config[:solo]
+      unless Seth::Config[:solo]
         # Delete each file in the cache that we didn't encounter in the
         # manifest.
         cache.find(File.join(%w{cookbooks ** *})).each do |cache_filename|
           unless @valid_cache_entries[cache_filename]
-            Chef::Log.info("Removing #{cache_filename} from the cache; it is no longer needed by chef-client.")
+            Seth::Log.info("Removing #{cache_filename} from the cache; it is no longer needed by seth-client.")
             cache.delete(cache_filename)
           end
         end
@@ -60,8 +60,8 @@ class Chef
     CookbookFile = Struct.new(:cookbook, :segment, :manifest_record)
 
     def initialize(cookbooks_by_name, events)
-      @eager_segments = Chef::CookbookVersion::COOKBOOK_SEGMENTS.dup
-      unless Chef::Config[:no_lazy_load]
+      @eager_segments = Seth::CookbookVersion::COOKBOOK_SEGMENTS.dup
+      unless Seth::Config[:no_lazy_load]
         @eager_segments.delete(:files)
         @eager_segments.delete(:templates)
       end
@@ -71,7 +71,7 @@ class Chef
     end
 
     def cache
-      Chef::FileCache
+      Seth::FileCache
     end
 
     def cookbook_names
@@ -122,17 +122,17 @@ class Chef
       end
     end
 
-    # Synchronizes all the cookbooks from the chef-server.
+    # Synchronizes all the cookbooks from the seth-server.
     #)
     # === Returns
     # true:: Always returns true
     def sync_cookbooks
-      Chef::Log.info("Loading cookbooks [#{cookbooks.map {|ckbk| ckbk.name + '@' + ckbk.version}.join(', ')}]")
-      Chef::Log.debug("Cookbooks detail: #{cookbooks.inspect}")
+      Seth::Log.info("Loading cookbooks [#{cookbooks.map {|ckbk| ckbk.name + '@' + ckbk.version}.join(', ')}]")
+      Seth::Log.debug("Cookbooks detail: #{cookbooks.inspect}")
 
       clear_obsoleted_cookbooks
 
-      queue = Chef::Util::ThreadedJobQueue.new
+      queue = Seth::Util::ThreadedJobQueue.new
 
       files.each do |file|
         queue << lambda do |lock|
@@ -142,7 +142,7 @@ class Chef
       end
 
       @events.cookbook_sync_start(cookbook_count)
-      queue.process(Chef::Config[:cookbook_sync_threads])
+      queue.process(Seth::Config[:cookbook_sync_threads])
       update_cookbook_filenames
 
     rescue Exception => e
@@ -161,7 +161,7 @@ class Chef
       cache.find(File.join(%w{cookbooks ** *})).each do |cache_file|
         cache_file =~ /^cookbooks\/([^\/]+)\//
         unless have_cookbook?($1)
-          Chef::Log.info("Removing #{cache_file} from the cache; its cookbook is no longer needed on this client.")
+          Seth::Log.info("Removing #{cache_file} from the cache; its cookbook is no longer needed on this client.")
           cache.delete(cache_file)
           @events.removed_cookbook_file(cache_file)
         end
@@ -201,7 +201,7 @@ class Chef
         download_file(file.manifest_record['url'], cache_filename)
         @events.updated_cookbook_file(file.cookbook.name, cache_filename)
       else
-        Chef::Log.debug("Not storing #{cache_filename}, as the cache is up to date.")
+        Seth::Log.debug("Not storing #{cache_filename}, as the cache is up to date.")
       end
 
       # Update the manifest with the full path to the cached file
@@ -218,12 +218,12 @@ class Chef
     end
 
     # Unconditionally download the file from the given URL. File will be
-    # downloaded to the path +destination+ which is relative to the Chef file
+    # downloaded to the path +destination+ which is relative to the Seth file
     # cache root.
     def download_file(url, destination)
       raw_file = server_api.get_rest(url, true)
 
-      Chef::Log.info("Storing updated #{destination} in the cache.")
+      Seth::Log.info("Storing updated #{destination} in the cache.")
       cache.move_to(raw_file.path, destination)
     end
 
@@ -233,7 +233,7 @@ class Chef
     end
 
     def server_api
-      Chef::REST.new(Chef::Config[:chef_server_url])
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
   end

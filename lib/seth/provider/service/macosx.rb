@@ -17,14 +17,14 @@
 #
 
 require 'rexml/document'
-require 'chef/resource/service'
-require 'chef/provider/service/simple'
+require 'seth/resource/service'
+require 'seth/provider/service/simple'
 
-class Chef
+class Seth
   class Provider
     class Service
-      class Macosx < Chef::Provider::Service::Simple
-        include Chef::Mixin::ShellOut
+      class Macosx < Seth::Provider::Service::Simple
+        include Seth::Mixin::ShellOut
 
         def self.gather_plist_dirs
           locations = %w{/Library/LaunchAgents
@@ -39,7 +39,7 @@ class Chef
         PLIST_DIRS = gather_plist_dirs
 
         def load_current_resource
-          @current_resource = Chef::Resource::Service.new(@new_resource.name)
+          @current_resource = Seth::Resource::Service.new(@new_resource.name)
           @current_resource.service_name(@new_resource.service_name)
           @plist_size = 0
           @plist = find_service_plist
@@ -52,17 +52,17 @@ class Chef
         def define_resource_requirements
           #super
           requirements.assert(:reload) do |a|
-            a.failure_message Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :reload"
+            a.failure_message Seth::Exceptions::UnsupportedAction, "#{self.to_s} does not support :reload"
           end
 
           requirements.assert(:all_actions) do |a|
             a.assertion { @plist_size < 2 }
-            a.failure_message Chef::Exceptions::Service, "Several plist files match service name. Please use full service name."
+            a.failure_message Seth::Exceptions::Service, "Several plist files match service name. Please use full service name."
           end
 
           requirements.assert(:enable, :disable) do |a|
             a.assertion { !@service_label.to_s.empty? }
-            a.failure_message Chef::Exceptions::Service,
+            a.failure_message Seth::Exceptions::Service,
               "Could not find service's label in plist file '#{@plist}'!"
           end
 
@@ -79,7 +79,7 @@ class Chef
 
         def start_service
           if @current_resource.running
-            Chef::Log.debug("#{@new_resource} already running, not starting")
+            Seth::Log.debug("#{@new_resource} already running, not starting")
           else
             if @new_resource.start_command
               super
@@ -91,7 +91,7 @@ class Chef
 
         def stop_service
           unless @current_resource.running
-            Chef::Log.debug("#{@new_resource} not running, not stopping")
+            Seth::Log.debug("#{@new_resource} not running, not stopping")
           else
             if @new_resource.stop_command
               super
@@ -118,7 +118,7 @@ class Chef
         # supervisor that will restart daemons that are crashing, etc.
         def enable_service
           if @current_resource.enabled
-            Chef::Log.debug("#{@new_resource} already enabled, not enabling")
+            Seth::Log.debug("#{@new_resource} already enabled, not enabling")
           else
             shell_out!(
               "launchctl load -w '#{@plist}'",
@@ -129,7 +129,7 @@ class Chef
 
         def disable_service
           unless @current_resource.enabled
-            Chef::Log.debug("#{@new_resource} not enabled, not disabling")
+            Seth::Log.debug("#{@new_resource} not enabled, not disabling")
           else
             shell_out!(
               "launchctl unload -w '#{@plist}'",

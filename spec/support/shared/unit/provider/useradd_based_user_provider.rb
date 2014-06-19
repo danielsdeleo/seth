@@ -20,11 +20,11 @@
 
 shared_examples_for "a useradd-based user provider" do |supported_useradd_options|
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::User.new("adam", @run_context)
+    @new_resource = Seth::Resource::User.new("adam", @run_context)
     @new_resource.comment "Adam Jacob"
     @new_resource.uid 1000
     @new_resource.gid 1000
@@ -34,7 +34,7 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
     @new_resource.system false
     @new_resource.manage_home false
     @new_resource.non_unique false
-    @current_resource = Chef::Resource::User.new("adam", @run_context)
+    @current_resource = Seth::Resource::User.new("adam", @run_context)
     @current_resource.comment "Adam Jacob"
     @current_resource.uid 1000
     @current_resource.gid 1000
@@ -148,7 +148,7 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
 
   describe "when creating a user" do
     before(:each) do
-      @current_resource = Chef::Resource::User.new(@new_resource.name, @run_context)
+      @current_resource = Seth::Resource::User.new(@new_resource.name, @run_context)
       @current_resource.username(@new_resource.username)
       provider.current_resource = @current_resource
       provider.new_resource.manage_home true
@@ -264,12 +264,12 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
     end
 
     before(:each) do
-      # @node = Chef::Node.new
-      # @new_resource = double("Chef::Resource::User",
+      # @node = Seth::Node.new
+      # @new_resource = double("Seth::Resource::User",
       #   :nil_object => true,
       #   :username => "adam"
       # )
-      #provider = Chef::Provider::User::Useradd.new(@node, @new_resource)
+      #provider = Seth::Provider::User::Useradd.new(@node, @new_resource)
       @stdout = "root P 09/02/2008 0 99999 7 -1"
       @stderr = ""
     end
@@ -297,17 +297,17 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
       provider.check_lock.should eql(true)
     end
 
-    it "should raise a Chef::Exceptions::User if passwd -S fails on anything other than redhat/centos" do
+    it "should raise a Seth::Exceptions::User if passwd -S fails on anything other than redhat/centos" do
       @node.automatic_attrs[:platform] = 'ubuntu'
       provider.should_receive(:shell_out!).
         with("passwd", "-S", @new_resource.username, {:returns=>[0, 1]}).
         and_return(passwd_s_status)
       passwd_s_status.should_receive(:exitstatus).and_return(1)
-      lambda { provider.check_lock }.should raise_error(Chef::Exceptions::User)
+      lambda { provider.check_lock }.should raise_error(Seth::Exceptions::User)
     end
 
     ['redhat', 'centos'].each do |os|
-      it "should not raise a Chef::Exceptions::User if passwd -S exits with 1 on #{os} and the passwd package is version 0.73-1" do
+      it "should not raise a Seth::Exceptions::User if passwd -S exits with 1 on #{os} and the passwd package is version 0.73-1" do
         @node.automatic_attrs[:platform] = os
         passwd_s_status.should_receive(:exitstatus).and_return(1)
         provider.should_receive(:shell_out!).
@@ -318,7 +318,7 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
         lambda { provider.check_lock }.should_not raise_error
       end
 
-      it "should raise a Chef::Exceptions::User if passwd -S exits with 1 on #{os} and the passwd package is not version 0.73-1" do
+      it "should raise a Seth::Exceptions::User if passwd -S exits with 1 on #{os} and the passwd package is not version 0.73-1" do
         @node.automatic_attrs[:platform] = os
         passwd_s_status.should_receive(:exitstatus).and_return(1)
         provider.should_receive(:shell_out!).
@@ -326,7 +326,7 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
           and_return(passwd_s_status)
         rpm_status = double("Mixlib::ShellOut command", :exitstatus => 0, :stdout => "passwd-0.73-2\n", :stderr => "")
         provider.should_receive(:shell_out!).with("rpm -q passwd").and_return(rpm_status)
-        lambda { provider.check_lock }.should raise_error(Chef::Exceptions::User)
+        lambda { provider.check_lock }.should raise_error(Seth::Exceptions::User)
       end
 
       it "should raise a ShellCommandFailed exception if passwd -S exits with something other than 0 or 1 on #{os}" do
@@ -338,11 +338,11 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
 
     context "when in why run mode" do
       before do
-        passwd_status = double("Mixlib::ShellOut command", :exitstatus => 0, :stdout => "", :stderr => "passwd: user 'chef-test' does not exist\n")
+        passwd_status = double("Mixlib::ShellOut command", :exitstatus => 0, :stdout => "", :stderr => "passwd: user 'seth-test' does not exist\n")
         provider.should_receive(:shell_out!).
           with("passwd", "-S", @new_resource.username, {:returns=>[0, 1]}).
           and_return(passwd_status)
-        Chef::Config[:why_run] = true
+        Seth::Config[:why_run] = true
       end
   
       it "should return false if the user does not exist" do
@@ -411,9 +411,9 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
       end
     end
     it "should return true if the current home does not exist but a home is specified by the new resource" do
-      @new_resource = Chef::Resource::User.new("adam", @run_context)
-      @current_resource = Chef::Resource::User.new("adam", @run_context)
-      provider = Chef::Provider::User::Useradd.new(@new_resource, @run_context)
+      @new_resource = Seth::Resource::User.new("adam", @run_context)
+      @current_resource = Seth::Resource::User.new("adam", @run_context)
+      provider = Seth::Provider::User::Useradd.new(@new_resource, @run_context)
       provider.current_resource = @current_resource
       @current_resource.home nil
       @new_resource.home "/home/kitten"

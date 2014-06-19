@@ -18,18 +18,18 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/mixin/params_validate'
-require 'chef/mixin/from_file'
-require 'chef/data_bag_item'
-require 'chef/mash'
-require 'chef/json_compat'
+require 'seth/config'
+require 'seth/mixin/params_validate'
+require 'seth/mixin/from_file'
+require 'seth/data_bag_item'
+require 'seth/mash'
+require 'seth/json_compat'
 
-class Chef
+class Seth
   class DataBag
 
-    include Chef::Mixin::FromFile
-    include Chef::Mixin::ParamsValidate
+    include Seth::Mixin::FromFile
+    include Seth::Mixin::ParamsValidate
 
     VALID_NAME = /^[\.\-[:alnum:]_]+$/
 
@@ -39,7 +39,7 @@ class Chef
       end
     end
 
-    # Create a new Chef::DataBag
+    # Create a new Seth::DataBag
     def initialize
       @name = ''
     end
@@ -56,7 +56,7 @@ class Chef
       result = {
         "name" => @name,
         'json_class' => self.class.name,
-        "chef_type" => "data_bag",
+        "seth_type" => "data_bag",
       }
       result
     end
@@ -66,15 +66,15 @@ class Chef
       to_hash.to_json(*a)
     end
 
-    def chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
-    def self.chef_server_rest
-      Chef::REST.new(Chef::Config[:chef_server_url])
+    def self.seth_server_rest
+      Seth::REST.new(Chef::Config[:seth_server_url])
     end
 
-    # Create a Chef::Role from JSON
+    # Create a Seth::Role from JSON
     def self.json_create(o)
       bag = new
       bag.name(o["name"])
@@ -82,12 +82,12 @@ class Chef
     end
 
     def self.list(inflate=false)
-      if Chef::Config[:solo]
-        unless File.directory?(Chef::Config[:data_bag_path])
-          raise Chef::Exceptions::InvalidDataBagPath, "Data bag path '#{Chef::Config[:data_bag_path]}' is invalid"
+      if Seth::Config[:solo]
+        unless File.directory?(Seth::Config[:data_bag_path])
+          raise Seth::Exceptions::InvalidDataBagPath, "Data bag path '#{Chef::Config[:data_bag_path]}' is invalid"
         end
 
-        names = Dir.glob(File.join(Chef::Config[:data_bag_path], "*")).map{|f|File.basename(f)}.sort
+        names = Dir.glob(File.join(Seth::Config[:data_bag_path], "*")).map{|f|File.basename(f)}.sort
         names.inject({}) {|h, n| h[n] = n; h}
       else
         if inflate
@@ -97,37 +97,37 @@ class Chef
             response
           end
         else
-          Chef::REST.new(Chef::Config[:chef_server_url]).get_rest("data")
+          Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("data")
         end
       end
     end
 
     # Load a Data Bag by name via either the RESTful API or local data_bag_path if run in solo mode
     def self.load(name)
-      if Chef::Config[:solo]
-        unless File.directory?(Chef::Config[:data_bag_path])
-          raise Chef::Exceptions::InvalidDataBagPath, "Data bag path '#{Chef::Config[:data_bag_path]}' is invalid"
+      if Seth::Config[:solo]
+        unless File.directory?(Seth::Config[:data_bag_path])
+          raise Seth::Exceptions::InvalidDataBagPath, "Data bag path '#{Chef::Config[:data_bag_path]}' is invalid"
         end
 
-        Dir.glob(File.join(Chef::Config[:data_bag_path], "#{name}", "*.json")).inject({}) do |bag, f|
-          item = Chef::JSONCompat.from_json(IO.read(f))
+        Dir.glob(File.join(Seth::Config[:data_bag_path], "#{name}", "*.json")).inject({}) do |bag, f|
+          item = Seth::JSONCompat.from_json(IO.read(f))
           bag[item['id']] = item
           bag
         end
       else
-        Chef::REST.new(Chef::Config[:chef_server_url]).get_rest("data/#{name}")
+        Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("data/#{name}")
       end
     end
 
     def destroy
-      chef_server_rest.delete_rest("data/#{@name}")
+      seth_server_rest.delete_rest("data/#{@name}")
     end
 
     # Save the Data Bag via RESTful API
     def save
       begin
-        if Chef::Config[:why_run]
-          Chef::Log.warn("In whyrun mode, so NOT performing data bag save.")
+        if Seth::Config[:why_run]
+          Seth::Log.warn("In whyrun mode, so NOT performing data bag save.")
         else
           create
         end
@@ -139,7 +139,7 @@ class Chef
 
     #create a data bag via RESTful API
     def create
-      chef_server_rest.post_rest("data", self)
+      seth_server_rest.post_rest("data", self)
       self
     end
 

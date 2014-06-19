@@ -17,12 +17,12 @@
 # limitations under the License.
 #
 
-require 'chef/http/simple'
-require 'chef/digester'
-require 'chef/provider/remote_file'
-require 'chef/provider/remote_file/cache_control_data'
+require 'seth/http/simple'
+require 'seth/digester'
+require 'seth/provider/remote_file'
+require 'seth/provider/remote_file/cache_control_data'
 
-class Chef
+class Seth
   class Provider
     class RemoteFile
 
@@ -51,12 +51,12 @@ class Chef
           if etag = cache_control_data.etag and want_etag_cache_control?
             cache_control_headers["if-none-match"] = etag
           end
-          Chef::Log.debug("Cache control headers: #{cache_control_headers.inspect}")
+          Seth::Log.debug("Cache control headers: #{cache_control_headers.inspect}")
           cache_control_headers
         end
 
         def fetch
-          http = Chef::HTTP::Simple.new(uri, http_client_opts)
+          http = Seth::HTTP::Simple.new(uri, http_client_opts)
           tempfile = http.streaming_request(uri, headers)
           if tempfile
             update_cache_control_data(tempfile, http.last_response)
@@ -68,7 +68,7 @@ class Chef
         private
 
         def update_cache_control_data(tempfile, response)
-          cache_control_data.checksum = Chef::Digester.checksum_for_file(tempfile.path)
+          cache_control_data.checksum = Seth::Digester.checksum_for_file(tempfile.path)
           cache_control_data.mtime = last_modified_time_from(response)
           cache_control_data.etag = etag_from(response)
           cache_control_data.save
@@ -101,11 +101,11 @@ class Chef
           # probably be counter-productive.
           # 2. Some servers are misconfigured so that you GET $URL/file.tgz but
           # they respond with content type of tar and content encoding of gzip,
-          # which tricks Chef::REST into decompressing the response body. In this
+          # which tricks Seth::REST into decompressing the response body. In this
           # case you'd end up with a tar archive (no gzip) named, e.g., foo.tgz,
           # which is not what you wanted.
           if uri.to_s =~ /gz$/
-            Chef::Log.debug("turning gzip compression off due to filename ending in gz")
+            Seth::Log.debug("turning gzip compression off due to filename ending in gz")
             opts[:disable_gzip] = true
           end
           opts

@@ -17,7 +17,7 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'chef/knife/list'
+require 'seth/knife/list'
 
 describe 'redirection' do
   extend IntegrationSupport
@@ -26,15 +26,15 @@ describe 'redirection' do
 
   include_context "default config options"
 
-  when_the_chef_server 'has a role' do
+  when_the_seth_server 'has a role' do
     role 'x', {}
 
     context 'and another server redirects to it with 302' do
       before :each do
-        real_chef_server_url = Chef::Config.chef_server_url
-        Chef::Config.chef_server_url = "http://localhost:9018"
+        real_seth_server_url = Seth::Config.chef_server_url
+        Seth::Config.seth_server_url = "http://localhost:9018"
         app = lambda do |env|
-          [302, {'Content-Type' => 'text','Location' => "#{real_chef_server_url}#{env['PATH_INFO']}" }, ['302 found'] ]
+          [302, {'Content-Type' => 'text','Location' => "#{real_seth_server_url}#{env['PATH_INFO']}" }, ['302 found'] ]
         end
         @redirector_server, @redirector_server_thread = start_app_server(app, 9018)
       end

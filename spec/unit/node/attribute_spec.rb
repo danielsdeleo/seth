@@ -18,9 +18,9 @@
 #
 
 require 'spec_helper'
-require 'chef/node/attribute'
+require 'seth/node/attribute'
 
-describe Chef::Node::Attribute do
+describe Seth::Node::Attribute do
   before(:each) do
     @attribute_hash =
       {"dmi"=>{},
@@ -210,21 +210,21 @@ describe Chef::Node::Attribute do
       }
     }
     @automatic_hash = {"week" => "friday"}
-    @attributes = Chef::Node::Attribute.new(@attribute_hash, @default_hash, @override_hash, @automatic_hash)
+    @attributes = Seth::Node::Attribute.new(@attribute_hash, @default_hash, @override_hash, @automatic_hash)
   end
 
   describe "initialize" do
-    it "should return a Chef::Node::Attribute" do
-      @attributes.should be_a_kind_of(Chef::Node::Attribute)
+    it "should return a Seth::Node::Attribute" do
+      @attributes.should be_a_kind_of(Seth::Node::Attribute)
     end
 
     it "should take an Automatioc, Normal, Default and Override hash" do
-      lambda { Chef::Node::Attribute.new({}, {}, {}, {}) }.should_not raise_error
+      lambda { Seth::Node::Attribute.new({}, {}, {}, {}) }.should_not raise_error
     end
 
     [ :normal, :default, :override, :automatic ].each do |accessor|
       it "should set #{accessor}" do
-        na = Chef::Node::Attribute.new({ :normal => true }, { :default => true }, { :override => true }, { :automatic => true })
+        na = Seth::Node::Attribute.new({ :normal => true }, { :default => true }, { :override => true }, { :automatic => true })
         na.send(accessor).should == { accessor.to_s => true }
       end
     end
@@ -353,7 +353,7 @@ describe Chef::Node::Attribute do
     end
 
     it "merges nested hashes between precedence levels" do
-      @attributes = Chef::Node::Attribute.new({}, {}, {}, {})
+      @attributes = Seth::Node::Attribute.new({}, {}, {}, {})
       @attributes.env_default = {"a" => {"b" => {"default" => "default"}}}
       @attributes.normal = {"a" => {"b" => {"normal" => "normal"}}}
       @attributes.override = {"a" => {"override" => "role"}}
@@ -432,7 +432,7 @@ describe Chef::Node::Attribute do
   describe "[]=" do
     it "should error out when the type of attribute to set has not been specified" do
       @attributes.normal["the_ghost"] = {  }
-      lambda { @attributes["the_ghost"]["exterminate"] = false }.should raise_error(Chef::Exceptions::ImmutableAttributeModification)
+      lambda { @attributes["the_ghost"]["exterminate"] = false }.should raise_error(Seth::Exceptions::ImmutableAttributeModification)
     end
 
     it "should let you set an attribute value when another hash has an intermediate value" do
@@ -561,7 +561,7 @@ describe Chef::Node::Attribute do
 
   describe "keys" do
     before(:each) do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  { "two" => "three" },
           "hut" =>  { "two" => "three" },
@@ -610,7 +610,7 @@ describe Chef::Node::Attribute do
 
   describe "each" do
     before(:each) do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -648,7 +648,7 @@ describe Chef::Node::Attribute do
 
   describe "each_key" do
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -684,7 +684,7 @@ describe Chef::Node::Attribute do
 
   describe "each_pair" do
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -720,7 +720,7 @@ describe Chef::Node::Attribute do
 
   describe "each_value" do
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -764,7 +764,7 @@ describe Chef::Node::Attribute do
 
   describe "empty?" do
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -779,7 +779,7 @@ describe Chef::Node::Attribute do
         },
         {}
       )
-      @empty = Chef::Node::Attribute.new({}, {}, {}, {})
+      @empty = Seth::Node::Attribute.new({}, {}, {}, {})
     end
 
     it "should respond to empty?" do
@@ -798,7 +798,7 @@ describe Chef::Node::Attribute do
 
   describe "fetch" do
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -855,7 +855,7 @@ describe Chef::Node::Attribute do
 
   describe "has_value?" do
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -900,7 +900,7 @@ describe Chef::Node::Attribute do
     end
 
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -942,7 +942,7 @@ describe Chef::Node::Attribute do
 
   describe "values" do
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -978,7 +978,7 @@ describe Chef::Node::Attribute do
 
   describe "select" do
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -1028,7 +1028,7 @@ describe Chef::Node::Attribute do
 
   describe "size" do
     before do
-      @attributes = Chef::Node::Attribute.new(
+      @attributes = Seth::Node::Attribute.new(
         {
           "one" =>  "two",
           "hut" =>  "three",
@@ -1044,7 +1044,7 @@ describe Chef::Node::Attribute do
         {}
       )
 
-      @empty = Chef::Node::Attribute.new({},{},{},{})
+      @empty = Seth::Node::Attribute.new({},{},{},{})
     end
 
     it "should respond to size" do
@@ -1073,12 +1073,12 @@ describe Chef::Node::Attribute do
       @attributes.should be_a_kind_of(Mash)
     end
 
-    it "should inform you that it is a Chef::Node::Attribute" do
-      @attributes.should be_a_kind_of(Chef::Node::Attribute)
+    it "should inform you that it is a Seth::Node::Attribute" do
+      @attributes.should be_a_kind_of(Seth::Node::Attribute)
     end
 
     it "should inform you that it is anything else" do
-      @attributes.should_not be_a_kind_of(Chef::Node)
+      @attributes.should_not be_a_kind_of(Seth::Node)
     end
   end
 
@@ -1175,11 +1175,11 @@ describe Chef::Node::Attribute do
 
   describe "when attemping to write without specifying precedence" do
     it "raises an error when using []=" do
-      lambda { @attributes[:new_key] = "new value" }.should raise_error(Chef::Exceptions::ImmutableAttributeModification)
+      lambda { @attributes[:new_key] = "new value" }.should raise_error(Seth::Exceptions::ImmutableAttributeModification)
     end
 
     it "raises an error when using `attr=value`" do
-      lambda { @attributes.new_key = "new value" }.should raise_error(Chef::Exceptions::ImmutableAttributeModification)
+      lambda { @attributes.new_key = "new value" }.should raise_error(Seth::Exceptions::ImmutableAttributeModification)
     end
 
   end

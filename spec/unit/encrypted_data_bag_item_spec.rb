@@ -17,7 +17,7 @@
 #
 
 require 'spec_helper'
-require 'chef/encrypted_data_bag_item'
+require 'seth/encrypted_data_bag_item'
 
 module Version0Encryptor
   def self.encrypt_value(plaintext_data, key)
@@ -32,19 +32,19 @@ module Version0Encryptor
   end
 end
 
-describe Chef::EncryptedDataBagItem::Encryptor  do
+describe Seth::EncryptedDataBagItem::Encryptor  do
 
   subject(:encryptor) { described_class.new(plaintext_data, key) }
   let(:plaintext_data) { {"foo" => "bar"} }
   let(:key) { "passwd" }
 
   it "encrypts to format version 1 by default" do
-    encryptor.should be_a_kind_of(Chef::EncryptedDataBagItem::Encryptor::Version1Encryptor)
+    encryptor.should be_a_kind_of(Seth::EncryptedDataBagItem::Encryptor::Version1Encryptor)
   end
 
   describe "generating a random IV" do
     it "generates a new IV for each encryption pass" do
-      encryptor2 = Chef::EncryptedDataBagItem::Encryptor.new(plaintext_data, key)
+      encryptor2 = Seth::EncryptedDataBagItem::Encryptor.new(plaintext_data, key)
 
       # No API in ruby OpenSSL to get the iv it used for the encryption back
       # out. Instead we test if the encrypted data is the same. If it *is* the
@@ -56,7 +56,7 @@ describe Chef::EncryptedDataBagItem::Encryptor  do
   describe "when encrypting a non-hash non-array value" do
     let(:plaintext_data) { 5 }
     it "serializes the value in a de-serializable way" do
-      Chef::JSONCompat.from_json(subject.serialized_data)["json_wrapper"].should eq 5
+      Seth::JSONCompat.from_json(subject.serialized_data)["json_wrapper"].should eq 5
     end
 
   end
@@ -74,15 +74,15 @@ describe Chef::EncryptedDataBagItem::Encryptor  do
   describe "when using version 2 format" do
 
     before do
-      Chef::Config[:data_bag_encrypt_version] = 2
+      Seth::Config[:data_bag_encrypt_version] = 2
     end
 
     it "creates a version 2 encryptor" do
-      encryptor.should be_a_kind_of(Chef::EncryptedDataBagItem::Encryptor::Version2Encryptor)
+      encryptor.should be_a_kind_of(Seth::EncryptedDataBagItem::Encryptor::Version2Encryptor)
     end
 
     it "generates an hmac based on ciphertext including iv" do
-      encryptor2 = Chef::EncryptedDataBagItem::Encryptor.new(plaintext_data, key)
+      encryptor2 = Seth::EncryptedDataBagItem::Encryptor.new(plaintext_data, key)
       encryptor.hmac.should_not eq(encryptor2.hmac)
     end
 
@@ -94,7 +94,7 @@ describe Chef::EncryptedDataBagItem::Encryptor  do
 
 end
 
-describe Chef::EncryptedDataBagItem::Decryptor do
+describe Seth::EncryptedDataBagItem::Decryptor do
 
   subject(:decryptor) { described_class.for(encrypted_value, decryption_key) }
   let(:plaintext_data) { {"foo" => "bar"} }
@@ -103,7 +103,7 @@ describe Chef::EncryptedDataBagItem::Decryptor do
 
   context "when decrypting a version 2 (JSON+aes-256-cbc+hmac-sha256+random iv) encrypted value" do
     let(:encrypted_value) do
-      Chef::EncryptedDataBagItem::Encryptor::Version2Encryptor.new(plaintext_data, encryption_key).for_encrypted_item
+      Seth::EncryptedDataBagItem::Encryptor::Version2Encryptor.new(plaintext_data, encryption_key).for_encrypted_item
     end
 
     let(:bogus_hmac) do
@@ -114,12 +114,12 @@ describe Chef::EncryptedDataBagItem::Decryptor do
 
     it "rejects the data if the hmac is wrong" do
       encrypted_value["hmac"] = bogus_hmac
-      lambda { decryptor.for_decrypted_item }.should raise_error(Chef::EncryptedDataBagItem::DecryptionFailure)
+      lambda { decryptor.for_decrypted_item }.should raise_error(Seth::EncryptedDataBagItem::DecryptionFailure)
     end
 
     it "rejects the data if the hmac is missing" do
       encrypted_value.delete("hmac")
-      lambda { decryptor.for_decrypted_item }.should raise_error(Chef::EncryptedDataBagItem::DecryptionFailure)
+      lambda { decryptor.for_decrypted_item }.should raise_error(Seth::EncryptedDataBagItem::DecryptionFailure)
     end
 
   end
@@ -127,11 +127,11 @@ describe Chef::EncryptedDataBagItem::Decryptor do
   context "when decrypting a version 1 (JSON+aes-256-cbc+random iv) encrypted value" do
 
     let(:encrypted_value) do
-      Chef::EncryptedDataBagItem::Encryptor.new(plaintext_data, encryption_key).for_encrypted_item
+      Seth::EncryptedDataBagItem::Encryptor.new(plaintext_data, encryption_key).for_encrypted_item
     end
 
     it "selects the correct strategy for version 1" do
-      decryptor.should be_a_kind_of Chef::EncryptedDataBagItem::Decryptor::Version1Decryptor
+      decryptor.should be_a_kind_of Seth::EncryptedDataBagItem::Decryptor::Version1Decryptor
     end
 
     it "decrypts the encrypted value" do
@@ -148,7 +148,7 @@ describe Chef::EncryptedDataBagItem::Decryptor do
         # see the decryption step "succeed" but return invalid data (e.g., not
         # the original plain text) [CHEF-3858]
         decryptor.should_receive(:decrypted_data).and_return("lksajdf")
-        lambda { decryptor.for_decrypted_item }.should raise_error(Chef::EncryptedDataBagItem::DecryptionFailure)
+        lambda { decryptor.for_decrypted_item }.should raise_error(Seth::EncryptedDataBagItem::DecryptionFailure)
       end
     end
 
@@ -156,29 +156,29 @@ describe Chef::EncryptedDataBagItem::Decryptor do
       let(:decryption_key) { "wrong-passwd" }
 
       it "raises a sensible error" do
-        lambda { decryptor.for_decrypted_item }.should raise_error(Chef::EncryptedDataBagItem::DecryptionFailure)
+        lambda { decryptor.for_decrypted_item }.should raise_error(Seth::EncryptedDataBagItem::DecryptionFailure)
       end
     end
 
     context "and the cipher is not supported" do
       let(:encrypted_value) do
-        ev = Chef::EncryptedDataBagItem::Encryptor.new(plaintext_data, encryption_key).for_encrypted_item
+        ev = Seth::EncryptedDataBagItem::Encryptor.new(plaintext_data, encryption_key).for_encrypted_item
         ev["cipher"] = "aes-256-foo"
         ev
       end
 
       it "raises a sensible error" do
-        lambda { decryptor.for_decrypted_item }.should raise_error(Chef::EncryptedDataBagItem::UnsupportedCipher)
+        lambda { decryptor.for_decrypted_item }.should raise_error(Seth::EncryptedDataBagItem::UnsupportedCipher)
       end
     end
 
     context "and version 2 format is required" do
       before do
-        Chef::Config[:data_bag_decrypt_minimum_version] = 2
+        Seth::Config[:data_bag_decrypt_minimum_version] = 2
       end
 
       it "raises an error attempting to decrypt" do
-        lambda { decryptor }.should raise_error(Chef::EncryptedDataBagItem::UnacceptableEncryptedDataBagItemFormat)
+        lambda { decryptor }.should raise_error(Seth::EncryptedDataBagItem::UnacceptableEncryptedDataBagItemFormat)
       end
 
     end
@@ -191,7 +191,7 @@ describe Chef::EncryptedDataBagItem::Decryptor do
     end
 
     it "selects the correct strategy for version 0" do
-      decryptor.should be_a_kind_of(Chef::EncryptedDataBagItem::Decryptor::Version0Decryptor)
+      decryptor.should be_a_kind_of(Seth::EncryptedDataBagItem::Decryptor::Version0Decryptor)
     end
 
     it "decrypts the encrypted value" do
@@ -200,11 +200,11 @@ describe Chef::EncryptedDataBagItem::Decryptor do
 
     context "and version 1 format is required" do
       before do
-        Chef::Config[:data_bag_decrypt_minimum_version] = 1
+        Seth::Config[:data_bag_decrypt_minimum_version] = 1
       end
 
       it "raises an error attempting to decrypt" do
-        lambda { decryptor }.should raise_error(Chef::EncryptedDataBagItem::UnacceptableEncryptedDataBagItemFormat)
+        lambda { decryptor }.should raise_error(Seth::EncryptedDataBagItem::UnacceptableEncryptedDataBagItemFormat)
       end
 
     end
@@ -212,7 +212,7 @@ describe Chef::EncryptedDataBagItem::Decryptor do
   end
 end
 
-describe Chef::EncryptedDataBagItem do
+describe Seth::EncryptedDataBagItem do
   subject { described_class }
   let(:encrypted_data_bag_item) { subject.new(encoded_data, secret) }
   let(:plaintext_data) {{
@@ -234,7 +234,7 @@ describe Chef::EncryptedDataBagItem do
       encoded_data["greeting"].should have_key("iv")
 
       iv = encoded_data["greeting"]["iv"]
-      encryptor = Chef::EncryptedDataBagItem::Encryptor.new("hello", secret, iv)
+      encryptor = Seth::EncryptedDataBagItem::Encryptor.new("hello", secret, iv)
 
       encoded_data["greeting"]["encrypted_data"].should eq(encryptor.for_encrypted_item["encrypted_data"])
     end
@@ -244,7 +244,7 @@ describe Chef::EncryptedDataBagItem do
       encoded_data["nested"].should have_key("iv")
 
       iv = encoded_data["nested"]["iv"]
-      encryptor = Chef::EncryptedDataBagItem::Encryptor.new(plaintext_data["nested"], secret, iv)
+      encryptor = Seth::EncryptedDataBagItem::Encryptor.new(plaintext_data["nested"], secret, iv)
 
       encoded_data["nested"]["encrypted_data"].should eq(encryptor.for_encrypted_item["encrypted_data"])
     end
@@ -275,9 +275,9 @@ describe Chef::EncryptedDataBagItem do
   end
 
   describe "loading" do
-    it "should defer to Chef::DataBagItem.load" do
-      Chef::DataBagItem.stub(:load).with(:the_bag, "my_codes").and_return(encoded_data)
-      edbi = Chef::EncryptedDataBagItem.load(:the_bag, "my_codes", secret)
+    it "should defer to Seth::DataBagItem.load" do
+      Seth::DataBagItem.stub(:load).with(:the_bag, "my_codes").and_return(encoded_data)
+      edbi = Seth::EncryptedDataBagItem.load(:the_bag, "my_codes", secret)
       edbi["greeting"].should eq(plaintext_data["greeting"])
     end
   end
@@ -292,30 +292,30 @@ describe Chef::EncryptedDataBagItem do
       end
 
       it "load_secret('/var/mysecret') reads the secret" do
-        Chef::EncryptedDataBagItem.load_secret("/var/mysecret").should eq secret
+        Seth::EncryptedDataBagItem.load_secret("/var/mysecret").should eq secret
       end
     end
 
-    context "when /etc/chef/encrypted_data_bag_secret exists" do
+    context "when /etc/seth/encrypted_data_bag_secret exists" do
       before do
-        path = Chef::Config.platform_specific_path("/etc/chef/encrypted_data_bag_secret")
+        path = Seth::Config.platform_specific_path("/etc/seth/encrypted_data_bag_secret")
         ::File.stub(:exist?).with(path).and_return(true)
         IO.stub(:read).with(path).and_return(secret)
       end
 
       it "load_secret(nil) reads the secret" do
-        Chef::EncryptedDataBagItem.load_secret(nil).should eq secret
+        Seth::EncryptedDataBagItem.load_secret(nil).should eq secret
       end
     end
 
-    context "when /etc/chef/encrypted_data_bag_secret does not exist" do
+    context "when /etc/seth/encrypted_data_bag_secret does not exist" do
       before do
-        path = Chef::Config.platform_specific_path("/etc/chef/encrypted_data_bag_secret")
+        path = Seth::Config.platform_specific_path("/etc/seth/encrypted_data_bag_secret")
         ::File.stub(:exist?).with(path).and_return(false)
       end
 
       it "load_secret(nil) emits a reasonable error message" do
-        lambda { Chef::EncryptedDataBagItem.load_secret(nil) }.should raise_error(ArgumentError, "No secret specified to load_secret and no secret found at #{Chef::Config.platform_specific_path('/etc/chef/encrypted_data_bag_secret')}")
+        lambda { Seth::EncryptedDataBagItem.load_secret(nil) }.should raise_error(ArgumentError, "No secret specified to load_secret and no secret found at #{Chef::Config.platform_specific_path('/etc/seth/encrypted_data_bag_secret')}")
       end
     end
 
@@ -325,7 +325,7 @@ describe Chef::EncryptedDataBagItem do
       end
 
       it "reads from the URL" do
-        Chef::EncryptedDataBagItem.load_secret("http://www.opscode.com/").should eq secret
+        Seth::EncryptedDataBagItem.load_secret("http://www.opscode.com/").should eq secret
       end
     end
   end

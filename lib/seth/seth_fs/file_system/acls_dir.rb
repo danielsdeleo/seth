@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/base_fs_dir'
-require 'chef/chef_fs/file_system/acl_dir'
-require 'chef/chef_fs/file_system/cookbooks_acl_dir'
-require 'chef/chef_fs/file_system/acl_entry'
-require 'chef/chef_fs/data_handler/acl_data_handler'
+require 'seth/chef_fs/file_system/base_fs_dir'
+require 'seth/chef_fs/file_system/acl_dir'
+require 'seth/chef_fs/file_system/cookbooks_acl_dir'
+require 'seth/chef_fs/file_system/acl_entry'
+require 'seth/chef_fs/data_handler/acl_data_handler'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class AclsDir < BaseFSDir
         ENTITY_TYPES = %w(clients containers cookbooks data_bags environments groups nodes roles) # we don't read sandboxes, so we don't read their acls
@@ -33,7 +33,7 @@ class Chef
         end
 
         def data_handler
-          @data_handler ||= Chef::ChefFS::DataHandler::AclDataHandler.new
+          @data_handler ||= Seth::ChefFS::DataHandler::AclDataHandler.new
         end
 
         def api_path

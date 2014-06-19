@@ -1,6 +1,6 @@
 #
-# Author:: Daniel DeLeo (<dan@getchef.com>)
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Author:: Daniel DeLeo (<dan@getseth.com>)
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
-require 'chef/config'
+require 'seth/knife'
+require 'seth/config'
 
-class Chef
+class Seth
   class Knife
-    class SslCheck < Chef::Knife
+    class SslCheck < Seth::Knife
 
       deps do
         require 'pp'
         require 'socket'
         require 'uri'
-        require 'chef/http/ssl_policies'
+        require 'seth/http/ssl_policies'
         require 'openssl'
       end
 
@@ -42,13 +42,13 @@ class Chef
 
       def uri
         @uri ||= begin
-          Chef::Log.debug("Checking SSL cert on #{given_uri}")
+          Seth::Log.debug("Checking SSL cert on #{given_uri}")
           URI.parse(given_uri)
         end
       end
 
       def given_uri
-        (name_args[0] or Chef::Config.chef_server_url)
+        (name_args[0] or Seth::Config.seth_server_url)
       end
 
       def host
@@ -112,7 +112,7 @@ class Chef
         true
       rescue OpenSSL::SSL::SSLError => e
         ui.error "The SSL certificate of #{host} could not be verified"
-        Chef::Log.debug e.message
+        Seth::Log.debug e.message
         debug_invalid_cert
         false
       end
@@ -122,7 +122,7 @@ class Chef
         true
       rescue OpenSSL::SSL::SSLError => e
         ui.error "The SSL cert is signed by a trusted authority but is not valid for the given hostname"
-        Chef::Log.debug(e)
+        Seth::Log.debug(e)
         debug_invalid_host
         false
       end
@@ -134,19 +134,19 @@ class Chef
 
         ui.msg("\n#{ui.color("Configuration Info:", :bold)}\n\n")
         debug_ssl_settings
-        debug_chef_ssl_config
+        debug_seth_ssl_config
 
         ui.err(<<-ADVICE)
 
 #{ui.color("TO FIX THIS ERROR:", :bold)}
 
 If the server you are connecting to uses a self-signed certificate, you must
-configure chef to trust that server's certificate.
+configure seth to trust that server's certificate.
 
 By default, the certificate is stored in the following location on the host
-where your chef-server runs:
+where your seth-server runs:
 
-  /var/opt/chef-server/nginx/ca/SERVER_HOSTNAME.crt
+  /var/opt/seth-server/nginx/ca/SERVER_HOSTNAME.crt
 
 Copy that file to you trusted_certs_dir (currently: #{configuration.trusted_certs_dir})
 using SSH/SCP or some other secure method, then re-run this command to confirm
@@ -169,7 +169,7 @@ ADVICE
 
 The solution for this issue depends on your networking configuration. If you
 are able to connect to this server using the hostname #{cn}
-instead of #{host}, then you can resolve this issue by updating chef_server_url
+instead of #{host}, then you can resolve this issue by updating seth_server_url
 in your configuration file.
 
 If you are not able to connect to the server using the hostname #{cn}
@@ -184,15 +184,15 @@ ADVICE
         ui.err "* Certificate directory: #{OpenSSL::X509::DEFAULT_CERT_DIR}"
       end
 
-      def debug_chef_ssl_config
-        ui.err "Chef SSL Configuration:"
+      def debug_seth_ssl_config
+        ui.err "Seth SSL Configuration:"
         ui.err "* ssl_ca_path: #{configuration.ssl_ca_path.inspect}"
         ui.err "* ssl_ca_file: #{configuration.ssl_ca_file.inspect}"
         ui.err "* trusted_certs_dir: #{configuration.trusted_certs_dir.inspect}"
       end
 
       def configuration
-        Chef::Config
+        Seth::Config
       end
 
       def run

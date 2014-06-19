@@ -19,15 +19,15 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::ErlCall do
+describe Seth::Resource::ErlCall do
 
   before(:each) do
-    @resource = Chef::Resource::ErlCall.new("fakey_fakerton")
+    @resource = Seth::Resource::ErlCall.new("fakey_fakerton")
   end
 
-  it "should create a new Chef::Resource::ErlCall" do
-    @resource.should be_a_kind_of(Chef::Resource)
-    @resource.should be_a_kind_of(Chef::Resource::ErlCall)
+  it "should create a new Seth::Resource::ErlCall" do
+    @resource.should be_a_kind_of(Seth::Resource)
+    @resource.should be_a_kind_of(Seth::Resource::ErlCall)
   end
 
   it "should have a resource name of :erl_call" do
@@ -63,8 +63,8 @@ describe Chef::Resource::ErlCall do
   end
 
   it "should allow you to set the node_name attribute" do
-    @resource.node_name "chef@erlang"
-    @resource.node_name.should eql("chef@erlang")
+    @resource.node_name "seth@erlang"
+    @resource.node_name.should eql("seth@erlang")
   end
 
   describe "when it has cookie and node_name" do

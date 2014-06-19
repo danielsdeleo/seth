@@ -1,6 +1,6 @@
 #
 # Author:: Bryan McLellan <btm@loftninjas.org>
-# Copyright:: Copyright (c) 2014 Chef Software, Inc.
+# Copyright:: Copyright (c) 2014 Seth Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/util/path_helper'
+require 'seth/util/path_helper'
 require 'spec_helper'
 
-describe Chef::Util::PathHelper do
-  let(:path_helper) { Chef::Util::PathHelper }
+describe Seth::Util::PathHelper do
+  let(:path_helper) { Seth::Util::PathHelper }
 
   describe "validate_path" do
     context "on windows" do
       before(:each) do
         # pass by default
-        Chef::Platform.stub(:windows?).and_return(true)
+        Seth::Platform.stub(:windows?).and_return(true)
         path_helper.stub(:printable?).and_return(true)
         path_helper.stub(:windows_max_length_exceeded?).and_return(false)
       end
@@ -41,7 +41,7 @@ describe Chef::Util::PathHelper do
 
       it "raises an error if the path has invalid characters" do
         path_helper.stub(:printable?).and_return(false)
-        expect { path_helper.validate_path("Newline!\n") }.to raise_error(Chef::Exceptions::ValidationFailed)
+        expect { path_helper.validate_path("Newline!\n") }.to raise_error(Seth::Exceptions::ValidationFailed)
       end
 
       it "Adds the \\\\?\\ prefix if the path exceeds MAX_LENGTH and does not have it" do

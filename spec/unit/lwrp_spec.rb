@@ -38,162 +38,162 @@ describe "LWRP" do
 
     it "should log if attempting to load resource of same name" do
       Dir[File.expand_path( "lwrp/resources/*", CHEF_SPEC_DATA)].each do |file|
-        Chef::Resource::LWRPBase.build_from_file("lwrp", file, nil)
+        Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
 
       Dir[File.expand_path( "lwrp/resources/*", CHEF_SPEC_DATA)].each do |file|
-        Chef::Log.should_receive(:info).with(/overriding/)
-        Chef::Resource::LWRPBase.build_from_file("lwrp", file, nil)
+        Seth::Log.should_receive(:info).with(/overriding/)
+        Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
     end
 
     it "should log if attempting to load provider of same name" do
       Dir[File.expand_path( "lwrp/providers/*", CHEF_SPEC_DATA)].each do |file|
-        Chef::Provider::LWRPBase.build_from_file("lwrp", file, nil)
+        Seth::Provider::LWRPBase.build_from_file("lwrp", file, nil)
       end
 
       Dir[File.expand_path( "lwrp/providers/*", CHEF_SPEC_DATA)].each do |file|
-        Chef::Log.should_receive(:info).with(/overriding/)
-        Chef::Provider::LWRPBase.build_from_file("lwrp", file, nil)
+        Seth::Log.should_receive(:info).with(/overriding/)
+        Seth::Provider::LWRPBase.build_from_file("lwrp", file, nil)
       end
     end
 
     it "removes the old LRWP resource class from the list of resource subclasses [CHEF-3432]" do
       # CHEF-3432 regression test:
-      # Chef::Resource keeps a list of all subclasses to assist class inflation
-      # for json parsing (see Chef::JSONCompat). When replacing LWRP resources,
+      # Seth::Resource keeps a list of all subclasses to assist class inflation
+      # for json parsing (see Seth::JSONCompat). When replacing LWRP resources,
       # we need to ensure the old resource class is remove from that list.
       Dir[File.expand_path( "lwrp/resources/*", CHEF_SPEC_DATA)].each do |file|
-        Chef::Resource::LWRPBase.build_from_file("lwrp", file, nil)
+        Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
-      first_lwr_foo_class = Chef::Resource::LwrpFoo
-      Chef::Resource.resource_classes.should include(first_lwr_foo_class)
+      first_lwr_foo_class = Seth::Resource::LwrpFoo
+      Seth::Resource.resource_classes.should include(first_lwr_foo_class)
       Dir[File.expand_path( "lwrp/resources/*", CHEF_SPEC_DATA)].each do |file|
-        Chef::Resource::LWRPBase.build_from_file("lwrp", file, nil)
+        Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
-      Chef::Resource.resource_classes.should_not include(first_lwr_foo_class)
+      Seth::Resource.resource_classes.should_not include(first_lwr_foo_class)
     end
 
     it "does not attempt to remove classes from higher up namespaces [CHEF-4117]" do
       conflicting_lwrp_file = File.expand_path( "lwrp_const_scoping/resources/conflict.rb", CHEF_SPEC_DATA)
       # The test is that this should not raise an error:
-      Chef::Resource::LWRPBase.build_from_file("lwrp_const_scoping", conflicting_lwrp_file, nil)
+      Seth::Resource::LWRPBase.build_from_file("lwrp_const_scoping", conflicting_lwrp_file, nil)
     end
 
   end
 
-  describe "Lightweight Chef::Resource" do
+  describe "Lightweight Seth::Resource" do
 
     before do
       Dir[File.expand_path(File.join(File.dirname(__FILE__), "..", "data", "lwrp", "resources", "*"))].each do |file|
-        Chef::Resource::LWRPBase.build_from_file("lwrp", file, nil)
+        Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
 
       Dir[File.expand_path(File.join(File.dirname(__FILE__), "..", "data", "lwrp_override", "resources", "*"))].each do |file|
-        Chef::Resource::LWRPBase.build_from_file("lwrp", file, nil)
+        Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
     end
 
     it "should load the resource into a properly-named class" do
-      Chef::Resource.const_get("LwrpFoo").should be_kind_of(Class)
+      Seth::Resource.const_get("LwrpFoo").should be_kind_of(Class)
     end
 
     it "should set resource_name" do
-      Chef::Resource::LwrpFoo.new("blah").resource_name.should eql(:lwrp_foo)
+      Seth::Resource::LwrpFoo.new("blah").resource_name.should eql(:lwrp_foo)
     end
 
     it "should add the specified actions to the allowed_actions array" do
-      Chef::Resource::LwrpFoo.new("blah").allowed_actions.should include(:pass_buck, :twiddle_thumbs)
+      Seth::Resource::LwrpFoo.new("blah").allowed_actions.should include(:pass_buck, :twiddle_thumbs)
     end
 
     it "should set the specified action as the default action" do
-      Chef::Resource::LwrpFoo.new("blah").action.should == :pass_buck
+      Seth::Resource::LwrpFoo.new("blah").action.should == :pass_buck
     end
 
     it "should create a method for each attribute" do
-      Chef::Resource::LwrpFoo.new("blah").methods.map{ |m| m.to_sym}.should include(:monkey)
+      Seth::Resource::LwrpFoo.new("blah").methods.map{ |m| m.to_sym}.should include(:monkey)
     end
 
     it "should build attribute methods that respect validation rules" do
-      lambda { Chef::Resource::LwrpFoo.new("blah").monkey(42) }.should raise_error(ArgumentError)
+      lambda { Seth::Resource::LwrpFoo.new("blah").monkey(42) }.should raise_error(ArgumentError)
     end
 
     it "should have access to the run context and node during class definition" do
-      node = Chef::Node.new
+      node = Seth::Node.new
       node.normal[:penguin_name] = "jackass"
-      run_context = Chef::RunContext.new(node, Chef::CookbookCollection.new, @events)
+      run_context = Seth::RunContext.new(node, Chef::CookbookCollection.new, @events)
 
       Dir[File.expand_path(File.join(File.dirname(__FILE__), "..", "data", "lwrp", "resources_with_default_attributes", "*"))].each do |file|
-        Chef::Resource::LWRPBase.build_from_file("lwrp", file, run_context)
+        Seth::Resource::LWRPBase.build_from_file("lwrp", file, run_context)
       end
 
-      cls = Chef::Resource.const_get("LwrpNodeattr")
-      cls.node.should be_kind_of(Chef::Node)
-      cls.run_context.should be_kind_of(Chef::RunContext)
+      cls = Seth::Resource.const_get("LwrpNodeattr")
+      cls.node.should be_kind_of(Seth::Node)
+      cls.run_context.should be_kind_of(Seth::RunContext)
       cls.node[:penguin_name].should eql("jackass")
     end
 
   end
 
-  describe "Lightweight Chef::Provider" do
+  describe "Lightweight Seth::Provider" do
     before do
-      @node = Chef::Node.new
+      @node = Seth::Node.new
       @node.automatic[:platform] = :ubuntu
       @node.automatic[:platform_version] = '8.10'
-      @events = Chef::EventDispatch::Dispatcher.new
-      @run_context = Chef::RunContext.new(@node, Chef::CookbookCollection.new({}), @events)
-      @runner = Chef::Runner.new(@run_context)
+      @events = Seth::EventDispatch::Dispatcher.new
+      @run_context = Seth::RunContext.new(@node, Chef::CookbookCollection.new({}), @events)
+      @runner = Seth::Runner.new(@run_context)
     end
 
     before(:each) do
       Dir[File.expand_path(File.join(File.dirname(__FILE__), "..", "data", "lwrp", "resources", "*"))].each do |file|
-        Chef::Resource::LWRPBase.build_from_file("lwrp", file, @run_context)
+        Seth::Resource::LWRPBase.build_from_file("lwrp", file, @run_context)
       end
 
       Dir[File.expand_path(File.join(File.dirname(__FILE__), "..", "data", "lwrp_override", "resources", "*"))].each do |file|
-        Chef::Resource::LWRPBase.build_from_file("lwrp", file, @run_context)
+        Seth::Resource::LWRPBase.build_from_file("lwrp", file, @run_context)
       end
 
       Dir[File.expand_path(File.join(File.dirname(__FILE__), "..", "data", "lwrp", "providers", "*"))].each do |file|
-        Chef::Provider::LWRPBase.build_from_file("lwrp", file, @run_context)
+        Seth::Provider::LWRPBase.build_from_file("lwrp", file, @run_context)
       end
 
       Dir[File.expand_path(File.join(File.dirname(__FILE__), "..", "data", "lwrp_override", "providers", "*"))].each do |file|
-        Chef::Provider::LWRPBase.build_from_file("lwrp", file, @run_context)
+        Seth::Provider::LWRPBase.build_from_file("lwrp", file, @run_context)
       end
 
     end
 
     it "should properly handle a new_resource reference" do
-      resource = Chef::Resource::LwrpFoo.new("morpheus")
+      resource = Seth::Resource::LwrpFoo.new("morpheus")
       resource.monkey("bob")
       resource.provider(:lwrp_monkey_name_printer)
       resource.run_context = @run_context
 
-      provider = Chef::Platform.provider_for_resource(resource, :twiddle_thumbs)
+      provider = Seth::Platform.provider_for_resource(resource, :twiddle_thumbs)
       provider.action_twiddle_thumbs
     end
 
     it "should load the provider into a properly-named class" do
-      Chef::Provider.const_get("LwrpBuckPasser").should be_kind_of(Class)
+      Seth::Provider.const_get("LwrpBuckPasser").should be_kind_of(Class)
     end
 
     it "should create a method for each attribute" do
       new_resource = double("new resource").as_null_object
-      Chef::Provider::LwrpBuckPasser.new(nil, new_resource).methods.map{|m|m.to_sym}.should include(:action_pass_buck)
-      Chef::Provider::LwrpThumbTwiddler.new(nil, new_resource).methods.map{|m|m.to_sym}.should include(:action_twiddle_thumbs)
+      Seth::Provider::LwrpBuckPasser.new(nil, new_resource).methods.map{|m|m.to_sym}.should include(:action_pass_buck)
+      Seth::Provider::LwrpThumbTwiddler.new(nil, new_resource).methods.map{|m|m.to_sym}.should include(:action_twiddle_thumbs)
     end
 
     it "should insert resources embedded in the provider into the middle of the resource collection" do
-      injector = Chef::Resource::LwrpFoo.new("morpheus", @run_context)
+      injector = Seth::Resource::LwrpFoo.new("morpheus", @run_context)
       injector.action(:pass_buck)
       injector.provider(:lwrp_buck_passer)
-      dummy = Chef::Resource::ZenMaster.new("keanu reeves", @run_context)
-      dummy.provider(Chef::Provider::Easy)
+      dummy = Seth::Resource::ZenMaster.new("keanu reeves", @run_context)
+      dummy.provider(Seth::Provider::Easy)
       @run_context.resource_collection.insert(injector)
       @run_context.resource_collection.insert(dummy)
 
-      Chef::Runner.new(@run_context).converge
+      Seth::Runner.new(@run_context).converge
 
       @run_context.resource_collection[0].should eql(injector)
       @run_context.resource_collection[1].name.should eql(:prepared_thumbs)
@@ -202,22 +202,22 @@ describe "LWRP" do
     end
 
     it "should insert embedded resources from multiple providers, including from the last position, properly into the resource collection" do
-      injector = Chef::Resource::LwrpFoo.new("morpheus", @run_context)
+      injector = Seth::Resource::LwrpFoo.new("morpheus", @run_context)
       injector.action(:pass_buck)
       injector.provider(:lwrp_buck_passer)
 
-      injector2 = Chef::Resource::LwrpBar.new("tank", @run_context)
+      injector2 = Seth::Resource::LwrpBar.new("tank", @run_context)
       injector2.action(:pass_buck)
       injector2.provider(:lwrp_buck_passer_2)
 
-      dummy = Chef::Resource::ZenMaster.new("keanu reeves", @run_context)
-      dummy.provider(Chef::Provider::Easy)
+      dummy = Seth::Resource::ZenMaster.new("keanu reeves", @run_context)
+      dummy.provider(Seth::Provider::Easy)
 
       @run_context.resource_collection.insert(injector)
       @run_context.resource_collection.insert(dummy)
       @run_context.resource_collection.insert(injector2)
 
-      Chef::Runner.new(@run_context).converge
+      Seth::Runner.new(@run_context).converge
 
       @run_context.resource_collection[0].should eql(injector)
       @run_context.resource_collection[1].name.should eql(:prepared_thumbs)
@@ -229,22 +229,22 @@ describe "LWRP" do
     end
 
     it "should properly handle a new_resource reference" do
-      resource = Chef::Resource::LwrpFoo.new("morpheus", @run_context)
+      resource = Seth::Resource::LwrpFoo.new("morpheus", @run_context)
       resource.monkey("bob")
       resource.provider(:lwrp_monkey_name_printer)
 
-      provider = Chef::Platform.provider_for_resource(resource, :twiddle_thumbs)
+      provider = Seth::Platform.provider_for_resource(resource, :twiddle_thumbs)
       provider.action_twiddle_thumbs
 
       provider.monkey_name.should == "my monkey's name is 'bob'"
     end
 
     it "should properly handle an embedded Resource accessing the enclosing Provider's scope" do
-      resource = Chef::Resource::LwrpFoo.new("morpheus", @run_context)
+      resource = Seth::Resource::LwrpFoo.new("morpheus", @run_context)
       resource.monkey("bob")
       resource.provider(:lwrp_embedded_resource_accesses_providers_scope)
 
-      provider = Chef::Platform.provider_for_resource(resource, :twiddle_thumbs)
+      provider = Seth::Platform.provider_for_resource(resource, :twiddle_thumbs)
       #provider = @runner.build_provider(resource)
       provider.action_twiddle_thumbs
 
@@ -259,7 +259,7 @@ describe "LWRP" do
         # Side effect of lwrp_inline_compiler provider for testing notifications.
         $interior_ruby_block_2 = nil
         # resource type doesn't matter, so make an existing resource type work with provider.
-        @resource = Chef::Resource::LwrpFoo.new("morpheus", @run_context)
+        @resource = Seth::Resource::LwrpFoo.new("morpheus", @run_context)
         @resource.allowed_actions << :test
         @resource.action(:test)
         @resource.provider(:lwrp_inline_compiler)

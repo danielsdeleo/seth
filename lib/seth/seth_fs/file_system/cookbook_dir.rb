@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs/file_system/rest_list_dir'
-require 'chef/chef_fs/file_system/cookbook_subdir'
-require 'chef/chef_fs/file_system/cookbook_file'
-require 'chef/chef_fs/file_system/not_found_error'
-require 'chef/cookbook_version'
-require 'chef/cookbook_uploader'
+require 'seth/chef_fs/file_system/rest_list_dir'
+require 'seth/chef_fs/file_system/cookbook_subdir'
+require 'seth/chef_fs/file_system/cookbook_file'
+require 'seth/chef_fs/file_system/not_found_error'
+require 'seth/cookbook_version'
+require 'seth/cookbook_uploader'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module FileSystem
       class CookbookDir < BaseFSDir
         def initialize(name, parent, options = {})
@@ -32,7 +32,7 @@ class Chef
           @exists = options[:exists]
           # If the name is apache2-1.0.0 and versioned_cookbooks is on, we know
           # the actual cookbook_name and version.
-          if Chef::Config[:versioned_cookbooks]
+          if Seth::Config[:versioned_cookbooks]
             if name =~ VALID_VERSIONED_COOKBOOK_NAME
               @cookbook_name = $1
               @version = $2
@@ -59,8 +59,8 @@ class Chef
           :root_files => { }
         }
 
-        # See Erchef code
-        # https://github.com/opscode/chef_objects/blob/968a63344d38fd507f6ace05f73d53e9cd7fb043/src/chef_regex.erl#L94
+        # See Erseth code
+        # https://github.com/opscode/seth_objects/blob/968a63344d38fd507f6ace05f73d53e9cd7fb043/src/chef_regex.erl#L94
         VALID_VERSIONED_COOKBOOK_NAME = /^([.a-zA-Z0-9_-]+)-(\d+\.\d+\.\d+)$/
 
         def add_child(child)
@@ -78,7 +78,7 @@ class Chef
           begin
             result = children.select { |child| child.name == name }.first
             return result if result
-          rescue Chef::ChefFS::FileSystem::NotFoundError
+          rescue Seth::ChefFS::FileSystem::NotFoundError
           end
           return NonexistentFSObject.new(name, self)
         end
@@ -92,7 +92,7 @@ class Chef
         def children
           if @children.nil?
             @children = []
-            manifest = chef_object.manifest
+            manifest = seth_object.manifest
             COOKBOOK_SEGMENT_INFO.each do |segment, segment_info|
               next unless manifest.has_key?(segment)
 
@@ -128,12 +128,12 @@ class Chef
             begin
               rest.delete(api_path)
             rescue Timeout::Error => e
-              raise Chef::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
+              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
             rescue Net::HTTPServerException
               if $!.response.code == "404"
-                raise Chef::ChefFS::FileSystem::NotFoundError.new(self, $!)
+                raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
               else
-                raise Chef::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "HTTP error deleting: #{e}"
+                raise Seth::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "HTTP error deleting: #{e}"
               end
             end
           else
@@ -156,7 +156,7 @@ class Chef
             return [ !exists?, nil, nil ]
           end
           are_same = true
-          Chef::ChefFS::CommandLine::diff_entries(self, other, nil, :name_only).each do |type, old_entry, new_entry|
+          Seth::ChefFS::CommandLine::diff_entries(self, other, nil, :name_only).each do |type, old_entry, new_entry|
             if [ :directory_to_file, :file_to_directory, :deleted, :added, :modified ].include?(type)
               are_same = false
             end
@@ -172,49 +172,49 @@ class Chef
           parent.rest
         end
 
-        def chef_object
+        def seth_object
           # We cheat and cache here, because it seems like a good idea to keep
           # the cookbook view consistent with the directory structure.
-          return @chef_object if @chef_object
+          return @seth_object if @chef_object
 
           # The negative (not found) response is cached
-          if @could_not_get_chef_object
-            raise Chef::ChefFS::FileSystem::NotFoundError.new(self, @could_not_get_chef_object)
+          if @could_not_get_seth_object
+            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, @could_not_get_seth_object)
           end
 
           begin
             # We want to fail fast, for now, because of the 500 issue :/
             # This will make things worse for parallelism, a little, because
-            # Chef::Config is global and this could affect other requests while
+            # Seth::Config is global and this could affect other requests while
             # this request is going on.  (We're not parallel yet, but we will be.)
-            # Chef bug http://tickets.opscode.com/browse/CHEF-3066
-            old_retry_count = Chef::Config[:http_retry_count]
+            # Seth bug http://tickets.opscode.com/browse/CHEF-3066
+            old_retry_count = Seth::Config[:http_retry_count]
             begin
-              Chef::Config[:http_retry_count] = 0
-              @chef_object ||= Chef::CookbookVersion.json_create(root.get_json(api_path))
+              Seth::Config[:http_retry_count] = 0
+              @seth_object ||= Seth::CookbookVersion.json_create(root.get_json(api_path))
             ensure
-              Chef::Config[:http_retry_count] = old_retry_count
+              Seth::Config[:http_retry_count] = old_retry_count
             end
 
           rescue Timeout::Error => e
-            raise Chef::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading: #{e}"
+            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading: #{e}"
 
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
-              @could_not_get_chef_object = e
-              raise Chef::ChefFS::FileSystem::NotFoundError.new(self, @could_not_get_chef_object)
+              @could_not_get_seth_object = e
+              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, @could_not_get_seth_object)
             else
-              raise Chef::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
+              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
             end
 
-          # Chef bug http://tickets.opscode.com/browse/CHEF-3066 ... instead of 404 we get 500 right now.
+          # Seth bug http://tickets.opscode.com/browse/CHEF-3066 ... instead of 404 we get 500 right now.
           # Remove this when that bug is fixed.
           rescue Net::HTTPFatalError => e
             if e.response.code == "500"
-              @could_not_get_chef_object = e
-              raise Chef::ChefFS::FileSystem::NotFoundError.new(self, @could_not_get_chef_object)
+              @could_not_get_seth_object = e
+              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, @could_not_get_seth_object)
             else
-              raise Chef::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
+              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
             end
           end
         end

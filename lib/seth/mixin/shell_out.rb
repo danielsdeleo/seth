@@ -15,20 +15,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# chef/shell_out has been deprecated in favor of mixlib/shellout
-# chef/shell_out is still required here to ensure backward compatibility
-require 'chef/shell_out'
+# seth/shell_out has been deprecated in favor of mixlib/shellout
+# seth/shell_out is still required here to ensure backward compatibility
+require 'seth/shell_out'
 
 require 'mixlib/shellout'
-require 'chef/config'
+require 'seth/config'
 
-class Chef
+class Seth
   module Mixin
     module ShellOut
 
       # shell_out! runs a command on the system and will raise an error if the command fails, which is what you want
       # for debugging, shell_out and shell_out! both will display command output to the tty when the log level is debug
-      # Generally speaking, 'extend Chef::Mixin::ShellOut' in your recipes and include 'Chef::Mixin::ShellOut' in your LWRPs
+      # Generally speaking, 'extend Seth::Mixin::ShellOut' in your recipes and include 'Chef::Mixin::ShellOut' in your LWRPs
       # You can also call Mixlib::Shellout.new directly, but you lose all of the above functionality
 
       def shell_out(*command_args)
@@ -49,7 +49,7 @@ class Chef
           [:command_log_prepend, :log_tag] ]
 
       # CHEF-3090: Deprecate command_log_level and command_log_prepend
-      # Patterned after https://github.com/opscode/chef/commit/e1509990b559984b43e428d4d801c394e970f432
+      # Patterned after https://github.com/opscode/seth/commit/e1509990b559984b43e428d4d801c394e970f432
       def run_command_compatible_options(command_args)
         return command_args unless command_args.last.is_a?(Hash)
 
@@ -69,11 +69,11 @@ class Chef
       private
 
       def deprecate_option(old_option, new_option)
-        Chef::Log.logger.warn "DEPRECATION: Chef::Mixin::ShellOut option :#{old_option} is deprecated. Use :#{new_option}"
+        Seth::Log.logger.warn "DEPRECATION: Chef::Mixin::ShellOut option :#{old_option} is deprecated. Use :#{new_option}"
       end
 
       def io_for_live_stream
-        if STDOUT.tty? && !Chef::Config[:daemon] && Chef::Log.debug?
+        if STDOUT.tty? && !Seth::Config[:daemon] && Chef::Log.debug?
           STDOUT
         else
           nil

@@ -19,24 +19,24 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::RemoteFile do
+describe Seth::Resource::RemoteFile do
 
   before(:each) do
-    @resource = Chef::Resource::RemoteFile.new("fakey_fakerton")
+    @resource = Seth::Resource::RemoteFile.new("fakey_fakerton")
   end
 
   describe "initialize" do
-    it "should create a new Chef::Resource::RemoteFile" do
-      @resource.should be_a_kind_of(Chef::Resource)
-      @resource.should be_a_kind_of(Chef::Resource::File)
-      @resource.should be_a_kind_of(Chef::Resource::RemoteFile)
+    it "should create a new Seth::Resource::RemoteFile" do
+      @resource.should be_a_kind_of(Seth::Resource)
+      @resource.should be_a_kind_of(Seth::Resource::File)
+      @resource.should be_a_kind_of(Seth::Resource::RemoteFile)
     end
   end
 
   it "says its provider is RemoteFile when the source is an absolute URI" do
     @resource.source("http://www.google.com/robots.txt")
-    @resource.provider.should == Chef::Provider::RemoteFile
-    Chef::Platform.find_provider(:noplatform, 'noversion', @resource).should == Chef::Provider::RemoteFile
+    @resource.provider.should == Seth::Provider::RemoteFile
+    Seth::Platform.find_provider(:noplatform, 'noversion', @resource).should == Chef::Provider::RemoteFile
   end
 
 
@@ -51,7 +51,7 @@ describe Chef::Resource::RemoteFile do
     end
 
     it "should accept a delayed evalutator (string) for the remote file source" do
-      @resource.source Chef::DelayedEvaluator.new {"http://opscode.com/"}
+      @resource.source Seth::DelayedEvaluator.new {"http://opscode.com/"}
       @resource.source.should eql([ "http://opscode.com/" ])
     end
 
@@ -61,7 +61,7 @@ describe Chef::Resource::RemoteFile do
     end
 
     it "should accept a delated evaluator (array) for the remote file source" do
-      @resource.source Chef::DelayedEvaluator.new { [ "http://opscode.com/", "http://puppetlabs.com/" ] }
+      @resource.source Seth::DelayedEvaluator.new { [ "http://opscode.com/", "http://puppetlabs.com/" ] }
       @resource.source.should eql([ "http://opscode.com/", "http://puppetlabs.com/" ])
     end
 
@@ -72,25 +72,25 @@ describe Chef::Resource::RemoteFile do
 
     it "should only accept a single argument if a delayed evalutor is used" do
       lambda {
-        @resource.source("http://opscode.com/", Chef::DelayedEvaluator.new {"http://opscode.com/"})
-      }.should raise_error(Chef::Exceptions::InvalidRemoteFileURI)
+        @resource.source("http://opscode.com/", Seth::DelayedEvaluator.new {"http://opscode.com/"})
+      }.should raise_error(Seth::Exceptions::InvalidRemoteFileURI)
     end
 
     it "should only accept a single array item if a delayed evalutor is used" do
       lambda {
-        @resource.source(["http://opscode.com/", Chef::DelayedEvaluator.new {"http://opscode.com/"}])
-      }.should raise_error(Chef::Exceptions::InvalidRemoteFileURI)
+        @resource.source(["http://opscode.com/", Seth::DelayedEvaluator.new {"http://opscode.com/"}])
+      }.should raise_error(Seth::Exceptions::InvalidRemoteFileURI)
     end
 
     it "does not accept a non-URI as the source" do
-      lambda { @resource.source("not-a-uri") }.should raise_error(Chef::Exceptions::InvalidRemoteFileURI)
+      lambda { @resource.source("not-a-uri") }.should raise_error(Seth::Exceptions::InvalidRemoteFileURI)
     end
 
     it "does not accept a non-URI as the source when read from a delayed evaluator" do
       lambda {
-        @resource.source(Chef::DelayedEvaluator.new {"not-a-uri"})
+        @resource.source(Seth::DelayedEvaluator.new {"not-a-uri"})
         @resource.source
-      }.should raise_error(Chef::Exceptions::InvalidRemoteFileURI)
+      }.should raise_error(Seth::Exceptions::InvalidRemoteFileURI)
     end
 
     it "should raise an exception when source is an empty array" do
@@ -153,7 +153,7 @@ describe Chef::Resource::RemoteFile do
 
   describe "when it has group, mode, owner, source, and checksum" do
     before do
-      if Chef::Platform.windows?
+      if Seth::Platform.windows?
         @resource.path("C:/temp/origin/file.txt")
         @resource.rights(:read, "Everyone")
         @resource.deny_rights(:full_control, "Clumsy_Sam")
@@ -169,7 +169,7 @@ describe Chef::Resource::RemoteFile do
 
     it "describes its state" do
       state = @resource.state
-      if Chef::Platform.windows?
+      if Seth::Platform.windows?
         puts state
         state[:rights].should == [{:permissions => :read, :principals => "Everyone"}]
         state[:deny_rights].should == [{:permissions => :full_control, :principals => "Clumsy_Sam"}]
@@ -182,7 +182,7 @@ describe Chef::Resource::RemoteFile do
     end
 
     it "returns the path as its identity" do
-      if Chef::Platform.windows?
+      if Seth::Platform.windows?
         @resource.identity.should == "C:/temp/origin/file.txt"
       else
         @resource.identity.should == "/this/path/"

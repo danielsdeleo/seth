@@ -16,22 +16,22 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/resource/apt_package'
-require 'chef/mixin/shell_out'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/resource/apt_package'
+require 'seth/mixin/shell_out'
 
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Apt < Chef::Provider::Package
+      class Apt < Seth::Provider::Package
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
         attr_accessor :is_virtual_package
 
         def load_current_resource
-          @current_resource = Chef::Resource::AptPackage.new(@new_resource.name)
+          @current_resource = Seth::Resource::AptPackage.new(@new_resource.name)
           @current_resource.package_name(@new_resource.package_name)
           check_package_state(@new_resource.package_name)
           @current_resource
@@ -42,7 +42,7 @@ class Chef
 
           requirements.assert(:all_actions) do |a|
             a.assertion { !@new_resource.source }
-            a.failure_message(Chef::Exceptions::Package, 'apt package provider cannot handle source attribute. Use dpkg provider instead')
+            a.failure_message(Seth::Exceptions::Package, 'apt package provider cannot handle source attribute. Use dpkg provider instead')
           end
         end
 
@@ -52,7 +52,7 @@ class Chef
         end
 
         def check_package_state(package)
-          Chef::Log.debug("#{@new_resource} checking package status for #{package}")
+          Seth::Log.debug("#{@new_resource} checking package status for #{package}")
           installed = false
 
           shell_out!("apt-cache#{expand_options(default_release_options)} policy #{package}", :timeout => @new_resource.timeout).stdout.each_line do |line|
@@ -60,10 +60,10 @@ class Chef
             when /^\s{2}Installed: (.+)$/
               installed_version = $1
               if installed_version == '(none)'
-                Chef::Log.debug("#{@new_resource} current version is nil")
+                Seth::Log.debug("#{@new_resource} current version is nil")
                 @current_resource.version(nil)
               else
-                Chef::Log.debug("#{@new_resource} current version is #{installed_version}")
+                Seth::Log.debug("#{@new_resource} current version is #{installed_version}")
                 @current_resource.version(installed_version)
                 installed = true
               end
@@ -81,14 +81,14 @@ class Chef
                 end
                 # Check if the package providing this virtual package is installed
                 num_providers = providers.length
-                raise Chef::Exceptions::Package, "#{@new_resource.package_name} has no candidate in the apt-cache" if num_providers == 0
+                raise Seth::Exceptions::Package, "#{@new_resource.package_name} has no candidate in the apt-cache" if num_providers == 0
                 # apt will only install a virtual package if there is a single providing package
-                raise Chef::Exceptions::Package, "#{@new_resource.package_name} is a virtual package provided by #{num_providers} packages, you must explicitly select one to install" if num_providers > 1
+                raise Seth::Exceptions::Package, "#{@new_resource.package_name} is a virtual package provided by #{num_providers} packages, you must explicitly select one to install" if num_providers > 1
                 # Check if the package providing this virtual package is installed
-                Chef::Log.info("#{@new_resource} is a virtual package, actually acting on package[#{providers.keys.first}]")
+                Seth::Log.info("#{@new_resource} is a virtual package, actually acting on package[#{providers.keys.first}]")
                 installed = check_package_state(providers.keys.first)
               else
-                Chef::Log.debug("#{@new_resource} candidate version is #{$1}")
+                Seth::Log.debug("#{@new_resource} candidate version is #{$1}")
                 @candidate_version = $1
               end
             end
@@ -117,12 +117,12 @@ class Chef
         end
 
         def preseed_package(preseed_file)
-          Chef::Log.info("#{@new_resource} pre-seeding package installation instructions")
+          Seth::Log.info("#{@new_resource} pre-seeding package installation instructions")
           run_noninteractive("debconf-set-selections #{preseed_file}")
         end
 
         def reconfig_package(name, version)
-          Chef::Log.info("#{@new_resource} reconfiguring")
+          Seth::Log.info("#{@new_resource} reconfiguring")
           run_noninteractive("dpkg-reconfigure #{name}")
         end
 

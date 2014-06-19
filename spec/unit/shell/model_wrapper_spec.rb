@@ -21,13 +21,13 @@ require 'ostruct'
 
 describe Shell::ModelWrapper do
   before do
-    @model = OpenStruct.new(:name=>"Chef::Node")
+    @model = OpenStruct.new(:name=>"Seth::Node")
     @wrapper = Shell::ModelWrapper.new(@model)
   end
 
   describe "when created with an explicit model_symbol" do
     before do
-      @model = OpenStruct.new(:name=>"Chef::ApiClient")
+      @model = OpenStruct.new(:name=>"Seth::ApiClient")
       @wrapper = Shell::ModelWrapper.new(@model, :client)
     end
 
@@ -42,13 +42,13 @@ describe Shell::ModelWrapper do
 
   describe "when listing objects" do
     before do
-      @node_1 = Chef::Node.new
+      @node_1 = Seth::Node.new
       @node_1.name("sammich")
-      @node_2 = Chef::Node.new
+      @node_2 = Seth::Node.new
       @node_2.name("yummy")
       @server_response = {:node_1 => @node_1, :node_2 => @node_2}
-      @wrapper = Shell::ModelWrapper.new(Chef::Node)
-      Chef::Node.stub(:list).and_return(@server_response)
+      @wrapper = Shell::ModelWrapper.new(Seth::Node)
+      Seth::Node.stub(:list).and_return(@server_response)
     end
 
     it "lists fully inflated objects without the resource IDs" do
@@ -63,20 +63,20 @@ describe Shell::ModelWrapper do
 
   describe "when searching for objects" do
     before do
-      @node_1 = Chef::Node.new
+      @node_1 = Seth::Node.new
       @node_1.name("sammich")
-      @node_2 = Chef::Node.new
+      @node_2 = Seth::Node.new
       @node_2.name("yummy")
       @server_response = {:node_1 => @node_1, :node_2 => @node_2}
-      @wrapper = Shell::ModelWrapper.new(Chef::Node)
+      @wrapper = Shell::ModelWrapper.new(Seth::Node)
 
-      # Creating a Chef::Search::Query object tries to read the private key...
-      @searcher = double("Chef::Search::Query #{__FILE__}:#{__LINE__}")
-      Chef::Search::Query.stub(:new).and_return(@searcher)
+      # Creating a Seth::Search::Query object tries to read the private key...
+      @searcher = double("Seth::Search::Query #{__FILE__}:#{__LINE__}")
+      Seth::Search::Query.stub(:new).and_return(@searcher)
     end
 
     it "falls back to listing the objects when the 'query' is :all" do
-      Chef::Node.stub(:list).and_return(@server_response)
+      Seth::Node.stub(:list).and_return(@server_response)
       @wrapper.find(:all).should include(@node_1, @node_2)
     end
 

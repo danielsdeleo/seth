@@ -16,23 +16,23 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/log'
-require 'chef/resource/directory'
-require 'chef/provider'
-require 'chef/provider/file'
+require 'seth/config'
+require 'seth/log'
+require 'seth/resource/directory'
+require 'seth/provider'
+require 'seth/provider/file'
 require 'fileutils'
 
-class Chef
+class Seth
   class Provider
-    class Directory < Chef::Provider::File
+    class Directory < Seth::Provider::File
 
       def whyrun_supported?
         true
       end
 
       def load_current_resource
-        @current_resource = Chef::Resource::Directory.new(@new_resource.name)
+        @current_resource = Seth::Resource::Directory.new(@new_resource.name)
         @current_resource.path(@new_resource.path)
         if ::File.exists?(@current_resource.path) && @action != :create_if_missing
           load_resource_attributes_from_file(@current_resource)
@@ -46,7 +46,7 @@ class Chef
           # for why run, print a message explaining the potential error.
           parent_directory = ::File.dirname(@new_resource.path)
           a.assertion { @new_resource.recursive || ::File.directory?(parent_directory) }
-          a.failure_message(Chef::Exceptions::EnclosingDirectoryDoesNotExist, "Parent directory #{parent_directory} does not exist, cannot create #{@new_resource.path}")
+          a.failure_message(Seth::Exceptions::EnclosingDirectoryDoesNotExist, "Parent directory #{parent_directory} does not exist, cannot create #{@new_resource.path}")
           a.whyrun("Assuming directory #{parent_directory} would have been created")
         end
 
@@ -75,7 +75,7 @@ class Chef
               end
             end
           end
-          a.failure_message(Chef::Exceptions::InsufficientPermissions,
+          a.failure_message(Seth::Exceptions::InsufficientPermissions,
             "Cannot create #{@new_resource} at #{@new_resource.path} due to insufficient permissions")
         end
 
@@ -102,7 +102,7 @@ class Chef
             else
               ::Dir.mkdir(@new_resource.path)
             end
-            Chef::Log.info("#{@new_resource} created directory #{@new_resource.path}")
+            Seth::Log.info("#{@new_resource} created directory #{@new_resource.path}")
           end
         end
         do_acl_changes
@@ -115,10 +115,10 @@ class Chef
           converge_by("delete existing directory #{@new_resource.path}") do
             if @new_resource.recursive == true
               FileUtils.rm_rf(@new_resource.path)
-              Chef::Log.info("#{@new_resource} deleted #{@new_resource.path} recursively")
+              Seth::Log.info("#{@new_resource} deleted #{@new_resource.path} recursively")
             else
               ::Dir.delete(@new_resource.path)
-              Chef::Log.info("#{@new_resource} deleted #{@new_resource.path}")
+              Seth::Log.info("#{@new_resource} deleted #{@new_resource.path}")
             end
           end
         end

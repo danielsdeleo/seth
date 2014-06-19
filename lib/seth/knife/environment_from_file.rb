@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Knife
     class EnvironmentFromFile < Knife
 
       deps do
-        require 'chef/environment'
-        require 'chef/knife/core/object_loader'
+        require 'seth/environment'
+        require 'seth/knife/core/object_loader'
       end
 
       banner "knife environment from file FILE [FILE..] (options)"
@@ -33,7 +33,7 @@ class Chef
       :description => "Upload all environments"
 
       def loader
-        @loader ||= Knife::Core::ObjectLoader.new(Chef::Environment, ui)
+        @loader ||= Knife::Core::ObjectLoader.new(Seth::Environment, ui)
       end
 
       def environments_path

@@ -17,13 +17,13 @@
 #
 
 require 'spec_helper'
-require 'chef/dsl/data_query'
+require 'seth/dsl/data_query'
 
 class DataQueryDSLTester
-  include Chef::DSL::DataQuery
+  include Seth::DSL::DataQuery
 end
 
-describe Chef::DSL::DataQuery do
+describe Seth::DSL::DataQuery do
   before(:each) do
     @language = DataQueryDSLTester.new
     @node = Hash.new
@@ -32,32 +32,32 @@ describe Chef::DSL::DataQuery do
 
   describe "when loading data bags and items" do
     it "lists the items in a data bag" do
-      Chef::DataBag.should_receive(:load).with("bag_name").and_return("item_1" => "http://url_for/item_1", "item_2" => "http://url_for/item_2")
+      Seth::DataBag.should_receive(:load).with("bag_name").and_return("item_1" => "http://url_for/item_1", "item_2" => "http://url_for/item_2")
       @language.data_bag("bag_name").sort.should == %w[item_1 item_2]
     end
 
     it "validates the name of the data bag you're trying to load" do
-      lambda {@language.data_bag("!# %^&& ")}.should raise_error(Chef::Exceptions::InvalidDataBagName)
+      lambda {@language.data_bag("!# %^&& ")}.should raise_error(Seth::Exceptions::InvalidDataBagName)
     end
 
     it "fetches a data bag item" do
-      @item = Chef::DataBagItem.new
+      @item = Seth::DataBagItem.new
       @item.data_bag("bag_name")
       @item.raw_data = {"id" => "item_name", "FUU" => "FUU"}
-      Chef::DataBagItem.should_receive(:load).with("bag_name", "item_name").and_return(@item)
+      Seth::DataBagItem.should_receive(:load).with("bag_name", "item_name").and_return(@item)
       @language.data_bag_item("bag_name", "item_name").should == @item
     end
 
     it "validates the name of the data bag you're trying to load an item from" do
-      lambda {@language.data_bag_item(" %%^& ", "item_name")}.should raise_error(Chef::Exceptions::InvalidDataBagName)
+      lambda {@language.data_bag_item(" %%^& ", "item_name")}.should raise_error(Seth::Exceptions::InvalidDataBagName)
     end
 
     it "validates the id of the data bag item you're trying to load" do
-      lambda {@language.data_bag_item("bag_name", " 987 (*&()")}.should raise_error(Chef::Exceptions::InvalidDataBagItemID)
+      lambda {@language.data_bag_item("bag_name", " 987 (*&()")}.should raise_error(Seth::Exceptions::InvalidDataBagItemID)
     end
 
     it "validates that the id of the data bag item is not nil" do
-      lambda {@language.data_bag_item("bag_name", nil)}.should raise_error(Chef::Exceptions::InvalidDataBagItemID)
+      lambda {@language.data_bag_item("bag_name", nil)}.should raise_error(Seth::Exceptions::InvalidDataBagItemID)
     end
 
   end

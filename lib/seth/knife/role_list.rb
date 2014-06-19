@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class RoleList < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife role list (options)"
@@ -35,7 +35,7 @@ class Chef
         :description => "Show corresponding URIs"
 
       def run
-        output(format_list_for_display(Chef::Role.list))
+        output(format_list_for_display(Seth::Role.list))
       end
     end
   end

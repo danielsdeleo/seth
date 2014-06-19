@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class NodeCreate < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife node create NODE (options)"
@@ -38,7 +38,7 @@ class Chef
           exit 1
         end
 
-        node = Chef::Node.new
+        node = Seth::Node.new
         node.name(@node_name)
         create_object(node)
       end

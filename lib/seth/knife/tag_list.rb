@@ -18,14 +18,14 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class TagList < Knife
 
       deps do
-        require 'chef/node'
+        require 'seth/node'
       end
 
       banner "knife tag list NODE"
@@ -39,7 +39,7 @@ class Chef
           exit 1
         end
 
-        node = Chef::Node.load(name)
+        node = Seth::Node.load(name)
         output(node.tags)
       end
     end

@@ -17,10 +17,10 @@
 #
 
 
-require 'chef/exceptions'
-require 'win32/api' if Chef::Platform.windows?
+require 'seth/exceptions'
+require 'win32/api' if Seth::Platform.windows?
 
-class Chef
+class Seth
   module Mixin
     module WindowsArchitectureHelper
 
@@ -46,19 +46,19 @@ class Chef
 
       def assert_valid_windows_architecture!(architecture)
         if ! valid_windows_architecture?(architecture)
-          raise Chef::Exceptions::Win32ArchitectureIncorrect,
+          raise Seth::Exceptions::Win32ArchitectureIncorrect,
           "The specified architecture was not valid. It must be one of :i386 or :x86_64"
         end
       end
 
       def is_i386_windows_process?
-        Chef::Platform.windows? && 'X86'.casecmp(ENV['PROCESSOR_ARCHITECTURE']) == 0
+        Seth::Platform.windows? && 'X86'.casecmp(ENV['PROCESSOR_ARCHITECTURE']) == 0
       end
 
       def disable_wow64_file_redirection( node )
         original_redirection_state = ['0'].pack('P')
 
-        if ( ( node_windows_architecture(node) == :x86_64) && ::Chef::Platform.windows?)
+        if ( ( node_windows_architecture(node) == :x86_64) && ::Seth::Platform.windows?)
           win32_wow_64_disable_wow_64_fs_redirection =
             ::Win32::API.new('Wow64DisableWow64FsRedirection', 'P', 'L', 'kernel32')
 
@@ -74,7 +74,7 @@ class Chef
       end
 
       def restore_wow64_file_redirection( node, original_redirection_state )
-        if ( (node_windows_architecture(node) == :x86_64) && ::Chef::Platform.windows?)
+        if ( (node_windows_architecture(node) == :x86_64) && ::Seth::Platform.windows?)
           win32_wow_64_revert_wow_64_fs_redirection =
             ::Win32::API.new('Wow64RevertWow64FsRedirection', 'P', 'L', 'kernel32')
 

@@ -17,10 +17,10 @@
 
 require 'spec_helper'
 
-describe Chef::CookbookVersion do
+describe Seth::CookbookVersion do
   describe "when first created" do
     before do
-      @cookbook_version = Chef::CookbookVersion.new("tatft", '/tmp/blah')
+      @cookbook_version = Seth::CookbookVersion.new("tatft", '/tmp/blah')
     end
 
     it "has a name" do
@@ -75,7 +75,7 @@ describe Chef::CookbookVersion do
     end
 
     it "has empty metadata" do
-      @cookbook_version.metadata.should == Chef::Cookbook::Metadata.new
+      @cookbook_version.metadata.should == Seth::Cookbook::Metadata.new
     end
 
     it "creates a manifest hash of its contents" do
@@ -89,7 +89,7 @@ describe Chef::CookbookVersion do
                   "providers"=>[],
                   "root_files"=>[],
                   "cookbook_name"=>"tatft",
-                  "metadata"=>Chef::Cookbook::Metadata.new,
+                  "metadata"=>Seth::Cookbook::Metadata.new,
                   "version"=>"0.0.0",
                   "name"=>"tatft-0.0.0"}
       @cookbook_version.manifest.should == expected
@@ -122,7 +122,7 @@ describe Chef::CookbookVersion do
       before do
         # Currently the cookbook loader finds all the files then tells CookbookVersion
         # where they are.
-        @cookbook_version = Chef::CookbookVersion.new("tatft", @cookbook_root)
+        @cookbook_version = Seth::CookbookVersion.new("tatft", @cookbook_root)
 
         @cookbook_version.attribute_filenames  = @cookbook[:attribute_filenames]
         @cookbook_version.definition_filenames = @cookbook[:definition_filenames]
@@ -136,7 +136,7 @@ describe Chef::CookbookVersion do
         @cookbook_version.metadata_filenames   = @cookbook[:metadata_filenames]
 
         # Used to test file-specificity related file lookups
-        @node = Chef::Node.new
+        @node = Seth::Node.new
         @node.set[:platform] = "ubuntu"
         @node.set[:platform_version] = "13.04"
         @node.name("testing")
@@ -145,7 +145,7 @@ describe Chef::CookbookVersion do
       it "generates a manifest containing the cookbook's files" do
         manifest = @cookbook_version.manifest
 
-        manifest["metadata"].should == Chef::Cookbook::Metadata.new
+        manifest["metadata"].should == Seth::Cookbook::Metadata.new
         manifest["cookbook_name"].should == "tatft"
 
         manifest["recipes"].should have(1).recipe_file
@@ -233,7 +233,7 @@ describe Chef::CookbookVersion do
 
       describe "raises an error when attempting to load a missing cookbook_file and" do
         before do
-          node = Chef::Node.new.tap do |n|
+          node = Seth::Node.new.tap do |n|
             n.name("sample.node")
             n.automatic_attrs[:fqdn] = "sample.example.com"
             n.automatic_attrs[:platform] = "ubuntu"
@@ -244,12 +244,12 @@ describe Chef::CookbookVersion do
 
         it "describes the cookbook and version" do
           useful_explanation = Regexp.new(Regexp.escape("Cookbook 'tatft' (0.0.0) does not contain"))
-          @attempt_to_load_file.should raise_error(Chef::Exceptions::FileNotFound, useful_explanation)
+          @attempt_to_load_file.should raise_error(Seth::Exceptions::FileNotFound, useful_explanation)
         end
 
         it "lists suggested places to look" do
           useful_explanation = Regexp.new(Regexp.escape("files/default/no-such-thing.txt"))
-          @attempt_to_load_file.should raise_error(Chef::Exceptions::FileNotFound, useful_explanation)
+          @attempt_to_load_file.should raise_error(Seth::Exceptions::FileNotFound, useful_explanation)
         end
       end
     end
@@ -258,7 +258,7 @@ describe Chef::CookbookVersion do
       before do
         # Currently the cookbook loader finds all the files then tells CookbookVersion
         # where they are.
-        @cookbook_version = Chef::CookbookVersion.new("blarghle", @cookbook_root)
+        @cookbook_version = Seth::CookbookVersion.new("blarghle", @cookbook_root)
         @cookbook_version.attribute_filenames  = @cookbook[:attribute_filenames]
         @cookbook_version.definition_filenames = @cookbook[:definition_filenames]
         @cookbook_version.recipe_filenames     = @cookbook[:recipe_filenames]
@@ -274,7 +274,7 @@ describe Chef::CookbookVersion do
       it "generates a manifest containing the cookbook's files" do
         manifest = @cookbook_version.manifest
 
-        manifest["metadata"].should == Chef::Cookbook::Metadata.new
+        manifest["metadata"].should == Seth::Cookbook::Metadata.new
         manifest["cookbook_name"].should == "blarghle"
 
         manifest["recipes"].should have(1).recipe_file
@@ -372,8 +372,8 @@ describe Chef::CookbookVersion do
                   ["1.2", "2.1"]
                  ]
       examples.each do |smaller, larger|
-        sm = Chef::CookbookVersion.new("foo", '/tmp/blah')
-        lg = Chef::CookbookVersion.new("foo", '/tmp/blah')
+        sm = Seth::CookbookVersion.new("foo", '/tmp/blah')
+        lg = Seth::CookbookVersion.new("foo", '/tmp/blah')
         sm.version = smaller
         lg.version = larger
         sm.should be < lg
@@ -383,8 +383,8 @@ describe Chef::CookbookVersion do
     end
 
     it "should equate versions 1.2 and 1.2.0" do
-      a = Chef::CookbookVersion.new("foo", '/tmp/blah')
-      b = Chef::CookbookVersion.new("foo", '/tmp/blah')
+      a = Seth::CookbookVersion.new("foo", '/tmp/blah')
+      b = Seth::CookbookVersion.new("foo", '/tmp/blah')
       a.version = "1.2"
       b.version = "1.2.0"
       a.should == b
@@ -392,17 +392,17 @@ describe Chef::CookbookVersion do
 
 
     it "should not allow you to sort cookbooks with different names" do
-      apt = Chef::CookbookVersion.new "apt", '/tmp/blah'
+      apt = Seth::CookbookVersion.new "apt", '/tmp/blah'
       apt.version = "1.0"
-      god = Chef::CookbookVersion.new "god", '/tmp/blah'
+      god = Seth::CookbookVersion.new "god", '/tmp/blah'
       god.version = "2.0"
-      lambda {apt <=> god}.should raise_error(Chef::Exceptions::CookbookVersionNameMismatch)
+      lambda {apt <=> god}.should raise_error(Seth::Exceptions::CookbookVersionNameMismatch)
     end
   end
 
   describe "when you set a version" do
     before do
-      @cbv = Chef::CookbookVersion.new("version validation", '/tmp/blah')
+      @cbv = Seth::CookbookVersion.new("version validation", '/tmp/blah')
     end
     it "should accept valid cookbook versions" do
       good_versions = %w(1.2 1.2.3 1000.80.50000 0.300.25)
@@ -414,7 +414,7 @@ describe Chef::CookbookVersion do
     it "should raise InvalidVersion for bad cookbook versions" do
       bad_versions = ["1.2.3.4", "1.2.a4", "1", "a", "1.2 3", "1.2 a",
                       "1 2 3", "1-2-3", "1_2_3", "1.2_3", "1.2-3"]
-      the_error = Chef::Exceptions::InvalidCookbookVersion
+      the_error = Seth::Exceptions::InvalidCookbookVersion
       bad_versions.each do |v|
         lambda {@cbv.version = v}.should raise_error(the_error)
       end

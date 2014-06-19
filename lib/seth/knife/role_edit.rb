@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class RoleEdit < Knife
 
       deps do
-        require 'chef/role'
-        require 'chef/json_compat'
+        require 'seth/role'
+        require 'seth/json_compat'
       end
 
       banner "knife role edit ROLE (options)"
@@ -38,7 +38,7 @@ class Chef
           exit 1
         end
 
-        ui.edit_object(Chef::Role, @role_name)
+        ui.edit_object(Seth::Role, @role_name)
       end
     end
   end

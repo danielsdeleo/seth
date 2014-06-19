@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-require 'chef/monologger'
+require 'seth/monologger'
 require 'tempfile'
 require 'spec_helper'
 

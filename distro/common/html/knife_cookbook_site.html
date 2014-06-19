@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>knife cookbook site &mdash; chef-client Man Pages</title>
+    <title>knife cookbook site &mdash; seth-client Man Pages</title>
     
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="shortcut icon" href="_static/chef.ico"/>
+    <link rel="shortcut icon" href="_static/seth.ico"/>
 
 
   </head>
   <body>
 <div style="background-color: #212c35; text-align: left; padding: 0px 0px 0px 0px">
-<a href="http://docs.opscode.com/"><img src="_static/chef_html_logo.png" border="0" alt="Chef"/></a>
+<a href="http://docs.opscode.com/"><img src="_static/seth_html_logo.png" border="0" alt="Seth"/></a>
 </div>
 
 
@@ -86,7 +86,7 @@ Cookbook saved: /Users/sdanna/opscodesupport/getting-started-0.3.0.tar.gz
 </div>
 <div class="section" id="install">
 <h2>install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">install</span></tt> argument is used to install a cookbook that has been downloaded from the community site to a local git repository . This action uses the git version control system in conjunction with the <a class="reference external" href="http://community.opscode.com/">http://community.opscode.com/</a> site to install community-contributed cookbooks to the local chef-repo. Using this argument does the following:</p>
+<p>The <tt class="docutils literal"><span class="pre">install</span></tt> argument is used to install a cookbook that has been downloaded from the community site to a local git repository . This action uses the git version control system in conjunction with the <a class="reference external" href="http://community.opscode.com/">http://community.opscode.com/</a> site to install community-contributed cookbooks to the local seth-repo. Using this argument does the following:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li>A new &#8220;pristine copy&#8221; branch is created in git for tracking the upstream.</li>
@@ -129,14 +129,14 @@ Cookbook saved: /Users/sdanna/opscodesupport/getting-started-0.3.0.tar.gz
 </pre></div>
 </div>
 <p>to return something like:</p>
-<div class="highlight-bash"><div class="highlight"><pre>Installing getting-started to /Users/sdanna/opscodesupport/.chef/../cookbooks
+<div class="highlight-bash"><div class="highlight"><pre>Installing getting-started to /Users/sdanna/opscodesupport/.seth/../cookbooks
 Checking out the master branch.
-Creating pristine copy branch chef-vendor-getting-started
+Creating pristine copy branch seth-vendor-getting-started
 Downloading getting-started from the cookbooks site at version 0.3.0 to
-  /Users/sdanna/opscodesupport/.chef/../cookbooks/getting-started.tar.gz
-Cookbook saved: /Users/sdanna/opscodesupport/.chef/../cookbooks/getting-started.tar.gz
+  /Users/sdanna/opscodesupport/.seth/../cookbooks/getting-started.tar.gz
+Cookbook saved: /Users/sdanna/opscodesupport/.seth/../cookbooks/getting-started.tar.gz
 Removing pre-existing version.
-Uncompressing getting-started version /Users/sdanna/opscodesupport/.chef/../cookbooks.
+Uncompressing getting-started version /Users/sdanna/opscodesupport/.seth/../cookbooks.
 removing downloaded tarball
 1 files updated, committing changes
 Creating tag cookbook-site-imported-getting-started-0.3.0
@@ -148,14 +148,14 @@ Fast-forward
  cookbooks/getting-started/metadata.json            |   29 ++++++++++++++++++++
  cookbooks/getting-started/metadata.rb              |    6 ++++
  cookbooks/getting-started/recipes/default.rb       |   23 +++++++++++++++
- .../templates/default/chef-getting-started.txt.erb |    5 +++
+ .../templates/default/seth-getting-started.txt.erb |    5 +++
  6 files changed, 68 insertions<span class="o">(</span>+<span class="o">)</span>, 0 deletions<span class="o">(</span>-<span class="o">)</span>
  create mode 100644 cookbooks/getting-started/README.rdoc
  create mode 100644 cookbooks/getting-started/attributes/default.rb
  create mode 100644 cookbooks/getting-started/metadata.json
  create mode 100644 cookbooks/getting-started/metadata.rb
  create mode 100644 cookbooks/getting-started/recipes/default.rb
- create mode 100644 cookbooks/getting-started/templates/default/chef-getting-started.txt.erb
+ create mode 100644 cookbooks/getting-started/templates/default/seth-getting-started.txt.erb
 Cookbook getting-started version 0.3.0 successfully installed
 </pre></div>
 </div>
@@ -190,7 +190,7 @@ Cookbook getting-started version 0.3.0 successfully installed
 <p>to return:</p>
 <div class="highlight-python"><div class="highlight"><pre>1password             homesick              rabbitmq
 7-zip                 hostname              rabbitmq-management
-AmazonEC2Tag          hosts                 rabbitmq_chef
+AmazonEC2Tag          hosts                 rabbitmq_seth
 R                     hosts-awareness       rackspaceknife
 accounts              htop                  radiant
 ack-grep              hudson                rails

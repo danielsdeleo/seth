@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'chef/provider/mount'
+require 'seth/provider/mount'
 if RUBY_PLATFORM =~ /mswin|mingw32|windows/
-  require 'chef/util/windows/net_use'
-  require 'chef/util/windows/volume'
+  require 'seth/util/windows/net_use'
+  require 'seth/util/windows/volume'
 end
 
-class Chef
+class Seth
   class Provider
     class Mount
-      class Windows < Chef::Provider::Mount
+      class Windows < Seth::Provider::Mount
 
         def is_volume(name)
           name =~ /^\\\\\?\\Volume\{[\w-]+\}\\$/ ? true : false
@@ -38,22 +38,22 @@ class Chef
 
         def load_current_resource
           if is_volume(@new_resource.device)
-            @mount = Chef::Util::Windows::Volume.new(@new_resource.name)
+            @mount = Seth::Util::Windows::Volume.new(@new_resource.name)
           else #assume network drive
-            @mount = Chef::Util::Windows::NetUse.new(@new_resource.name)
+            @mount = Seth::Util::Windows::NetUse.new(@new_resource.name)
           end
 
-          @current_resource = Chef::Resource::Mount.new(@new_resource.name)
+          @current_resource = Seth::Resource::Mount.new(@new_resource.name)
           @current_resource.mount_point(@new_resource.mount_point)
-          Chef::Log.debug("Checking for mount point #{@current_resource.mount_point}")
+          Seth::Log.debug("Checking for mount point #{@current_resource.mount_point}")
 
           begin
             @current_resource.device(@mount.device)
-            Chef::Log.debug("#{@current_resource.device} mounted on #{@new_resource.mount_point}")
+            Seth::Log.debug("#{@current_resource.device} mounted on #{@new_resource.mount_point}")
             @current_resource.mounted(true)
           rescue ArgumentError => e
             @current_resource.mounted(false)
-            Chef::Log.debug("#{@new_resource.mount_point} is not mounted: #{e.message}")
+            Seth::Log.debug("#{@new_resource.mount_point} is not mounted: #{e.message}")
           end
         end
 
@@ -63,18 +63,18 @@ class Chef
                        :username => @new_resource.username,
                        :domainname => @new_resource.domain,
                        :password => @new_resource.password)
-            Chef::Log.debug("#{@new_resource} is mounted at #{@new_resource.mount_point}")
+            Seth::Log.debug("#{@new_resource} is mounted at #{@new_resource.mount_point}")
           else
-            Chef::Log.debug("#{@new_resource} is already mounted at #{@new_resource.mount_point}")
+            Seth::Log.debug("#{@new_resource} is already mounted at #{@new_resource.mount_point}")
           end
         end
 
         def umount_fs
           if @current_resource.mounted
             @mount.delete
-            Chef::Log.debug("#{@new_resource} is no longer mounted at #{@new_resource.mount_point}")
+            Seth::Log.debug("#{@new_resource} is no longer mounted at #{@new_resource.mount_point}")
           else
-            Chef::Log.debug("#{@new_resource} is not mounted at #{@new_resource.mount_point}")
+            Seth::Log.debug("#{@new_resource} is not mounted at #{@new_resource.mount_point}")
           end
         end
 

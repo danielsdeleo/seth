@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class ClientCreate < Knife
 
       deps do
-        require 'chef/api_client'
-        require 'chef/json_compat'
+        require 'seth/api_client'
+        require 'seth/json_compat'
       end
 
       option :file,
@@ -54,14 +54,14 @@ class Chef
           exit 1
         end
 
-        client = Chef::ApiClient.new
+        client = Seth::ApiClient.new
         client.name(@client_name)
         client.admin(config[:admin])
         client.validator(config[:validator])
 
         output = edit_data(client)
 
-        # Chef::ApiClient.save will try to create a client and if it exists will update it instead silently
+        # Seth::ApiClient.save will try to create a client and if it exists will update it instead silently
         client = output.save
 
         # We only get a private_key on client creation, not on client update.

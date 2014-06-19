@@ -18,24 +18,24 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::HttpRequest do
+describe Seth::Provider::HttpRequest do
   before(:each) do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
 
-    @new_resource = Chef::Resource::HttpRequest.new('adam')
+    @new_resource = Seth::Resource::HttpRequest.new('adam')
     @new_resource.name "adam"
     @new_resource.url "http://www.opscode.com/"
     @new_resource.message "is cool"
 
-    @provider = Chef::Provider::HttpRequest.new(@new_resource, @run_context)
+    @provider = Seth::Provider::HttpRequest.new(@new_resource, @run_context)
   end
 
   describe "load_current_resource" do
 
-    it "should set up a Chef::REST client, with no authentication" do
-      Chef::HTTP::Simple.should_receive(:new).with(@new_resource.url)
+    it "should set up a Seth::REST client, with no authentication" do
+      Seth::HTTP::Simple.should_receive(:new).with(@new_resource.url)
       @provider.load_current_resource
     end
   end
@@ -43,9 +43,9 @@ describe Chef::Provider::HttpRequest do
   describe "when making REST calls" do
     before(:each) do
       # run_action(x) forces load_current_resource to run;
-      # that would overwrite our supplied mock Chef::Rest # object
+      # that would overwrite our supplied mock Seth::Rest # object
       @provider.stub(:load_current_resource).and_return(true)
-      @http = double("Chef::REST")
+      @http = double("Seth::REST")
       @provider.http = @http
     end
 

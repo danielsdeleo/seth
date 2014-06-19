@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class NodeDelete < Knife
 
       deps do
-        require 'chef/node'
-        require 'chef/json_compat'
+        require 'seth/node'
+        require 'seth/json_compat'
       end
 
       banner "knife node delete NODE (options)"
@@ -38,7 +38,7 @@ class Chef
           exit 1
         end
 
-        delete_object(Chef::Node, @node_name)
+        delete_object(Seth::Node, @node_name)
       end
 
     end

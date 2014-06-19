@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Chef::Provider::Package do
+describe Seth::Provider::Package do
   before do
-    @node = Chef::Node.new
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @new_resource = Chef::Resource::Package.new('emacs')
-    @current_resource = Chef::Resource::Package.new('emacs')
-    @provider = Chef::Provider::Package.new(@new_resource, @run_context)
+    @node = Seth::Node.new
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @new_resource = Seth::Resource::Package.new('emacs')
+    @current_resource = Seth::Resource::Package.new('emacs')
+    @provider = Seth::Provider::Package.new(@new_resource, @run_context)
     @provider.current_resource = @current_resource
 
     @provider.candidate_version = "1.0"
@@ -37,9 +37,9 @@ describe Chef::Provider::Package do
       @provider.stub(:install_package).and_return(true)
     end
 
-    it "should raise a Chef::Exceptions::Package if no version is specified, and no candidate is available" do
+    it "should raise a Seth::Exceptions::Package if no version is specified, and no candidate is available" do
       @provider.candidate_version = nil
-      lambda { @provider.run_action(:install) }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.run_action(:install) }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should call preseed_package if a response_file is given" do
@@ -152,15 +152,15 @@ describe Chef::Provider::Package do
 
     it "should print the word 'uninstalled' if there was no original version" do
       @current_resource.stub(:version).and_return(nil)
-      Chef::Log.should_receive(:info).with("package[emacs] upgraded from uninstalled to 1.0")
+      Seth::Log.should_receive(:info).with("package[emacs] upgraded from uninstalled to 1.0")
       @provider.run_action(:upgrade)
       @new_resource.should be_updated_by_last_action
     end
 
-    it "should raise a Chef::Exceptions::Package if current version and candidate are nil" do
+    it "should raise a Seth::Exceptions::Package if current version and candidate are nil" do
       @current_resource.stub(:version).and_return(nil)
       @provider.candidate_version = nil
-      lambda { @provider.run_action(:upgrade) }.should raise_error(Chef::Exceptions::Package)
+      lambda { @provider.run_action(:upgrade) }.should raise_error(Seth::Exceptions::Package)
     end
 
     it "should not install the package if candidate version is nil" do
@@ -273,7 +273,7 @@ describe Chef::Provider::Package do
       @provider.should_receive(:get_preseed_file).and_return('/var/cache/preseed-test')
       @provider.stub(:preseed_package).and_return(true)
       @provider.stub(:reconfig_package).and_return(true)
-      Chef::Log.should_receive(:info).with("package[emacs] reconfigured")
+      Seth::Log.should_receive(:info).with("package[emacs] reconfigured")
       @provider.should_receive(:reconfig_package)
       @provider.run_action(:reconfig)
       @new_resource.should be_updated
@@ -282,7 +282,7 @@ describe Chef::Provider::Package do
 
     it "should debug log and not reconfigure the package if the package is not installed" do
       @current_resource.stub(:version).and_return(nil)
-      Chef::Log.should_receive(:debug).with("package[emacs] is NOT installed - nothing to do")
+      Seth::Log.should_receive(:debug).with("package[emacs] is NOT installed - nothing to do")
       @provider.should_not_receive(:reconfig_package)
       @provider.run_action(:reconfig)
       @new_resource.should_not be_updated_by_last_action
@@ -291,7 +291,7 @@ describe Chef::Provider::Package do
     it "should debug log and not reconfigure the package if no response_file is given" do
       @current_resource.stub(:version).and_return('1.0')
       @new_resource.stub(:response_file).and_return(nil)
-      Chef::Log.should_receive(:debug).with("package[emacs] no response_file provided - nothing to do")
+      Seth::Log.should_receive(:debug).with("package[emacs] no response_file provided - nothing to do")
       @provider.should_not_receive(:reconfig_package)
       @provider.run_action(:reconfig)
       @new_resource.should_not be_updated_by_last_action
@@ -302,7 +302,7 @@ describe Chef::Provider::Package do
       @new_resource.stub(:response_file).and_return(true)
       @provider.should_receive(:get_preseed_file).and_return(false)
       @provider.stub(:preseed_package).and_return(false)
-      Chef::Log.should_receive(:debug).with("package[emacs] preseeding has not changed - nothing to do")
+      Seth::Log.should_receive(:debug).with("package[emacs] preseeding has not changed - nothing to do")
       @provider.should_not_receive(:reconfig_package)
       @provider.run_action(:reconfig)
       @new_resource.should_not be_updated_by_last_action
@@ -311,42 +311,42 @@ describe Chef::Provider::Package do
 
   describe "when running commands to be implemented by subclasses" do
     it "should raises UnsupportedAction for install" do
-      lambda { @provider.install_package('emacs', '1.4.2') }.should raise_error(Chef::Exceptions::UnsupportedAction)
+      lambda { @provider.install_package('emacs', '1.4.2') }.should raise_error(Seth::Exceptions::UnsupportedAction)
     end
 
     it "should raises UnsupportedAction for upgrade" do
-      lambda { @provider.upgrade_package('emacs', '1.4.2') }.should raise_error(Chef::Exceptions::UnsupportedAction)
+      lambda { @provider.upgrade_package('emacs', '1.4.2') }.should raise_error(Seth::Exceptions::UnsupportedAction)
     end
 
     it "should raises UnsupportedAction for remove" do
-      lambda { @provider.remove_package('emacs', '1.4.2') }.should raise_error(Chef::Exceptions::UnsupportedAction)
+      lambda { @provider.remove_package('emacs', '1.4.2') }.should raise_error(Seth::Exceptions::UnsupportedAction)
     end
 
     it "should raises UnsupportedAction for purge" do
-      lambda { @provider.purge_package('emacs', '1.4.2') }.should raise_error(Chef::Exceptions::UnsupportedAction)
+      lambda { @provider.purge_package('emacs', '1.4.2') }.should raise_error(Seth::Exceptions::UnsupportedAction)
     end
 
     it "should raise UnsupportedAction for preseed_package" do
       preseed_file = "/tmp/sun-jdk-package-preseed-file.seed"
-      lambda { @provider.preseed_package(preseed_file) }.should raise_error(Chef::Exceptions::UnsupportedAction)
+      lambda { @provider.preseed_package(preseed_file) }.should raise_error(Seth::Exceptions::UnsupportedAction)
     end
 
     it "should raise UnsupportedAction for reconfig" do
-      lambda { @provider.reconfig_package('emacs', '1.4.2') }.should raise_error(Chef::Exceptions::UnsupportedAction)
+      lambda { @provider.reconfig_package('emacs', '1.4.2') }.should raise_error(Seth::Exceptions::UnsupportedAction)
     end
   end
 
   describe "when given a response file" do
     before(:each) do
       @cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-      Chef::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
+      Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
 
-      @node = Chef::Node.new
-      cl = Chef::CookbookLoader.new(@cookbook_repo)
+      @node = Seth::Node.new
+      cl = Seth::CookbookLoader.new(@cookbook_repo)
       cl.load_cookbooks
-      @cookbook_collection = Chef::CookbookCollection.new(cl)
+      @cookbook_collection = Seth::CookbookCollection.new(cl)
 
-      @run_context = Chef::RunContext.new(@node, @cookbook_collection, @events)
+      @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
       @provider.run_context = @run_context
 
       @node.automatic_attrs[:platform] = 'PLATFORM: just testing'
@@ -358,11 +358,11 @@ describe Chef::Provider::Package do
 
     describe "creating the cookbook file resource to fetch the response file" do
       before do
-        Chef::FileCache.should_receive(:create_cache_path).with('preseed/java').and_return("/tmp/preseed/java")
+        Seth::FileCache.should_receive(:create_cache_path).with('preseed/java').and_return("/tmp/preseed/java")
       end
 
       it "sets the preseed resource's runcontext to its own run context" do
-        Chef::FileCache.stub(:create_cache_path).and_return("/tmp/preseed/java")
+        Seth::FileCache.stub(:create_cache_path).and_return("/tmp/preseed/java")
         @provider.preseed_resource('java', '6').run_context.should_not be_nil
         @provider.preseed_resource('java', '6').run_context.should equal(@provider.run_context)
       end
@@ -391,7 +391,7 @@ describe Chef::Provider::Package do
 
         @response_file_destination = Dir.tmpdir + '/preseed--java--java-6.seed'
 
-        @response_file_resource = Chef::Resource::CookbookFile.new(@response_file_destination, @run_context)
+        @response_file_resource = Seth::Resource::CookbookFile.new(@response_file_destination, @run_context)
         @response_file_resource.cookbook_name = 'java'
         @response_file_resource.backup(false)
         @response_file_resource.source('java.response')

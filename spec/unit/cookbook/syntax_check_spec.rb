@@ -17,12 +17,12 @@
 #
 
 require 'spec_helper'
-require "chef/cookbook/syntax_check"
+require "seth/cookbook/syntax_check"
 
-describe Chef::Cookbook::SyntaxCheck do
+describe Seth::Cookbook::SyntaxCheck do
 
   let(:cookbook_path) { File.join(CHEF_SPEC_DATA, 'cookbooks', 'openldap') }
-  let(:syntax_check) { Chef::Cookbook::SyntaxCheck.new(cookbook_path) }
+  let(:syntax_check) { Seth::Cookbook::SyntaxCheck.new(cookbook_path) }
 
   let(:open_ldap_cookbook_files) do
     %w{ attributes/default.rb 
@@ -37,8 +37,8 @@ describe Chef::Cookbook::SyntaxCheck do
   end
 
   before do
-    Chef::Log.logger = Logger.new(StringIO.new)
-    Chef::Log.level = :warn # suppress "Syntax OK" messages
+    Seth::Log.logger = Logger.new(StringIO.new)
+    Seth::Log.level = :warn # suppress "Syntax OK" messages
 
     @attr_files = %w{default.rb smokey.rb}.map { |f| File.join(cookbook_path, 'attributes', f) }
     @defn_files = %w{client.rb server.rb}.map { |f| File.join(cookbook_path, 'definitions', f)}
@@ -55,15 +55,15 @@ describe Chef::Cookbook::SyntaxCheck do
     @template_files = basenames.map { |f| File.join(cookbook_path, 'templates', 'default', f)}
   end
 
-  it "creates a syntax checker given the cookbook name when Chef::Config.cookbook_path is set" do
-    Chef::Config[:cookbook_path] = File.dirname(cookbook_path)
-    syntax_check = Chef::Cookbook::SyntaxCheck.for_cookbook(:openldap)
+  it "creates a syntax checker given the cookbook name when Seth::Config.cookbook_path is set" do
+    Seth::Config[:cookbook_path] = File.dirname(cookbook_path)
+    syntax_check = Seth::Cookbook::SyntaxCheck.for_cookbook(:openldap)
     syntax_check.cookbook_path.should == cookbook_path
     syntax_check.ruby_files.sort.should == open_ldap_cookbook_files.sort
   end
 
   it "creates a syntax checker given the cookbook name and cookbook_path" do
-    syntax_check = Chef::Cookbook::SyntaxCheck.for_cookbook(:openldap, File.join(CHEF_SPEC_DATA, 'cookbooks'))
+    syntax_check = Seth::Cookbook::SyntaxCheck.for_cookbook(:openldap, File.join(CHEF_SPEC_DATA, 'cookbooks'))
     syntax_check.cookbook_path.should == cookbook_path
     syntax_check.ruby_files.sort.should == open_ldap_cookbook_files.sort
   end
@@ -72,7 +72,7 @@ describe Chef::Cookbook::SyntaxCheck do
     let(:cookbook_path) { File.join(CHEF_SPEC_DATA, 'standalone_cookbook') }
 
     it "creates a syntax checker given the cookbook name and cookbook_path for a standalone cookbook" do
-      syntax_check = Chef::Cookbook::SyntaxCheck.for_cookbook(:standalone_cookbook, CHEF_SPEC_DATA)
+      syntax_check = Seth::Cookbook::SyntaxCheck.for_cookbook(:standalone_cookbook, CHEF_SPEC_DATA)
       syntax_check.cookbook_path.should == cookbook_path
       syntax_check.ruby_files.should == [File.join(cookbook_path, 'recipes/default.rb')]
     end
@@ -97,7 +97,7 @@ describe Chef::Cookbook::SyntaxCheck do
     let(:cache_path) { Dir.mktmpdir }
 
     before do
-      Chef::Config[:syntax_check_cache_path] = cache_path
+      Seth::Config[:syntax_check_cache_path] = cache_path
     end
 
     after do
@@ -164,7 +164,7 @@ describe Chef::Cookbook::SyntaxCheck do
       describe "and an ignored file has a syntax error" do
         before do
           cookbook_path = File.join(CHEF_SPEC_DATA, 'cookbooks', 'ignorken')
-          Chef::Config[:cookbook_path] = File.dirname(cookbook_path)
+          Seth::Config[:cookbook_path] = File.dirname(cookbook_path)
           syntax_check.cookbook_path.replace(cookbook_path)
           @ruby_files = [File.join(cookbook_path, 'recipes/default.rb')]
         end

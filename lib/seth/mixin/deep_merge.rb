@@ -17,9 +17,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class Chef
+class Seth
   module Mixin
-    # == Chef::Mixin::DeepMerge
+    # == Seth::Mixin::DeepMerge
     # Implements a deep merging algorithm for nested data structures.
     # ==== Notice:
     #   This code was originally imported from deep_merge by Steve Midgley.
@@ -33,8 +33,8 @@ class Chef
       OLD_KNOCKOUT_PREFIX = "!merge:".freeze
 
       # Regex to match the "knockout prefix" that was used to indicate
-      # subtractive merging in Chef 10.x and previous. Subtractive merging is
-      # removed as of Chef 11, but we detect attempted use of it and raise an
+      # subtractive merging in Seth 10.x and previous. Subtractive merging is
+      # removed as of Seth 11, but we detect attempted use of it and raise an
       # error (see: raise_if_knockout_used!)
       OLD_KNOCKOUT_MATCH = %r[!merge].freeze
 
@@ -48,7 +48,7 @@ class Chef
       end
 
       # Inherited roles use the knockout_prefix array subtraction functionality
-      # This is likely to go away in Chef >= 0.11
+      # This is likely to go away in Seth >= 0.11
       def role_merge(first, second)
         first  = Mash.new(first)  unless first.kind_of?(Mash)
         second = Mash.new(second) unless second.kind_of?(Mash)
@@ -147,7 +147,7 @@ class Chef
       end
 
       # Checks for attempted use of subtractive merge, which was removed for
-      # Chef 11.0. If subtractive merge use is detected, will raise an
+      # Seth 11.0. If subtractive merge use is detected, will raise an
       # InvalidSubtractiveMerge exception.
       def raise_if_knockout_used!(obj)
         if uses_knockout?(obj)

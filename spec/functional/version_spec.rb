@@ -16,19 +16,19 @@
 # limitations under the License.
 
 require File.expand_path('../../spec_helper', __FILE__)
-require 'chef/mixin/shell_out'
-require 'chef/version'
+require 'seth/mixin/shell_out'
+require 'seth/version'
 require 'ohai/version'
 
-describe "Chef Versions" do
-  include Chef::Mixin::ShellOut
-  let(:chef_dir) { File.join(File.dirname(__FILE__), "..", "..") }
+describe "Seth Versions" do
+  include Seth::Mixin::ShellOut
+  let(:seth_dir) { File.join(File.dirname(__FILE__), "..", "..") }
 
-  binaries = [ "chef-client", "chef-shell", "chef-apply", "knife", "chef-solo" ]
+  binaries = [ "seth-client", "chef-shell", "chef-apply", "knife", "chef-solo" ]
 
   binaries.each do |binary|
     it "#{binary} version should be sane" do
-      shell_out!("ruby #{File.join("bin", binary)} -v", :cwd => chef_dir).stdout.chomp.should == "Chef: #{Chef::VERSION}"
+      shell_out!("ruby #{File.join("bin", binary)} -v", :cwd => seth_dir).stdout.chomp.should == "Seth: #{Chef::VERSION}"
     end
   end
 

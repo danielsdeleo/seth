@@ -19,14 +19,14 @@
 
 require 'spec_helper'
 
-describe Chef::Resource::Scm do
+describe Seth::Resource::Scm do
 
   before(:each) do
-    @resource = Chef::Resource::Scm.new("my awesome app")
+    @resource = Seth::Resource::Scm.new("my awesome app")
   end
 
   it "should be a SCM resource" do
-    @resource.should be_a_kind_of(Chef::Resource::Scm)
+    @resource.should be_a_kind_of(Seth::Resource::Scm)
   end
 
   it "supports :checkout, :export, :sync, :diff, and :log actions" do
@@ -43,8 +43,8 @@ describe Chef::Resource::Scm do
   end
 
   it "takes a string for the repository URL" do
-    @resource.repository "git://github.com/opscode/chef.git"
-    @resource.repository.should eql("git://github.com/opscode/chef.git")
+    @resource.repository "git://github.com/opscode/seth.git"
+    @resource.repository.should eql("git://github.com/opscode/seth.git")
   end
 
   it "takes a string for the revision" do

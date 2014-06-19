@@ -18,17 +18,17 @@
 #
 
 require 'open3'
-require 'chef/provider/package'
-require 'chef/mixin/command'
-require 'chef/resource/package'
-require 'chef/mixin/shell_out'
+require 'seth/provider/package'
+require 'seth/mixin/command'
+require 'seth/resource/package'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Provider
     class Package
-      class Ips < Chef::Provider::Package
+      class Ips < Seth::Provider::Package
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
         attr_accessor :virtual
 
         def define_resource_requirements
@@ -36,20 +36,20 @@ class Chef
 
           requirements.assert(:all_actions) do |a|
             a.assertion { ! @candidate_version.nil? }
-            a.failure_message Chef::Exceptions::Package, "Package #{@new_resource.package_name} not found"
+            a.failure_message Seth::Exceptions::Package, "Package #{@new_resource.package_name} not found"
             a.whyrun "Assuming package #{@new_resource.package_name} would have been made available."
           end
         end
 
         def load_current_resource
-          @current_resource = Chef::Resource::Package.new(@new_resource.name)
+          @current_resource = Seth::Resource::Package.new(@new_resource.name)
           @current_resource.package_name(@new_resource.name)
           check_package_state(@new_resource.package_name)
           @current_resource
         end
 
         def check_package_state(package)
-          Chef::Log.debug("Checking package status for #{package}")
+          Seth::Log.debug("Checking package status for #{package}")
           installed = false
           depends = false
 

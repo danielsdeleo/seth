@@ -18,28 +18,28 @@
 
 require 'spec_helper'
 
-describe Chef::Knife::NodeEnvironmentSet do
+describe Seth::Knife::NodeEnvironmentSet do
   before(:each) do
-    Chef::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Chef::Knife::NodeEnvironmentSet.new
+    Seth::Config[:node_name]  = "webmonkey.example.com"
+    @knife = Seth::Knife::NodeEnvironmentSet.new
     @knife.name_args = [ "adam", "bar" ]
     @knife.stub(:output).and_return(true)
-    @node = Chef::Node.new()
+    @node = Seth::Node.new()
     @node.name("knifetest-node")
-    @node.chef_environment << "foo"
+    @node.seth_environment << "foo"
     @node.stub(:save).and_return(true)
-    Chef::Node.stub(:load).and_return(@node)
+    Seth::Node.stub(:load).and_return(@node)
   end
 
   describe "run" do
     it "should load the node" do
-      Chef::Node.should_receive(:load).with("adam")
+      Seth::Node.should_receive(:load).with("adam")
       @knife.run
     end
 
     it "should update the environment" do
       @knife.run
-      @node.chef_environment.should == 'bar'
+      @node.seth_environment.should == 'bar'
     end
 
     it "should save the node" do

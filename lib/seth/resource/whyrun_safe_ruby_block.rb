@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-class Chef
+class Seth
   class Resource
-    class WhyrunSafeRubyBlock < Chef::Resource::RubyBlock
+    class WhyrunSafeRubyBlock < Seth::Resource::RubyBlock
 
       def initialize(name, run_context=nil)
         super
         @resource_name = :whyrun_safe_ruby_block
-        @provider = Chef::Provider::WhyrunSafeRubyBlock
+        @provider = Seth::Provider::WhyrunSafeRubyBlock
       end
 
     end

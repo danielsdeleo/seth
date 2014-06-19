@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'chef/provider/package/freebsd/base'
+require 'seth/provider/package/freebsd/base'
 
-class Chef
+class Seth
   class Provider
     class Package
       module Freebsd
@@ -29,7 +29,7 @@ class Chef
               case @new_resource.source
               when /^(http|ftp|\/)/
                 shell_out!("pkg add#{expand_options(@new_resource.options)} #{@new_resource.source}", :env => { 'LC_ALL' => nil }).status
-                Chef::Log.debug("#{@new_resource} installed from: #{@new_resource.source}")
+                Seth::Log.debug("#{@new_resource} installed from: #{@new_resource.source}")
 
               else
                 shell_out!("pkg install -y#{expand_options(@new_resource.options)} #{name}", :env => { 'LC_ALL' => nil }).status

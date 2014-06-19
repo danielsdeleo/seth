@@ -1,5 +1,5 @@
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     module DataHandler
       class DataHandlerBase
         def minimize(object, entry)
@@ -61,18 +61,18 @@ class Chef
         end
 
         def from_ruby(ruby)
-          chef_class.from_file(ruby).to_hash
+          seth_class.from_file(ruby).to_hash
         end
 
-        def chef_object(object)
-          chef_class.json_create(object)
+        def seth_object(object)
+          seth_class.json_create(object)
         end
 
         def to_ruby(object)
           raise NotImplementedError
         end
 
-        def chef_class
+        def seth_class
           raise NotImplementedError
         end
 

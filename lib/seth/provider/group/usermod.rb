@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'chef/provider/group/groupadd'
-require 'chef/mixin/shell_out'
+require 'seth/provider/group/groupadd'
+require 'seth/mixin/shell_out'
 
-class Chef
+class Seth
   class Provider
     class Group
-      class Usermod < Chef::Provider::Group::Groupadd
+      class Usermod < Seth::Provider::Group::Groupadd
 
-        include Chef::Mixin::ShellOut
+        include Seth::Mixin::ShellOut
 
         def load_current_resource
           super
@@ -35,19 +35,19 @@ class Chef
 
           requirements.assert(:all_actions) do |a|
             a.assertion { ::File.exists?("/usr/sbin/usermod") }
-            a.failure_message Chef::Exceptions::Group, "Could not find binary /usr/sbin/usermod for #{@new_resource}"
+            a.failure_message Seth::Exceptions::Group, "Could not find binary /usr/sbin/usermod for #{@new_resource}"
             # No whyrun alternative: this component should be available in the base install of any given system that uses it
           end
 
           requirements.assert(:modify, :manage) do |a|
             a.assertion { @new_resource.members.empty? || @new_resource.append }
-            a.failure_message Chef::Exceptions::Group, "setting group members directly is not supported by #{self.to_s}, must set append true in group"
+            a.failure_message Seth::Exceptions::Group, "setting group members directly is not supported by #{self.to_s}, must set append true in group"
             # No whyrun alternative - this action is simply not supported.
           end
 
           requirements.assert(:all_actions) do |a|
             a.assertion { @new_resource.excluded_members.empty? }
-            a.failure_message Chef::Exceptions::Group, "excluded_members is not supported by #{self.to_s}"
+            a.failure_message Seth::Exceptions::Group, "excluded_members is not supported by #{self.to_s}"
             # No whyrun alternative - this action is simply not supported.
           end
         end
@@ -62,7 +62,7 @@ class Chef
               add_member(member)
             end
           else
-            raise Chef::Exceptions::UnsupportedAction, "Setting members directly is not supported by #{self.to_s}"
+            raise Seth::Exceptions::UnsupportedAction, "Setting members directly is not supported by #{self.to_s}"
           end
         end
 
@@ -73,7 +73,7 @@ class Chef
         def remove_member(member)
           # This provider only supports adding members with
           # append. This function should never be called.
-          raise Chef::Exceptions::UnsupportedAction, "Removing members members is not supported by #{self.to_s}"
+          raise Seth::Exceptions::UnsupportedAction, "Removing members members is not supported by #{self.to_s}"
         end
 
         def append_flags

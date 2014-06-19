@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'chef/chef_fs'
-require 'chef/chef_fs/path_utils'
+require 'seth/chef_fs'
+require 'seth/chef_fs/path_utils'
 
-class Chef
-  module ChefFS
+class Seth
+  module SethFS
     #
     # Represents a glob pattern.  This class is designed so that it can
     # match arbitrary strings, and tell you about partial matches.
@@ -72,11 +72,11 @@ class Chef
       def could_match_children?(path)
         return false if path == '' # Empty string is not a path
 
-        argument_is_absolute = !!(path =~ /^#{Chef::ChefFS::PathUtils::regexp_path_separator}/)
+        argument_is_absolute = !!(path =~ /^#{Seth::ChefFS::PathUtils::regexp_path_separator}/)
         return false if is_absolute != argument_is_absolute
         path = path[1,path.length-1] if argument_is_absolute
 
-        path_parts = Chef::ChefFS::PathUtils::split(path)
+        path_parts = Seth::ChefFS::PathUtils::split(path)
         # If the pattern is shorter than the path (or same size), children will be larger than the pattern, and will not match.
         return false if regexp_parts.length <= path_parts.length && !has_double_star
         # If the path doesn't match up to this point, children won't match either.
@@ -111,8 +111,8 @@ class Chef
       #
       # This method assumes +could_match_children?(path)+ is +true+.
       def exact_child_name_under(path)
-        path = path[1,path.length-1] if !!(path =~ /^#{Chef::ChefFS::PathUtils::regexp_path_separator}/)
-        dirs_in_path = Chef::ChefFS::PathUtils::split(path).length
+        path = path[1,path.length-1] if !!(path =~ /^#{Seth::ChefFS::PathUtils::regexp_path_separator}/)
+        dirs_in_path = Seth::ChefFS::PathUtils::split(path).length
         return nil if exact_parts.length <= dirs_in_path
         return exact_parts[dirs_in_path]
       end
@@ -124,8 +124,8 @@ class Chef
       #   abc/x\\yz.exact_path == 'abc/xyz'
       def exact_path
         return nil if has_double_star || exact_parts.any? { |part| part.nil? }
-        result = Chef::ChefFS::PathUtils::join(*exact_parts)
-        is_absolute ? Chef::ChefFS::PathUtils::join('', result) : result
+        result = Seth::ChefFS::PathUtils::join(*exact_parts)
+        is_absolute ? Seth::ChefFS::PathUtils::join('', result) : result
       end
 
       # Returns the normalized version of the pattern, with / as the directory
@@ -149,7 +149,7 @@ class Chef
       #   abc/*/def.match?('abc/foo/def') == true
       #   abc/*/def.match?('abc/foo') == false
       def match?(path)
-        argument_is_absolute = !!(path =~ /^#{Chef::ChefFS::PathUtils::regexp_path_separator}/)
+        argument_is_absolute = !!(path =~ /^#{Seth::ChefFS::PathUtils::regexp_path_separator}/)
         return false if is_absolute != argument_is_absolute
         path = path[1,path.length-1] if argument_is_absolute
         !!regexp.match(path)
@@ -167,8 +167,8 @@ class Chef
       #
       # BUG: this does not support patterns starting with <tt>..</tt>
       def self.relative_to(dir, pattern)
-        return FilePattern.new(pattern) if pattern =~ /^#{Chef::ChefFS::PathUtils::regexp_path_separator}/
-        FilePattern.new(Chef::ChefFS::PathUtils::join(dir, pattern))
+        return FilePattern.new(pattern) if pattern =~ /^#{Seth::ChefFS::PathUtils::regexp_path_separator}/
+        FilePattern.new(Seth::ChefFS::PathUtils::join(dir, pattern))
       end
 
     private
@@ -195,7 +195,7 @@ class Chef
 
       def calculate
         if !@regexp
-          @is_absolute = !!(@pattern =~ /^#{Chef::ChefFS::PathUtils::regexp_path_separator}/)
+          @is_absolute = !!(@pattern =~ /^#{Seth::ChefFS::PathUtils::regexp_path_separator}/)
 
           full_regexp_parts = []
           normalized_parts = []
@@ -203,7 +203,7 @@ class Chef
           @exact_parts = []
           @has_double_star = false
 
-          Chef::ChefFS::PathUtils::split(pattern).each do |part|
+          Seth::ChefFS::PathUtils::split(pattern).each do |part|
             regexp, exact, has_double_star = FilePattern::pattern_to_regexp(part)
             if has_double_star
               @has_double_star = true
@@ -243,14 +243,14 @@ class Chef
             end
           end
 
-          @regexp = Regexp.new("^#{full_regexp_parts.join(Chef::ChefFS::PathUtils::regexp_path_separator)}$")
-          @normalized_pattern = Chef::ChefFS::PathUtils.join(*normalized_parts)
-          @normalized_pattern = Chef::ChefFS::PathUtils.join('', @normalized_pattern) if @is_absolute
+          @regexp = Regexp.new("^#{full_regexp_parts.join(Seth::ChefFS::PathUtils::regexp_path_separator)}$")
+          @normalized_pattern = Seth::ChefFS::PathUtils.join(*normalized_parts)
+          @normalized_pattern = Seth::ChefFS::PathUtils.join('', @normalized_pattern) if @is_absolute
         end
       end
 
       def self.pattern_special_characters
-        if Chef::ChefFS::windows?
+        if Seth::ChefFS::windows?
           @pattern_special_characters ||= /(\*\*|\*|\?|[\*\?\.\|\(\)\[\]\{\}\+\\\\\^\$])/
         else
           # Unix also supports character regexes and backslashes

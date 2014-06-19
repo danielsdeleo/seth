@@ -17,16 +17,16 @@
 # limitations under the License.
 #
 
-require 'chef/event_dispatch/base'
-require 'chef/formatters/error_inspectors'
-require 'chef/formatters/error_descriptor'
-require 'chef/formatters/error_mapper'
-require 'chef/formatters/indentable_output_stream'
+require 'seth/event_dispatch/base'
+require 'seth/formatters/error_inspectors'
+require 'seth/formatters/error_descriptor'
+require 'seth/formatters/error_mapper'
+require 'seth/formatters/indentable_output_stream'
 
-class Chef
+class Seth
 
-  # == Chef::Formatters
-  # Formatters handle printing output about the progress/status of a chef
+  # == Seth::Formatters
+  # Formatters handle printing output about the progress/status of a seth
   # client run to the user's screen.
   module Formatters
 
@@ -64,7 +64,7 @@ class Chef
       include ErrorMapper
 
       def self.cli_name(name)
-        Chef::Formatters.register(name, self)
+        Seth::Formatters.register(name, self)
       end
 
       attr_reader :out
@@ -137,7 +137,7 @@ class Chef
       # cookbook getting loaded. The per-filetype callbacks for file load are
       # overriden so that they call this instead. This means that a subclass of
       # Formatters::Base can implement #file_loaded to do the same thing for
-      # every kind of file that Chef loads from a recipe instead of
+      # every kind of file that Seth loads from a recipe instead of
       # implementing all the per-filetype callbacks.
       def file_loaded(path)
       end

@@ -17,11 +17,11 @@
 # limitations under the License.
 #
 
-require 'chef/resource'
+require 'seth/resource'
 
-class Chef
+class Seth
   class Resource
-    class ErlCall < Chef::Resource
+    class ErlCall < Seth::Resource
 
       # erl_call : http://erlang.org/doc/man/erl_call.html
 
@@ -35,7 +35,7 @@ class Chef
         @cookie = nil # cookie of the erlang node
         @distributed = false # if you want to have a distributed erlang node
         @name_type = "sname" # type of erlang hostname name or sname
-        @node_name = "chef@localhost" # the erlang node hostname
+        @node_name = "seth@localhost" # the erlang node hostname
 
         @action = "run"
         @allowed_actions.push(:run)

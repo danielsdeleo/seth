@@ -16,16 +16,16 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'chef/knife/upload'
-require 'chef/knife/diff'
-require 'chef/knife/raw'
+require 'seth/knife/upload'
+require 'seth/knife/diff'
+require 'seth/knife/raw'
 
 describe 'knife upload' do
   extend IntegrationSupport
   include KnifeSupport
 
   context 'without versioned cookbooks' do
-    when_the_chef_server "has one of each thing" do
+    when_the_seth_server "has one of each thing" do
       client 'x', {}
       cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"' }
       data_bag 'x', { 'y' => {} }
@@ -46,8 +46,8 @@ describe 'knife upload' do
         it 'knife upload does nothing' do
           knife('upload /').should_succeed ''
           knife('diff --name-status /').should_succeed <<EOM
-D\t/clients/chef-validator.json
-D\t/clients/chef-webui.json
+D\t/clients/seth-validator.json
+D\t/clients/seth-webui.json
 D\t/clients/x.json
 D\t/cookbooks/x
 D\t/data_bags/x
@@ -62,8 +62,8 @@ EOM
 
         it 'knife upload --purge deletes everything' do
           knife('upload --purge /').should_succeed(<<EOM, :stderr => "WARNING: /environments/_default.json cannot be deleted (default environment cannot be modified).\n")
-Deleted extra entry /clients/chef-validator.json (purge is on)
-Deleted extra entry /clients/chef-webui.json (purge is on)
+Deleted extra entry /clients/seth-validator.json (purge is on)
+Deleted extra entry /clients/seth-webui.json (purge is on)
 Deleted extra entry /clients/x.json (purge is on)
 Deleted extra entry /cookbooks/x (purge is on)
 Deleted extra entry /data_bags/x (purge is on)
@@ -80,17 +80,17 @@ EOM
       end
 
       when_the_repository 'has an identical copy of each thing' do
-        file 'clients/chef-validator.json', { 'validator' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'clients/chef-webui.json', { 'admin' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'clients/x.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+        file 'clients/seth-validator.json', { 'validator' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'clients/seth-webui.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'clients/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
         file 'cookbooks/x/metadata.rb', 'version "1.0.0"'
         file 'data_bags/x/y.json', {}
-        file 'environments/_default.json', { "description" => "The default Chef environment" }
+        file 'environments/_default.json', { "description" => "The default Seth environment" }
         file 'environments/x.json', {}
         file 'nodes/x.json', {}
         file 'roles/x.json', {}
-        file 'users/admin.json', { 'admin' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'users/x.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+        file 'users/admin.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'users/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
         it 'knife upload makes no changes' do
           knife('upload /cookbooks/x').should_succeed ''
@@ -117,12 +117,12 @@ EOM
         context 'except the role file is textually different, but not ACTUALLY different' do
           file 'roles/x.json', <<EOM
 {
-  "chef_type": "role",
+  "seth_type": "role",
   "default_attributes":  {
   },
   "env_run_lists": {
   },
-  "json_class": "Chef::Role",
+  "json_class": "Seth::Role",
   "name": "x",
   "description": "",
   "override_attributes": {
@@ -139,7 +139,7 @@ EOM
         end
 
         context 'as well as one extra copy of each thing' do
-          file 'clients/y.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+          file 'clients/y.json', { 'public_key' => SethZero::PUBLIC_KEY }
           file 'cookbooks/x/blah.rb', ''
           file 'cookbooks/y/metadata.rb', 'version "1.0.0"'
           file 'data_bags/x/z.json', {}
@@ -147,7 +147,7 @@ EOM
           file 'environments/y.json', {}
           file 'nodes/y.json', {}
           file 'roles/y.json', {}
-          file 'users/y.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+          file 'users/y.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
           it 'knife upload adds the new files' do
             knife('upload /').should_succeed <<EOM
@@ -227,7 +227,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'is empty' do
+    when_the_seth_server 'is empty' do
       when_the_repository 'has a data bag item' do
         file 'data_bags/x/y.json', { 'foo' => 'bar' }
         it 'knife upload of the data bag uploads only the values in the data bag item and no other' do
@@ -248,17 +248,17 @@ EOM
         end
       end
 
-      when_the_repository 'has a data bag item with keys chef_type and data_bag' do
-        file 'data_bags/x/y.json', { 'chef_type' => 'aaa', 'data_bag' => 'bbb' }
-        it 'upload preserves chef_type and data_bag' do
+      when_the_repository 'has a data bag item with keys seth_type and data_bag' do
+        file 'data_bags/x/y.json', { 'seth_type' => 'aaa', 'data_bag' => 'bbb' }
+        it 'upload preserves seth_type and data_bag' do
           knife('upload /data_bags/x/y.json').should_succeed <<EOM
 Created /data_bags/x
 Created /data_bags/x/y.json
 EOM
           knife('diff --name-status /data_bags').should_succeed ''
           result = JSON.parse(knife('raw /data/x/y').stdout, :create_additions => false)
-          result.keys.sort.should == [ 'chef_type', 'data_bag', 'id' ]
-          result['chef_type'].should == 'aaa'
+          result.keys.sort.should == [ 'seth_type', 'data_bag', 'id' ]
+          result['seth_type'].should == 'aaa'
           result['data_bag'].should == 'bbb'
         end
       end
@@ -279,7 +279,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has three data bag items' do
+    when_the_seth_server 'has three data bag items' do
       data_bag 'x', { 'deleted' => {}, 'modified' => {}, 'unmodified' => {} }
 
       when_the_repository 'has a modified, unmodified, added and deleted data bag item' do
@@ -375,7 +375,7 @@ EOM
     # Cookbook upload is a funny thing ... direct cookbook upload works, but
     # upload of a file is designed not to work at present.  Make sure that is the
     # case.
-    when_the_chef_server 'has a cookbook' do
+    when_the_seth_server 'has a cookbook' do
       cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'z.rb' => '' }
       when_the_repository 'has a modified, extra and missing file for the cookbook' do
         file 'cookbooks/x/metadata.rb', 'version  "1.0.0"'
@@ -436,7 +436,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has a frozen cookbook' do
+    when_the_seth_server 'has a frozen cookbook' do
       cookbook 'frozencook', '1.0.0', {
         'metadata.rb' => 'version "1.0.0"'
       }, :frozen => true
@@ -459,7 +459,7 @@ EOM
       file 'cookbooks/x/metadata.rb', 'version "1.0.0"'
       file 'cookbooks/x/onlyin1.0.0.rb', 'old_text'
 
-      when_the_chef_server 'has a later version for the cookbook' do
+      when_the_seth_server 'has a later version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => '' }
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
@@ -480,7 +480,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has an earlier version for the cookbook' do
+      when_the_seth_server 'has an earlier version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => ''}
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
         it 'knife upload /cookbooks/x uploads the local version' do
@@ -491,7 +491,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has a later version for the cookbook, and no current version' do
+      when_the_seth_server 'has a later version for the cookbook, and no current version' do
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
         it 'knife upload /cookbooks/x uploads the local version' do
@@ -511,7 +511,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has an earlier version for the cookbook, and no current version' do
+      when_the_seth_server 'has an earlier version for the cookbook, and no current version' do
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
 
         it 'knife upload /cookbooks/x uploads the new version' do
@@ -523,7 +523,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has an environment' do
+    when_the_seth_server 'has an environment' do
       environment 'x', {}
       when_the_repository 'has an environment with bad JSON' do
         file 'environments/x.json', '{'
@@ -550,7 +550,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'is empty' do
+    when_the_seth_server 'is empty' do
       when_the_repository 'has an environment with bad JSON' do
         file 'environments/x.json', '{'
         it 'knife upload tries and fails' do
@@ -586,7 +586,7 @@ EOM
   end # without versioned cookbooks
 
   with_versioned_cookbooks do
-    when_the_chef_server "has one of each thing" do
+    when_the_seth_server "has one of each thing" do
       client 'x', {}
       cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"' }
       data_bag 'x', { 'y' => {} }
@@ -607,8 +607,8 @@ EOM
         it 'knife upload does nothing' do
           knife('upload /').should_succeed ''
           knife('diff --name-status /').should_succeed <<EOM
-D\t/clients/chef-validator.json
-D\t/clients/chef-webui.json
+D\t/clients/seth-validator.json
+D\t/clients/seth-webui.json
 D\t/clients/x.json
 D\t/cookbooks/x-1.0.0
 D\t/data_bags/x
@@ -623,8 +623,8 @@ EOM
 
         it 'knife upload --purge deletes everything' do
           knife('upload --purge /').should_succeed(<<EOM, :stderr => "WARNING: /environments/_default.json cannot be deleted (default environment cannot be modified).\n")
-Deleted extra entry /clients/chef-validator.json (purge is on)
-Deleted extra entry /clients/chef-webui.json (purge is on)
+Deleted extra entry /clients/seth-validator.json (purge is on)
+Deleted extra entry /clients/seth-webui.json (purge is on)
 Deleted extra entry /clients/x.json (purge is on)
 Deleted extra entry /cookbooks/x-1.0.0 (purge is on)
 Deleted extra entry /data_bags/x (purge is on)
@@ -641,17 +641,17 @@ EOM
       end
 
       when_the_repository 'has an identical copy of each thing' do
-        file 'clients/chef-validator.json', { 'validator' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'clients/chef-webui.json', { 'admin' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'clients/x.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+        file 'clients/seth-validator.json', { 'validator' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'clients/seth-webui.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'clients/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
         file 'cookbooks/x-1.0.0/metadata.rb', 'version "1.0.0"'
         file 'data_bags/x/y.json', {}
-        file 'environments/_default.json', { 'description' => 'The default Chef environment' }
+        file 'environments/_default.json', { 'description' => 'The default Seth environment' }
         file 'environments/x.json', {}
         file 'nodes/x.json', {}
         file 'roles/x.json', {}
-        file 'users/admin.json', { 'admin' => true, 'public_key' => ChefZero::PUBLIC_KEY }
-        file 'users/x.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+        file 'users/admin.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
+        file 'users/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
         it 'knife upload makes no changes' do
           knife('upload /cookbooks/x-1.0.0').should_succeed ''
@@ -675,12 +675,12 @@ EOM
         context 'except the role file is textually different, but not ACTUALLY different' do
           file 'roles/x.json', <<EOM
 {
-  "chef_type": "role",
+  "seth_type": "role",
   "default_attributes":  {
   },
   "env_run_lists": {
   },
-  "json_class": "Chef::Role",
+  "json_class": "Seth::Role",
   "name": "x",
   "description": "",
   "override_attributes": {
@@ -697,7 +697,7 @@ EOM
         end
 
         context 'as well as one extra copy of each thing' do
-          file 'clients/y.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+          file 'clients/y.json', { 'public_key' => SethZero::PUBLIC_KEY }
           file 'cookbooks/x-1.0.0/blah.rb', ''
           file 'cookbooks/x-2.0.0/metadata.rb', 'version "2.0.0"'
           file 'cookbooks/y-1.0.0/metadata.rb', 'version "1.0.0"'
@@ -706,7 +706,7 @@ EOM
           file 'environments/y.json', {}
           file 'nodes/y.json', {}
           file 'roles/y.json', {}
-          file 'users/y.json', { 'public_key' => ChefZero::PUBLIC_KEY }
+          file 'users/y.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
           it 'knife upload adds the new files' do
             knife('upload /').should_succeed <<EOM
@@ -772,7 +772,7 @@ EOM
     end
 
     # Test upload of an item when the other end doesn't even have the container
-    when_the_chef_server 'is empty' do
+    when_the_seth_server 'is empty' do
       when_the_repository 'has two data bag items' do
         file 'data_bags/x/y.json', {}
         file 'data_bags/x/z.json', {}
@@ -789,7 +789,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has three data bag items' do
+    when_the_seth_server 'has three data bag items' do
       data_bag 'x', { 'deleted' => {}, 'modified' => {}, 'unmodified' => {} }
       when_the_repository 'has a modified, unmodified, added and deleted data bag item' do
         file 'data_bags/x/added.json', {}
@@ -884,7 +884,7 @@ EOM
     # Cookbook upload is a funny thing ... direct cookbook upload works, but
     # upload of a file is designed not to work at present.  Make sure that is the
     # case.
-    when_the_chef_server 'has a cookbook' do
+    when_the_seth_server 'has a cookbook' do
       cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'z.rb' => '' }
 
       when_the_repository 'has a modified, extra and missing file for the cookbook' do
@@ -944,7 +944,7 @@ EOM
       file 'cookbooks/x-1.0.0/metadata.rb', 'version "1.0.0"'
       file 'cookbooks/x-1.0.0/onlyin1.0.0.rb', 'old_text'
 
-      when_the_chef_server 'has a later version for the cookbook' do
+      when_the_seth_server 'has a later version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => '' }
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
@@ -961,7 +961,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has an earlier version for the cookbook' do
+      when_the_seth_server 'has an earlier version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => ''}
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
         it 'knife upload /cookbooks uploads the local version' do
@@ -973,7 +973,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has a later version for the cookbook, and no current version' do
+      when_the_seth_server 'has a later version for the cookbook, and no current version' do
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
         it 'knife upload /cookbooks/x uploads the local version' do
@@ -989,7 +989,7 @@ EOM
         end
       end
 
-      when_the_chef_server 'has an earlier version for the cookbook, and no current version' do
+      when_the_seth_server 'has an earlier version for the cookbook, and no current version' do
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
 
         it 'knife upload /cookbooks/x uploads the new version' do
@@ -1002,7 +1002,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'has an environment' do
+    when_the_seth_server 'has an environment' do
       environment 'x', {}
       when_the_repository 'has an environment with bad JSON' do
         file 'environments/x.json', '{'
@@ -1029,7 +1029,7 @@ EOM
       end
     end
 
-    when_the_chef_server 'is empty' do
+    when_the_seth_server 'is empty' do
       when_the_repository 'has an environment with bad JSON' do
         file 'environments/x.json', '{'
         it 'knife upload tries and fails' do
@@ -1064,10 +1064,10 @@ EOM
     end
   end # with versioned cookbooks
 
-  when_the_chef_server 'has a user' do
+  when_the_seth_server 'has a user' do
     user 'x', {}
     when_the_repository 'has the same user with json_class in it' do
-      file 'users/x.json', { 'admin' => true, 'json_class' => 'Chef::WebUIUser' }
+      file 'users/x.json', { 'admin' => true, 'json_class' => 'Seth::WebUIUser' }
       it 'knife upload /users/x.json succeeds' do
         knife('upload /users/x.json').should_succeed "Updated /users/x.json\n"
       end

@@ -17,13 +17,13 @@
 #
 
 require 'spec_helper'
-if Chef::Platform.windows?
-  require 'chef/win32/security'
+if Seth::Platform.windows?
+  require 'seth/win32/security'
 end
 
-describe 'Chef::Win32::Security', :windows_only do
+describe 'Seth::Win32::Security', :windows_only do
   it "has_admin_privileges? returns true when running as admin" do
-    Chef::ReservedNames::Win32::Security.has_admin_privileges?.should == true
+    Seth::ReservedNames::Win32::Security.has_admin_privileges?.should == true
   end
 
   # We've done some investigation adding a negative test and it turned

@@ -16,22 +16,22 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 require 'erubis'
 
-class Chef
+class Seth
   class Knife
     class Bootstrap < Knife
 
       deps do
-        require 'chef/knife/core/bootstrap_context'
-        require 'chef/json_compat'
+        require 'seth/knife/core/bootstrap_context'
+        require 'seth/json_compat'
         require 'tempfile'
         require 'highline'
         require 'net/ssh'
         require 'net/ssh/multi'
-        require 'chef/knife/ssh'
-        Chef::Knife::Ssh.load_deps
+        require 'seth/knife/ssh'
+        Seth::Knife::Ssh.load_deps
       end
 
       banner "knife bootstrap FQDN (options)"
@@ -51,13 +51,13 @@ class Chef
         :short => "-p PORT",
         :long => "--ssh-port PORT",
         :description => "The ssh port",
-        :proc => Proc.new { |key| Chef::Config[:knife][:ssh_port] = key }
+        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_port] = key }
 
       option :ssh_gateway,
         :short => "-G GATEWAY",
         :long => "--ssh-gateway GATEWAY",
         :description => "The ssh gateway",
-        :proc => Proc.new { |key| Chef::Config[:knife][:ssh_gateway] = key }
+        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_gateway] = key }
 
       option :forward_agent,
         :short => "-A",
@@ -70,35 +70,35 @@ class Chef
         :long => "--identity-file IDENTITY_FILE",
         :description => "The SSH identity file used for authentication"
 
-      option :chef_node_name,
+      option :seth_node_name,
         :short => "-N NAME",
         :long => "--node-name NAME",
-        :description => "The Chef node name for your new node"
+        :description => "The Seth node name for your new node"
 
       option :prerelease,
         :long => "--prerelease",
-        :description => "Install the pre-release chef gems"
+        :description => "Install the pre-release seth gems"
 
       option :bootstrap_version,
         :long => "--bootstrap-version VERSION",
-        :description => "The version of Chef to install",
-        :proc => lambda { |v| Chef::Config[:knife][:bootstrap_version] = v }
+        :description => "The version of Seth to install",
+        :proc => lambda { |v| Seth::Config[:knife][:bootstrap_version] = v }
 
       option :bootstrap_proxy,
         :long => "--bootstrap-proxy PROXY_URL",
         :description => "The proxy server for the node being bootstrapped",
-        :proc => Proc.new { |p| Chef::Config[:knife][:bootstrap_proxy] = p }
+        :proc => Proc.new { |p| Seth::Config[:knife][:bootstrap_proxy] = p }
 
       option :bootstrap_no_proxy,
         :long => "--bootstrap-no-proxy [NO_PROXY_URL|NO_PROXY_IP]",
         :description => "Do not proxy locations for the node being bootstrapped; this option is used internally by Opscode",
-        :proc => Proc.new { |np| Chef::Config[:knife][:bootstrap_no_proxy] = np }
+        :proc => Proc.new { |np| Seth::Config[:knife][:bootstrap_no_proxy] = np }
 
       option :distro,
         :short => "-d DISTRO",
         :long => "--distro DISTRO",
         :description => "Bootstrap a distro using a template",
-        :default => "chef-full"
+        :default => "seth-full"
 
       option :use_sudo,
         :long => "--sudo",
@@ -125,7 +125,7 @@ class Chef
       option :first_boot_attributes,
         :short => "-j JSON_ATTRIBS",
         :long => "--json-attributes",
-        :description => "A JSON string to be added to the first run of chef-client",
+        :description => "A JSON string to be added to the first run of seth-client",
         :proc => lambda { |o| JSON.parse(o) },
         :default => {}
 
@@ -139,40 +139,40 @@ class Chef
         :long => "--hint HINT_NAME[=HINT_FILE]",
         :description => "Specify Ohai Hint to be set on the bootstrap target.  Use multiple --hint options to specify multiple hints.",
         :proc => Proc.new { |h|
-          Chef::Config[:knife][:hints] ||= Hash.new
+          Seth::Config[:knife][:hints] ||= Hash.new
           name, path = h.split("=")
-          Chef::Config[:knife][:hints][name] = path ? JSON.parse(::File.read(path)) : Hash.new  }
+          Seth::Config[:knife][:hints][name] = path ? JSON.parse(::File.read(path)) : Hash.new  }
 
       option :secret,
         :short => "-s SECRET",
         :long  => "--secret ",
         :description => "The secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |s| Chef::Config[:knife][:secret] = s }
+        :proc => Proc.new { |s| Seth::Config[:knife][:secret] = s }
 
       option :secret_file,
         :long => "--secret-file SECRET_FILE",
         :description => "A file containing the secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |sf| Chef::Config[:knife][:secret_file] = sf }
+        :proc => Proc.new { |sf| Seth::Config[:knife][:secret_file] = sf }
 
       option :bootstrap_url,
         :long        => "--bootstrap-url URL",
         :description => "URL to a custom installation script",
-        :proc        => Proc.new { |u| Chef::Config[:knife][:bootstrap_url] = u }
+        :proc        => Proc.new { |u| Seth::Config[:knife][:bootstrap_url] = u }
 
       option :bootstrap_install_command,
         :long        => "--bootstrap-install-command COMMANDS",
-        :description => "Custom command to install chef-client",
-        :proc        => Proc.new { |ic| Chef::Config[:knife][:bootstrap_install_command] = ic }
+        :description => "Custom command to install seth-client",
+        :proc        => Proc.new { |ic| Seth::Config[:knife][:bootstrap_install_command] = ic }
 
       option :bootstrap_wget_options,
         :long        => "--bootstrap-wget-options OPTIONS",
-        :description => "Add options to wget when installing chef-client",
-        :proc        => Proc.new { |wo| Chef::Config[:knife][:bootstrap_wget_options] = wo }
+        :description => "Add options to wget when installing seth-client",
+        :proc        => Proc.new { |wo| Seth::Config[:knife][:bootstrap_wget_options] = wo }
 
       option :bootstrap_curl_options,
         :long        => "--bootstrap-curl-options OPTIONS",
-        :description => "Add options to curl when install chef-client",
-        :proc        => Proc.new { |co| Chef::Config[:knife][:bootstrap_curl_options] = co }
+        :description => "Add options to curl when install seth-client",
+        :proc        => Proc.new { |co| Seth::Config[:knife][:bootstrap_curl_options] = co }
 
       def find_template(template=nil)
         # Are we bootstrapping using an already shipped template?
@@ -181,14 +181,14 @@ class Chef
         else
           bootstrap_files = []
           bootstrap_files << File.join(File.dirname(__FILE__), 'bootstrap', "#{config[:distro]}.erb")
-          bootstrap_files << File.join(Knife.chef_config_dir, "bootstrap", "#{config[:distro]}.erb") if Knife.chef_config_dir
-          bootstrap_files << File.join(ENV['HOME'], '.chef', 'bootstrap', "#{config[:distro]}.erb") if ENV['HOME']
-          bootstrap_files << Gem.find_files(File.join("chef","knife","bootstrap","#{config[:distro]}.erb"))
+          bootstrap_files << File.join(Knife.seth_config_dir, "bootstrap", "#{config[:distro]}.erb") if Knife.chef_config_dir
+          bootstrap_files << File.join(ENV['HOME'], '.seth', 'bootstrap', "#{config[:distro]}.erb") if ENV['HOME']
+          bootstrap_files << Gem.find_files(File.join("seth","knife","bootstrap","#{config[:distro]}.erb"))
           bootstrap_files.flatten!
         end
 
         template = Array(bootstrap_files).find do |bootstrap_template|
-          Chef::Log.debug("Looking for bootstrap template in #{File.dirname(bootstrap_template)}")
+          Seth::Log.debug("Looking for bootstrap template in #{File.dirname(bootstrap_template)}")
           File.exists?(bootstrap_template)
         end
 
@@ -197,13 +197,13 @@ class Chef
           raise Errno::ENOENT
         end
 
-        Chef::Log.debug("Found bootstrap template in #{File.dirname(template)}")
+        Seth::Log.debug("Found bootstrap template in #{File.dirname(template)}")
 
         template
       end
 
       def render_template(template=nil)
-        context = Knife::Core::BootstrapContext.new(config, config[:run_list], Chef::Config)
+        context = Knife::Core::BootstrapContext.new(config, config[:run_list], Seth::Config)
         Erubis::Eruby.new(template).evaluate(context)
       end
 
@@ -213,7 +213,7 @@ class Chef
 
       def run
         validate_name_args!
-        warn_chef_config_secret_key
+        warn_seth_config_secret_key
         @template_file = find_template(config[:bootstrap_template])
         @node_name = Array(@name_args).first
         # back compat--templates may use this setting:
@@ -249,17 +249,17 @@ class Chef
       end
 
       def knife_ssh
-        ssh = Chef::Knife::Ssh.new
+        ssh = Seth::Knife::Ssh.new
         ssh.ui = ui
         ssh.name_args = [ server_name, ssh_command ]
-        ssh.config[:ssh_user] = Chef::Config[:knife][:ssh_user] || config[:ssh_user]
+        ssh.config[:ssh_user] = Seth::Config[:knife][:ssh_user] || config[:ssh_user]
         ssh.config[:ssh_password] = config[:ssh_password]
-        ssh.config[:ssh_port] = Chef::Config[:knife][:ssh_port] || config[:ssh_port]
-        ssh.config[:ssh_gateway] = Chef::Config[:knife][:ssh_gateway] || config[:ssh_gateway]
-        ssh.config[:forward_agent] = Chef::Config[:knife][:forward_agent] || config[:forward_agent]
-        ssh.config[:identity_file] = Chef::Config[:knife][:identity_file] || config[:identity_file]
+        ssh.config[:ssh_port] = Seth::Config[:knife][:ssh_port] || config[:ssh_port]
+        ssh.config[:ssh_gateway] = Seth::Config[:knife][:ssh_gateway] || config[:ssh_gateway]
+        ssh.config[:forward_agent] = Seth::Config[:knife][:forward_agent] || config[:forward_agent]
+        ssh.config[:identity_file] = Seth::Config[:knife][:identity_file] || config[:identity_file]
         ssh.config[:manual] = true
-        ssh.config[:host_key_verify] = Chef::Config[:knife][:host_key_verify] || config[:host_key_verify]
+        ssh.config[:host_key_verify] = Seth::Config[:knife][:host_key_verify] || config[:host_key_verify]
         ssh.config[:on_error] = :raise
         ssh
       end
@@ -281,8 +281,8 @@ class Chef
         command
       end
 
-      def warn_chef_config_secret_key
-        unless Chef::Config[:encrypted_data_bag_secret].nil?
+      def warn_seth_config_secret_key
+        unless Seth::Config[:encrypted_data_bag_secret].nil?
           ui.warn "* " * 40
           ui.warn(<<-WARNING)
 Specifying the encrypted data bag secret key using an 'encrypted_data_bag_secret'
@@ -295,7 +295,7 @@ machines by adding the following to your 'knife.rb' file:
 If you would like to selectively distribute a secret key during bootstrap
 please use the '--secret' or '--secret-file' options of this command instead.
 
-#{ui.color('IMPORTANT:', :red, :bold)} In a future version of Chef, this
+#{ui.color('IMPORTANT:', :red, :bold)} In a future version of Seth, this
 behavior will be removed and any 'encrypted_data_bag_secret' entries in
 'knife.rb' will be ignored completely.
 WARNING

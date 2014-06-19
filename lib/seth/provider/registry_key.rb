@@ -17,37 +17,37 @@
 # limitations under the License.
 #
 
-require 'chef/config'
-require 'chef/log'
-require 'chef/resource/file'
-require 'chef/mixin/checksum'
-require 'chef/provider'
+require 'seth/config'
+require 'seth/log'
+require 'seth/resource/file'
+require 'seth/mixin/checksum'
+require 'seth/provider'
 require 'etc'
 require 'fileutils'
-require 'chef/scan_access_control'
-require 'chef/mixin/shell_out'
-require 'chef/win32/registry'
+require 'seth/scan_access_control'
+require 'seth/mixin/shell_out'
+require 'seth/win32/registry'
 
-class Chef
+class Seth
 
   class Provider
-    class RegistryKey < Chef::Provider
-      include Chef::Mixin::Checksum
-      include Chef::Mixin::ShellOut
+    class RegistryKey < Seth::Provider
+      include Seth::Mixin::Checksum
+      include Seth::Mixin::ShellOut
 
       def whyrun_supported?
         true
       end
 
       def running_on_windows!
-        unless Chef::Platform.windows?
-          raise Chef::Exceptions::Win32NotWindows, "Attempt to manipulate the windows registry on a non-windows node"
+        unless Seth::Platform.windows?
+          raise Seth::Exceptions::Win32NotWindows, "Attempt to manipulate the windows registry on a non-windows node"
         end
       end
 
       def load_current_resource
         running_on_windows!
-        @current_resource ||= Chef::Resource::RegistryKey.new(@new_resource.key, run_context)
+        @current_resource ||= Seth::Resource::RegistryKey.new(@new_resource.key, run_context)
         @current_resource.key(@new_resource.key)
         @current_resource.architecture(@new_resource.architecture)
         @current_resource.recursive(@new_resource.recursive)
@@ -59,7 +59,7 @@ class Chef
       end
 
       def registry
-        @registry ||= Chef::Win32::Registry.new(@run_context, @new_resource.architecture)
+        @registry ||= Seth::Win32::Registry.new(@run_context, @new_resource.architecture)
       end
 
      def values_to_hash(values)
@@ -73,7 +73,7 @@ class Chef
       def define_resource_requirements
         requirements.assert(:create, :create_if_missing, :delete, :delete_key) do |a|
           a.assertion{ registry.hive_exists?(@new_resource.key) }
-          a.failure_message(Chef::Exceptions::Win32RegHiveMissing, "Hive #{@new_resource.key.split("\\").shift} does not exist")
+          a.failure_message(Seth::Exceptions::Win32RegHiveMissing, "Hive #{@new_resource.key.split("\\").shift} does not exist")
         end
         requirements.assert(:create) do |a|
           a.assertion{ registry.key_exists?(@new_resource.key) }
@@ -82,13 +82,13 @@ class Chef
         requirements.assert(:create, :create_if_missing) do |a|
           #If keys missing in the path and recursive == false
           a.assertion{ !registry.keys_missing?(@current_resource.key) || @new_resource.recursive }
-          a.failure_message(Chef::Exceptions::Win32RegNoRecursive, "Intermediate keys missing but recursive is set to false")
+          a.failure_message(Seth::Exceptions::Win32RegNoRecursive, "Intermediate keys missing but recursive is set to false")
           a.whyrun("Intermediate keys in #{@new_resource.key} go not exist. Unless they would have been created earlier, attempt to modify them would fail.")
         end
         requirements.assert(:delete_key) do |a|
           #If key to be deleted has subkeys but recurssive == false
           a.assertion{ !registry.key_exists?(@new_resource.key) || !registry.has_subkeys?(@new_resource.key) || @new_resource.recursive }
-          a.failure_message(Chef::Exceptions::Win32RegNoRecursive, "#{@new_resource.key} has subkeys but recursive is set to false.")
+          a.failure_message(Seth::Exceptions::Win32RegNoRecursive, "#{@new_resource.key} has subkeys but recursive is set to false.")
           a.whyrun("#{@current_resource.key} has subkeys, but recursive is set to false. attempt to delete would fails unless subkeys were deleted prior to this action.")
         end
       end

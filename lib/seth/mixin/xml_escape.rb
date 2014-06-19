@@ -46,15 +46,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-require 'chef/log'
+require 'seth/log'
 
 begin
   require 'fast_xs'
 rescue LoadError
-  Chef::Log.info "The fast_xs gem is not installed, slower pure ruby XML escaping will be used."
+  Seth::Log.info "The fast_xs gem is not installed, slower pure ruby XML escaping will be used."
 end
 
-class Chef
+class Seth
   module Mixin
     module XMLEscape
 

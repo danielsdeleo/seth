@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>knife data bag &mdash; chef-client Man Pages</title>
+    <title>knife data bag &mdash; seth-client Man Pages</title>
     
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="shortcut icon" href="_static/chef.ico"/>
+    <link rel="shortcut icon" href="_static/seth.ico"/>
 
 
   </head>
   <body>
 <div style="background-color: #212c35; text-align: left; padding: 0px 0px 0px 0px">
-<a href="http://docs.opscode.com/"><img src="_static/chef_html_logo.png" border="0" alt="Chef"/></a>
+<a href="http://docs.opscode.com/"><img src="_static/seth_html_logo.png" border="0" alt="Seth"/></a>
 </div>
 
 
@@ -42,7 +42,7 @@
             
   <div class="section" id="knife-data-bag">
 <h1>knife data bag<a class="headerlink" href="#knife-data-bag" title="Permalink to this headline">¶</a></h1>
-<p>A data bag is a global variable that is stored as JSON data and is accessible from a Chef server. A data bag is indexed for searching and can be loaded by a recipe or accessed during a search.</p>
+<p>A data bag is a global variable that is stored as JSON data and is accessible from a Seth server. A data bag is indexed for searching and can be loaded by a recipe or accessed during a search.</p>
 <p>A data bag item may be encrypted using <a class="reference external" href="https://en.wikipedia.org/wiki/Symmetric-key_algorithm">shared secret encryption</a>. This allows each data bag item to store confidential information (such as a database password) or to be managed in a source control system (without plain-text data appearing in revision history). Each data bag item may be encrypted individually; if a data bag contains multiple encrypted data bag items, these data bag items are not required to share the same encryption keys.</p>
 <p>The <strong>knife data bag</strong> subcommand is used to manage arbitrary stores of globally available JSON data.</p>
 <div class="admonition note">
@@ -51,7 +51,7 @@
 </div>
 <div class="section" id="create">
 <h2>create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add a data bag to the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add a data bag to the Seth server.</p>
 <div class="section" id="syntax">
 <h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -91,7 +91,7 @@
 </div>
 <div class="section" id="delete">
 <h2>delete<a class="headerlink" href="#delete" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">delete</span></tt> argument is used to delete a data bag or a data bag item from a Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">delete</span></tt> argument is used to delete a data bag or a data bag item from a Seth server.</p>
 <div class="section" id="id1">
 <h3>Syntax<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -124,7 +124,7 @@
 </div>
 <div class="section" id="edit">
 <h2>edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit the data contained in a data bag. If encryption is being used, the data bag will be decrypted, the data will be made available in the $EDITOR, and then encrypted again before saving it to the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit the data contained in a data bag. If encryption is being used, the data bag will be decrypted, the data will be made available in the $EDITOR, and then encrypted again before saving it to the Seth server.</p>
 <div class="section" id="id4">
 <h3>Syntax<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -161,7 +161,7 @@
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag edit admins charlie
 </pre></div>
 </div>
-<p>to open the $EDITOR. Once opened, you can update the data before saving it to the Chef server. For example, by changing:</p>
+<p>to open the $EDITOR. Once opened, you can update the data before saving it to the Seth server. For example, by changing:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="o">{</span>
    <span class="s2">&quot;id&quot;</span>: <span class="s2">&quot;charlie&quot;</span>
 <span class="o">}</span>
@@ -181,7 +181,7 @@
 </div>
 <div class="section" id="from-file">
 <h2>from file<a class="headerlink" href="#from-file" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">from</span> <span class="pre">file</span></tt> argument is used to create a data bag on the Chef server from a file. The path to the data bag file must specify one of the following:</p>
+<p>The <tt class="docutils literal"><span class="pre">from</span> <span class="pre">file</span></tt> argument is used to create a data bag on the Seth server from a file. The path to the data bag file must specify one of the following:</p>
 <ul class="simple">
 <li>the name of a data bag</li>
 <li>a relative or absolute path to a file</li>
@@ -189,7 +189,7 @@
 <p>If the name of a data bag is specified, Knife will search for the data bag in <tt class="docutils literal"><span class="pre">./data_bags/bag_name/file</span></tt>. Once opened, the JSON file should be a hash that contains at least an ID key which represents the name of the data bag item.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">A chef-client must be version 11.6 (or higher) when using the <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">data</span> <span class="pre">bag</span> <span class="pre">from</span> <span class="pre">file</span></tt> argument with the Enterprise Chef or Open Source Chef version 11 servers.</p>
+<p class="last">A seth-client must be version 11.6 (or higher) when using the <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">data</span> <span class="pre">bag</span> <span class="pre">from</span> <span class="pre">file</span></tt> argument with the Enterprise Seth or Open Source Chef version 11 servers.</p>
 </div>
 <div class="section" id="id7">
 <h3>Syntax<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
@@ -218,7 +218,7 @@
 <h3>Examples<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <p>The following examples show how to use this Knife subcommand:</p>
 <p><strong>Create a data bag from a file</strong></p>
-<p>To create a data bag on the Chef server from a file:</p>
+<p>To create a data bag on the Seth server from a file:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag from file <span class="s2">&quot;path to JSON file&quot;</span>
 </pre></div>
 </div>
@@ -231,7 +231,7 @@
 </div>
 <div class="section" id="list">
 <h2>list<a class="headerlink" href="#list" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">list</span></tt> argument is used to view a list of data bags that are currently available on the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">list</span></tt> argument is used to view a list of data bags that are currently available on the Seth server.</p>
 <div class="section" id="id10">
 <h3>Syntax<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>

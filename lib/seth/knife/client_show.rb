@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'chef/knife'
+require 'seth/knife'
 
-class Chef
+class Seth
   class Knife
     class ClientShow < Knife
 
       include Knife::Core::MultiAttributeReturnOption
 
       deps do
-        require 'chef/api_client'
-        require 'chef/json_compat'
+        require 'seth/api_client'
+        require 'seth/json_compat'
       end
 
       banner "knife client show CLIENT (options)"
@@ -40,7 +40,7 @@ class Chef
           exit 1
         end
 
-        client = Chef::ApiClient.load(@client_name)
+        client = Seth::ApiClient.load(@client_name)
         output(format_for_display(client))
       end
 

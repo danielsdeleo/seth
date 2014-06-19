@@ -19,38 +19,38 @@
 #
 # Helper functions to access the windows registry from within recipes and
 # the not_if/only_if blocks in resources.  This only exposes the methods
-# in the chef/win32/registry class which are reasonably side-effect-free.
+# in the seth/win32/registry class which are reasonably side-effect-free.
 # The actual modification of the registry should be done via the registry_key
 # resource in a more idempotent way.
 #
 #
-class Chef
+class Seth
   module DSL
     module RegistryHelper
       # the registry instance is cheap to build and throwing it away ensures we
       # don't carry any state (e.g. magic 32-bit/64-bit settings) between calls
       def registry_key_exists?(key_path, architecture = :machine)
-        registry = Chef::Win32::Registry.new(run_context, architecture)
+        registry = Seth::Win32::Registry.new(run_context, architecture)
         registry.key_exists?(key_path)
       end
       def registry_get_values(key_path, architecture = :machine)
-        registry = Chef::Win32::Registry.new(run_context, architecture)
+        registry = Seth::Win32::Registry.new(run_context, architecture)
         registry.get_values(key_path)
       end
       def registry_has_subkeys?(key_path, architecture = :machine)
-        registry = Chef::Win32::Registry.new(run_context, architecture)
+        registry = Seth::Win32::Registry.new(run_context, architecture)
         registry.has_subkeys?(key_path)
       end
       def registry_get_subkeys(key_path, architecture = :machine)
-        registry = Chef::Win32::Registry.new(run_context, architecture)
+        registry = Seth::Win32::Registry.new(run_context, architecture)
         registry.get_subkeys(key_path)
       end
       def registry_value_exists?(key_path, value, architecture = :machine)
-        registry = Chef::Win32::Registry.new(run_context, architecture)
+        registry = Seth::Win32::Registry.new(run_context, architecture)
         registry.value_exists?(key_path, value)
       end
       def registry_data_exists?(key_path, value, architecture = :machine)
-        registry = Chef::Win32::Registry.new(run_context, architecture)
+        registry = Seth::Win32::Registry.new(run_context, architecture)
         registry.data_exists?(key_path, value)
       end
     end

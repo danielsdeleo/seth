@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-class Chef
+class Seth
   class Util
     class Windows
       class NetUser
@@ -27,18 +27,18 @@ class Chef
   end
 end
 
-describe Chef::Provider::User::Windows do
+describe Seth::Provider::User::Windows do
   before(:each) do
-    @node = Chef::Node.new
-    @new_resource = Chef::Resource::User.new("monkey")
-    @events = Chef::EventDispatch::Dispatcher.new
-    @run_context = Chef::RunContext.new(@node, {}, @events)
-    @current_resource = Chef::Resource::User.new("monkey")
+    @node = Seth::Node.new
+    @new_resource = Seth::Resource::User.new("monkey")
+    @events = Seth::EventDispatch::Dispatcher.new
+    @run_context = Seth::RunContext.new(@node, {}, @events)
+    @current_resource = Seth::Resource::User.new("monkey")
 
-    @net_user = double("Chef::Util::Windows::NetUser")
-    Chef::Util::Windows::NetUser.stub(:new).and_return(@net_user)
+    @net_user = double("Seth::Util::Windows::NetUser")
+    Seth::Util::Windows::NetUser.stub(:new).and_return(@net_user)
 
-    @provider = Chef::Provider::User::Windows.new(@new_resource, @run_context)
+    @provider = Seth::Provider::User::Windows.new(@new_resource, @run_context)
     @provider.current_resource = @current_resource
   end
 
@@ -82,7 +82,7 @@ describe Chef::Provider::User::Windows do
 
     describe "and the attributes do not match" do
       before do
-        @current_resource = Chef::Resource::User.new("adam")
+        @current_resource = Seth::Resource::User.new("adam")
         @current_resource.comment   "Adam Jacob-foo"
         @current_resource.uid       1111
         @current_resource.gid       1111
