@@ -110,8 +110,8 @@ shared_context "use Windows permissions", :windows_only do
 
   let(:expected_read_execute_perms) do
     {
-      :generic => Seth::ReservedNames::Win32::API::Security::GENERIC_READ | Chef::ReservedNames::Win32::API::Security::GENERIC_EXECUTE,
-      :specific => Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_READ | Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE
+      :generic => Seth::ReservedNames::Win32::API::Security::GENERIC_READ | seth::ReservedNames::Win32::API::Security::GENERIC_EXECUTE,
+      :specific => Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_READ | seth::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE
     }
   end
 
@@ -124,8 +124,8 @@ shared_context "use Windows permissions", :windows_only do
 
   let(:expected_modify_perms) do
     {
-      :generic => Seth::ReservedNames::Win32::API::Security::GENERIC_READ | Chef::ReservedNames::Win32::API::Security::GENERIC_WRITE | Chef::ReservedNames::Win32::API::Security::GENERIC_EXECUTE | Chef::ReservedNames::Win32::API::Security::DELETE,
-      :specific => Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_READ | Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_WRITE | Chef::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE | Chef::ReservedNames::Win32::API::Security::DELETE
+      :generic => Seth::ReservedNames::Win32::API::Security::GENERIC_READ | seth::ReservedNames::Win32::API::Security::GENERIC_WRITE | seth::ReservedNames::Win32::API::Security::GENERIC_EXECUTE | seth::ReservedNames::Win32::API::Security::DELETE,
+      :specific => Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_READ | seth::ReservedNames::Win32::API::Security::FILE_GENERIC_WRITE | seth::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE | seth::ReservedNames::Win32::API::Security::DELETE
     }
   end
 

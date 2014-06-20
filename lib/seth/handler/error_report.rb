@@ -24,8 +24,8 @@ class Seth
     class ErrorReport < ::Seth::Handler
 
       def report
-        Seth::FileCache.store("failed-run-data.json", Chef::JSONCompat.to_json_pretty(data), 0640)
-        Seth::Log.fatal("Saving node information to #{Chef::FileCache.load("failed-run-data.json", false)}")
+        Seth::FileCache.store("failed-run-data.json", seth::JSONCompat.to_json_pretty(data), 0640)
+        Seth::Log.fatal("Saving node information to #{seth::FileCache.load("failed-run-data.json", false)}")
       end
 
     end

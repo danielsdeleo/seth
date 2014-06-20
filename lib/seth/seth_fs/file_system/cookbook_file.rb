@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_object'
+require 'seth/seth_fs/file_system/base_fs_object'
 require 'seth/http/simple'
 require 'digest/md5'
 
@@ -39,9 +39,9 @@ class Seth
           begin
             tmpfile = rest.streaming_request(file[:url])
           rescue Timeout::Error => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading #{file[:url]}: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading #{file[:url]}: #{e}"
           rescue Net::HTTPServerException => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "#{e.message} retrieving #{file[:url]}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:read, self, e), "#{e.message} retrieving #{file[:url]}"
           end
 
           begin
@@ -63,7 +63,7 @@ class Seth
           else
             begin
               other_value = other.read
-            rescue Seth::ChefFS::FileSystem::NotFoundError
+            rescue Seth::sethFS::FileSystem::NotFoundError
               return [ false, nil, :none ]
             end
             other_checksum = calc_checksum(other_value)

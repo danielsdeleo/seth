@@ -102,7 +102,7 @@ describe Seth::CookbookVersion do
     before do
       @cookbook = Hash.new { |hash, key| hash[key] = [] }
 
-      @cookbook_root = File.join(CHEF_SPEC_DATA, 'cb_version_cookbooks', 'tatft')
+      @cookbook_root = File.join(seth_SPEC_DATA, 'cb_version_cookbooks', 'tatft')
 
       # Dunno if the paths here are representitive of what is set by CookbookLoader...
       @cookbook[:attribute_filenames]   = Dir[File.join(@cookbook_root, 'attributes', '**', '*.rb')]

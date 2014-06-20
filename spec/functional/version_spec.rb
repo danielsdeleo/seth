@@ -24,11 +24,11 @@ describe "Seth Versions" do
   include Seth::Mixin::ShellOut
   let(:seth_dir) { File.join(File.dirname(__FILE__), "..", "..") }
 
-  binaries = [ "seth-client", "chef-shell", "chef-apply", "knife", "chef-solo" ]
+  binaries = [ "seth-client", "seth-shell", "seth-apply", "knife", "seth-solo" ]
 
   binaries.each do |binary|
     it "#{binary} version should be sane" do
-      shell_out!("ruby #{File.join("bin", binary)} -v", :cwd => seth_dir).stdout.chomp.should == "Seth: #{Chef::VERSION}"
+      shell_out!("ruby #{File.join("bin", binary)} -v", :cwd => seth_dir).stdout.chomp.should == "Seth: #{seth::VERSION}"
     end
   end
 

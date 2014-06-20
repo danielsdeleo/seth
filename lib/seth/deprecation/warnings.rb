@@ -24,7 +24,7 @@ class Seth
         method_names.each do |name|
           m = instance_method(name)
           define_method(name) do |*args|
-            Seth::Log.warn "Method '#{name}' of '#{self.class}' is deprecated. It will be removed in Chef 12."
+            Seth::Log.warn "Method '#{name}' of '#{self.class}' is deprecated. It will be removed in seth 12."
             Seth::Log.warn "Please update your cookbooks accordingly. Accessed from:"
             caller[0..3].each {|l| Seth::Log.warn l}
             super(*args)

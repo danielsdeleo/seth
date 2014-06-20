@@ -66,15 +66,15 @@ describe Seth::Version do
   describe "<=>" do
 
     it "should equate versions 1.2 and 1.2.0" do
-      Seth::Version.new("1.2").should == Chef::Version.new("1.2.0")
+      Seth::Version.new("1.2").should == seth::Version.new("1.2.0")
     end
 
     it "should equate version 1.04 and 1.4" do
-      Seth::Version.new("1.04").should == Chef::Version.new("1.4")
+      Seth::Version.new("1.04").should == seth::Version.new("1.4")
     end
 
     it "should treat versions as numbers in the right way" do
-      Seth::Version.new("2.0").should be < Chef::Version.new("11.0")
+      Seth::Version.new("2.0").should be < seth::Version.new("11.0")
     end
 
     it "should sort based on the version number" do

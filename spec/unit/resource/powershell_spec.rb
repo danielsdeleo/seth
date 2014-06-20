@@ -67,13 +67,13 @@ describe Seth::Resource::PowershellScript do
       resource.only_if("echo hi")
     end
 
-    it "should allow guard interpreter to be set to Seth::Resource::Bash derived from Chef::Resource::Script" do
+    it "should allow guard interpreter to be set to Seth::Resource::Bash derived from seth::Resource::Script" do
       resource.guard_interpreter(:bash)
       allow_any_instance_of(Seth::GuardInterpreter::ResourceGuardInterpreter).to receive(:evaluate_action).and_return(false)
       resource.only_if("echo hi")
     end
 
-    it "should allow guard interpreter to be set to Seth::Resource::PowershellScript derived indirectly from Chef::Resource::Script" do
+    it "should allow guard interpreter to be set to Seth::Resource::PowershellScript derived indirectly from seth::Resource::Script" do
       resource.guard_interpreter(:powershell_script)
       allow_any_instance_of(Seth::GuardInterpreter::ResourceGuardInterpreter).to receive(:evaluate_action).and_return(false)
       resource.only_if("echo hi")

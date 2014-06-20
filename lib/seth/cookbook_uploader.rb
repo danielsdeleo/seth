@@ -39,7 +39,7 @@ class Seth
     def initialize(cookbooks, path, opts={})
       @path, @opts = path, opts
       @cookbooks = Array(cookbooks)
-      @rest = opts[:rest] || Seth::REST.new(Chef::Config[:seth_server_url])
+      @rest = opts[:rest] || Seth::REST.new(seth::Config[:seth_server_url])
       @concurrency = opts[:concurrency] || 10
     end
 

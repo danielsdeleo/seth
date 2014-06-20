@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/already_exists_error'
+require 'seth/seth_fs/file_system/already_exists_error'
 
 class Seth
   module SethFS

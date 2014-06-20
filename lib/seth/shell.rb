@@ -31,7 +31,7 @@ require 'seth/shell/ext'
 require 'seth/json_compat'
 
 # = Shell
-# Shell is Seth in an IRB session. Shell can interact with a Chef server via the
+# Shell is Seth in an IRB session. Shell can interact with a seth server via the
 # REST API, and run and debug recipes interactively.
 module Shell
   LEADERS = Hash.new("")
@@ -79,10 +79,10 @@ module Shell
   def self.setup_logger
     Seth::Config[:log_level] ||= :warn
     # If log_level is auto, change it to warn
-    Seth::Config[:log_level] = :warn if Chef::Config[:log_level] == :auto
+    Seth::Config[:log_level] = :warn if seth::Config[:log_level] == :auto
     Seth::Log.init(STDERR)
     Mixlib::Authentication::Log.logger = Ohai::Log.logger = Seth::Log.logger
-    Seth::Log.level = Chef::Config[:log_level] || :warn
+    Seth::Log.level = seth::Config[:log_level] || :warn
   end
 
   # Shell assumes it's running whenever it is defined
@@ -101,7 +101,7 @@ module Shell
   end
 
   def self.configure_irb
-    irb_conf[:HISTORY_FILE] = "~/.seth/chef_shell_history"
+    irb_conf[:HISTORY_FILE] = "~/.seth/seth_shell_history"
     irb_conf[:SAVE_HISTORY] = 1000
 
     irb_conf[:IRB_RC] = lambda do |conf|
@@ -155,7 +155,7 @@ module Shell
 
   def self.parse_json
     if Seth::Config[:json_attribs]
-      config_fetcher = Seth::ConfigFetcher.new(Chef::Config[:json_attribs])
+      config_fetcher = Seth::ConfigFetcher.new(seth::Config[:json_attribs])
       @json_attribs = config_fetcher.fetch_json
     end
   end
@@ -190,13 +190,13 @@ module Shell
       @footer
     end
 
-    banner("seth-shell #{Seth::VERSION}\n\nUsage: chef-shell [NAMED_CONF] (OPTIONS)")
+    banner("seth-shell #{Seth::VERSION}\n\nUsage: seth-shell [NAMED_CONF] (OPTIONS)")
 
     footer(<<-FOOTER)
 When no CONFIG is specified, seth-shell attempts to load a default configuration file:
-* If a NAMED_CONF is given, seth-shell will load ~/.chef/NAMED_CONF/chef_shell.rb
-* If no NAMED_CONF is given seth-shell will load ~/.chef/chef_shell.rb if it exists
-* seth-shell falls back to loading /etc/chef/client.rb or /etc/chef/solo.rb if -z or
+* If a NAMED_CONF is given, seth-shell will load ~/.seth/NAMED_CONF/seth_shell.rb
+* If no NAMED_CONF is given seth-shell will load ~/.seth/seth_shell.rb if it exists
+* seth-shell falls back to loading /etc/seth/client.rb or /etc/seth/solo.rb if -z or
   -s options are given and no seth_shell.rb can be found.
 FOOTER
 
@@ -246,8 +246,8 @@ FOOTER
       :proc => nil
 
     option :seth_server_url,
-      :short => "-S CHEFSERVERURL",
-      :long => "--server CHEFSERVERURL",
+      :short => "-S sethSERVERURL",
+      :long => "--server sethSERVERURL",
       :description => "The seth server URL",
       :proc => nil
 
@@ -256,7 +256,7 @@ FOOTER
       :long         => "--version",
       :description  => "Show seth version",
       :boolean      => true,
-      :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
+      :proc         => lambda {|v| puts "Seth: #{::seth::VERSION}"},
       :exit         => 0
 
     option :override_runlist,
@@ -299,14 +299,14 @@ FOOTER
         config[:config_file]
       elsif environment && ENV['HOME']
         Shell.env = environment
-        config_file_to_try = ::File.join(ENV['HOME'], '.seth', environment, 'chef_shell.rb')
+        config_file_to_try = ::File.join(ENV['HOME'], '.seth', environment, 'seth_shell.rb')
         unless ::File.exist?(config_file_to_try)
           puts "could not find seth-shell config for environment #{environment} at #{config_file_to_try}"
           exit 1
         end
         config_file_to_try
-      elsif ENV['HOME'] && ::File.exist?(File.join(ENV['HOME'], '.seth', 'chef_shell.rb'))
-        File.join(ENV['HOME'], '.seth', 'chef_shell.rb')
+      elsif ENV['HOME'] && ::File.exist?(File.join(ENV['HOME'], '.seth', 'seth_shell.rb'))
+        File.join(ENV['HOME'], '.seth', 'seth_shell.rb')
       elsif config[:solo]
         "/etc/seth/solo.rb"
       elsif config[:client]

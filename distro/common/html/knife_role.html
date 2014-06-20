@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>knife role &mdash; seth-client Man Pages</title>
-    
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,13 +33,13 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="knife-role">
 <h1>knife role<a class="headerlink" href="#knife-role" title="Permalink to this headline">¶</a></h1>
 <p>A role is a way to define certain patterns and processes that exist across nodes in an organization as belonging to a single job function. Each role consists of zero (or more) attributes and a run list. Each node can have zero (or more) roles assigned to it. When a role is run against a node, the configuration details of that node are compared against the attributes of the role, and then the contents of that role&#8217;s run list are applied to the node&#8217;s configuration details. When a seth-client runs, it merges its own attributes and run lists with those contained within each assigned role.</p>
@@ -78,7 +78,7 @@
 </div>
 <div class="section" id="create">
 <h2>create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add a role to the Seth server. Role data is saved as JSON on the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add a role to the Seth server. Role data is saved as JSON on the seth server.</p>
 <div class="section" id="id1">
 <h3>Syntax<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -285,7 +285,7 @@
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

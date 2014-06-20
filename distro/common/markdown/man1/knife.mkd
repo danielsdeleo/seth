@@ -35,7 +35,7 @@ documentation using `knife help TOPIC`.
 
 ## OPTIONS
   * `-s`, `--server-url` URL:
-    Seth Server URL, corresponds to `Chef::Config` `seth_server_url`.
+    Seth Server URL, corresponds to `seth::Config` `seth_server_url`.
   * `-k`, `--key` KEY:
     API Client Key, corresponds to `Seth::Config` `client_key`.
   * `-c`, `--config` CONFIG:
@@ -149,7 +149,7 @@ Valid formats are:
 For brevity, only the first character of the format is required, for
 example, -Fj will produce JSON format output.
 
-## CHEF WORKFLOW
+## seth WORKFLOW
 
 When working with Seth and Knife in the local repository, the recommended workflow outline looks like:
 
@@ -178,7 +178,7 @@ recommended though, and git fits with a lot of the workflow paradigms.
     data editing entirely.
 
 ## SEE ALSO
-  __seth-client(8)__ __chef-server(8)__ __chef-shell(1)__
+  __seth-client(8)__ __seth-server(8)__ __seth-shell(1)__
 
   __knife-bootstrap(1)__ __knife-client(1)__ __knife-configure(1)__
   __knife-cookbook-site(1)__ __knife-cookbook(1)__ __knife-data-bag(1)__
@@ -208,6 +208,6 @@ recommended though, and git fits with a lot of the workflow paradigms.
    Apache 2.0 License. You may view the license online: <http://www.apache.org/licenses/LICENSE-2.0.html>
    On some systems, the complete text of the Apache 2.0 License may be found in `/usr/share/common-licenses/Apache-2.0`.
 
-## CHEF
+## seth
    Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

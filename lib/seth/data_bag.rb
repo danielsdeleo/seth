@@ -67,11 +67,11 @@ class Seth
     end
 
     def seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     def self.seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     # Create a Seth::Role from JSON
@@ -84,7 +84,7 @@ class Seth
     def self.list(inflate=false)
       if Seth::Config[:solo]
         unless File.directory?(Seth::Config[:data_bag_path])
-          raise Seth::Exceptions::InvalidDataBagPath, "Data bag path '#{Chef::Config[:data_bag_path]}' is invalid"
+          raise Seth::Exceptions::InvalidDataBagPath, "Data bag path '#{seth::Config[:data_bag_path]}' is invalid"
         end
 
         names = Dir.glob(File.join(Seth::Config[:data_bag_path], "*")).map{|f|File.basename(f)}.sort
@@ -97,7 +97,7 @@ class Seth
             response
           end
         else
-          Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("data")
+          Seth::REST.new(seth::Config[:seth_server_url]).get_rest("data")
         end
       end
     end
@@ -106,7 +106,7 @@ class Seth
     def self.load(name)
       if Seth::Config[:solo]
         unless File.directory?(Seth::Config[:data_bag_path])
-          raise Seth::Exceptions::InvalidDataBagPath, "Data bag path '#{Chef::Config[:data_bag_path]}' is invalid"
+          raise Seth::Exceptions::InvalidDataBagPath, "Data bag path '#{seth::Config[:data_bag_path]}' is invalid"
         end
 
         Dir.glob(File.join(Seth::Config[:data_bag_path], "#{name}", "*.json")).inject({}) do |bag, f|
@@ -115,7 +115,7 @@ class Seth
           bag
         end
       else
-        Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("data/#{name}")
+        Seth::REST.new(seth::Config[:seth_server_url]).get_rest("data/#{name}")
       end
     end
 

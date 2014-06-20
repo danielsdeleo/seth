@@ -133,7 +133,7 @@ shared_examples_for "a platform introspector" do
     end
 
   end
-  # NOTE: this is a regression test for bug CHEF-1514
+  # NOTE: this is a regression test for bug seth-1514
   describe "when the value is an array" do
     before do
       @platform_hash = {

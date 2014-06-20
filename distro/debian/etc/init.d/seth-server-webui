@@ -10,7 +10,7 @@
 #
 # Copyright (c) 2009-2010 Opscode, Inc <legal@opscode.com>
 #
-# seth-server-webui   Startup script for chef-server-webui.
+# seth-server-webui   Startup script for seth-server-webui.
 # chkconfig: - 95 02
 # description: starts up seth-server webui.
 

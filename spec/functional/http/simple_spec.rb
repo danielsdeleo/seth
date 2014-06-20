@@ -64,7 +64,7 @@ describe Seth::HTTP::Simple do
     end
   end
 
-  # see CHEF-5100
+  # see seth-5100
   shared_examples_for "a 403 after a successful request when reusing the request object" do
     it "fails with a Net::HTTPServerException for a streaming request" do
       tempfile = http_client.streaming_request(source)

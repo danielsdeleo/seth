@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>knife upload &mdash; seth-client Man Pages</title>
-    
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,13 +33,13 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="knife-upload">
 <h1>knife upload<a class="headerlink" href="#knife-upload" title="Permalink to this headline">¶</a></h1>
 <p>The <strong>knife upload</strong> subcommand is used to upload roles, cookbooks, environments, and data bags to the Seth server from the current working directory in the seth-repo. This subcommand is often used in conjunction with <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">diff</span></tt>, which can be used to see exactly what changes will be uploaded, and then <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">download</span></tt>, which does the opposite of <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">upload</span></tt>.</p>
@@ -59,7 +59,7 @@
 <p>This subcommand has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">--seth-repo-path</span> <span class="pre">PATH</span></tt></dt>
-<dd>The path to the seth-repo. This setting will override the default path to the chef-repo. Default: same value as specified by <tt class="docutils literal"><span class="pre">chef_repo_path</span></tt> in client.rb.</dd>
+<dd>The path to the seth-repo. This setting will override the default path to the seth-repo. Default: same value as specified by <tt class="docutils literal"><span class="pre">seth_repo_path</span></tt> in client.rb.</dd>
 <dt><tt class="docutils literal"><span class="pre">--concurrency</span></tt></dt>
 <dd>The number of allowed concurrent connections. Default: <tt class="docutils literal"><span class="pre">10</span></tt>.</dd>
 <dt><tt class="docutils literal"><span class="pre">--[no-]diff</span></tt></dt>
@@ -143,7 +143,7 @@
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

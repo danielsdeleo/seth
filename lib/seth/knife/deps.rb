@@ -1,14 +1,14 @@
-require 'seth/chef_fs/knife'
+require 'seth/seth_fs/knife'
 
 class Seth
   class Knife
-    class Deps < Seth::ChefFS::Knife
+    class Deps < Seth::sethFS::Knife
       banner "knife deps PATTERN1 [PATTERNn]"
 
       category "path-based"
 
       deps do
-        require 'seth/chef_fs/file_system'
+        require 'seth/seth_fs/file_system'
         require 'seth/run_list'
       end
 
@@ -37,7 +37,7 @@ class Seth
         @root = config[:remote] ? seth_fs : local_fs
         dependencies = {}
         pattern_args.each do |pattern|
-          Seth::ChefFS::FileSystem.list(@root, pattern).each do |entry|
+          Seth::sethFS::FileSystem.list(@root, pattern).each do |entry|
             if config[:tree]
               print_dependencies_tree(entry, dependencies)
             else
@@ -52,7 +52,7 @@ class Seth
         if !dependencies[entry.path]
           dependencies[entry.path] = get_dependencies(entry)
           dependencies[entry.path].each do |child|
-            child_entry = Seth::ChefFS::FileSystem.resolve_path(@root, child)
+            child_entry = Seth::sethFS::FileSystem.resolve_path(@root, child)
             print_flattened_dependencies(child_entry, dependencies)
           end
           output format_path(entry)
@@ -65,7 +65,7 @@ class Seth
         if !printed[entry.path] && (config[:recurse] || depth == 0)
           printed[entry.path] = true
           dependencies[entry.path].each do |child|
-            child_entry = Seth::ChefFS::FileSystem.resolve_path(@root, child)
+            child_entry = Seth::sethFS::FileSystem.resolve_path(@root, child)
             print_dependencies_tree(child_entry, dependencies, printed, depth+1)
           end
         end
@@ -79,7 +79,7 @@ class Seth
           elsif entry.parent && entry.parent.path == '/nodes'
             node = JSON.parse(entry.read, :create_additions => false)
             result = []
-            if node['seth_environment'] && node['chef_environment'] != '_default'
+            if node['seth_environment'] && node['seth_environment'] != '_default'
               result << "/environments/#{node['seth_environment']}.json"
             end
             if node['run_list']
@@ -105,12 +105,12 @@ class Seth
             result
 
           elsif !entry.exists?
-            raise Seth::ChefFS::FileSystem::NotFoundError.new(entry)
+            raise Seth::sethFS::FileSystem::NotFoundError.new(entry)
 
           else
             []
           end
-        rescue Seth::ChefFS::FileSystem::NotFoundError => e
+        rescue Seth::sethFS::FileSystem::NotFoundError => e
           ui.error "#{format_path(e.entry)}: No such file or directory"
           self.exit_code = 2
           []

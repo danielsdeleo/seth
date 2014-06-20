@@ -82,7 +82,7 @@ class Seth
           raise UnsupportedFeature, "Policyfile does not support setting the run_list in json data at this time"
         end
 
-        if Seth::Config[:environment] && !Chef::Config[:environment].chomp.empty?
+        if Seth::Config[:environment] && !seth::Config[:environment].chomp.empty?
           raise UnsupportedFeature, "Policyfile does not work with Seth Environments"
         end
       end
@@ -157,7 +157,7 @@ class Seth
         # TODO: This file vendor stuff is duplicated and initializing it with a
         # block traps a reference to this object in a global context which will
         # prevent it from getting GC'd. Simplify it.
-        Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::RemoteFileVendor.new(manifest, api_service) }
+        Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::RemoteFileVendor.new(manifest, api_service) }
         sync_cookbooks
         cookbook_collection = Seth::CookbookCollection.new(cookbooks_to_sync)
         run_context = Seth::RunContext.new(node, cookbook_collection, events)
@@ -181,7 +181,7 @@ class Seth
         synchronizer.sync_cookbooks
 
         # register the file cache path in the cookbook path so that CookbookLoader actually picks up the synced cookbooks
-        Seth::Config[:cookbook_path] = File.join(Chef::Config[:file_cache_path], "cookbooks")
+        Seth::Config[:cookbook_path] = File.join(seth::Config[:file_cache_path], "cookbooks")
 
         cookbooks_to_sync
       end

@@ -24,12 +24,12 @@ describe Seth::Knife::Core::BootstrapContext do
   let(:run_list) { Seth::RunList.new('recipe[tmux]', 'role[base]') }
   let(:seth_config) do
     {
-      :validation_key => File.join(CHEF_SPEC_DATA, 'ssl', 'private_key.pem'),
-      :seth_server_url => 'http://chef.example.com:4444',
+      :validation_key => File.join(seth_SPEC_DATA, 'ssl', 'private_key.pem'),
+      :seth_server_url => 'http://seth.example.com:4444',
       :validation_client_name => 'seth-validator-testing'
     }
   end
-  let(:secret_file) { File.join(CHEF_SPEC_DATA, 'bootstrap', 'encrypted_data_bag_secret') }
+  let(:secret_file) { File.join(seth_SPEC_DATA, 'bootstrap', 'encrypted_data_bag_secret') }
 
   subject(:bootstrap_context) { described_class.new(config, run_list, seth_config) }
 
@@ -38,24 +38,24 @@ describe Seth::Knife::Core::BootstrapContext do
   end
 
   it "runs seth with the first-boot.json in the _default environment" do
-    bootstrap_context.start_seth.should eq "chef-client -j /etc/chef/first-boot.json -E _default"
+    bootstrap_context.start_seth.should eq "seth-client -j /etc/seth/first-boot.json -E _default"
   end
 
   describe "when in verbosity mode" do
     let(:config) { {:verbosity => 2} }
     it "adds '-l debug' when verbosity is >= 2" do
-      bootstrap_context.start_seth.should eq "chef-client -j /etc/chef/first-boot.json -l debug -E _default"
+      bootstrap_context.start_seth.should eq "seth-client -j /etc/seth/first-boot.json -l debug -E _default"
     end
   end
 
   it "reads the validation key" do
-    bootstrap_context.validation_key.should eq IO.read(File.join(CHEF_SPEC_DATA, 'ssl', 'private_key.pem'))
+    bootstrap_context.validation_key.should eq IO.read(File.join(seth_SPEC_DATA, 'ssl', 'private_key.pem'))
   end
 
   it "generates the config file data" do
     expected=<<-EXPECTED
 log_location     STDOUT
-seth_server_url  "http://chef.example.com:4444"
+seth_server_url  "http://seth.example.com:4444"
 validation_client_name "seth-validator-testing"
 # Using default node name (fqdn)
 EXPECTED
@@ -67,9 +67,9 @@ EXPECTED
   end
 
   describe "alternate seth-client path" do
-    let(:seth_config){ {:chef_client_path => '/usr/local/bin/chef-client'} }
+    let(:seth_config){ {:seth_client_path => '/usr/local/bin/seth-client'} }
     it "runs seth-client from another path when specified" do
-      bootstrap_context.start_seth.should eq "/usr/local/bin/chef-client -j /etc/chef/first-boot.json -E _default"
+      bootstrap_context.start_seth.should eq "/usr/local/bin/seth-client -j /etc/seth/first-boot.json -E _default"
     end
   end
 
@@ -91,7 +91,7 @@ EXPECTED
   describe "when bootstrapping into a specific environment" do
     let(:seth_config){ {:environment => "prodtastic"} }
     it "starts seth in the configured environment" do
-      bootstrap_context.start_seth.should == 'chef-client -j /etc/chef/first-boot.json -E prodtastic'
+      bootstrap_context.start_seth.should == 'seth-client -j /etc/seth/first-boot.json -E prodtastic'
     end
   end
 

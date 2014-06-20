@@ -95,7 +95,7 @@ class Seth
 
         class_name = convert_to_class_name(provider_name)
         Seth::Provider.const_set(class_name, provider_class)
-        Seth::Log.debug("Loaded contents of #{filename} into a provider named #{provider_name} defined in Chef::Provider::#{class_name}")
+        Seth::Log.debug("Loaded contents of #{filename} into a provider named #{provider_name} defined in seth::Provider::#{class_name}")
 
         provider_class
       end

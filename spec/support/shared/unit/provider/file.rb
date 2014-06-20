@@ -40,7 +40,7 @@ def windows_path
   windows? ? normalized_path.gsub(/\\/, '/') : normalized_path
 end
 
-# this is all getting a bit stupid, CHEF-4802 cut to remove all this
+# this is all getting a bit stupid, seth-4802 cut to remove all this
 def setup_normal_file
   [ resource_path, normalized_path, windows_path].each do |path|
     File.stub(:file?).with(path).and_return(true)

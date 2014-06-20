@@ -40,7 +40,7 @@ require 'open-uri'
 #
 # EncryptedDataBagItem is intended to provide a means to avoid storing
 # data bag items in the clear on the Seth server.  This provides some
-# protection against a breach of the Seth server or of Chef server
+# protection against a breach of the Seth server or of seth server
 # backup data.  Because the secret must be stored in the clear on any
 # node needing access to an EncryptedDataBagItem, this approach
 # provides no protection of data bag items from actors with access to

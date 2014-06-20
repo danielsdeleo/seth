@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'seth/chef_fs/parallelizer'
+require 'seth/seth_fs/parallelizer'
 
-describe Seth::ChefFS::Parallelizer do
+describe Seth::sethFS::Parallelizer do
   before :each do
     @start_time = Time.now
   end
@@ -16,7 +16,7 @@ describe Seth::ChefFS::Parallelizer do
 
   context 'With a Parallelizer with 5 threads' do
     let :parallelizer do
-      Seth::ChefFS::Parallelizer.new(5)
+      Seth::sethFS::Parallelizer.new(5)
     end
 
     def parallelize(inputs, options = {}, &block)
@@ -196,7 +196,7 @@ describe Seth::ChefFS::Parallelizer do
 
   context "With a Parallelizer with 1 thread" do
     let :parallelizer do
-      Seth::ChefFS::Parallelizer.new(1)
+      Seth::sethFS::Parallelizer.new(1)
     end
 
     context "when the thread is occupied with a job" do
@@ -419,7 +419,7 @@ describe Seth::ChefFS::Parallelizer do
 
   context "With a Parallelizer with 0 threads" do
     let :parallelizer do
-      Seth::ChefFS::Parallelizer.new(0)
+      Seth::sethFS::Parallelizer.new(0)
     end
 
     context "And main_thread_processing on" do
@@ -431,7 +431,7 @@ describe Seth::ChefFS::Parallelizer do
 
   context "With a Parallelizer with 10 threads" do
     let :parallelizer do
-      Seth::ChefFS::Parallelizer.new(10)
+      Seth::sethFS::Parallelizer.new(10)
     end
 
     it "does not have contention issues with large numbers of inputs" do

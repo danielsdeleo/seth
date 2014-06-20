@@ -17,7 +17,7 @@
 
 # This spec file intentionally doesn't include spec_helper.rb to
 # be able to test only Seth::Application.
-# Regression test for CHEF-5169
+# Regression test for seth-5169
 
 require 'seth/application'
 

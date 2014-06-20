@@ -146,7 +146,7 @@ describe Seth::EncryptedDataBagItem::Decryptor do
       it "raises a decryption failure error" do
         # Over a large number of tests on a variety of systems, we occasionally
         # see the decryption step "succeed" but return invalid data (e.g., not
-        # the original plain text) [CHEF-3858]
+        # the original plain text) [seth-3858]
         decryptor.should_receive(:decrypted_data).and_return("lksajdf")
         lambda { decryptor.for_decrypted_item }.should raise_error(Seth::EncryptedDataBagItem::DecryptionFailure)
       end
@@ -315,7 +315,7 @@ describe Seth::EncryptedDataBagItem do
       end
 
       it "load_secret(nil) emits a reasonable error message" do
-        lambda { Seth::EncryptedDataBagItem.load_secret(nil) }.should raise_error(ArgumentError, "No secret specified to load_secret and no secret found at #{Chef::Config.platform_specific_path('/etc/seth/encrypted_data_bag_secret')}")
+        lambda { Seth::EncryptedDataBagItem.load_secret(nil) }.should raise_error(ArgumentError, "No secret specified to load_secret and no secret found at #{seth::Config.platform_specific_path('/etc/seth/encrypted_data_bag_secret')}")
       end
     end
 

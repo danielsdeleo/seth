@@ -21,7 +21,7 @@ require 'spec_helper'
 describe Seth::Knife::ConfigureClient do
   before do
     @knife = Seth::Knife::ConfigureClient.new
-    Seth::Config[:seth_server_url] = 'https://chef.example.com'
+    Seth::Config[:seth_server_url] = 'https://seth.example.com'
     Seth::Config[:validation_client_name] = 'seth-validator'
     Seth::Config[:validation_key] = '/etc/seth/validation.pem'
 
@@ -60,7 +60,7 @@ describe Seth::Knife::ConfigureClient do
         @knife.run
         @client_file.string.should match /log_level\s+\:info/
         @client_file.string.should match /log_location\s+STDOUT/
-        @client_file.string.should match /seth_server_url\s+'https\:\/\/chef\.example\.com'/
+        @client_file.string.should match /seth_server_url\s+'https\:\/\/seth\.example\.com'/
         @client_file.string.should match /validation_client_name\s+'seth-validator'/
       end
 

@@ -145,7 +145,7 @@ class Seth
 
       cookbook_name, recipe_short_name = Seth::Recipe.parse_recipe_name(recipe_name)
 
-      if unreachable_cookbook?(cookbook_name) # CHEF-4367
+      if unreachable_cookbook?(cookbook_name) # seth-4367
         Seth::Log.warn(<<-ERROR_MESSAGE)
 MissingCookbookDependency:
 Recipe `#{recipe_name}` is not in the run_list, and cookbook '#{cookbook_name}'
@@ -245,7 +245,7 @@ ERROR_MESSAGE
 
     # Delegates to CookbookCompiler#unreachable_cookbook?
     # Used to raise an error when attempting to load a recipe belonging to a
-    # cookbook that is not in the dependency graph. See also: CHEF-4367
+    # cookbook that is not in the dependency graph. See also: seth-4367
     def unreachable_cookbook?(cookbook_name)
       @cookbook_compiler.unreachable_cookbook?(cookbook_name)
     end

@@ -33,7 +33,7 @@ describe Seth::Resource::Link do
     if windows?
       File.join(ENV['systemdrive'], "test-dir")
     else
-      File.join(CHEF_SPEC_DATA, "test-dir")
+      File.join(seth_SPEC_DATA, "test-dir")
     end
   end
 
@@ -56,7 +56,7 @@ describe Seth::Resource::Link do
     begin
       cleanup_link(to) if File.exists?(to)
       cleanup_link(target_file) if File.exists?(target_file)
-      cleanup_link(CHEF_SPEC_BACKUP_PATH) if File.exists?(CHEF_SPEC_BACKUP_PATH)
+      cleanup_link(seth_SPEC_BACKUP_PATH) if File.exists?(seth_SPEC_BACKUP_PATH)
     rescue
       puts "Could not remove a file: #{$!}"
     end
@@ -108,8 +108,8 @@ describe Seth::Resource::Link do
   def create_resource
     node = Seth::Node.new
     events = Seth::EventDispatch::Dispatcher.new
-    cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-    cookbook_collection = Seth::CookbookCollection.new(Chef::CookbookLoader.new(cookbook_repo))
+    cookbook_repo = File.expand_path(File.join(seth_SPEC_DATA, "cookbooks"))
+    cookbook_collection = Seth::CookbookCollection.new(seth::CookbookLoader.new(cookbook_repo))
     run_context = Seth::RunContext.new(node, cookbook_collection, events)
     resource = Seth::Resource::Link.new(target_file, run_context)
     resource.to(to)

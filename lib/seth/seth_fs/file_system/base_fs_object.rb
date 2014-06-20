@@ -16,8 +16,8 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/path_utils'
-require 'seth/chef_fs/file_system/operation_not_allowed_error'
+require 'seth/seth_fs/path_utils'
+require 'seth/seth_fs/file_system/operation_not_allowed_error'
 
 class Seth
   module SethFS
@@ -27,7 +27,7 @@ class Seth
           @parent = parent
           @name = name
           if parent
-            @path = Seth::ChefFS::PathUtils::join(parent.path, name)
+            @path = Seth::sethFS::PathUtils::join(parent.path, name)
           else
             if name != ''
               raise ArgumentError, "Name of root object must be empty string: was '#{name}' instead"
@@ -146,7 +146,7 @@ class Seth
             if parent_path == '.'
               name
             else
-              Seth::ChefFS::PathUtils::join(parent.path_for_printing, name)
+              Seth::sethFS::PathUtils::join(parent.path_for_printing, name)
             end
           else
             name
@@ -177,4 +177,4 @@ class Seth
   end
 end
 
-require 'seth/chef_fs/file_system/nonexistent_fs_object'
+require 'seth/seth_fs/file_system/nonexistent_fs_object'

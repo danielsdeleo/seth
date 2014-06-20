@@ -1,5 +1,5 @@
 require 'seth/application'
-require 'seth/chef_fs/path_utils'
+require 'seth/seth_fs/path_utils'
 require 'seth/http/simple'
 require 'seth/json_compat'
 
@@ -65,7 +65,7 @@ class Seth
         return true
       end
 
-      !Seth::ChefFS::PathUtils.descendant_of?(real_config_file, real_jail)
+      !Seth::sethFS::PathUtils.descendant_of?(real_config_file, real_jail)
     end
 
     def http

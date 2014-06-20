@@ -250,7 +250,7 @@ class Seth
         # We have to wrap this in a block so the user code evaluates in a
         # similar context as what Seth does normally. Otherwise RubyVM
         # will reject some common idioms, like using `return` to end evaluation
-        # of a recipe. See also CHEF-5199
+        # of a recipe. See also seth-5199
         wrapped_content = "Object.new.instance_eval do\n#{file_content}\nend\n"
         RubyVM::InstructionSequence.new(wrapped_content, ruby_file, abs_path, 0)
         true

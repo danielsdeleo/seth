@@ -35,4 +35,4 @@ end
 
 # Backwards compatability
 # @todo remove in Seth 12
-Seth::Resource::SmartOSPackage = Chef::Resource::SmartosPackage
+Seth::Resource::SmartOSPackage = seth::Resource::SmartosPackage

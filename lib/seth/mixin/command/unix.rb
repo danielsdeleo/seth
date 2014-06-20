@@ -29,7 +29,7 @@ class Seth
         # Thanks Ara!
         def popen4(cmd, args={}, &b)
           # Ruby 1.8 suffers from intermittent segfaults believed to be due to GC while IO.select
-          # See CHEF-2916 / CHEF-1305
+          # See seth-2916 / seth-1305
           GC.disable
 
           # Waitlast - this is magic.

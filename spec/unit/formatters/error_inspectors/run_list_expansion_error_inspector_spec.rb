@@ -79,7 +79,7 @@ describe Seth::Formatters::ErrorInspectors::RunListExpansionErrorInspector do
       @inspector = Seth::Formatters::ErrorInspectors::RunListExpansionErrorInspector.new(@node, @exception)
       @inspector.stub(:config).and_return(:node_name => "unit-test.example.com",
                                            :client_key => "/etc/seth/client.pem",
-                                           :seth_server_url => "http://chef.example.com")
+                                           :seth_server_url => "http://seth.example.com")
 
       @inspector.add_explanation(@description)
     end

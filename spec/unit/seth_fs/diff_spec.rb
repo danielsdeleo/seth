@@ -17,8 +17,8 @@
 #
 
 require 'spec_helper'
-require 'seth/chef_fs/file_pattern'
-require 'seth/chef_fs/command_line'
+require 'seth/seth_fs/file_pattern'
+require 'seth/seth_fs/command_line'
 
 # Removes the date stamp from the diff and replaces it with ' DATE'
 # example match: "/dev/null\t2012-10-16 16:15:54.000000000 +0000"
@@ -86,9 +86,9 @@ describe 'diff', :uses_diff => true do
         :file_in_a_dir_in_b => {}
       }, /cannot_be_in_b/)
     }
-    it 'Seth::ChefFS::CommandLine.diff_print(/)' do
+    it 'Seth::sethFS::CommandLine.diff_print(/)' do
       results = []
-      Seth::ChefFS::CommandLine.diff_print(pattern('/'), a, b, nil, nil) do |diff|
+      Seth::sethFS::CommandLine.diff_print(pattern('/'), a, b, nil, nil) do |diff|
         results << remove_os_differences(diff)
       end
       results.should =~ [
@@ -162,9 +162,9 @@ CONTEXT_LINE_NUMBERS
 +b_only_file
 ' ]
     end
-    it 'Seth::ChefFS::CommandLine.diff_print(/both_dirs)' do
+    it 'Seth::sethFS::CommandLine.diff_print(/both_dirs)' do
       results = []
-      Seth::ChefFS::CommandLine.diff_print(pattern('/both_dirs'), a, b, nil, nil) do |diff|
+      Seth::sethFS::CommandLine.diff_print(pattern('/both_dirs'), a, b, nil, nil) do |diff|
         results << remove_os_differences(diff)
       end
       results.should =~ [
@@ -204,9 +204,9 @@ CONTEXT_LINE_NUMBERS
 +sub_b_only_file
 ' ]
     end
-    it 'Seth::ChefFS::CommandLine.diff_print(/) with depth 1' do
+    it 'Seth::sethFS::CommandLine.diff_print(/) with depth 1' do
       results = []
-      Seth::ChefFS::CommandLine.diff_print(pattern('/'), a, b, 1, nil) do |diff|
+      Seth::sethFS::CommandLine.diff_print(pattern('/'), a, b, 1, nil) do |diff|
         results << remove_os_differences(diff)
       end
       results.should =~ [
@@ -238,9 +238,9 @@ CONTEXT_LINE_NUMBERS
 +b_only_file
 ' ]
     end
-    it 'Seth::ChefFS::CommandLine.diff_print(/*_*) with depth 0' do
+    it 'Seth::sethFS::CommandLine.diff_print(/*_*) with depth 0' do
       results = []
-      Seth::ChefFS::CommandLine.diff_print(pattern('/*_*'), a, b, 0, nil) do |diff|
+      Seth::sethFS::CommandLine.diff_print(pattern('/*_*'), a, b, 0, nil) do |diff|
         results << remove_os_differences(diff)
       end
       results.should =~ [
@@ -272,9 +272,9 @@ CONTEXT_LINE_NUMBERS
 +b_only_file
 ' ]
     end
-    it 'Seth::ChefFS::CommandLine.diff_print(/) in name-only mode' do
+    it 'Seth::sethFS::CommandLine.diff_print(/) in name-only mode' do
       results = []
-      Seth::ChefFS::CommandLine.diff_print(pattern('/'), a, b, nil, :name_only) do |diff|
+      Seth::sethFS::CommandLine.diff_print(pattern('/'), a, b, nil, :name_only) do |diff|
         results << remove_os_differences(diff)
       end
       results.should =~ [
@@ -298,9 +298,9 @@ CONTEXT_LINE_NUMBERS
           "b/file_in_a_dir_in_b\n"
       ]
     end
-    it 'Seth::ChefFS::CommandLine.diff_print(/) in name-status mode' do
+    it 'Seth::sethFS::CommandLine.diff_print(/) in name-status mode' do
       results = []
-      Seth::ChefFS::CommandLine.diff_print(pattern('/'), a, b, nil, :name_status) do |diff|
+      Seth::sethFS::CommandLine.diff_print(pattern('/'), a, b, nil, :name_status) do |diff|
         results << remove_os_differences(diff)
       end
       results.should =~ [

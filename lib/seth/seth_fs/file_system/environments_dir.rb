@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_dir'
-require 'seth/chef_fs/file_system/rest_list_entry'
-require 'seth/chef_fs/file_system/not_found_error'
-require 'seth/chef_fs/file_system/default_environment_cannot_be_modified_error'
-require 'seth/chef_fs/data_handler/environment_data_handler'
+require 'seth/seth_fs/file_system/base_fs_dir'
+require 'seth/seth_fs/file_system/rest_list_entry'
+require 'seth/seth_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/default_environment_cannot_be_modified_error'
+require 'seth/seth_fs/data_handler/environment_data_handler'
 
 class Seth
   module SethFS
     module FileSystem
       class EnvironmentsDir < RestListDir
         def initialize(parent)
-          super("environments", parent, nil, Seth::ChefFS::DataHandler::EnvironmentDataHandler.new)
+          super("environments", parent, nil, Seth::sethFS::DataHandler::EnvironmentDataHandler.new)
         end
 
         def _make_child_entry(name, exists = nil)

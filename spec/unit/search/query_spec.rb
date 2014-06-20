@@ -48,13 +48,13 @@ describe Seth::Search::Query do
     end
 
     it "should query for every object of a type by default" do
-      @rest.should_receive(:get_rest).with("search/foo?q=*:*&sort=X_CHEF_id_CHEF_X%20asc&start=0&rows=1000").and_return(@response)
+      @rest.should_receive(:get_rest).with("search/foo?q=*:*&sort=X_seth_id_seth_X%20asc&start=0&rows=1000").and_return(@response)
       @query = Seth::Search::Query.new
       @query.search(:foo)
     end
 
     it "should allow a custom query" do
-      @rest.should_receive(:get_rest).with("search/foo?q=gorilla:dundee&sort=X_CHEF_id_CHEF_X%20asc&start=0&rows=1000").and_return(@response)
+      @rest.should_receive(:get_rest).with("search/foo?q=gorilla:dundee&sort=X_seth_id_seth_X%20asc&start=0&rows=1000").and_return(@response)
       @query = Seth::Search::Query.new
       @query.search(:foo, "gorilla:dundee")
     end

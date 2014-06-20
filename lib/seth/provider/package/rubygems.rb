@@ -374,7 +374,7 @@ class Seth
             end
             @gem_env = AlternateGemEnvironment.new(new_resource.gem_binary)
             Seth::Log.debug("#{@new_resource} using gem '#{new_resource.gem_binary}'")
-          elsif is_omnibus? && (!@new_resource.instance_of? Seth::Resource::ChefGem)
+          elsif is_omnibus? && (!@new_resource.instance_of? Seth::Resource::sethGem)
             # Opscode Omnibus - The ruby that ships inside omnibus is only used for Seth
             # Default to installing somewhere more functional
             if new_resource.options && new_resource.options.kind_of?(Hash)

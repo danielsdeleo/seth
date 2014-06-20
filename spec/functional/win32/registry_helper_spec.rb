@@ -431,7 +431,7 @@ describe 'Seth::Win32::Registry', :windows_only do
 
       context "registry constructor" do
         it "throws an exception if requested architecture is 64bit but running on 32bit" do
-          lambda {Seth::Win32::Registry.new(@run_context, :x86_64)}.should raise_error(Chef::Exceptions::Win32RegArchitectureIncorrect)
+          lambda {Seth::Win32::Registry.new(@run_context, :x86_64)}.should raise_error(seth::Exceptions::Win32RegArchitectureIncorrect)
         end
 
         it "can correctly set the requested architecture to 32-bit" do

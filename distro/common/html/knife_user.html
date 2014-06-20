@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>knife user &mdash; seth-client Man Pages</title>
-    
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,19 +33,19 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="knife-user">
 <h1>knife user<a class="headerlink" href="#knife-user" title="Permalink to this headline">¶</a></h1>
 <p>The <strong>knife user</strong> subcommand is used to manage the list of users and their associated RSA public key-pairs.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This subcommand ONLY works when run against the open source Seth server and will not run against Enterprise Chef (including hosted Enterprise Chef), or Private Chef.</p>
+<p class="last">This subcommand ONLY works when run against the open source Seth server and will not run against Enterprise seth (including hosted Enterprise seth), or Private seth.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -70,7 +70,7 @@
 <p>This argument has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">-a</span></tt>, <tt class="docutils literal"><span class="pre">--admin</span></tt></dt>
-<dd>Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the Chef Server API as an administrator. This option only works when used with the open source Chef server and will have no effect when used with Enterprise Chef.</dd>
+<dd>Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the seth Server API as an administrator. This option only works when used with the open source seth server and will have no effect when used with Enterprise seth.</dd>
 <dt><tt class="docutils literal"><span class="pre">-f</span> <span class="pre">FILE_NAME</span></tt>, <tt class="docutils literal"><span class="pre">--file</span> <span class="pre">FILE_NAME</span></tt></dt>
 <dd>Use to save a private key to the specified file name.</dd>
 <dt><tt class="docutils literal"><span class="pre">-p</span> <span class="pre">PASSWORD</span></tt>, <tt class="docutils literal"><span class="pre">--password</span> <span class="pre">PASSWORD</span></tt></dt>
@@ -232,7 +232,7 @@ public_key:
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

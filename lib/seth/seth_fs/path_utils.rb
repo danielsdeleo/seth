@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs'
+require 'seth/seth_fs'
 require 'pathname'
 
 class Seth
@@ -28,15 +28,15 @@ class Seth
       # relative_to('/a/b', '/a/b') == '.'
       def self.relative_to(dest, source)
         # Skip past the common parts
-        source_parts = Seth::ChefFS::PathUtils.split(source)
-        dest_parts = Seth::ChefFS::PathUtils.split(dest)
+        source_parts = Seth::sethFS::PathUtils.split(source)
+        dest_parts = Seth::sethFS::PathUtils.split(dest)
         i = 0
         until i >= source_parts.length || i >= dest_parts.length || source_parts[i] != dest_parts[i]
           i+=1
         end
         # dot-dot up from 'source' to the common ancestor, then
         # descend to 'dest' from the common ancestor
-        result = Seth::ChefFS::PathUtils.join(*(['..']*(source_parts.length-i) + dest_parts[i,dest.length-i]))
+        result = Seth::sethFS::PathUtils.join(*(['..']*(source_parts.length-i) + dest_parts[i,dest.length-i]))
         result == '' ? '.' : result
       end
 
@@ -57,7 +57,7 @@ class Seth
       end
 
       def self.regexp_path_separator
-        Seth::ChefFS::windows? ? '[\/\\\\]' : '/'
+        Seth::sethFS::windows? ? '[\/\\\\]' : '/'
       end
 
       # Given a path which may only be partly real (i.e. /x/y/z when only /x exists,

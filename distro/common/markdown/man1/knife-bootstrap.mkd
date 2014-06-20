@@ -38,7 +38,7 @@ __knife__ __bootstrap__ _(options)_
 ## DESCRIPTION
 
 Performs a Seth Bootstrap on the target node. The goal of the bootstrap
-is to get Seth installed on the target system so it can run Chef Client
+is to get Seth installed on the target system so it can run seth Client
 with a Seth Server. The main assumption is a baseline OS installation
 exists. This sub-command is used internally by some cloud computing
 plugins.
@@ -137,5 +137,5 @@ to other users via the process list using tools such as ps(1).
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 
-## CHEF
+## seth
    Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>

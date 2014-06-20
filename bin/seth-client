@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# ./seth-client - Run the chef client
+# ./seth-client - Run the seth client
 #
 # Author:: AJ Christensen (<aj@opscode.com>)
 # Copyright:: Copyright (c) 2008 Opscode, Inc.

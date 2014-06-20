@@ -10,7 +10,7 @@
 #
 # Copyright (c) 2009-2010 Opscode, Inc, <legal@opscode.com>
 #
-# seth-client         Startup script for chef-client.
+# seth-client         Startup script for seth-client.
 # chkconfig: - 99 02
 # description: starts up seth-client in daemon mode.
 

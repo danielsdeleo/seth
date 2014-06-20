@@ -10,7 +10,7 @@
 #
 # Copyright (c) 2009-2010 Opscode, Inc <legal@opscode.com>
 #
-# seth-solr         Startup script for chef-solr.
+# seth-solr         Startup script for seth-solr.
 # chkconfig: - 84 02
 # description: starts up seth-solr in daemon mode.
 

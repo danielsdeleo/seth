@@ -198,12 +198,12 @@ describe Seth::Provider::Package::Freebsd::Pkg, "load_current_resource" do
     end
   end
 
-  # CHEF-4371
+  # seth-4371
   # There are some port names that contain special characters such as +'s.  This breaks the regular expression used to determine what
   # version of a package is currently installed and to get the port_path.
   #  Example package name: bonnie++
 
-  describe Seth::Provider::Package::Freebsd::Pkg, "bonnie++ (package with a plus in the name :: CHEF-4371)" do
+  describe Seth::Provider::Package::Freebsd::Pkg, "bonnie++ (package with a plus in the name :: seth-4371)" do
     before(:each) do
       @new_resource     = Seth::Resource::Package.new("bonnie++")
       @current_resource = Seth::Resource::Package.new("bonnie++")

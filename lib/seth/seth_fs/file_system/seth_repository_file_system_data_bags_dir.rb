@@ -16,15 +16,15 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/chef_repository_file_system_entry'
-require 'seth/chef_fs/data_handler/data_bag_item_data_handler'
+require 'seth/seth_fs/file_system/seth_repository_file_system_entry'
+require 'seth/seth_fs/data_handler/data_bag_item_data_handler'
 
 class Seth
   module SethFS
     module FileSystem
-      class SethRepositoryFileSystemDataBagsDir < ChefRepositoryFileSystemEntry
+      class SethRepositoryFileSystemDataBagsDir < sethRepositoryFileSystemEntry
         def initialize(name, parent, path = nil)
-          super(name, parent, path, Seth::ChefFS::DataHandler::DataBagItemDataHandler.new)
+          super(name, parent, path, Seth::sethFS::DataHandler::DataBagItemDataHandler.new)
         end
 
         def can_have_child?(name, is_dir)

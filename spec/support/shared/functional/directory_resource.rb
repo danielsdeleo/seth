@@ -68,14 +68,14 @@ shared_examples_for "a directory resource" do
     def allowed_acl(sid, expected_perms)
       [
        ACE.access_allowed(sid, expected_perms[:specific]),
-       ACE.access_allowed(sid, expected_perms[:generic], (Seth::ReservedNames::Win32::API::Security::INHERIT_ONLY_ACE | Chef::ReservedNames::Win32::API::Security::CONTAINER_INHERIT_ACE | Chef::ReservedNames::Win32::API::Security::OBJECT_INHERIT_ACE))
+       ACE.access_allowed(sid, expected_perms[:generic], (Seth::ReservedNames::Win32::API::Security::INHERIT_ONLY_ACE | seth::ReservedNames::Win32::API::Security::CONTAINER_INHERIT_ACE | seth::ReservedNames::Win32::API::Security::OBJECT_INHERIT_ACE))
       ]
     end
 
     def denied_acl(sid, expected_perms)
       [
        ACE.access_denied(sid, expected_perms[:specific]),
-       ACE.access_denied(sid, expected_perms[:generic], (Seth::ReservedNames::Win32::API::Security::INHERIT_ONLY_ACE | Chef::ReservedNames::Win32::API::Security::CONTAINER_INHERIT_ACE | Chef::ReservedNames::Win32::API::Security::OBJECT_INHERIT_ACE))
+       ACE.access_denied(sid, expected_perms[:generic], (Seth::ReservedNames::Win32::API::Security::INHERIT_ONLY_ACE | seth::ReservedNames::Win32::API::Security::CONTAINER_INHERIT_ACE | seth::ReservedNames::Win32::API::Security::OBJECT_INHERIT_ACE))
       ]
     end
 
@@ -154,7 +154,7 @@ shared_context Seth::Resource::Directory do
     if windows?
       File.join(ENV['systemdrive'], "test-dir")
     else
-      File.join(CHEF_SPEC_DATA, "test-dir")
+      File.join(seth_SPEC_DATA, "test-dir")
     end
   end
 

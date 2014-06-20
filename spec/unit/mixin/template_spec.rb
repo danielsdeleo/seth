@@ -75,8 +75,8 @@ describe Seth::Mixin::Template, "render_template" do
 
   describe "with a template resource" do
     before :each do
-      @cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-      Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
+      @cookbook_repo = File.expand_path(File.join(seth_SPEC_DATA, "cookbooks"))
+      Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
 
       @node = Seth::Node.new
       cl = Seth::CookbookLoader.new(@cookbook_repo)
@@ -171,7 +171,7 @@ describe Seth::Mixin::Template, "render_template" do
     end
 
     it "should render nested partials" do
-      path = File.expand_path(File.join(CHEF_SPEC_DATA, "partial_one.erb"))
+      path = File.expand_path(File.join(seth_SPEC_DATA, "partial_one.erb"))
 
       output = @template_context.render_template_from_string("before {<%= render('#{path}', :local => true).strip %>} after")
       output.should == "before {partial one We could be diving for pearls! calling home} after"

@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/file_system_entry'
+require 'seth/seth_fs/file_system/file_system_entry'
 
 class Seth
   module SethFS

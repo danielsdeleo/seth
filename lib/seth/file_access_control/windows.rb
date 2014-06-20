@@ -108,7 +108,7 @@ class Seth
           if file.kind_of?(String)
             so = Seth::ReservedNames::Win32::Security::SecurableObject.new(file.dup)
           end
-          raise ArgumentError, "'file' must be a valid path or object of type 'Seth::ReservedNames::Win32::Security::SecurableObject'" unless so.kind_of? Chef::ReservedNames::Win32::Security::SecurableObject
+          raise ArgumentError, "'file' must be a valid path or object of type 'Seth::ReservedNames::Win32::Security::SecurableObject'" unless so.kind_of? seth::ReservedNames::Win32::Security::SecurableObject
           so
         end
       end

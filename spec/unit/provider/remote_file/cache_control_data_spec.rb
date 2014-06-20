@@ -44,7 +44,7 @@ describe Seth::Provider::RemoteFile::CacheControlData do
   context "when loading data for an unknown URI" do
 
     before do
-      Seth::FileCache.should_receive(:load).with(cache_path).and_raise(Chef::Exceptions::FileNotFound, "nope")
+      Seth::FileCache.should_receive(:load).with(cache_path).and_raise(seth::Exceptions::FileNotFound, "nope")
     end
 
     context "and there is no current copy of the file" do
@@ -183,7 +183,7 @@ describe Seth::Provider::RemoteFile::CacheControlData do
       end
     end
 
-    # Cover the very long remote file path case -- see CHEF-4422 where
+    # Cover the very long remote file path case -- see seth-4422 where
     # local cache file names generated from the long uri exceeded
     # local file system path limits resulting in exceptions from
     # file system API's on both Windows and Unix systems.
@@ -199,7 +199,7 @@ describe Seth::Provider::RemoteFile::CacheControlData do
       it "truncates the file cache path to 102 characters" do
         normalized_cache_path = cache_control_data.send('sanitized_cache_file_basename')
 
-        Seth::FileCache.should_receive(:store).with("remote_file/" + normalized_cache_path, cache_control_data.json_data)              
+        Seth::FileCache.should_receive(:store).with("remote_file/" + normalized_cache_path, cache_control_data.json_data)
 
         cache_control_data.save
 

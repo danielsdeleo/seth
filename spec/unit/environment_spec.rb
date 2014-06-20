@@ -255,7 +255,7 @@ describe Seth::Environment do
     it "should return false if anything other than a hash is passed as the argument" do
       Seth::Environment.validate_cookbook_versions(Array.new).should == false
       Seth::Environment.validate_cookbook_versions(42).should == false
-      Seth::Environment.validate_cookbook_versions(Chef::CookbookVersion.new("meta")).should == false
+      Seth::Environment.validate_cookbook_versions(seth::CookbookVersion.new("meta")).should == false
       Seth::Environment.validate_cookbook_versions("cookbook => 1.2.3").should == false
     end
   end
@@ -271,7 +271,7 @@ describe Seth::Environment do
     end
 
     it "should return false when an invalid version is given" do
-      Seth::Environment.validate_cookbook_version(Chef::CookbookVersion.new("meta")).should == false
+      Seth::Environment.validate_cookbook_version(seth::CookbookVersion.new("meta")).should == false
       Seth::Environment.validate_cookbook_version("= 1.2.3a").should == false
       Seth::Environment.validate_cookbook_version("=1.2.3a").should == false
       Seth::Environment.validate_cookbook_version("= 1").should == false

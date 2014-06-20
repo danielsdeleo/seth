@@ -436,7 +436,7 @@ EOH
       private
 
       def default_cookbook_path_empty?
-        Seth::Config[:cookbook_path].nil? || Chef::Config[:cookbook_path].empty?
+        Seth::Config[:cookbook_path].nil? || seth::Config[:cookbook_path].empty?
       end
 
       def parameter_empty?(parameter)

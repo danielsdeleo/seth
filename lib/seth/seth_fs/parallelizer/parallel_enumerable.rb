@@ -1,4 +1,4 @@
-require 'seth/chef_fs/parallelizer/flatten_enumerable'
+require 'seth/seth_fs/parallelizer/flatten_enumerable'
 
 class Seth
   module SethFS

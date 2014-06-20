@@ -38,7 +38,7 @@ describe Seth::Knife::DataBagCreate do
   before do
     Seth::Config[:node_name]  = "webmonkey.example.com"
     @knife = Seth::Knife::DataBagCreate.new
-    @rest = SethSpecs::ChefRest.new
+    @rest = SethSpecs::sethRest.new
     @knife.stub(:rest).and_return(@rest)
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)

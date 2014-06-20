@@ -47,7 +47,7 @@ describe Seth::Resource::Cron, :requires_root, :unix_only do
 
   # Actual tests
   let(:new_resource) do
-    new_resource = Seth::Resource::Cron.new("Chef functional test cron", run_context)
+    new_resource = Seth::Resource::Cron.new("seth functional test cron", run_context)
     new_resource.user  'root'
     new_resource.minute "30"
     new_resource.command "/bin/true"

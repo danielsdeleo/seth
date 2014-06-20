@@ -25,7 +25,7 @@ describe Seth::Resource::CookbookFile do
   let(:source) { 'java.response' }
   let(:cookbook_name) { 'java' }
   let(:expected_content) do
-    content = File.open(File.join(CHEF_SPEC_DATA, 'cookbooks', 'java', 'files', 'default', 'java.response'), "rb") do |f|
+    content = File.open(File.join(seth_SPEC_DATA, 'cookbooks', 'java', 'files', 'default', 'java.response'), "rb") do |f|
       f.read
     end
     content.force_encoding(Encoding::BINARY) if content.respond_to?(:force_encoding)
@@ -39,8 +39,8 @@ describe Seth::Resource::CookbookFile do
   def create_resource
     # set up cookbook collection for this run to use, based on our
     # spec data.
-    cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, 'cookbooks'))
-    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
+    cookbook_repo = File.expand_path(File.join(seth_SPEC_DATA, 'cookbooks'))
+    Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
     loader = Seth::CookbookLoader.new(cookbook_repo)
     loader.load_cookbooks
     cookbook_collection = Seth::CookbookCollection.new(loader)
@@ -61,7 +61,7 @@ describe Seth::Resource::CookbookFile do
 
   it_behaves_like "a file resource"
 
-  # These examples cover CHEF-3467 where unexpected and incorrect
+  # These examples cover seth-3467 where unexpected and incorrect
   # permissions can result on Windows because CookbookFile's
   # implementation
   # stages files in temp.

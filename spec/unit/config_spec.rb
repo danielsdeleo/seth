@@ -168,7 +168,7 @@ describe Seth::Config do
     describe "Seth::Config[:cache_path]" do
       context "when /var/seth exists and is accessible" do
         it "defaults to /var/seth" do
-          Seth::Config.stub(:path_accessible?).with(Chef::Config.platform_specific_path("/var/seth")).and_return(true)
+          Seth::Config.stub(:path_accessible?).with(seth::Config.platform_specific_path("/var/seth")).and_return(true)
           Seth::Config[:cache_path].should == primary_cache_path
         end
       end
@@ -176,7 +176,7 @@ describe Seth::Config do
       context "when /var/seth does not exist and /var is accessible" do
         it "defaults to /var/seth" do
           File.stub(:exists?).with(Seth::Config.platform_specific_path("/var/seth")).and_return(false)
-          Seth::Config.stub(:path_accessible?).with(Chef::Config.platform_specific_path("/var")).and_return(true)
+          Seth::Config.stub(:path_accessible?).with(seth::Config.platform_specific_path("/var")).and_return(true)
           Seth::Config[:cache_path].should == primary_cache_path
         end
       end
@@ -184,7 +184,7 @@ describe Seth::Config do
       context "when /var/seth does not exist and /var is not accessible" do
         it "defaults to $HOME/.seth" do
           File.stub(:exists?).with(Seth::Config.platform_specific_path("/var/seth")).and_return(false)
-          Seth::Config.stub(:path_accessible?).with(Chef::Config.platform_specific_path("/var")).and_return(false)
+          Seth::Config.stub(:path_accessible?).with(seth::Config.platform_specific_path("/var")).and_return(false)
           Seth::Config[:cache_path].should == secondary_cache_path
         end
       end
@@ -301,9 +301,9 @@ describe Seth::Config do
     end
 
     describe "finding the windows embedded dir" do
-      let(:default_config_location) { "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-11.6.0/lib/chef/config.rb" }
-      let(:alternate_install_location) { "c:/my/alternate/install/place/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-11.6.0/lib/chef/config.rb" }
-      let(:non_omnibus_location) { "c:/my/dev/stuff/lib/ruby/gems/1.9.1/gems/seth-11.6.0/lib/chef/config.rb" }
+      let(:default_config_location) { "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-11.6.0/lib/seth/config.rb" }
+      let(:alternate_install_location) { "c:/my/alternate/install/place/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-11.6.0/lib/seth/config.rb" }
+      let(:non_omnibus_location) { "c:/my/dev/stuff/lib/ruby/gems/1.9.1/gems/seth-11.6.0/lib/seth/config.rb" }
 
       let(:default_ca_file) { "c:/opscode/seth/embedded/ssl/certs/cacert.pem" }
 

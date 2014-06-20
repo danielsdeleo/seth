@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/rest_list_dir'
-require 'seth/chef_fs/file_system/cookbook_dir'
-require 'seth/chef_fs/file_system/operation_failed_error'
-require 'seth/chef_fs/file_system/cookbook_frozen_error'
-require 'seth/chef_fs/file_system/chef_repository_file_system_cookbook_dir'
+require 'seth/seth_fs/file_system/rest_list_dir'
+require 'seth/seth_fs/file_system/cookbook_dir'
+require 'seth/seth_fs/file_system/operation_failed_error'
+require 'seth/seth_fs/file_system/cookbook_frozen_error'
+require 'seth/seth_fs/file_system/seth_repository_file_system_cookbook_dir'
 require 'seth/mixin/file_class'
 
 require 'tmpdir'
@@ -73,16 +73,16 @@ class Seth
         def upload_cookbook_from(other, options = {})
           Seth::Config[:versioned_cookbooks] ? upload_versioned_cookbook(other, options) : upload_unversioned_cookbook(other, options)
         rescue Timeout::Error => e
-          raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
+          raise Seth::sethFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
         rescue Net::HTTPServerException => e
           case e.response.code
           when "409"
-            raise Seth::ChefFS::FileSystem::CookbookFrozenError.new(:write, self, e), "Cookbook #{other.name} is frozen"
+            raise Seth::sethFS::FileSystem::CookbookFrozenError.new(:write, self, e), "Cookbook #{other.name} is frozen"
           else
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
           end
         rescue Seth::Exceptions::CookbookFrozen => e
-          raise Seth::ChefFS::FileSystem::CookbookFrozenError.new(:write, self, e), "Cookbook #{other.name} is frozen"
+          raise Seth::sethFS::FileSystem::CookbookFrozenError.new(:write, self, e), "Cookbook #{other.name} is frozen"
         end
 
         # Knife currently does not understand versioned cookbooks
@@ -90,7 +90,7 @@ class Seth
         # to make this work. So instead, we make a temporary cookbook
         # symlinking back to real cookbook, and upload the proxy.
         def upload_versioned_cookbook(other, options)
-          cookbook_name = Seth::ChefFS::FileSystem::ChefRepositoryFileSystemCookbookDir.canonical_cookbook_name(other.name)
+          cookbook_name = Seth::sethFS::FileSystem::sethRepositoryFileSystemCookbookDir.canonical_cookbook_name(other.name)
 
           Dir.mktmpdir do |temp_cookbooks_path|
             proxy_cookbook_path = "#{temp_cookbooks_path}/#{cookbook_name}"
@@ -138,7 +138,7 @@ class Seth
         # Work around the fact that CookbookUploader doesn't understand seth_repo_path (yet)
         def with_actual_cookbooks_dir(actual_cookbook_path)
           old_cookbook_path = Seth::Config.cookbook_path
-          Seth::Config.cookbook_path = actual_cookbook_path if !Chef::Config.cookbook_path
+          Seth::Config.cookbook_path = actual_cookbook_path if !seth::Config.cookbook_path
 
           yield
         ensure
@@ -155,7 +155,7 @@ class Seth
 
         def can_have_child?(name, is_dir)
           return false if !is_dir
-          return false if Seth::Config[:versioned_cookbooks] && name !~ Chef::ChefFS::FileSystem::CookbookDir::VALID_VERSIONED_COOKBOOK_NAME
+          return false if Seth::Config[:versioned_cookbooks] && name !~ seth::sethFS::FileSystem::CookbookDir::VALID_VERSIONED_COOKBOOK_NAME
           return true
         end
       end

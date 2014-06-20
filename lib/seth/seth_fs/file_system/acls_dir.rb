@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_dir'
-require 'seth/chef_fs/file_system/acl_dir'
-require 'seth/chef_fs/file_system/cookbooks_acl_dir'
-require 'seth/chef_fs/file_system/acl_entry'
-require 'seth/chef_fs/data_handler/acl_data_handler'
+require 'seth/seth_fs/file_system/base_fs_dir'
+require 'seth/seth_fs/file_system/acl_dir'
+require 'seth/seth_fs/file_system/cookbooks_acl_dir'
+require 'seth/seth_fs/file_system/acl_entry'
+require 'seth/seth_fs/data_handler/acl_data_handler'
 
 class Seth
   module SethFS
@@ -33,7 +33,7 @@ class Seth
         end
 
         def data_handler
-          @data_handler ||= Seth::ChefFS::DataHandler::AclDataHandler.new
+          @data_handler ||= Seth::sethFS::DataHandler::AclDataHandler.new
         end
 
         def api_path

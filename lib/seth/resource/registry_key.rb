@@ -27,7 +27,7 @@ class Seth
       state_attrs :values
 
       # Some registry key data types may not be safely reported as json.
-      # Example (CHEF-5323):
+      # Example (seth-5323):
       #
       # registry_key 'HKEY_CURRENT_USER\\SethTest2014' do
       #   values [{

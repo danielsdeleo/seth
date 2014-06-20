@@ -122,7 +122,7 @@ class Seth
 
 
       def http_api
-        @http_api_as_validator ||= Seth::REST.new(Chef::Config[:seth_server_url],
+        @http_api_as_validator ||= Seth::REST.new(seth::Config[:seth_server_url],
                                                   Seth::Config[:validation_client_name],
                                                   Seth::Config[:validation_key])
       end

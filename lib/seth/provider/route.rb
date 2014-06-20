@@ -21,7 +21,7 @@ require 'seth/mixin/command'
 require 'seth/provider'
 require 'ipaddr'
 
-class Seth::Provider::Route < Chef::Provider
+class Seth::Provider::Route < seth::Provider
     include Seth::Mixin::Command
 
     attr_accessor :is_running

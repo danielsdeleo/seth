@@ -63,7 +63,7 @@ describe Seth::ApiClient::Registration do
 
   before do
     Seth::Config[:validation_client_name] = "test-validator"
-    Seth::Config[:validation_key] = File.expand_path('ssl/private_key.pem', CHEF_SPEC_DATA)
+    Seth::Config[:validation_key] = File.expand_path('ssl/private_key.pem', seth_SPEC_DATA)
   end
 
   after do
@@ -114,7 +114,7 @@ describe Seth::ApiClient::Registration do
   end
 
   context "when local key generation is enabled", :nofocus do
-    let(:generated_private_key_pem) { IO.read(File.expand_path('ssl/private_key.pem', CHEF_SPEC_DATA)) }
+    let(:generated_private_key_pem) { IO.read(File.expand_path('ssl/private_key.pem', seth_SPEC_DATA)) }
     let(:generated_private_key) { OpenSSL::PKey::RSA.new(generated_private_key_pem) }
     let(:generated_public_key) { generated_private_key.public_key }
 

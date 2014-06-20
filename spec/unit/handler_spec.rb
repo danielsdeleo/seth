@@ -36,7 +36,7 @@ describe Seth::Handler do
       @exception.set_backtrace(@backtrace)
       @run_status.exception = @exception
       @run_context = Seth::RunContext.new(@node, {}, @events)
-      @all_resources = [Seth::Resource::Cat.new('lolz'), Chef::Resource::ZenMaster.new('tzu')]
+      @all_resources = [Seth::Resource::Cat.new('lolz'), seth::Resource::ZenMaster.new('tzu')]
       @all_resources.first.updated = true
       @run_context.resource_collection.all_resources.replace(@all_resources)
       @run_status.run_context = @run_context
@@ -117,7 +117,7 @@ describe Seth::Handler do
   describe "when running a report handler" do
     before do
       @run_context = Seth::RunContext.new(@node, {}, @events)
-      @all_resources = [Seth::Resource::Cat.new('foo'), Chef::Resource::ZenMaster.new('moo')]
+      @all_resources = [Seth::Resource::Cat.new('foo'), seth::Resource::ZenMaster.new('moo')]
       @all_resources.first.updated = true
       @run_context.resource_collection.all_resources.replace(@all_resources)
       @run_status.run_context = @run_context

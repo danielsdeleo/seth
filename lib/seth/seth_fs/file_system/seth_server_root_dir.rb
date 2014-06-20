@@ -17,18 +17,18 @@
 #
 
 require 'seth/server_api'
-require 'seth/chef_fs/file_system/acls_dir'
-require 'seth/chef_fs/file_system/base_fs_dir'
-require 'seth/chef_fs/file_system/rest_list_dir'
-require 'seth/chef_fs/file_system/cookbooks_dir'
-require 'seth/chef_fs/file_system/data_bags_dir'
-require 'seth/chef_fs/file_system/nodes_dir'
-require 'seth/chef_fs/file_system/environments_dir'
-require 'seth/chef_fs/data_handler/client_data_handler'
-require 'seth/chef_fs/data_handler/role_data_handler'
-require 'seth/chef_fs/data_handler/user_data_handler'
-require 'seth/chef_fs/data_handler/group_data_handler'
-require 'seth/chef_fs/data_handler/container_data_handler'
+require 'seth/seth_fs/file_system/acls_dir'
+require 'seth/seth_fs/file_system/base_fs_dir'
+require 'seth/seth_fs/file_system/rest_list_dir'
+require 'seth/seth_fs/file_system/cookbooks_dir'
+require 'seth/seth_fs/file_system/data_bags_dir'
+require 'seth/seth_fs/file_system/nodes_dir'
+require 'seth/seth_fs/file_system/environments_dir'
+require 'seth/seth_fs/data_handler/client_data_handler'
+require 'seth/seth_fs/data_handler/role_data_handler'
+require 'seth/seth_fs/data_handler/user_data_handler'
+require 'seth/seth_fs/data_handler/group_data_handler'
+require 'seth/seth_fs/data_handler/container_data_handler'
 
 class Seth
   module SethFS
@@ -36,9 +36,9 @@ class Seth
       class SethServerRootDir < BaseFSDir
         def initialize(root_name, seth_config, options = {})
           super("", nil)
-          @seth_server_url = chef_config[:chef_server_url]
-          @seth_username = chef_config[:node_name]
-          @seth_private_key = chef_config[:client_key]
+          @seth_server_url = seth_config[:seth_server_url]
+          @seth_username = seth_config[:node_name]
+          @seth_private_key = seth_config[:client_key]
           @environment = seth_config[:environment]
           @repo_mode = seth_config[:repo_mode]
           @root_name = root_name
@@ -53,19 +53,19 @@ class Seth
         attr_reader :cookbook_version
 
         def fs_description
-          "Seth server at #{seth_server_url} (user #{chef_username}), repo_mode = #{repo_mode}"
+          "Seth server at #{seth_server_url} (user #{seth_username}), repo_mode = #{repo_mode}"
         end
 
         def rest
-          Seth::ServerAPI.new(seth_server_url, :client_name => chef_username, :signing_key_filename => chef_private_key, :raw_output => true)
+          Seth::ServerAPI.new(seth_server_url, :client_name => seth_username, :signing_key_filename => seth_private_key, :raw_output => true)
         end
 
         def get_json(path)
-          Seth::ServerAPI.new(seth_server_url, :client_name => chef_username, :signing_key_filename => chef_private_key).get(path)
+          Seth::ServerAPI.new(seth_server_url, :client_name => seth_username, :signing_key_filename => seth_private_key).get(path)
         end
 
         def seth_rest
-          Seth::REST.new(seth_server_url, chef_username, chef_private_key)
+          Seth::REST.new(seth_server_url, seth_username, seth_private_key)
         end
 
         def api_path
@@ -94,21 +94,21 @@ class Seth
               CookbooksDir.new(self),
               DataBagsDir.new(self),
               EnvironmentsDir.new(self),
-              RestListDir.new("roles", self, nil, Seth::ChefFS::DataHandler::RoleDataHandler.new)
+              RestListDir.new("roles", self, nil, Seth::sethFS::DataHandler::RoleDataHandler.new)
             ]
             if repo_mode == 'hosted_everything'
               result += [
                 AclsDir.new(self),
-                RestListDir.new("clients", self, nil, Seth::ChefFS::DataHandler::ClientDataHandler.new),
-                RestListDir.new("containers", self, nil, Seth::ChefFS::DataHandler::ContainerDataHandler.new),
-                RestListDir.new("groups", self, nil, Seth::ChefFS::DataHandler::GroupDataHandler.new),
+                RestListDir.new("clients", self, nil, Seth::sethFS::DataHandler::ClientDataHandler.new),
+                RestListDir.new("containers", self, nil, Seth::sethFS::DataHandler::ContainerDataHandler.new),
+                RestListDir.new("groups", self, nil, Seth::sethFS::DataHandler::GroupDataHandler.new),
                 NodesDir.new(self)
               ]
             elsif repo_mode != 'static'
               result += [
-                RestListDir.new("clients", self, nil, Seth::ChefFS::DataHandler::ClientDataHandler.new),
+                RestListDir.new("clients", self, nil, Seth::sethFS::DataHandler::ClientDataHandler.new),
                 NodesDir.new(self),
-                RestListDir.new("users", self, nil, Seth::ChefFS::DataHandler::UserDataHandler.new)
+                RestListDir.new("users", self, nil, Seth::sethFS::DataHandler::UserDataHandler.new)
               ]
             end
             result.sort_by { |child| child.name }

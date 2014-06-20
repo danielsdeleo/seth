@@ -98,7 +98,7 @@ describe Seth::Application::Solo do
       end
 
       it "should untar the target file to the parent of the cookbook path" do
-        Seth::Mixin::Command.should_receive(:run_command).with({:command => "tar zxvf #{Dir.tmpdir}/seth-solo/recipes.tgz -C #{Dir.tmpdir}/chef-solo"}).and_return(true)
+        Seth::Mixin::Command.should_receive(:run_command).with({:command => "tar zxvf #{Dir.tmpdir}/seth-solo/recipes.tgz -C #{Dir.tmpdir}/seth-solo"}).and_return(true)
         @app.reconfigure
       end
     end

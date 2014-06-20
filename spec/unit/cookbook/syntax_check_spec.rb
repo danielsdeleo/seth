@@ -21,11 +21,11 @@ require "seth/cookbook/syntax_check"
 
 describe Seth::Cookbook::SyntaxCheck do
 
-  let(:cookbook_path) { File.join(CHEF_SPEC_DATA, 'cookbooks', 'openldap') }
+  let(:cookbook_path) { File.join(seth_SPEC_DATA, 'cookbooks', 'openldap') }
   let(:syntax_check) { Seth::Cookbook::SyntaxCheck.new(cookbook_path) }
 
   let(:open_ldap_cookbook_files) do
-    %w{ attributes/default.rb 
+    %w{ attributes/default.rb
         attributes/smokey.rb
         definitions/client.rb
         definitions/server.rb
@@ -63,16 +63,16 @@ describe Seth::Cookbook::SyntaxCheck do
   end
 
   it "creates a syntax checker given the cookbook name and cookbook_path" do
-    syntax_check = Seth::Cookbook::SyntaxCheck.for_cookbook(:openldap, File.join(CHEF_SPEC_DATA, 'cookbooks'))
+    syntax_check = Seth::Cookbook::SyntaxCheck.for_cookbook(:openldap, File.join(seth_SPEC_DATA, 'cookbooks'))
     syntax_check.cookbook_path.should == cookbook_path
     syntax_check.ruby_files.sort.should == open_ldap_cookbook_files.sort
   end
 
   context "when using a standalone cookbook" do
-    let(:cookbook_path) { File.join(CHEF_SPEC_DATA, 'standalone_cookbook') }
+    let(:cookbook_path) { File.join(seth_SPEC_DATA, 'standalone_cookbook') }
 
     it "creates a syntax checker given the cookbook name and cookbook_path for a standalone cookbook" do
-      syntax_check = Seth::Cookbook::SyntaxCheck.for_cookbook(:standalone_cookbook, CHEF_SPEC_DATA)
+      syntax_check = Seth::Cookbook::SyntaxCheck.for_cookbook(:standalone_cookbook, seth_SPEC_DATA)
       syntax_check.cookbook_path.should == cookbook_path
       syntax_check.ruby_files.should == [File.join(cookbook_path, 'recipes/default.rb')]
     end
@@ -137,7 +137,7 @@ describe Seth::Cookbook::SyntaxCheck do
 
       describe "and a file has a syntax error" do
         before do
-          cookbook_path = File.join(CHEF_SPEC_DATA, 'cookbooks', 'borken')
+          cookbook_path = File.join(seth_SPEC_DATA, 'cookbooks', 'borken')
           syntax_check.cookbook_path.replace(cookbook_path)
         end
 
@@ -163,7 +163,7 @@ describe Seth::Cookbook::SyntaxCheck do
 
       describe "and an ignored file has a syntax error" do
         before do
-          cookbook_path = File.join(CHEF_SPEC_DATA, 'cookbooks', 'ignorken')
+          cookbook_path = File.join(seth_SPEC_DATA, 'cookbooks', 'ignorken')
           Seth::Config[:cookbook_path] = File.dirname(cookbook_path)
           syntax_check.cookbook_path.replace(cookbook_path)
           @ruby_files = [File.join(cookbook_path, 'recipes/default.rb')]

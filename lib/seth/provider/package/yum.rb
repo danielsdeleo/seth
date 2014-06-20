@@ -763,7 +763,7 @@ class Seth
 
               error = status.stderr
             rescue Mixlib::ShellOut::CommandTimeout => e
-              Seth::Log.error("#{helper} exceeded timeout #{Chef::Config[:yum_timeout]}")
+              Seth::Log.error("#{helper} exceeded timeout #{seth::Config[:yum_timeout]}")
               raise(e)
             end
 
@@ -1105,7 +1105,7 @@ class Seth
           if @new_resource.source
             yum_command("yum -d0 -e0 -y#{expand_options(@new_resource.options)} localinstall #{@new_resource.source}")
           else
-            # Work around yum not exiting with an error if a package doesn't exist for CHEF-2062
+            # Work around yum not exiting with an error if a package doesn't exist for seth-2062
             if @yum.version_available?(name, version, arch)
               method = "install"
               log_method = "installing"

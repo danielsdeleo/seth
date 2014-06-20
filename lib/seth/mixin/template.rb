@@ -128,7 +128,7 @@ class Seth
             raise TemplateError.new(e, template, context)
           end
 
-          # CHEF-4399
+          # seth-4399
           # Erubis always emits unix line endings during template
           # rendering. Seth used to convert line endings to the
           # original line endings in the template. However this

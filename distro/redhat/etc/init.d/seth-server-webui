@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# seth-server-webui Startup script for chef-server-webui
+# seth-server-webui Startup script for seth-server-webui
 #
 # chkconfig: - 97 03
 # description: Server WebUI component of the Seth systems integration framework.

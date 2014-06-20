@@ -34,7 +34,7 @@ describe Seth::Knife::CookbookSiteShare do
     @cookbook_loader.stub(:[]).and_return(@cookbook)
     Seth::CookbookLoader.stub(:new).and_return(@cookbook_loader)
 
-    @cookbook_uploader = Seth::CookbookUploader.new('herpderp', File.join(CHEF_SPEC_DATA, 'cookbooks'), :rest => "norest")
+    @cookbook_uploader = Seth::CookbookUploader.new('herpderp', File.join(seth_SPEC_DATA, 'cookbooks'), :rest => "norest")
     Seth::CookbookUploader.stub(:new).and_return(@cookbook_uploader)
     @cookbook_uploader.stub(:validate_cookbooks).and_return(true)
     Seth::CookbookSiteStreamingUploader.stub(:create_build_dir).and_return(Dir.mktmpdir)
@@ -83,7 +83,7 @@ describe Seth::Knife::CookbookSiteShare do
     end
 
     it 'should exit and log to error when the tarball creation fails' do
-      Seth::Mixin::Command.stub(:run_command).and_raise(Chef::Exceptions::Exec)
+      Seth::Mixin::Command.stub(:run_command).and_raise(seth::Exceptions::Exec)
       @knife.ui.should_receive(:error)
       lambda { @knife.run }.should raise_error(SystemExit)
     end

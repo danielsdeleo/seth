@@ -17,9 +17,9 @@
 #
 require 'spec_helper'
 
-describe Seth::Cookbook::Chefignore do
+describe Seth::Cookbook::sethignore do
   before do
-    @sethignore = Seth::Cookbook::Chefignore.new(File.join(CHEF_SPEC_DATA, 'cookbooks'))
+    @sethignore = Seth::Cookbook::sethignore.new(File.join(seth_SPEC_DATA, 'cookbooks'))
   end
 
   it "loads the globs in the sethignore file" do
@@ -39,7 +39,7 @@ describe Seth::Cookbook::Chefignore do
 
   context "when using the single cookbook pattern" do
     before do
-      @sethignore = Seth::Cookbook::Chefignore.new(File.join(CHEF_SPEC_DATA, 'standalone_cookbook'))
+      @sethignore = Seth::Cookbook::sethignore.new(File.join(seth_SPEC_DATA, 'standalone_cookbook'))
     end
 
     it "loads the globs in the sethignore file" do

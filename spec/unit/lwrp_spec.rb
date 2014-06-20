@@ -37,45 +37,45 @@ describe "LWRP" do
     end
 
     it "should log if attempting to load resource of same name" do
-      Dir[File.expand_path( "lwrp/resources/*", CHEF_SPEC_DATA)].each do |file|
+      Dir[File.expand_path( "lwrp/resources/*", seth_SPEC_DATA)].each do |file|
         Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
 
-      Dir[File.expand_path( "lwrp/resources/*", CHEF_SPEC_DATA)].each do |file|
+      Dir[File.expand_path( "lwrp/resources/*", seth_SPEC_DATA)].each do |file|
         Seth::Log.should_receive(:info).with(/overriding/)
         Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
     end
 
     it "should log if attempting to load provider of same name" do
-      Dir[File.expand_path( "lwrp/providers/*", CHEF_SPEC_DATA)].each do |file|
+      Dir[File.expand_path( "lwrp/providers/*", seth_SPEC_DATA)].each do |file|
         Seth::Provider::LWRPBase.build_from_file("lwrp", file, nil)
       end
 
-      Dir[File.expand_path( "lwrp/providers/*", CHEF_SPEC_DATA)].each do |file|
+      Dir[File.expand_path( "lwrp/providers/*", seth_SPEC_DATA)].each do |file|
         Seth::Log.should_receive(:info).with(/overriding/)
         Seth::Provider::LWRPBase.build_from_file("lwrp", file, nil)
       end
     end
 
-    it "removes the old LRWP resource class from the list of resource subclasses [CHEF-3432]" do
-      # CHEF-3432 regression test:
+    it "removes the old LRWP resource class from the list of resource subclasses [seth-3432]" do
+      # seth-3432 regression test:
       # Seth::Resource keeps a list of all subclasses to assist class inflation
       # for json parsing (see Seth::JSONCompat). When replacing LWRP resources,
       # we need to ensure the old resource class is remove from that list.
-      Dir[File.expand_path( "lwrp/resources/*", CHEF_SPEC_DATA)].each do |file|
+      Dir[File.expand_path( "lwrp/resources/*", seth_SPEC_DATA)].each do |file|
         Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
       first_lwr_foo_class = Seth::Resource::LwrpFoo
       Seth::Resource.resource_classes.should include(first_lwr_foo_class)
-      Dir[File.expand_path( "lwrp/resources/*", CHEF_SPEC_DATA)].each do |file|
+      Dir[File.expand_path( "lwrp/resources/*", seth_SPEC_DATA)].each do |file|
         Seth::Resource::LWRPBase.build_from_file("lwrp", file, nil)
       end
       Seth::Resource.resource_classes.should_not include(first_lwr_foo_class)
     end
 
-    it "does not attempt to remove classes from higher up namespaces [CHEF-4117]" do
-      conflicting_lwrp_file = File.expand_path( "lwrp_const_scoping/resources/conflict.rb", CHEF_SPEC_DATA)
+    it "does not attempt to remove classes from higher up namespaces [seth-4117]" do
+      conflicting_lwrp_file = File.expand_path( "lwrp_const_scoping/resources/conflict.rb", seth_SPEC_DATA)
       # The test is that this should not raise an error:
       Seth::Resource::LWRPBase.build_from_file("lwrp_const_scoping", conflicting_lwrp_file, nil)
     end
@@ -121,7 +121,7 @@ describe "LWRP" do
     it "should have access to the run context and node during class definition" do
       node = Seth::Node.new
       node.normal[:penguin_name] = "jackass"
-      run_context = Seth::RunContext.new(node, Chef::CookbookCollection.new, @events)
+      run_context = Seth::RunContext.new(node, seth::CookbookCollection.new, @events)
 
       Dir[File.expand_path(File.join(File.dirname(__FILE__), "..", "data", "lwrp", "resources_with_default_attributes", "*"))].each do |file|
         Seth::Resource::LWRPBase.build_from_file("lwrp", file, run_context)
@@ -141,7 +141,7 @@ describe "LWRP" do
       @node.automatic[:platform] = :ubuntu
       @node.automatic[:platform_version] = '8.10'
       @events = Seth::EventDispatch::Dispatcher.new
-      @run_context = Seth::RunContext.new(@node, Chef::CookbookCollection.new({}), @events)
+      @run_context = Seth::RunContext.new(@node, seth::CookbookCollection.new({}), @events)
       @runner = Seth::Runner.new(@run_context)
     end
 

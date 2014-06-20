@@ -169,13 +169,13 @@ describe Seth::Knife::UI do
       lambda {@ui.send(method, "hi")}.should raise_error(Errno::EIO)
     end
 
-    it "should ignore Errno::EPIPE exceptions (CHEF-3516)" do
+    it "should ignore Errno::EPIPE exceptions (seth-3516)" do
       @out.stub(:puts).and_raise(Errno::EPIPE)
       @err.stub(:puts).and_raise(Errno::EPIPE)
       lambda {@ui.send(method, "hi")}.should raise_error(SystemExit)
     end
 
-    it "should throw Errno::EPIPE exceptions with -VV (CHEF-3516)" do
+    it "should throw Errno::EPIPE exceptions with -VV (seth-3516)" do
       @config[:verbosity] = 2
       @out.stub(:puts).and_raise(Errno::EPIPE)
       @err.stub(:puts).and_raise(Errno::EPIPE)
@@ -521,7 +521,7 @@ EOM
       out = StringIO.new
       @ui.stub(:stdout).and_return(out)
       @ui.stub(:stdin).and_return(StringIO.new("http://mysethserver.example.com\n"))
-      @ui.ask_question("your seth server URL?").should == "http://mychefserver.example.com"
+      @ui.ask_question("your seth server URL?").should == "http://mysethserver.example.com"
       out.string.should == "your seth server URL?"
     end
 

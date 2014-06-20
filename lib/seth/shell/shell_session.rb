@@ -42,7 +42,7 @@ module Shell
     attr_reader :node_attributes, :client
     def initialize
       @node_built = false
-      formatter = Seth::Formatters.new(Chef::Config.formatter, STDOUT, STDERR)
+      formatter = Seth::Formatters.new(seth::Config.formatter, STDOUT, STDERR)
       @events = Seth::EventDispatch::Dispatcher.new(formatter)
     end
 
@@ -151,7 +151,7 @@ module Shell
 
     def rebuild_node
       Seth::Config[:solo] = true
-      @client = Seth::Client.new(nil, Chef::Config[:shell_config])
+      @client = Seth::Client.new(nil, seth::Config[:shell_config])
       @client.run_ohai
       @client.load_node
       @client.build_node
@@ -169,8 +169,8 @@ module Shell
 
     def rebuild_context
       @run_status = Seth::RunStatus.new(@node, @events)
-      Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, Chef::Config[:cookbook_path]) }
-      cl = Seth::CookbookLoader.new(Chef::Config[:cookbook_path])
+      Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, seth::Config[:cookbook_path]) }
+      cl = Seth::CookbookLoader.new(seth::Config[:cookbook_path])
       cl.load_cookbooks
       cookbook_collection = Seth::CookbookCollection.new(cl)
       @run_context = Seth::RunContext.new(node, cookbook_collection, @events)
@@ -183,7 +183,7 @@ module Shell
     def rebuild_node
       # Tell the client we're seth solo so it won't try to contact the server
       Seth::Config[:solo] = true
-      @client = Seth::Client.new(nil, Chef::Config[:shell_config])
+      @client = Seth::Client.new(nil, seth::Config[:shell_config])
       @client.run_ohai
       @client.load_node
       @client.build_node
@@ -201,7 +201,7 @@ module Shell
 
     def rebuild_context
       @run_status = Seth::RunStatus.new(@node, @events)
-      Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::RemoteFileVendor.new(manifest, Chef::REST.new(Chef::Config[:server_url])) }
+      Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::RemoteFileVendor.new(manifest, seth::REST.new(seth::Config[:server_url])) }
       cookbook_hash = @client.sync_cookbooks
       cookbook_collection = Seth::CookbookCollection.new(cookbook_hash)
       @run_context = Seth::RunContext.new(node, cookbook_collection, @events)
@@ -214,7 +214,7 @@ module Shell
     def rebuild_node
       # Make sure the client knows this is not seth solo
       Seth::Config[:solo] = false
-      @client = Seth::Client.new(nil, Chef::Config[:shell_config])
+      @client = Seth::Client.new(nil, seth::Config[:shell_config])
       @client.run_ohai
       @client.register
       @client.load_node
@@ -253,7 +253,7 @@ module Shell
     end
 
     def register
-      @rest = Seth::REST.new(Chef::Config[:seth_server_url], Chef::Config[:node_name], Chef::Config[:client_key])
+      @rest = Seth::REST.new(seth::Config[:seth_server_url], seth::Config[:node_name], seth::Config[:client_key])
     end
 
   end

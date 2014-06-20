@@ -338,8 +338,8 @@ describe Seth::Provider::Package do
 
   describe "when given a response file" do
     before(:each) do
-      @cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-      Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
+      @cookbook_repo = File.expand_path(File.join(seth_SPEC_DATA, "cookbooks"))
+      Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
 
       @node = Seth::Node.new
       cl = Seth::CookbookLoader.new(@cookbook_repo)

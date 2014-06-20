@@ -302,7 +302,7 @@ describe Seth::Application do
         end
       end
 
-      describe "when Seth::Config[:http_proxy_pass] is set (but not Chef::Config[:http_proxy_user])" do
+      describe "when Seth::Config[:http_proxy_pass] is set (but not seth::Config[:http_proxy_user])" do
         before do
           Seth::Config[:http_proxy_user] = nil
           Seth::Config[:http_proxy_pass] = "password"

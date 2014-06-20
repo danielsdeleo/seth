@@ -114,7 +114,7 @@ twice
       expect{Seth::Util::FileEdit.new("nonexistfile")}.to raise_error(ArgumentError)
     end
 
-    # CHEF-5018: people have monkey patched this and it has accidentally been broken
+    # seth-5018: people have monkey patched this and it has accidentally been broken
     it "should read the contents into memory as an array" do
       expect(fedit.send(:editor).lines).to be_instance_of(Array)
     end

@@ -88,7 +88,7 @@ The version of the seth\-client\&.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .SH BULK DELETE
 .sp
@@ -129,7 +129,7 @@ $ knife node bulk delete "^[0\-9]{3}$"
 Type \fBY\fP to confirm a deletion.
 .SH CREATE
 .sp
-The \fBcreate\fP argument is used to add a node to the Seth server\&. Node data is stored as JSON on the Chef server\&.
+The \fBcreate\fP argument is used to add a node to the Seth server\&. Node data is stored as JSON on the seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -235,7 +235,7 @@ $ knife node delete node_name
 .UNINDENT
 .SH EDIT
 .sp
-The \fBedit\fP argument is used to edit the details of a node on a Seth server\&. Node data is stored as JSON on the Chef server\&.
+The \fBedit\fP argument is used to edit the details of a node on a Seth server\&. Node data is stored as JSON on the seth server\&.
 .sp
 \fBSyntax\fP
 .sp

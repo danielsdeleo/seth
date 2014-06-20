@@ -1,4 +1,4 @@
-require 'seth/chef_fs/data_handler/data_handler_base'
+require 'seth/seth_fs/data_handler/data_handler_base'
 require 'seth/cookbook/metadata'
 
 class Seth

@@ -20,7 +20,7 @@
 require 'seth/provider/service/init'
 require 'seth/mixin/command'
 
-class Seth::Provider::Service::Gentoo < Chef::Provider::Service::Init
+class Seth::Provider::Service::Gentoo < seth::Provider::Service::Init
   def load_current_resource
 
     @new_resource.supports[:status] = true

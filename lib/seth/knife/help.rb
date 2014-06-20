@@ -90,9 +90,9 @@ MOAR_HELP
       end
 
       def find_manpage_path(topic)
-        if ::File.exists?(::File.expand_path("../distro/common/man/man1/#{topic}.1", CHEF_ROOT))
+        if ::File.exists?(::File.expand_path("../distro/common/man/man1/#{topic}.1", seth_ROOT))
           # If we've provided the man page in the gem, give that
-          return ::File.expand_path("../distro/common/man/man1/#{topic}.1", CHEF_ROOT)
+          return ::File.expand_path("../distro/common/man/man1/#{topic}.1", seth_ROOT)
         else
           # Otherwise, we'll just be using MANPATH
           topic

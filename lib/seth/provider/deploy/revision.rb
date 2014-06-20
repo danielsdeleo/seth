@@ -90,7 +90,7 @@ class Seth
 
         def load_cache
           begin
-            Seth::JSONCompat.from_json(Chef::FileCache.load("revision-deploys/#{new_resource.name}"))
+            Seth::JSONCompat.from_json(seth::FileCache.load("revision-deploys/#{new_resource.name}"))
           rescue Seth::Exceptions::FileNotFound
             sorted_releases_from_filesystem
           end

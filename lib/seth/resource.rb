@@ -49,7 +49,7 @@ class Seth
       # If resource and/or notifying_resource is not a resource object, this will look them up in the resource collection
       # and fix the references from strings to actual Resource objects.
       def resolve_resource_reference(resource_collection)
-        return resource if resource.kind_of?(Seth::Resource) && notifying_resource.kind_of?(Chef::Resource)
+        return resource if resource.kind_of?(Seth::Resource) && notifying_resource.kind_of?(seth::Resource)
 
         if not(resource.kind_of?(Seth::Resource))
           fix_resource_reference(resource_collection)
@@ -279,7 +279,7 @@ F
 
 
     def updated=(true_or_false)
-      Seth::Log.warn("Chef::Resource#updated=(true|false) is deprecated. Please call #updated_by_last_action(true|false) instead.")
+      Seth::Log.warn("seth::Resource#updated=(true|false) is deprecated. Please call #updated_by_last_action(true|false) instead.")
       Seth::Log.warn("Called from:")
       caller[0..3].each {|line| Seth::Log.warn(line)}
       updated_by_last_action(true_or_false)
@@ -306,7 +306,7 @@ F
         prior_resource = run_context.resource_collection.lookup(self.to_s)
         # if we get here, there is a prior resource (otherwise we'd have jumped
         # to the rescue clause).
-        Seth::Log.warn("Cloning resource attributes for #{self.to_s} from prior resource (CHEF-3694)")
+        Seth::Log.warn("Cloning resource attributes for #{self.to_s} from prior resource (seth-3694)")
         Seth::Log.warn("Previous #{prior_resource}: #{prior_resource.source_line}") if prior_resource.source_line
         Seth::Log.warn("Current  #{self}: #{self.source_line}") if self.source_line
         prior_resource.instance_variables.each do |iv|
@@ -634,7 +634,7 @@ F
       resolve_notification_references
       validate_action(action)
 
-      if Seth::Config[:verbose_logging] || Chef::Log.level == :debug
+      if Seth::Config[:verbose_logging] || seth::Log.level == :debug
         # This can be noisy
         Seth::Log.info("Processing #{self} action #{action} (#{defined_at})")
       end
@@ -804,7 +804,7 @@ F
     # version<String>:: platform version
     #
     # === Returns
-    # <Seth::Resource>:: returns the proper Chef::Resource class
+    # <Seth::Resource>:: returns the proper seth::Resource class
     def self.resource_for_platform(short_name, platform=nil, version=nil)
       platform_map.get(short_name, platform, version)
     end
@@ -817,7 +817,7 @@ F
     # node<Seth::Node>:: Node object to look up platform and version in
     #
     # === Returns
-    # <Seth::Resource>:: returns the proper Chef::Resource class
+    # <Seth::Resource>:: returns the proper seth::Resource class
     def self.resource_for_node(short_name, node)
       begin
         platform, version = Seth::Platform.find_platform_and_version(node)

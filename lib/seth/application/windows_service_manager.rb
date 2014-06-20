@@ -66,7 +66,7 @@ class Seth
         :long         => "--version",
         :description  => "Show seth version",
         :boolean      => true,
-        :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
+        :proc         => lambda {|v| puts "Seth: #{::seth::VERSION}"},
         :exit         => 0
 
       def initialize(service_options)

@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>knife diff &mdash; seth-client Man Pages</title>
-    
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,16 +33,16 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="knife-diff">
 <h1>knife diff<a class="headerlink" href="#knife-diff" title="Permalink to this headline">¶</a></h1>
-<p>The <strong>knife diff</strong> subcommand is used to compare the differences between files and directories on the Seth server and in the seth-repo. For example, to compare files on the Chef server prior to an uploading or downloading files using the <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">download</span></tt> and <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">upload</span></tt> subcommands, or to ensure that certain files in multiple production environments are the same. This subcommand is similar to the <tt class="docutils literal"><span class="pre">git</span> <span class="pre">diff</span></tt> command that can be used to diff what is in the chef-repo with what is synced to a git repository.</p>
+<p>The <strong>knife diff</strong> subcommand is used to compare the differences between files and directories on the Seth server and in the seth-repo. For example, to compare files on the seth server prior to an uploading or downloading files using the <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">download</span></tt> and <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">upload</span></tt> subcommands, or to ensure that certain files in multiple production environments are the same. This subcommand is similar to the <tt class="docutils literal"><span class="pre">git</span> <span class="pre">diff</span></tt> command that can be used to diff what is in the seth-repo with what is synced to a git repository.</p>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <p>This subcommand has the following syntax:</p>
@@ -59,7 +59,7 @@
 <p>This subcommand has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">--seth-repo-path</span> <span class="pre">PATH</span></tt></dt>
-<dd>The path to the seth-repo. This setting will override the default path to the chef-repo. Default: same value as specified by <tt class="docutils literal"><span class="pre">chef_repo_path</span></tt> in client.rb.</dd>
+<dd>The path to the seth-repo. This setting will override the default path to the seth-repo. Default: same value as specified by <tt class="docutils literal"><span class="pre">seth_repo_path</span></tt> in client.rb.</dd>
 <dt><tt class="docutils literal"><span class="pre">--cookbook-version</span> <span class="pre">VERSION</span></tt></dt>
 <dd>The version of a cookbook to download.</dd>
 <dt><tt class="docutils literal"><span class="pre">--concurrency</span></tt></dt>
@@ -113,7 +113,7 @@ node-lb/Rakefile
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

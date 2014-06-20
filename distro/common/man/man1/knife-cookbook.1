@@ -108,7 +108,7 @@ The version of the seth\-client\&.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .SH BULK DELETE
 .sp
@@ -134,7 +134,7 @@ This argument has the following options:
 .INDENT 0.0
 .TP
 .B \fB\-p\fP, \fB\-\-purge\fP
-Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server\&. This action should be used carefully because only one copy of any single file is stored on the Chef server\&. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.
+Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server\&. This action should be used carefully because only one copy of any single file is stored on the seth server\&. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -276,7 +276,7 @@ Indicates that a cookbook and every version of that cookbook will be deleted.
 The version of a cookbook to be deleted. If a cookbook has only one version, this option does not need to be specified. If a cookbook has more than one version and this option is not specified, Knife will prompt for a version.
 .TP
 .B \fB\-p\fP, \fB\-\-purge\fP
-Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server\&. This action should be used carefully because only one copy of any single file is stored on the Chef server\&. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.
+Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server\&. This action should be used carefully because only one copy of any single file is stored on the seth server\&. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.
 .UNINDENT
 .sp
 \fBExamples\fP
@@ -658,12 +658,12 @@ $ knife cookbook test cookbook_name
 .UNINDENT
 .SH UPLOAD
 .sp
-The \fBupload\fP argument is used to upload one or more cookbooks (and any files that are associated with those cookbooks) from a local repository to the Seth server\&. Only files that do not already exist on the Chef server will be uploaded.
+The \fBupload\fP argument is used to upload one or more cookbooks (and any files that are associated with those cookbooks) from a local repository to the Seth server\&. Only files that do not already exist on the seth server will be uploaded.
 .sp
 \fBNOTE:\fP
 .INDENT 0.0
 .INDENT 3.5
-Use a \&.sethignore file to prevent the upload of specific files and file types, such as temporary files or files placed in folders by version control systems. The \&.chefignore file must be located in the root of the cookbook repository and must use rules similar to filename globbing (as defined by the Ruby \fBFile.fnmatch\fP syntax).
+Use a \&.sethignore file to prevent the upload of specific files and file types, such as temporary files or files placed in folders by version control systems. The \&.sethignore file must be located in the root of the cookbook repository and must use rules similar to filename globbing (as defined by the Ruby \fBFile.fnmatch\fP syntax).
 .UNINDENT
 .UNINDENT
 .sp

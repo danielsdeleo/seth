@@ -31,12 +31,12 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife ssl check\fP subcommand is used to verify the SSL configuration for the Enterprise Seth and/or Open Source Chef servers, or at another location specified by a URL or URI.
+The \fBknife ssl check\fP subcommand is used to verify the SSL configuration for the Enterprise Seth and/or Open Source seth servers, or at another location specified by a URL or URI.
 .sp
 \fBWARNING:\fP
 .INDENT 0.0
 .INDENT 3.5
-When verification of a remote server\(aqs SSL certificate is disabled, the seth\-client will issue a warning similar to "SSL validation of HTTPS requests is disabled. HTTPS connections are still encrypted, but the chef\-client is not able to detect forged replies or man\-in\-the\-middle attacks." To configure SSL for the chef\-client, set \fBssl_verify_mode\fP to \fB:verify_peer\fP (recommended) \fBor\fP \fBverify_api_cert\fP to \fBtrue\fP in the client.rb file.
+When verification of a remote server\(aqs SSL certificate is disabled, the seth\-client will issue a warning similar to "SSL validation of HTTPS requests is disabled. HTTPS connections are still encrypted, but the seth\-client is not able to detect forged replies or man\-in\-the\-middle attacks." To configure SSL for the seth\-client, set \fBssl_verify_mode\fP to \fB:verify_peer\fP (recommended) \fBor\fP \fBverify_api_cert\fP to \fBtrue\fP in the client.rb file.
 .UNINDENT
 .UNINDENT
 .sp
@@ -147,7 +147,7 @@ The SSH user name.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP

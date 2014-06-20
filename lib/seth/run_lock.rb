@@ -114,7 +114,7 @@ class Seth
     # Waits until acquiring the system-wide lock.
     #
     def wait
-      Seth::Log.warn("Chef client #{runpid} is running, will wait for it to finish and then run.")
+      Seth::Log.warn("seth client #{runpid} is running, will wait for it to finish and then run.")
       if Seth::Platform.windows?
         mutex.wait
       else

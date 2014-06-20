@@ -39,7 +39,7 @@ describe Seth::Provider::RemoteFile do
   let(:events) { double('Seth::Events').as_null_object }  # mock all the methods
   let(:run_context) { double('Seth::RunContext', :node => node, :events => events) }
   let(:enclosing_directory) {
-    canonicalize_path(File.expand_path(File.join(CHEF_SPEC_DATA, "templates")))
+    canonicalize_path(File.expand_path(File.join(seth_SPEC_DATA, "templates")))
   }
   let(:resource_path) {
     canonicalize_path(File.expand_path(File.join(enclosing_directory, "seattle.txt")))
@@ -53,7 +53,7 @@ describe Seth::Provider::RemoteFile do
   end
 
   before do
-    Seth::FileCache.stub(:load).with("remote_file/#{resource.name}").and_raise(Chef::Exceptions::FileNotFound)
+    Seth::FileCache.stub(:load).with("remote_file/#{resource.name}").and_raise(seth::Exceptions::FileNotFound)
   end
 
   it_behaves_like Seth::Provider::File

@@ -1,14 +1,14 @@
-require 'seth/chef_fs/knife'
+require 'seth/seth_fs/knife'
 
 class Seth
   class Knife
-    class Delete < Seth::ChefFS::Knife
+    class Delete < Seth::sethFS::Knife
       banner "knife delete [PATTERN1 ... PATTERNn]"
 
       category "path-based"
 
       deps do
-        require 'seth/chef_fs/file_system'
+        require 'seth/seth_fs/file_system'
       end
 
       option :recurse,
@@ -39,7 +39,7 @@ class Seth
         error = false
         if config[:local]
           pattern_args.each do |pattern|
-            Seth::ChefFS::FileSystem.list(local_fs, pattern).each do |result|
+            Seth::sethFS::FileSystem.list(local_fs, pattern).each do |result|
               if delete_result(result)
                 error = true
               end
@@ -47,7 +47,7 @@ class Seth
           end
         elsif config[:both]
           pattern_args.each do |pattern|
-            Seth::ChefFS::FileSystem.list_pairs(pattern, seth_fs, local_fs).each do |chef_result, local_result|
+            Seth::sethFS::FileSystem.list_pairs(pattern, seth_fs, local_fs).each do |seth_result, local_result|
               if delete_result(seth_result, local_result)
                 error = true
               end
@@ -55,7 +55,7 @@ class Seth
           end
         else # Remote only
           pattern_args.each do |pattern|
-            Seth::ChefFS::FileSystem.list(seth_fs, pattern).each do |result|
+            Seth::sethFS::FileSystem.list(seth_fs, pattern).each do |result|
               if delete_result(result)
                 error = true
               end
@@ -82,13 +82,13 @@ class Seth
             result.delete(config[:recurse])
             deleted_any = true
             found_any = true
-          rescue Seth::ChefFS::FileSystem::NotFoundError
+          rescue Seth::sethFS::FileSystem::NotFoundError
             # This is not an error unless *all* of them were not found
-          rescue Seth::ChefFS::FileSystem::MustDeleteRecursivelyError => e
+          rescue Seth::sethFS::FileSystem::MustDeleteRecursivelyError => e
             ui.error "#{format_path_with_root(e.entry)} must be deleted recursively!  Pass -r to knife delete."
             found_any = true
             error = true
-          rescue Seth::ChefFS::FileSystem::OperationNotAllowedError => e
+          rescue Seth::sethFS::FileSystem::OperationNotAllowedError => e
             ui.error "#{format_path_with_root(e.entry)} #{e.reason}."
             found_any = true
             error = true

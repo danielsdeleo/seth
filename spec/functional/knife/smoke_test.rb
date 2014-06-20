@@ -25,7 +25,7 @@ describe "knife smoke tests" do
   #
   # We run `knife -v` to verify that knife at least loads all its code.
   it "can run and print its version" do
-    knife_path = File.expand_path("../../bin/knife", CHEF_SPEC_DATA)
+    knife_path = File.expand_path("../../bin/knife", seth_SPEC_DATA)
     knife_cmd = Mixlib::ShellOut.new("#{knife_path} -v")
     knife_cmd.run_command
     knife_cmd.error!

@@ -42,11 +42,11 @@ class Seth
     end
 
     def seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     def self.seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     def name(arg=nil)

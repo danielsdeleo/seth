@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-A bootstrap is a process that installs the seth\-client on a target system so that it can run as a chef\-client and communicate with a Seth server\&.
+A bootstrap is a process that installs the seth\-client on a target system so that it can run as a seth\-client and communicate with a Seth server\&.
 .sp
 The \fBknife bootstrap\fP subcommand is used to run a bootstrap operation that installs the seth\-client on the target system. The bootstrap operation must specify the IP address or FQDN of the target system.
 .sp
@@ -84,7 +84,7 @@ The default bootstrap operation uses the omnibus installer, which means the defa
 .UNINDENT
 .UNINDENT
 .sp
-The template file to be used during a bootstrap operation. The following distributions are supported: \fBseth\-full\fP (the default bootstrap), \fBcentos5\-gems\fP, \fBfedora13\-gems\fP, \fBubuntu10.04\-gems\fP, \fBubuntu10.04\-apt\fP, \fBubuntu12.04\-gems\fP, and the name of a custom bootstrap template file. When this option is used, Knife will search for the template file in the following order: the \fBbootstrap/\fP folder in the current working directory, the \fBbootstrap/\fP folder in the chef\-repo, the \fBbootstrap/\fP folder in the \fB~/.chef/\fP directory, or a default bootstrap file. Do not use the \fB\-\-template\-file\fP option when \fB\-\-distro\fP is specified.
+The template file to be used during a bootstrap operation. The following distributions are supported: \fBseth\-full\fP (the default bootstrap), \fBcentos5\-gems\fP, \fBfedora13\-gems\fP, \fBubuntu10.04\-gems\fP, \fBubuntu10.04\-apt\fP, \fBubuntu12.04\-gems\fP, and the name of a custom bootstrap template file. When this option is used, Knife will search for the template file in the following order: the \fBbootstrap/\fP folder in the current working directory, the \fBbootstrap/\fP folder in the seth\-repo, the \fBbootstrap/\fP folder in the \fB~/.seth/\fP directory, or a default bootstrap file. Do not use the \fB\-\-template\-file\fP option when \fB\-\-distro\fP is specified.
 .TP
 .B \fB\-\-defaults\fP
 Indicates that Knife will use the default value, instead of asking a user to provide one.
@@ -174,7 +174,7 @@ The SSH user name.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP

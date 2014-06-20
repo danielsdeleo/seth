@@ -55,7 +55,7 @@ describe Seth::Formatters::ErrorInspectors::CompileErrorInspector do
       @trace = [
         "/home/someuser/dev-laptop/cookbooks/syntax-err/recipes/default.rb:14:in `from_file'",
         "/home/someuser/dev-laptop/cookbooks/syntax-err/recipes/default.rb:11:in `from_file'",
-        "/home/someuser/.multiruby/gems/seth/lib/chef/client.rb:123:in `run'"
+        "/home/someuser/.multiruby/gems/seth/lib/seth/client.rb:123:in `run'"
       ]
       @exception.set_backtrace(@trace)
       @path = "/var/seth/cache/cookbooks/syntax-err/recipes/default.rb"
@@ -77,7 +77,7 @@ describe Seth::Formatters::ErrorInspectors::CompileErrorInspector do
       @trace = [
         "/var/seth/cache/cookbooks/syntax-err/recipes/default.rb:14:in `from_file'",
         "/var/seth/cache/cookbooks/syntax-err/recipes/default.rb:11:in `from_file'",
-        "/usr/local/lib/ruby/gems/seth/lib/chef/client.rb:123:in `run'" # should not display
+        "/usr/local/lib/ruby/gems/seth/lib/seth/client.rb:123:in `run'" # should not display
       ]
       @exception.set_backtrace(@trace)
       @path = "/var/seth/cache/cookbooks/syntax-err/recipes/default.rb"
@@ -101,26 +101,26 @@ describe Seth::Formatters::ErrorInspectors::CompileErrorInspector do
       IO.should_receive(:readlines).at_least(1).times.with(/:\/opscode\/seth\/var\/cache\/cookbooks\/foo\/recipes\/default.rb/).and_return(recipe_lines)
       @trace = [
         "C:/opscode/seth/var/cache/cookbooks/foo/recipes/default.rb:14 in `from_file'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:144:in `rescue in block in load_libraries'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:138:in `block in load_libraries'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:230:in `call'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:230:in `block (2 levels) in foreach_cookbook_load_segment'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:229:in `each'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:229:in `block in foreach_cookbook_load_segment'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:227:in `each'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:227:in `foreach_cookbook_load_segment'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:137:in `load_libraries'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:62:in `load'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/client.rb:198:in `setup_run_context'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/client.rb:418:in `do_run'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/client.rb:176:in `run'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/application/client.rb:283:in `block in run_application'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/application/client.rb:270:in `loop'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/application/client.rb:270:in `run_application'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/application.rb:70:in `run'",
-        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/bin/chef-client:26:in `<top (required)>'",
-        "C:/opscode/seth/bin/chef-client:19:in `load'",
-        "C:/opscode/seth/bin/chef-client:19:in `<main>'"
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:144:in `rescue in block in load_libraries'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:138:in `block in load_libraries'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:230:in `call'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:230:in `block (2 levels) in foreach_cookbook_load_segment'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:229:in `each'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:229:in `block in foreach_cookbook_load_segment'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:227:in `each'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:227:in `foreach_cookbook_load_segment'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:137:in `load_libraries'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:62:in `load'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/client.rb:198:in `setup_run_context'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/client.rb:418:in `do_run'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/client.rb:176:in `run'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/application/client.rb:283:in `block in run_application'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/application/client.rb:270:in `loop'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/application/client.rb:270:in `run_application'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/application.rb:70:in `run'",
+        "C:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/bin/seth-client:26:in `<top (required)>'",
+        "C:/opscode/seth/bin/seth-client:19:in `load'",
+        "C:/opscode/seth/bin/seth-client:19:in `<main>'"
       ]
       @exception.set_backtrace(@trace)
       @path = "/var/seth/cache/cookbooks/syntax-err/recipes/default.rb"
@@ -159,26 +159,26 @@ describe Seth::Formatters::ErrorInspectors::CompileErrorInspector do
       IO.should_receive(:readlines).with("c:/opscode/seth/var/cache/cookbooks/foo/recipes/default.rb").and_return(recipe_lines)
       @trace = [
         "c:/opscode/seth/var/cache/cookbooks/foo/recipes/default.rb:14 in `from_file'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:144:in `rescue in block in load_libraries'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:138:in `block in load_libraries'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:230:in `call'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:230:in `block (2 levels) in foreach_cookbook_load_segment'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:229:in `each'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:229:in `block in foreach_cookbook_load_segment'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:227:in `each'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:227:in `foreach_cookbook_load_segment'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:137:in `load_libraries'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/run_context.rb:62:in `load'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/client.rb:198:in `setup_run_context'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/client.rb:418:in `do_run'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/client.rb:176:in `run'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/application/client.rb:283:in `block in run_application'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/application/client.rb:270:in `loop'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/application/client.rb:270:in `run_application'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/lib/chef/application.rb:70:in `run'",
-        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/chef-10.14.0/bin/chef-client:26:in `<top (required)>'",
-        "c:/opscode/seth/bin/chef-client:19:in `load'",
-        "c:/opscode/seth/bin/chef-client:19:in `<main>'"
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:144:in `rescue in block in load_libraries'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:138:in `block in load_libraries'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:230:in `call'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:230:in `block (2 levels) in foreach_cookbook_load_segment'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:229:in `each'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:229:in `block in foreach_cookbook_load_segment'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:227:in `each'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:227:in `foreach_cookbook_load_segment'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:137:in `load_libraries'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/run_context.rb:62:in `load'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/client.rb:198:in `setup_run_context'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/client.rb:418:in `do_run'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/client.rb:176:in `run'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/application/client.rb:283:in `block in run_application'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/application/client.rb:270:in `loop'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/application/client.rb:270:in `run_application'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/lib/seth/application.rb:70:in `run'",
+        "c:/opscode/seth/embedded/lib/ruby/gems/1.9.1/gems/seth-10.14.0/bin/seth-client:26:in `<top (required)>'",
+        "c:/opscode/seth/bin/seth-client:19:in `load'",
+        "c:/opscode/seth/bin/seth-client:19:in `<main>'"
       ]
       @exception.set_backtrace(@trace)
       @path = "/var/seth/cache/cookbooks/syntax-err/recipes/default.rb"

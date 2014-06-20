@@ -506,7 +506,7 @@ class Seth
     # REST API
     ##
     def self.seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     def seth_server_rest
@@ -575,7 +575,7 @@ class Seth
       # FIXME: can we change the interface to the Metadata class such
       # that metadata.version returns a Seth::Version instance instead
       # of a string?
-      Seth::Version.new(self.version) <=> Chef::Version.new(o.version)
+      Seth::Version.new(self.version) <=> seth::Version.new(o.version)
     end
 
     private

@@ -108,7 +108,7 @@ knife xargs
 .UNINDENT
 .SH WORKING WITH KNIFE
 .sp
-Knife runs from a management workstation and sits in\-between a server and an organization\(aqs infrastructure. Knife interacts with a server by using the same REST API that is used by a seth\-client. Role\-based authentication controls (RBAC) can be used to authorize changes when Knife is run with Hosted Seth or Private Chef. Knife is configured during workstation setup, but subsequent modifications can be made using the knife.rb configuration file.
+Knife runs from a management workstation and sits in\-between a server and an organization\(aqs infrastructure. Knife interacts with a server by using the same REST API that is used by a seth\-client. Role\-based authentication controls (RBAC) can be used to authorize changes when Knife is run with Hosted Seth or Private seth. Knife is configured during workstation setup, but subsequent modifications can be made using the knife.rb configuration file.
 .SS JSON Data Format
 .sp
 Most data is entered using a text editor in JSON format, unless the \fB\-\-disable\-editing\fP option is entered as part of a command. (Encrypted data bags use YAML, which is a superset of JSON.) JSON is a common, language\-independent data format that provides a simple text representation of arbitrary data structures. For more information about JSON, see \fI\%http://www.json.org/\fP or \fI\%http://en.wikipedia.org/wiki/JSON\fP.

@@ -82,7 +82,7 @@ module AptServer
   end
 
   def apt_data_dir
-    File.join(CHEF_SPEC_DATA, "apt")
+    File.join(seth_SPEC_DATA, "apt")
   end
 end
 
@@ -132,7 +132,7 @@ describe Seth::Resource::Package, metadata do
     # TODO: lots of duplication from client.rb;
     # All of this must be setup for preseed files to get found
     let(:cookbook_collection) do
-      cookbook_path = File.join(CHEF_SPEC_DATA, "cookbooks")
+      cookbook_path = File.join(seth_SPEC_DATA, "cookbooks")
       cl = Seth::CookbookLoader.new(cookbook_path)
       cl.load_cookbooks
       Seth::Cookbook::FileVendor.on_create do |manifest|
@@ -203,7 +203,7 @@ describe Seth::Resource::Package, metadata do
 
         before do
           Seth::Config[:file_cache_path] = file_cache_path
-          debconf_reset = 'seth-integration-test chef-integration-test/sample-var string "INVALID"'
+          debconf_reset = 'seth-integration-test seth-integration-test/sample-var string "INVALID"'
           shell_out!("echo #{debconf_reset} |debconf-set-selections")
         end
 
@@ -232,7 +232,7 @@ describe Seth::Resource::Package, metadata do
             before do
               # Code here is duplicated from the implementation. Not great, but
               # it should at least fail if the code gets out of sync.
-              source = File.join(CHEF_SPEC_DATA, "cookbooks/preseed/files/default/preseed-file.seed")
+              source = File.join(seth_SPEC_DATA, "cookbooks/preseed/files/default/preseed-file.seed")
               file_cache_dir = Seth::FileCache.create_cache_path("preseed/preseed")
               dest = "#{file_cache_dir}/seth-integration-test-1.1-1.seed"
               FileUtils.cp(source, dest)
@@ -297,7 +297,7 @@ describe Seth::Resource::Package, metadata do
     context "and the desired version of the package is installed" do
 
       before do
-        v_1_1_package = File.expand_path("apt/seth-integration-test_1.1-1_amd64.deb", CHEF_SPEC_DATA)
+        v_1_1_package = File.expand_path("apt/seth-integration-test_1.1-1_amd64.deb", seth_SPEC_DATA)
         shell_out!("dpkg -i #{v_1_1_package}")
       end
 
@@ -351,7 +351,7 @@ describe Seth::Resource::Package, metadata do
 
     context "and an older version of the package is installed" do
       before do
-        v_1_0_package = File.expand_path("apt/seth-integration-test_1.0-1_amd64.deb", CHEF_SPEC_DATA)
+        v_1_0_package = File.expand_path("apt/seth-integration-test_1.0-1_amd64.deb", seth_SPEC_DATA)
         shell_out!("dpkg -i #{v_1_0_package}")
       end
 

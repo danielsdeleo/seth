@@ -49,7 +49,7 @@ new-variable -name sethscriptresult -visibility private
 $sethscriptresult = {
 #{target_code}
 }.invokereturnasis()
-if ($interpolatedexitcode -and $sethscriptresult.gettype().name -eq 'boolean') { exit [int32](!$chefscriptresult) } else { exit 0 }
+if ($interpolatedexitcode -and $sethscriptresult.gettype().name -eq 'boolean') { exit [int32](!$sethscriptresult) } else { exit 0 }
 EOH
       end
 

@@ -17,16 +17,16 @@
 #
 
 #
-# shared code for Seth::REST and Chef::HTTP::Simple and other Chef::HTTP wrappers
+# shared code for Seth::REST and seth::HTTP::Simple and other seth::HTTP wrappers
 #
 
 module SethHTTPShared
   def nyan_uncompressed_filename
-    File.join(CHEF_SPEC_DATA, 'remote_file', 'nyan_cat.png')
+    File.join(seth_SPEC_DATA, 'remote_file', 'nyan_cat.png')
   end
 
   def nyan_compressed_filename
-    File.join(CHEF_SPEC_DATA, 'remote_file', 'nyan_cat.png.gz')
+    File.join(seth_SPEC_DATA, 'remote_file', 'nyan_cat.png.gz')
   end
 
   def binread(file)

@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/chef_repository_file_system_entry'
-require 'seth/chef_fs/file_system/chef_repository_file_system_cookbook_dir'
-require 'seth/cookbook/chefignore'
+require 'seth/seth_fs/file_system/seth_repository_file_system_entry'
+require 'seth/seth_fs/file_system/seth_repository_file_system_cookbook_dir'
+require 'seth/cookbook/sethignore'
 
 class Seth
   module SethFS
     module FileSystem
-      class SethRepositoryFileSystemCookbooksDir < ChefRepositoryFileSystemEntry
+      class SethRepositoryFileSystemCookbooksDir < sethRepositoryFileSystemEntry
         def initialize(name, parent, file_path)
           super(name, parent, file_path)
           begin
-            @sethignore = Seth::Cookbook::Chefignore.new(self.file_path)
+            @sethignore = Seth::Cookbook::sethignore.new(self.file_path)
           rescue Errno::EISDIR
           rescue Errno::EACCES
             # Work around a bug in Sethignore when sethignore is a directory
@@ -51,7 +51,7 @@ class Seth
                   end
                 end
           rescue Errno::ENOENT
-            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::sethFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 
@@ -65,7 +65,7 @@ class Seth
 
           # Use the copy/diff algorithm to copy it down so we don't destroy
           # sethignored data.  This is terribly un-thread-safe.
-          Seth::ChefFS::FileSystem.copy_to(Chef::ChefFS::FilePattern.new("/#{cookbook_path}"), from_fs, child, nil, {:purge => true})
+          Seth::sethFS::FileSystem.copy_to(seth::sethFS::FilePattern.new("/#{cookbook_path}"), from_fs, child, nil, {:purge => true})
 
           # Write out .uploaded-cookbook-version.json
           cookbook_file_path = File.join(file_path, cookbook_name)

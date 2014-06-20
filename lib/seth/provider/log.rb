@@ -23,7 +23,7 @@ class Seth
     class Log
 
       # Seth log provider, allows logging to seth's logs from recipes
-      class SethLog < Chef::Provider
+      class SethLog < seth::Provider
 
         # ordered array of the log levels
         @@levels = [ :debug, :info, :warn, :error, :fatal ]

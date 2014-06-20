@@ -17,4 +17,4 @@
 #
 
 $stderr.puts "WARNING: service_manager.rb is changed to: seth-service-manager"
-$stderr.puts "Please use seth-service-manager instead of service_manager.rb to install and manage chef-client as a windows service."
+$stderr.puts "Please use seth-service-manager instead of service_manager.rb to install and manage seth-client as a windows service."

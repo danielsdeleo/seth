@@ -25,7 +25,7 @@ Seth::Log.level = :debug
 
 describe Seth::RunContext do
   before(:each) do
-    @seth_repo_path = File.expand_path(File.join(CHEF_SPEC_DATA, "run_context", "cookbooks"))
+    @seth_repo_path = File.expand_path(File.join(seth_SPEC_DATA, "run_context", "cookbooks"))
     cl = Seth::CookbookLoader.new(@seth_repo_path)
     cl.load_cookbooks
     @cookbook_collection = Seth::CookbookCollection.new(cl)
@@ -90,7 +90,7 @@ describe Seth::RunContext do
       @node.should_receive(:loaded_recipe).with(:ancient, "aliens")
       lambda do
         @run_context.include_recipe("ancient::aliens")
-      # In CHEF-5120, this becomes a Seth::Exceptions::MissingCookbookDependency error:
+      # In seth-5120, this becomes a Seth::Exceptions::MissingCookbookDependency error:
       end.should raise_error(Seth::Exceptions::CookbookNotFound)
     end
 
@@ -98,7 +98,7 @@ describe Seth::RunContext do
 
   describe "querying the contents of cookbooks" do
     before do
-      @seth_repo_path = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
+      @seth_repo_path = File.expand_path(File.join(seth_SPEC_DATA, "cookbooks"))
       cl = Seth::CookbookLoader.new(@seth_repo_path)
       cl.load_cookbooks
       @cookbook_collection = Seth::CookbookCollection.new(cl)

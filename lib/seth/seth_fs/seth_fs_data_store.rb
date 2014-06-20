@@ -19,17 +19,17 @@
 require 'seth_zero/data_store/memory_store'
 require 'seth_zero/data_store/data_already_exists_error'
 require 'seth_zero/data_store/data_not_found_error'
-require 'seth/chef_fs/file_pattern'
-require 'seth/chef_fs/file_system'
-require 'seth/chef_fs/file_system/not_found_error'
-require 'seth/chef_fs/file_system/memory_root'
+require 'seth/seth_fs/file_pattern'
+require 'seth/seth_fs/file_system'
+require 'seth/seth_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/memory_root'
 require 'fileutils'
 
 class Seth
   module SethFS
     class SethFSDataStore
       def initialize(seth_fs)
-        @seth_fs = chef_fs
+        @seth_fs = seth_fs
         @memory_store = SethZero::DataStore::MemoryStore.new
       end
 
@@ -46,7 +46,7 @@ class Seth
           with_dir(path) do |parent|
             begin
               parent.create_child(seth_fs_filename(path + [name]), nil)
-            rescue Seth::ChefFS::FileSystem::AlreadyExistsError => e
+            rescue Seth::sethFS::FileSystem::AlreadyExistsError => e
               raise SethZero::DataStore::DataAlreadyExistsError.new(to_zero_path(e.entry), e)
             end
           end
@@ -68,7 +68,7 @@ class Seth
           with_dir(path) do |parent|
             begin
               parent.create_child(seth_fs_filename(path + [name]), data)
-            rescue Seth::ChefFS::FileSystem::AlreadyExistsError => e
+            rescue Seth::sethFS::FileSystem::AlreadyExistsError => e
               raise SethZero::DataStore::DataAlreadyExistsError.new(to_zero_path(e.entry), e)
             end
           end
@@ -80,10 +80,10 @@ class Seth
           @memory_store.get(path)
 
         elsif path[0] == 'file_store' && path[1] == 'repo'
-          entry = Seth::ChefFS::FileSystem.resolve_path(seth_fs, path[2..-1].join('/'))
+          entry = Seth::sethFS::FileSystem.resolve_path(seth_fs, path[2..-1].join('/'))
           begin
             entry.read
-          rescue Seth::ChefFS::FileSystem::NotFoundError => e
+          rescue Seth::sethFS::FileSystem::NotFoundError => e
             raise SethZero::DataStore::DataNotFoundError.new(to_zero_path(e.entry), e)
           end
 
@@ -94,7 +94,7 @@ class Seth
               result = nil
               begin
                 result = entry.seth_object.to_hash
-              rescue Seth::ChefFS::FileSystem::NotFoundError => e
+              rescue Seth::sethFS::FileSystem::NotFoundError => e
                 raise SethZero::DataStore::DataNotFoundError.new(to_zero_path(e.entry), e)
               end
 
@@ -119,7 +119,7 @@ class Seth
             else
               begin
                 entry.read
-              rescue Seth::ChefFS::FileSystem::NotFoundError => e
+              rescue Seth::sethFS::FileSystem::NotFoundError => e
                 raise SethZero::DataStore::DataNotFoundError.new(to_zero_path(e.entry), e)
               end
             end
@@ -162,7 +162,7 @@ class Seth
               else
                 entry.delete(false)
               end
-            rescue Seth::ChefFS::FileSystem::NotFoundError => e
+            rescue Seth::sethFS::FileSystem::NotFoundError => e
               raise SethZero::DataStore::DataNotFoundError.new(to_zero_path(e.entry), e)
             end
           end
@@ -176,7 +176,7 @@ class Seth
           with_entry(path) do |entry|
             begin
               entry.delete(options.include?(:recursive))
-            rescue Seth::ChefFS::FileSystem::NotFoundError => e
+            rescue Seth::sethFS::FileSystem::NotFoundError => e
               raise SethZero::DataStore::DataNotFoundError.new(to_zero_path(e.entry), e)
             end
           end
@@ -196,7 +196,7 @@ class Seth
               else
                 entry.children.map { |child| child.name }
               end
-            rescue Seth::ChefFS::FileSystem::NotFoundError
+            rescue Seth::sethFS::FileSystem::NotFoundError
               # If the cookbooks dir doesn't exist, we have no cookbooks (not 404)
               []
             end
@@ -224,7 +224,7 @@ class Seth
           with_entry(path) do |entry|
             begin
               entry.children.map { |c| zero_filename(c) }.sort
-            rescue Seth::ChefFS::FileSystem::NotFoundError => e
+            rescue Seth::sethFS::FileSystem::NotFoundError => e
               # /cookbooks, /data, etc. never return 404
               if path_always_exists?(path)
                 []
@@ -240,7 +240,7 @@ class Seth
         if use_memory_store?(path)
           @memory_store.exists?(path)
         else
-          path_always_exists?(path) || Seth::ChefFS::FileSystem.resolve_path(seth_fs, to_chef_fs_path(path)).exists?
+          path_always_exists?(path) || Seth::sethFS::FileSystem.resolve_path(seth_fs, to_seth_fs_path(path)).exists?
         end
       end
 
@@ -250,7 +250,7 @@ class Seth
         elsif path[0] == 'cookbooks' && path.length == 2
           list([ path[0] ]).include?(path[1])
         else
-          Seth::ChefFS::FileSystem.resolve_path(seth_fs, to_chef_fs_path(path)).exists?
+          Seth::sethFS::FileSystem.resolve_path(seth_fs, to_seth_fs_path(path)).exists?
         end
       end
 
@@ -267,8 +267,8 @@ class Seth
           cookbook_path = File.join('cookbooks', path[1])
         end
 
-        # Create a little Seth::ChefFS memory filesystem with the data
-        cookbook_fs = Seth::ChefFS::FileSystem::MemoryRoot.new('uploading')
+        # Create a little Seth::sethFS memory filesystem with the data
+        cookbook_fs = Seth::sethFS::FileSystem::MemoryRoot.new('uploading')
         cookbook = JSON.parse(data, :create_additions => false)
         cookbook.each_pair do |key, value|
           if value.is_a?(Array)
@@ -382,8 +382,8 @@ class Seth
 
       def with_entry(path)
         begin
-          yield Seth::ChefFS::FileSystem.resolve_path(seth_fs, to_chef_fs_path(path))
-        rescue Seth::ChefFS::FileSystem::NotFoundError => e
+          yield Seth::sethFS::FileSystem.resolve_path(seth_fs, to_seth_fs_path(path))
+        rescue Seth::sethFS::FileSystem::NotFoundError => e
           raise SethZero::DataStore::DataNotFoundError.new(to_zero_path(e.entry), e)
         end
       end
@@ -393,13 +393,13 @@ class Seth
         create = !(path[0] == 'data' && path.size >= 2)
         begin
           yield get_dir(_to_seth_fs_path(path), create)
-        rescue Seth::ChefFS::FileSystem::NotFoundError => e
+        rescue Seth::sethFS::FileSystem::NotFoundError => e
           raise SethZero::DataStore::DataNotFoundError.new(to_zero_path(e.entry), e)
         end
       end
 
       def get_dir(path, create=false)
-        result = Seth::ChefFS::FileSystem.resolve_path(seth_fs, path.join('/'))
+        result = Seth::sethFS::FileSystem.resolve_path(seth_fs, path.join('/'))
         if result.exists?
           result
         elsif create
@@ -410,7 +410,7 @@ class Seth
       end
 
       def get_single_cookbook_version(path)
-        dir = Seth::ChefFS::FileSystem.resolve_path(seth_fs, path[0..1].join('/'))
+        dir = Seth::sethFS::FileSystem.resolve_path(seth_fs, path[0..1].join('/'))
         metadata = SethZero::CookbookData.metadata_from(dir, path[1], nil, [])
         metadata[:version] || '0.0.0'
       end

@@ -23,7 +23,7 @@ describe Seth::Knife::NodeEdit do
 
   # helper to convert the view from Seth objects into Ruby objects representing JSON
   def deserialized_json_view
-    actual = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json_pretty(@knife.node_editor.send(:view)))
+    actual = Seth::JSONCompat.from_json(seth::JSONCompat.to_json_pretty(@knife.node_editor.send(:view)))
   end
 
   before(:each) do

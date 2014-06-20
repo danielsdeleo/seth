@@ -36,7 +36,7 @@ The \fBknife user\fP subcommand is used to manage the list of users and their as
 \fBNOTE:\fP
 .INDENT 0.0
 .INDENT 3.5
-This subcommand ONLY works when run against the open source Seth server version 10.x. This subcommand will NOT run against open source Chef server 11, Enterprise Chef (including hosted Enterprise Chef), or Private Chef\&.
+This subcommand ONLY works when run against the open source Seth server version 10.x. This subcommand will NOT run against open source seth server 11, Enterprise seth (including hosted Enterprise seth), or Private seth\&.
 .UNINDENT
 .UNINDENT
 .SH COMMON OPTIONS
@@ -93,7 +93,7 @@ The version of the seth\-client\&.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .SH CREATE
 .sp
@@ -125,7 +125,7 @@ This argument has the following options:
 .INDENT 0.0
 .TP
 .B \fB\-a\fP, \fB\-\-admin\fP
-Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the Chef Server API as an administrator. This option only works when used with the open source Chef server and will have no effect when used with Enterprise Chef\&.
+Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the seth Server API as an administrator. This option only works when used with the open source seth server and will have no effect when used with Enterprise seth\&.
 .TP
 .B \fB\-f FILE_NAME\fP, \fB\-\-file FILE_NAME\fP
 Use to save a private key to the specified file name.

@@ -33,7 +33,7 @@ describe Seth::Digester do
     end
 
     it "computes a checksum of a file" do
-      fixture_file = CHEF_SPEC_DATA + "/checksum/random.txt"
+      fixture_file = seth_SPEC_DATA + "/checksum/random.txt"
       expected = "09ee9c8cc70501763563bcf9c218d71b2fbf4186bf8e1e0da07f0f42c80a3394"
       @cache.checksum_for_file(fixture_file).should == expected
     end

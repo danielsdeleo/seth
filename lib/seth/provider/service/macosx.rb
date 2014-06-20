@@ -173,7 +173,7 @@ class Seth
       private
 
         def find_service_label
-          # CHEF-5223 "you can't glob for a file that hasn't been converged
+          # seth-5223 "you can't glob for a file that hasn't been converged
           # onto the node yet."
           return nil if @plist.nil?
 

@@ -23,8 +23,8 @@ require 'spec_helper'
 describe Seth::Knife::CookbookMetadataFromFile do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @src = File.expand_path(File.join(CHEF_SPEC_DATA, "metadata", "quick_start", "metadata.rb"))
-    @tgt = File.expand_path(File.join(CHEF_SPEC_DATA, "metadata", "quick_start", "metadata.json"))
+    @src = File.expand_path(File.join(seth_SPEC_DATA, "metadata", "quick_start", "metadata.rb"))
+    @tgt = File.expand_path(File.join(seth_SPEC_DATA, "metadata", "quick_start", "metadata.json"))
     @knife = Seth::Knife::CookbookMetadataFromFile.new
     @knife.name_args = [ @src ]
     @knife.stub(:to_json_pretty).and_return(true)

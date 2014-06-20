@@ -17,19 +17,19 @@ After receiving three MVP awards, we add someone to the hall of fame. We want to
 
 | Release | Date | MVP |
 |---------|------|-----|
-| [Client 11.10.4](http://www.getseth.com/blog/2014/02/20/chef-client-patch-release-11-10-4/) | 2014-02-20 | Jon Cowie |
-| [Client 11.10.2](http://www.getseth.com/blog/2014/02/18/chef-client-release-11-10-2-10-30-4/) | 2014-02-18 | Eric Tucker |
-| [Client 11.10.0](http://www.getseth.com/blog/2014/02/06/chef-client-11-10-0-release/) | 2014-02-06 | Nikhil Benesch |
-| [Client 11.8.2](http://www.getseth.com/blog/2013/12/06/release-chef-client-10-30-2-11-8-2-mixlib-shellout-1-3-0/) | 2013-12-06 | James Ogden |
+| [Client 11.10.4](http://www.getseth.com/blog/2014/02/20/seth-client-patch-release-11-10-4/) | 2014-02-20 | Jon Cowie |
+| [Client 11.10.2](http://www.getseth.com/blog/2014/02/18/seth-client-release-11-10-2-10-30-4/) | 2014-02-18 | Eric Tucker |
+| [Client 11.10.0](http://www.getseth.com/blog/2014/02/06/seth-client-11-10-0-release/) | 2014-02-06 | Nikhil Benesch |
+| [Client 11.8.2](http://www.getseth.com/blog/2013/12/06/release-seth-client-10-30-2-11-8-2-mixlib-shellout-1-3-0/) | 2013-12-06 | James Ogden |
 | [Client 11.8.0](http://www.opscode.com/blog/2013/10/31/release-seth-client-11-8-0-ohai-6-20-0/) | 2013-10-31 | Eric Saxby |
-| [Client 11.6.2](http://www.getseth.com/blog/2013/10/08/release-chef-client-11-6-2-10-28-2/) | 2013-10-08 | Jeff Blaine |
+| [Client 11.6.2](http://www.getseth.com/blog/2013/10/08/release-seth-client-11-6-2-10-28-2/) | 2013-10-08 | Jeff Blaine |
 | [Client 11.6.0](http://www.opscode.com/blog/2013/07/23/seth-client-11-6-0-ohai-6-18-0-and-more/) | 2013-07-23 | Jesse Campbell |
 | [Client 11.4.0](http://www.opscode.com/blog/2013/02/13/seth-client-11-4-0-10-22-0-released/) | 2013-02-13 | Vaidas Jablonskis |
 | [Client 11.2.0](http://www.opscode.com/blog/2013/02/07/seth-client-11-2-0-10-20-0-released/) | 2013-02-06 | Mike Javorski |
 | [Seth 11.0.0](http://www.opscode.com/blog/2013/02/04/seth-11-released/) | 2013-02-04 | Andrea Campi, Bryan Berry |
-| [Seth 10.30.4](http://www.getseth.com/blog/2014/02/18/chef-client-release-11-10-2-10-30-4/) | 2014-02-18 | Christopher Laco |
-| [Seth 10.30.2](http://www.getseth.com/blog/2013/12/06/release-chef-client-10-30-2-11-8-2-mixlib-shellout-1-3-0/) | 2013-12-06 | Phil Dibowitz |
-| [Seth 10.28.2](http://www.getseth.com/blog/2013/10/08/release-chef-client-11-6-2-10-28-2/) | 2013-10-08 | Jeff Blaine |
+| [Seth 10.30.4](http://www.getseth.com/blog/2014/02/18/seth-client-release-11-10-2-10-30-4/) | 2014-02-18 | Christopher Laco |
+| [Seth 10.30.2](http://www.getseth.com/blog/2013/12/06/release-seth-client-10-30-2-11-8-2-mixlib-shellout-1-3-0/) | 2013-12-06 | Phil Dibowitz |
+| [Seth 10.28.2](http://www.getseth.com/blog/2013/10/08/release-seth-client-11-6-2-10-28-2/) | 2013-10-08 | Jeff Blaine |
 | [Seth 10.28.0](http://www.opscode.com/blog/2013/09/03/seth-10-28-0-released/) | 2013-09-03 | Jeff Blaine |
 | [Seth 10.26.0](http://www.opscode.com/blog/2013/05/08/seth-10-26-0-released/) | 2013-05-08 | Ranjib Dey |
 | [Seth 10.24.0](http://www.opscode.com/blog/2013/02/15/seth-server-11-0-6-and-10-24-0-released/) | 2013-02-15 | Anthony Goddard |
@@ -73,8 +73,8 @@ After receiving three MVP awards, we add someone to the hall of fame. We want to
 | [Seth 0.7.10](http://www.opscode.com/blog/2009/09/04/seth-0-7-10-release/) | 2009-09-04 | Dan DeLeo |
 | [Seth 0.7.8](http://www.opscode.com/blog/2009/08/13/seth-0-7-8-release/) | 2009-08-13 | Jeppe Nejsum Madsen |
 | [Seth 0.7.6](http://www.opscode.com/blog/2009/08/08/seth-0-7-6-release/) | 2009-08-08 | Grant Zanetti |
-| [Seth 0.7.4](http://www.opscode.com/blog/2009/06/26/back-to-back-seth-0-7-2-and-chef-0-7-4-released/) | 2009-06-26 | Hongli Lai |
-| [Seth 0.7.2](http://www.opscode.com/blog/2009/06/26/back-to-back-seth-0-7-2-and-chef-0-7-4-released/) | 2009-06-26 | Joshua Sierles |
+| [Seth 0.7.4](http://www.opscode.com/blog/2009/06/26/back-to-back-seth-0-7-2-and-seth-0-7-4-released/) | 2009-06-26 | Hongli Lai |
+| [Seth 0.7.2](http://www.opscode.com/blog/2009/06/26/back-to-back-seth-0-7-2-and-seth-0-7-4-released/) | 2009-06-26 | Joshua Sierles |
 | [Seth 0.7.0](http://www.opscode.com/blog/2009/06/10/seth-0-7-0-release/) | 2009-06-10 | Matthew Kent |
 | [Seth 0.6.2](http://www.opscode.com/blog/2009/04/29/seth-0-6-2-release/) | 2009-04-29 | David Balatero |
 | [Seth 0.6.0](http://www.opscode.com/blog/2009/04/29/seth-0-6-0-release/) | 2009-04-29 | Matthew Kent |

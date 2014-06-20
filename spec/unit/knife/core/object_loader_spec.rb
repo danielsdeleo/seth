@@ -25,7 +25,7 @@ describe Seth::Knife::Core::ObjectLoader do
     @knife = Seth::Knife.new
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
-    Dir.chdir(File.join(CHEF_SPEC_DATA, 'object_loader'))
+    Dir.chdir(File.join(seth_SPEC_DATA, 'object_loader'))
   end
 
   shared_examples_for "Seth object" do |seth_class|
@@ -57,7 +57,7 @@ describe Seth::Knife::Core::ObjectLoader do
         it_behaves_like "Seth object", seth_class
       end
 
-      #NOTE: This is check for the bug described at CHEF-2352
+      #NOTE: This is check for the bug described at seth-2352
       describe "when the file is a JSON" do
         describe "and it has defined 'json_class'" do
           before do

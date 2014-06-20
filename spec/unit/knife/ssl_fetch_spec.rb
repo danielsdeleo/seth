@@ -44,7 +44,7 @@ describe Seth::Knife::SslFetch do
   context "when no arguments are given" do
 
     before do
-      Seth::Config.seth_server_url = "https://example.com:8443/chef-server"
+      Seth::Config.seth_server_url = "https://example.com:8443/seth-server"
     end
 
     it "uses the seth_server_url as the host to fetch" do
@@ -115,7 +115,7 @@ E
     let(:tcp_socket) { double(TCPSocket) }
     let(:ssl_socket) { double(OpenSSL::SSL::SSLSocket) }
 
-    let(:self_signed_crt_path) { File.join(CHEF_SPEC_DATA, "trusted_certs", "example.crt") }
+    let(:self_signed_crt_path) { File.join(seth_SPEC_DATA, "trusted_certs", "example.crt") }
     let(:self_signed_crt) { OpenSSL::X509::Certificate.new(File.read(self_signed_crt_path)) }
 
     let(:trusted_certs_dir) { Dir.mktmpdir }

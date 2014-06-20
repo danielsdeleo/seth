@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/file_system_entry'
-require 'seth/chef_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/file_system_entry'
+require 'seth/seth_fs/file_system/not_found_error'
 
 class Seth
   module SethFS
@@ -43,7 +43,7 @@ class Seth
           begin
             return data_handler.seth_object(JSON.parse(read, :create_additions => false))
           rescue
-            Seth::Log.error("Could not read #{path_for_printing} into a Chef object: #{$!}")
+            Seth::Log.error("Could not read #{path_for_printing} into a seth object: #{$!}")
           end
           nil
         end
@@ -73,7 +73,7 @@ class Seth
                 select { |child_name| can_have_child?(child_name, File.directory?(File.join(file_path, child_name))) }.
                 map { |child_name| make_child(child_name) }
           rescue Errno::ENOENT
-            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::sethFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 

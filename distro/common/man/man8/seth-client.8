@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "CHEF-CLIENT" "8" "Seth 11.12.0" "" "seth-client"
+.TH "seth-CLIENT" "8" "Seth 11.12.0" "" "seth-client"
 .SH NAME
-seth-client \- The man page for the chef-client command line tool.
+seth-client \- The man page for the seth-client command line tool.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-A seth\-client is an agent that runs locally on every node that is registered with the Seth server\&. When a chef\-client is run, it will perform all of the steps that are required to bring the node into the expected state, including:
+A seth\-client is an agent that runs locally on every node that is registered with the Seth server\&. When a seth\-client is run, it will perform all of the steps that are required to bring the node into the expected state, including:
 .INDENT 0.0
 .IP \(bu 2
 Registering and authenticating the node with the Seth server
@@ -64,7 +64,7 @@ A client.rb file is used to specify the configuration details for the seth\-clie
 .IP \(bu 2
 This file is loaded every time this executable is run
 .IP \(bu 2
-On UNIX\- and Linux\-based machines, the default location for this file is \fB/etc/seth/client.rb\fP; on Microsoft Windows machines, the default location for this file is \fBC:\echef\eclient.rb\fP; use the \fB\-\-config\fP option from the command line to change this location
+On UNIX\- and Linux\-based machines, the default location for this file is \fB/etc/seth/client.rb\fP; on Microsoft Windows machines, the default location for this file is \fBC:\eseth\eclient.rb\fP; use the \fB\-\-config\fP option from the command line to change this location
 .IP \(bu 2
 This file is not created by default
 .IP \(bu 2
@@ -90,7 +90,7 @@ This command has the following options:
 .INDENT 0.0
 .TP
 .B \fB\-A\fP, \fB\-\-fatal\-windows\-admin\-check\fP
-Use to cause a seth\-client run to fail when the chef\-client does not have administrator privileges in Microsoft Windows\&.
+Use to cause a seth\-client run to fail when the seth\-client does not have administrator privileges in Microsoft Windows\&.
 .TP
 .B \fB\-c CONFIG\fP, \fB\-\-config CONFIG\fP
 The configuration file to use.
@@ -103,7 +103,7 @@ The output format: \fBdoc\fP (default) or \fBmin\fP\&.
 .sp
 Use \fBdoc\fP to print the progress of the seth\-client run using full strings that display a summary of updates as they occur.
 .sp
-Use \fBmin\fP to print the progress of the seth\-client run using single characters. A summary of updates is printed at the end of the chef\-client run. A dot (\fB\&.\fP) is printed for events that do not have meaningful status information, such as loading a file or synchronizing a cookbook. For resources, a dot (\fB\&.\fP) is printed when the resource is up to date, an \fBS\fP is printed when the resource is skipped by \fBnot_if\fP or \fBonly_if\fP, and a \fBU\fP is printed when the resource is updated.
+Use \fBmin\fP to print the progress of the seth\-client run using single characters. A summary of updates is printed at the end of the seth\-client run. A dot (\fB\&.\fP) is printed for events that do not have meaningful status information, such as loading a file or synchronizing a cookbook. For resources, a dot (\fB\&.\fP) is printed when the resource is up to date, an \fBS\fP is printed when the resource is skipped by \fBnot_if\fP or \fBonly_if\fP, and a \fBU\fP is printed when the resource is updated.
 .sp
 Other formatting options are available when those formatters are configured in the client.rb file using the \fBadd_formatter\fP option.
 .TP
@@ -129,7 +129,7 @@ The path to a file that contains JSON data.
 The location of the file which contains the client key. Default value: \fB/etc/seth/client.pem\fP\&.
 .TP
 .B \fB\-K KEY_FILE\fP, \fB\-\-validation_key KEY_FILE\fP
-The location of the file which contains the key used when a seth\-client is registered with a Seth server\&. A validation key is signed using the \fBvalidation_client_name\fP for authentication. Default value: \fB/etc/chef/validation.pem\fP\&.
+The location of the file which contains the key used when a seth\-client is registered with a Seth server\&. A validation key is signed using the \fBvalidation_client_name\fP for authentication. Default value: \fB/etc/seth/validation.pem\fP\&.
 .TP
 .B \fB\-l LEVEL\fP, \fB\-\-log_level LEVEL\fP
 The level of logging that will be stored in a log file.
@@ -161,7 +161,7 @@ The path to a recipe. For example, if a recipe file is in the current directory,
 .B \fB\-s SECONDS\fP, \fB\-\-splay SECONDS\fP
 A number (in seconds) to add to the \fBinterval\fP that is used to determine the frequency of seth\-client runs. This number can help prevent server load when there are many clients running at the same time.
 .TP
-.B \fB\-S CHEF_SERVER_URL\fP, \fB\-\-server CHEF_SERVER_URL\fP
+.B \fB\-S seth_SERVER_URL\fP, \fB\-\-server seth_SERVER_URL\fP
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
@@ -171,10 +171,10 @@ The user that owns a process. This is required when starting any executable as a
 The version of the seth\-client\&.
 .TP
 .B \fB\-W\fP, \fB\-\-why\-run\fP
-Indicates that the executable will be run in why\-run mode, which is a type of seth\-client run that does everything except modify the system. Use why\-run mode to understand why the chef\-client makes the decisions that it makes and to learn more about the current and proposed state of the system.
+Indicates that the executable will be run in why\-run mode, which is a type of seth\-client run that does everything except modify the system. Use why\-run mode to understand why the seth\-client makes the decisions that it makes and to learn more about the current and proposed state of the system.
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .SH RUN WITH ELEVATED PRIVILEGES
 .sp
@@ -189,7 +189,7 @@ On Linux, the following error sometimes occurs when the permissions used to run 
 .ft C
 $ seth\-client
 [Tue, 29 Nov 2011 19:46:17 \-0800] INFO: *** Seth 10.X.X ***
-[Tue, 29 Nov 2011 19:46:18 \-0800] WARN: Failed to read the private key /etc/seth/client.pem: #<Errno::EACCES: Permission denied \- /etc/chef/client.pem>
+[Tue, 29 Nov 2011 19:46:18 \-0800] WARN: Failed to read the private key /etc/seth/client.pem: #<Errno::EACCES: Permission denied \- /etc/seth/client.pem>
 .ft P
 .fi
 .UNINDENT
@@ -244,11 +244,11 @@ $ sudo seth\-client
 .UNINDENT
 .UNINDENT
 .IP \(bu 2
-Give a user access to read \fB/etc/seth\fP and also the files accessed by the chef\-client\&. This requires super user privileges and, as such, is not a recommended approach
+Give a user access to read \fB/etc/seth\fP and also the files accessed by the seth\-client\&. This requires super user privileges and, as such, is not a recommended approach
 .UNINDENT
 .SS Windows
 .sp
-On Microsoft Windows, running without elevated privileges (when they are necessary) is an issue that fails silently. It will appear that the seth\-client completed its run successfully, but the changes will not have been made. When this occurs, do one of the following to run the chef\-client as the administrator:
+On Microsoft Windows, running without elevated privileges (when they are necessary) is an issue that fails silently. It will appear that the seth\-client completed its run successfully, but the changes will not have been made. When this occurs, do one of the following to run the seth\-client as the administrator:
 .INDENT 0.0
 .IP \(bu 2
 Log in to the administrator account. (This is not the same as an account in the administrator\(aqs security group.)
@@ -277,7 +277,7 @@ Open a command prompt by right\-clicking on the command prompt application, and 
 .sp
 \fBStart a Seth run when the seth\-client is running as a daemon\fP
 .sp
-A seth\-client that is running as a daemon can be woken up and started by sending the process a \fBSIGUSR1\fP\&. For example, to trigger a chef\-client run on a machine running Linux:
+A seth\-client that is running as a daemon can be woken up and started by sending the process a \fBSIGUSR1\fP\&. For example, to trigger a seth\-client run on a machine running Linux:
 .INDENT 0.0
 .INDENT 3.5
 .sp

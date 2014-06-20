@@ -60,7 +60,7 @@ describe Seth::Formatters::ErrorInspectors::ResourceFailureInspector do
       @trace = [
         "/var/seth/cache/cookbooks/syntax-err/recipes/default.rb:14:in `from_file'",
         "/var/seth/cache/cookbooks/syntax-err/recipes/default.rb:11:in `from_file'",
-        "/usr/local/lib/ruby/gems/seth/lib/chef/client.rb:123:in `run'" # should not display
+        "/usr/local/lib/ruby/gems/seth/lib/seth/client.rb:123:in `run'" # should not display
       ]
       @exception = Seth::Exceptions::Package.new("No such package 'non-existing-package'")
       @exception.set_backtrace(@trace)
@@ -120,14 +120,14 @@ describe Seth::Formatters::ErrorInspectors::ResourceFailureInspector do
       end
 
       it "parses a Windows path" do
-        source_line = "C:/Users/btm/seth/chef/spec/unit/fake_file.rb:2: undefined local variable or method `non_existant' for main:Object (NameError)"
+        source_line = "C:/Users/btm/seth/seth/spec/unit/fake_file.rb:2: undefined local variable or method `non_existant' for main:Object (NameError)"
         @resource.source_line = source_line
         @inspector = Seth::Formatters::ErrorInspectors::ResourceFailureInspector.new(@resource, :create, @exception)
         @inspector.recipe_snippet.should match(/^# In C:\/Users\/btm/)
       end
 
       it "parses a unix path" do
-        source_line = "/home/btm/src/seth/chef/spec/unit/fake_file.rb:2: undefined local variable or method `non_existant' for main:Object (NameError)"
+        source_line = "/home/btm/src/seth/seth/spec/unit/fake_file.rb:2: undefined local variable or method `non_existant' for main:Object (NameError)"
         @resource.source_line = source_line
         @inspector = Seth::Formatters::ErrorInspectors::ResourceFailureInspector.new(@resource, :create, @exception)
         @inspector.recipe_snippet.should match(/^# In \/home\/btm/)
@@ -139,13 +139,13 @@ describe Seth::Formatters::ErrorInspectors::ResourceFailureInspector do
           IO.stub(:readlines).and_raise(Errno::ENOENT)
         end
 
-        it "does not try to parse a recipe in seth-shell/irb (CHEF-3411)" do
+        it "does not try to parse a recipe in seth-shell/irb (seth-3411)" do
           @resource.source_line = "(irb#1):1:in `irb_binding'"
           @inspector = Seth::Formatters::ErrorInspectors::ResourceFailureInspector.new(@resource, :create, @exception)
           @inspector.recipe_snippet.should be_nil
         end
 
-        it "does not raise an exception trying to load a non-existant file (CHEF-3411)" do
+        it "does not raise an exception trying to load a non-existant file (seth-3411)" do
           @resource.source_line = "/somewhere/in/space"
           @inspector = Seth::Formatters::ErrorInspectors::ResourceFailureInspector.new(@resource, :create, @exception)
           lambda { @inspector.recipe_snippet }.should_not raise_error
@@ -155,7 +155,7 @@ describe Seth::Formatters::ErrorInspectors::ResourceFailureInspector do
 
     describe "when examining a resource that confuses the parser" do
       before do
-        angry_bash_recipe = File.expand_path("cookbooks/angrybash/recipes/default.rb", CHEF_SPEC_DATA)
+        angry_bash_recipe = File.expand_path("cookbooks/angrybash/recipes/default.rb", seth_SPEC_DATA)
         source_line = "#{angry_bash_recipe}:1:in `<main>'"
 
         # source_line = caller(0)[0]; @resource = bash "go off the rails" do

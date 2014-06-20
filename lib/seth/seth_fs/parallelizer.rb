@@ -1,5 +1,5 @@
 require 'thread'
-require 'seth/chef_fs/parallelizer/parallel_enumerable'
+require 'seth/seth_fs/parallelizer/parallel_enumerable'
 
 class Seth
   module SethFS

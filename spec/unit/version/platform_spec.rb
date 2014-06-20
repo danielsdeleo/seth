@@ -52,7 +52,7 @@ describe Seth::Version::Platform do
   describe "<=>" do
 
     it "should equate versions 1 and 1.0.0" do
-      Seth::Version::Platform.new("1").should == Chef::Version::Platform.new("1.0.0")
+      Seth::Version::Platform.new("1").should == seth::Version::Platform.new("1.0.0")
     end
 
   end

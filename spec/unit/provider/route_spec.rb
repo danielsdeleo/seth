@@ -109,7 +109,7 @@ describe Seth::Provider::Route do
       @new_resource.should_not be_updated
     end
 
-    it "should not delete config file for :add action (CHEF-3332)" do
+    it "should not delete config file for :add action (seth-3332)" do
       @node.automatic_attrs[:platform] = 'centos'
 
       route_file = StringIO.new

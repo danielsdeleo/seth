@@ -152,7 +152,7 @@ describe Seth::DataBag do
 
       it "should return the data bag" do
         File.should_receive(:directory?).with('/var/seth/data_bags').and_return(true)
-        Dir.stub(:glob).and_return(["/var/seth/data_bags/foo/bar.json", "/var/chef/data_bags/foo/baz.json"])
+        Dir.stub(:glob).and_return(["/var/seth/data_bags/foo/bar.json", "/var/seth/data_bags/foo/baz.json"])
         IO.should_receive(:read).with('/var/seth/data_bags/foo/bar.json').and_return('{"id": "bar", "name": "Bob Bar" }')
         IO.should_receive(:read).with('/var/seth/data_bags/foo/baz.json').and_return('{"id": "baz", "name": "John Baz" }')
         data_bag = Seth::DataBag.load('foo')
@@ -161,7 +161,7 @@ describe Seth::DataBag do
 
       it "should return the data bag list" do
         File.should_receive(:directory?).with('/var/seth/data_bags').and_return(true)
-        Dir.should_receive(:glob).and_return(["/var/seth/data_bags/foo", "/var/chef/data_bags/bar"])
+        Dir.should_receive(:glob).and_return(["/var/seth/data_bags/foo", "/var/seth/data_bags/bar"])
         data_bag_list = Seth::DataBag.list
         data_bag_list.should == { 'bar' => 'bar', 'foo' => 'foo' }
       end

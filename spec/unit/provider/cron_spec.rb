@@ -301,7 +301,7 @@ CRONTAB
       end
     end
 
-    context "with a matching entry in the user's crontab using month names and weekday names (#CHEF-3178)" do
+    context "with a matching entry in the user's crontab using month names and weekday names (#seth-3178)" do
       before :each do
         @provider.stub(:read_crontab).and_return(<<-CRONTAB)
 0 2 * * * /some/other/command

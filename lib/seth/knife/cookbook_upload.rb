@@ -184,7 +184,7 @@ class Seth
 
       def cookbook_repo
         @cookbook_loader ||= begin
-          Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, config[:cookbook_path]) }
+          Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, config[:cookbook_path]) }
           Seth::CookbookLoader.new(config[:cookbook_path])
         end
       end
@@ -204,7 +204,7 @@ class Seth
         # because cookbooks are lazy-loaded, we have to force the loader
         # to load the cookbooks the user intends to upload here:
         cookbooks_to_upload
-        
+
         unless cookbook_repo.merged_cookbooks.empty?
           ui.warn "* " * 40
           ui.warn(<<-WARNING)

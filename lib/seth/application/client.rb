@@ -25,7 +25,7 @@ require 'seth/log'
 require 'seth/config_fetcher'
 require 'seth/handler/error_report'
 
-class Seth::Application::Client < Chef::Application
+class Seth::Application::Client < seth::Application
 
   # Mimic self_pipe sleep from Unicorn to capture signals safely
   SELF_PIPE = []
@@ -136,8 +136,8 @@ class Seth::Application::Client < Chef::Application
     :proc => lambda { |s| s.to_i }
 
   option :seth_server_url,
-    :short => "-S CHEFSERVERURL",
-    :long => "--server CHEFSERVERURL",
+    :short => "-S sethSERVERURL",
+    :long => "--server sethSERVERURL",
     :description => "The seth server URL",
     :proc => nil
 
@@ -163,7 +163,7 @@ class Seth::Application::Client < Chef::Application
     :long         => "--version",
     :description  => "Show seth version",
     :boolean      => true,
-    :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
+    :proc         => lambda {|v| puts "Seth: #{::seth::VERSION}"},
     :exit         => 0
 
   option :override_runlist,
@@ -248,14 +248,14 @@ class Seth::Application::Client < Chef::Application
 
     Seth::Config[:specific_recipes] = cli_arguments.map { |file| File.expand_path(file) }
 
-    Seth::Config[:seth_server_url] = config[:chef_server_url] if config.has_key? :chef_server_url
+    Seth::Config[:seth_server_url] = config[:seth_server_url] if config.has_key? :seth_server_url
 
     Seth::Config.local_mode = config[:local_mode] if config.has_key?(:local_mode)
-    if Seth::Config.local_mode && !Chef::Config.has_key?(:cookbook_path) && !Chef::Config.has_key?(:seth_repo_path)
-      Seth::Config.seth_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
+    if Seth::Config.local_mode && !seth::Config.has_key?(:cookbook_path) && !seth::Config.has_key?(:seth_repo_path)
+      Seth::Config.seth_repo_path = seth::Config.find_seth_repo_path(Dir.pwd)
     end
-    Seth::Config.seth_zero.host = config[:chef_zero_host] if config[:chef_zero_host]
-    Seth::Config.seth_zero.port = config[:chef_zero_port] if config[:chef_zero_port]
+    Seth::Config.seth_zero.host = config[:seth_zero_host] if config[:seth_zero_host]
+    Seth::Config.seth_zero.port = config[:seth_zero_port] if config[:seth_zero_port]
 
     if Seth::Config[:daemonize]
       Seth::Config[:interval] ||= 1800
@@ -267,7 +267,7 @@ class Seth::Application::Client < Chef::Application
     end
 
     if Seth::Config[:json_attribs]
-      config_fetcher = Seth::ConfigFetcher.new(Chef::Config[:json_attribs])
+      config_fetcher = Seth::ConfigFetcher.new(seth::Config[:json_attribs])
       @seth_client_json = config_fetcher.fetch_json
     end
   end
@@ -305,8 +305,8 @@ class Seth::Application::Client < Chef::Application
         SELF_PIPE[1].putc(IMMEDIATE_RUN_SIGNAL) # wakeup master process from select
       end
 
-      # see CHEF-5172
-      if Seth::Config[:daemonize] || Chef::Config[:interval]
+      # see seth-5172
+      if Seth::Config[:daemonize] || seth::Config[:interval]
         trap("TERM") do
           Seth::Log.info("SIGTERM received, exiting gracefully")
           SELF_PIPE[1].putc(GRACEFUL_EXIT_SIGNAL)
@@ -315,7 +315,7 @@ class Seth::Application::Client < Chef::Application
     end
 
     if Seth::Config[:version]
-      puts "Seth version: #{::Chef::VERSION}"
+      puts "Seth version: #{::seth::VERSION}"
     end
 
     if Seth::Config[:daemonize]
@@ -338,7 +338,7 @@ class Seth::Application::Client < Chef::Application
         run_seth_client(Seth::Config[:specific_recipes])
 
         if Seth::Config[:interval]
-          Seth::Log.debug("Sleeping for #{Chef::Config[:interval]} seconds")
+          Seth::Log.debug("Sleeping for #{seth::Config[:interval]} seconds")
           signal = interval_sleep
         else
           Seth::Application.exit! "Exiting", 0
@@ -348,7 +348,7 @@ class Seth::Application::Client < Chef::Application
       rescue Exception => e
         if Seth::Config[:interval]
           Seth::Log.error("#{e.class}: #{e}")
-          Seth::Log.error("Sleeping for #{Chef::Config[:interval]} seconds before trying again")
+          Seth::Log.error("Sleeping for #{seth::Config[:interval]} seconds before trying again")
           signal = interval_sleep
           retry
         else

@@ -17,7 +17,7 @@
 #
 
 require 'seth/log'
-require 'seth/chef_fs/path_utils'
+require 'seth/seth_fs/path_utils'
 
 class Seth
   module SethFS
@@ -26,13 +26,13 @@ class Seth
     #
     class Config
       def initialize(seth_config = Seth::Config, cwd = Dir.pwd, options = {})
-        @seth_config = chef_config
+        @seth_config = seth_config
         @cwd = cwd
         @cookbook_version = options[:cookbook_version]
 
         # Default to getting *everything* from the server.
         if !@seth_config[:repo_mode]
-          if @seth_config[:chef_server_url] =~ /\/+organizations\/.+/
+          if @seth_config[:seth_server_url] =~ /\/+organizations\/.+/
             @seth_config[:repo_mode] = 'hosted_everything'
           else
             @seth_config[:repo_mode] = 'everything'
@@ -45,12 +45,12 @@ class Seth
       attr_reader :cookbook_version
 
       def seth_fs
-        @seth_fs ||= create_chef_fs
+        @seth_fs ||= create_seth_fs
       end
 
       def create_seth_fs
-        require 'seth/chef_fs/file_system/chef_server_root_dir'
-        Seth::ChefFS::FileSystem::ChefServerRootDir.new("remote", @seth_config, :cookbook_version => @cookbook_version)
+        require 'seth/seth_fs/file_system/seth_server_root_dir'
+        Seth::sethFS::FileSystem::sethServerRootDir.new("remote", @seth_config, :cookbook_version => @cookbook_version)
       end
 
       def local_fs
@@ -58,13 +58,13 @@ class Seth
       end
 
       def create_local_fs
-        require 'seth/chef_fs/file_system/chef_repository_file_system_root_dir'
-        Seth::ChefFS::FileSystem::ChefRepositoryFileSystemRootDir.new(object_paths)
+        require 'seth/seth_fs/file_system/seth_repository_file_system_root_dir'
+        Seth::sethFS::FileSystem::sethRepositoryFileSystemRootDir.new(object_paths)
       end
 
       # Returns the given real path's location relative to the server root.
       #
-      # If seth_repo is /home/jkeiser/chef_repo,
+      # If seth_repo is /home/jkeiser/seth_repo,
       # and pwd is /home/jkeiser/seth_repo/cookbooks,
       # server_path('blah') == '/cookbooks/blah'
       # server_path('../roles/blah.json') == '/roles/blah'
@@ -84,22 +84,22 @@ class Seth
       # If the path does not reach into ANY specified directory, nil is returned.
       def server_path(file_path)
         pwd = File.expand_path(Dir.pwd)
-        absolute_pwd = Seth::ChefFS::PathUtils.realest_path(File.expand_path(file_path, pwd))
+        absolute_pwd = Seth::sethFS::PathUtils.realest_path(File.expand_path(file_path, pwd))
 
         # Check all object paths (cookbooks_dir, data_bags_dir, etc.)
         object_paths.each_pair do |name, paths|
           paths.each do |path|
-            realest_path = Seth::ChefFS::PathUtils.realest_path(path)
+            realest_path = Seth::sethFS::PathUtils.realest_path(path)
             if PathUtils.descendant_of?(absolute_pwd, realest_path)
-              relative_path = Seth::ChefFS::PathUtils::relative_to(absolute_pwd, realest_path)
+              relative_path = Seth::sethFS::PathUtils::relative_to(absolute_pwd, realest_path)
               return relative_path == '.' ? "/#{name}" : "/#{name}/#{relative_path}"
             end
           end
         end
 
         # Check seth_repo_path
-        Array(@seth_config[:chef_repo_path]).flatten.each do |chef_repo_path|
-          realest_seth_repo_path = Seth::ChefFS::PathUtils.realest_path(chef_repo_path)
+        Array(@seth_config[:seth_repo_path]).flatten.each do |seth_repo_path|
+          realest_seth_repo_path = Seth::sethFS::PathUtils.realest_path(seth_repo_path)
           if absolute_pwd == realest_seth_repo_path
             return '/'
           end
@@ -111,7 +111,7 @@ class Seth
       # The current directory, relative to server root
       def base_path
         @base_path ||= begin
-          if @seth_config[:chef_repo_path]
+          if @seth_config[:seth_repo_path]
             server_path(File.expand_path(@cwd))
           else
             nil

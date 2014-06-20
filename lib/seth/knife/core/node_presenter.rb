@@ -67,7 +67,7 @@ class Seth
             result = {}
 
             result["name"] = node.name
-            result["seth_environment"] = node.chef_environment
+            result["seth_environment"] = node.seth_environment
             result["run_list"] = node.run_list
             result["normal"] = node.normal_attrs
 

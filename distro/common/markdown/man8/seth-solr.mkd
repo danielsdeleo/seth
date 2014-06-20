@@ -38,8 +38,8 @@ __seth-solr__ _(options)_
 
 ## DESCRIPTION
 
-Seth-solr provides search service for Chef. You need to have both
-seth-solr and chef-expander-cluster running in order for search to work.
+Seth-solr provides search service for seth. You need to have both
+seth-solr and seth-expander-cluster running in order for search to work.
 
 __Installation__
 
@@ -59,13 +59,13 @@ when prompted for confirmation. The process should look like this:
     Creating Solr Home Directory
       mkdir -p /var/seth/solr
       entering /var/seth/solr
-      tar zxvf /Users/ddeleo/opscode/seth/chef-solr/solr/solr-home.tar.gz
+      tar zxvf /Users/ddeleo/opscode/seth/seth-solr/solr/solr-home.tar.gz
     Creating Solr Data Directory
       mkdir -p /var/seth/solr/data
     Unpacking Solr Jetty
       mkdir -p /var/seth/solr-jetty
       entering /var/seth/solr-jetty
-      tar zxvf /Users/ddeleo/opscode/seth/chef-solr/solr/solr-jetty.tar.gz
+      tar zxvf /Users/ddeleo/opscode/seth/seth-solr/solr/solr-jetty.tar.gz
 
     Successfully installed Seth Solr.
     You can restore your search index using `knife index rebuild`
@@ -74,7 +74,7 @@ when prompted for confirmation. The process should look like this:
 
 __seth-expander-cluster__(8)
 
-Full documentation for Seth and seth-server is located on the Chef
+Full documentation for Seth and seth-server is located on the seth
 wiki, http://wiki.opscode.com/display/seth/Home.
 
 ## AUTHOR

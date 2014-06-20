@@ -36,7 +36,7 @@ describe Seth::Knife::Configure do
   let(:default_admin_key) { "/etc/seth-server/admin.pem" }
   let(:default_admin_key_win32) { File.expand_path(default_admin_key) }
 
-  let(:default_validator_key) { "/etc/seth-server/chef-validator.pem" }
+  let(:default_validator_key) { "/etc/seth-server/seth-validator.pem" }
   let(:default_validator_key_win32) { File.expand_path(default_validator_key) }
 
   let(:default_server_url) { "https://#{fqdn}:443" }
@@ -198,8 +198,8 @@ describe Seth::Knife::Configure do
   end
 
   it "writes the new data to a config file" do
-    File.stub(:expand_path).with("/home/you/.seth/knife.rb").and_return("/home/you/.chef/knife.rb")
-    File.stub(:expand_path).with("/home/you/.seth/#{Etc.getlogin}.pem").and_return("/home/you/.chef/#{Etc.getlogin}.pem")
+    File.stub(:expand_path).with("/home/you/.seth/knife.rb").and_return("/home/you/.seth/knife.rb")
+    File.stub(:expand_path).with("/home/you/.seth/#{Etc.getlogin}.pem").and_return("/home/you/.seth/#{Etc.getlogin}.pem")
     File.stub(:expand_path).with(default_validator_key).and_return(default_validator_key)
     File.stub(:expand_path).with(default_admin_key).and_return(default_admin_key)
     FileUtils.should_receive(:mkdir_p).with("/home/you/.seth")
@@ -216,8 +216,8 @@ describe Seth::Knife::Configure do
   end
 
   it "creates a new client when given the --initial option" do
-    File.should_receive(:expand_path).with("/home/you/.seth/knife.rb").and_return("/home/you/.chef/knife.rb")
-    File.should_receive(:expand_path).with("/home/you/.seth/a-new-user.pem").and_return("/home/you/.chef/a-new-user.pem")
+    File.should_receive(:expand_path).with("/home/you/.seth/knife.rb").and_return("/home/you/.seth/knife.rb")
+    File.should_receive(:expand_path).with("/home/you/.seth/a-new-user.pem").and_return("/home/you/.seth/a-new-user.pem")
     File.should_receive(:expand_path).with(default_validator_key).and_return(default_validator_key)
     File.should_receive(:expand_path).with(default_admin_key).and_return(default_admin_key)
     Seth::Config[:node_name]  = "webmonkey.example.com"

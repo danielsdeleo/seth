@@ -24,7 +24,7 @@ describe Seth::Resource::Conditional do
     Mixlib::ShellOut.any_instance.stub(:run_command).and_return(nil)
     @status = OpenStruct.new(:success? => true)
     Mixlib::ShellOut.any_instance.stub(:status).and_return(@status)
-    @parent_resource = Seth::Resource.new(nil, Chef::Node.new)
+    @parent_resource = Seth::Resource.new(nil, seth::Node.new)
   end
 
   describe "when created as an `only_if`" do
@@ -52,7 +52,7 @@ describe Seth::Resource::Conditional do
     describe 'after running a command which timed out' do
       before do
         @conditional = Seth::Resource::Conditional.only_if(@parent_resource, "false")
-        Seth::GuardInterpreter::DefaultGuardInterpreter.any_instance.stub(:shell_out).and_raise(Chef::Exceptions::CommandTimeout)
+        Seth::GuardInterpreter::DefaultGuardInterpreter.any_instance.stub(:shell_out).and_raise(seth::Exceptions::CommandTimeout)
       end
 
       it 'indicates that resource convergence should not continue' do
@@ -111,7 +111,7 @@ describe Seth::Resource::Conditional do
     describe 'after running a command which timed out' do
       before do
         @conditional = Seth::Resource::Conditional.not_if(@parent_resource,  "false")
-        Seth::GuardInterpreter::DefaultGuardInterpreter.any_instance.stub(:shell_out).and_raise(Chef::Exceptions::CommandTimeout)
+        Seth::GuardInterpreter::DefaultGuardInterpreter.any_instance.stub(:shell_out).and_raise(seth::Exceptions::CommandTimeout)
       end
 
       it 'indicates that resource convergence should continue' do

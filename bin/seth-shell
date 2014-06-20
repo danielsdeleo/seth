@@ -32,6 +32,6 @@ $:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "..", "lib")))
 require "seth/shell"
 
 # On Windows only, enable irb --noreadline because of input problems --
-# See CHEF-3284.
+# See seth-3284.
 IRB.conf[:USE_READLINE] = false if Seth::Platform::windows?
 Shell.start

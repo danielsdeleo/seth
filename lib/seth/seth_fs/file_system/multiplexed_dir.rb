@@ -1,5 +1,5 @@
-require 'seth/chef_fs/file_system/base_fs_object'
-require 'seth/chef_fs/file_system/nonexistent_fs_object'
+require 'seth/seth_fs/file_system/base_fs_object'
+require 'seth/seth_fs/file_system/nonexistent_fs_object'
 
 class Seth
   module SethFS

@@ -36,7 +36,7 @@ describe Seth::Provider::RubyBlock, "initialize" do
   end
 
   it "accepts `create' as an alias for `run'" do
-    # SEE ALSO: CHEF-3500
+    # SEE ALSO: seth-3500
     # "create" used to be the default action, it was renamed.
     @provider.run_action(:create)
     $evil_global_evil_laugh.should == :mwahahaha

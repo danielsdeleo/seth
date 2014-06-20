@@ -18,7 +18,7 @@
 
 require 'seth/provider/service/init'
 
-class Seth::Provider::Service::Arch < Chef::Provider::Service::Init
+class Seth::Provider::Service::Arch < seth::Provider::Service::Init
 
   def initialize(new_resource, run_context)
     super

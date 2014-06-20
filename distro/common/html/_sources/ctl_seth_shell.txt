@@ -2,14 +2,14 @@
 seth-shell
 =====================================================
 
-.. include:: ../../includes_seth_shell/includes_chef_shell.rst
+.. include:: ../../includes_seth_shell/includes_seth_shell.rst
 
-.. include:: ../../includes_ctl_seth_shell/includes_ctl_chef_shell.rst
+.. include:: ../../includes_ctl_seth_shell/includes_ctl_seth_shell.rst
 
 Modes
 =====================================================
-.. include:: ../../includes_seth_shell/includes_chef_shell_modes.rst
+.. include:: ../../includes_seth_shell/includes_seth_shell_modes.rst
 
 Options
 =====================================================
-.. include:: ../../includes_ctl_seth_shell/includes_ctl_chef_shell_options.rst
+.. include:: ../../includes_ctl_seth_shell/includes_ctl_seth_shell_options.rst

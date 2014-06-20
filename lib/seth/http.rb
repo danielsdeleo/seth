@@ -53,7 +53,7 @@ class Seth
         # stream handlers handle responses so must be applied in reverse order
         # (same as #apply_stream_complete_middleware or #apply_response_midddleware)
         @stream_handlers.reverse.inject(next_chunk) do |chunk, handler|
-          Seth::Log.debug("Chef::HTTP::StreamHandler calling #{handler.class}#handle_chunk")
+          Seth::Log.debug("seth::HTTP::StreamHandler calling #{handler.class}#handle_chunk")
           handler.handle_chunk(chunk)
         end
       end
@@ -216,21 +216,21 @@ class Seth
 
     def apply_request_middleware(method, url, headers, data)
       middlewares.inject([method, url, headers, data]) do |req_data, middleware|
-        Seth::Log.debug("Chef::HTTP calling #{middleware.class}#handle_request")
+        Seth::Log.debug("seth::HTTP calling #{middleware.class}#handle_request")
         middleware.handle_request(*req_data)
       end
     end
 
     def apply_response_middleware(response, rest_request, return_value)
       middlewares.reverse.inject([response, rest_request, return_value]) do |res_data, middleware|
-        Seth::Log.debug("Chef::HTTP calling #{middleware.class}#handle_response")
+        Seth::Log.debug("seth::HTTP calling #{middleware.class}#handle_response")
         middleware.handle_response(*res_data)
       end
     end
 
     def apply_stream_complete_middleware(response, rest_request, return_value)
       middlewares.reverse.inject([response, rest_request, return_value]) do |res_data, middleware|
-        Seth::Log.debug("Chef::HTTP calling #{middleware.class}#handle_stream_complete")
+        Seth::Log.debug("seth::HTTP calling #{middleware.class}#handle_stream_complete")
         middleware.handle_stream_complete(*res_data)
       end
     end
@@ -353,7 +353,7 @@ class Seth
     def build_headers(method, url, headers={}, json_body=false)
       headers                 = @default_headers.merge(headers)
       headers['Content-Length'] = json_body.bytesize.to_s if json_body
-      headers.merge!(Seth::Config[:custom_http_headers]) if Chef::Config[:custom_http_headers]
+      headers.merge!(Seth::Config[:custom_http_headers]) if seth::Config[:custom_http_headers]
       headers
     end
 

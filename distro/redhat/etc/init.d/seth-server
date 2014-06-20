@@ -1,14 +1,14 @@
 #!/bin/bash
 #
-# seth-server Startup script for chef-server
+# seth-server Startup script for seth-server
 #
 # chkconfig: - 96 04
 # description: Server component of the Seth systems integration framework.
 
 ### BEGIN INIT INFO
 # Provides: seth-server
-# Required-Start: $local_fs $network $remote_fs seth-solr chef-expander
-# Required-Stop: $local_fs $network $remote_fs seth-solr chef-expander
+# Required-Start: $local_fs $network $remote_fs seth-solr seth-expander
+# Required-Stop: $local_fs $network $remote_fs seth-solr seth-expander
 # Should-Start: $named $time
 # Should-Stop: $named $time
 # Short-Description: Startup script for seth-server

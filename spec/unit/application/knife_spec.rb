@@ -16,7 +16,7 @@
 # limitations under the License.
 
 require 'spec_helper'
-require "#{CHEF_SPEC_DATA}/knife_subcommand/test_yourself"
+require "#{seth_SPEC_DATA}/knife_subcommand/test_yourself"
 
 describe Seth::Application::Knife do
   include SpecHelpers::Knife
@@ -80,12 +80,12 @@ describe Seth::Application::Knife do
   describe "when given a path to the client key" do
     it "expands a relative path relative to the CWD" do
       relative_path = '.seth/client.pem'
-      Dir.stub(:pwd).and_return(CHEF_SPEC_DATA)
+      Dir.stub(:pwd).and_return(seth_SPEC_DATA)
       with_argv(*%W{noop knife command -k #{relative_path}}) do
         @knife.should_receive(:exit).with(0)
         @knife.run
       end
-      Seth::Config[:client_key].should == File.join(CHEF_SPEC_DATA, relative_path)
+      Seth::Config[:client_key].should == File.join(seth_SPEC_DATA, relative_path)
     end
 
     it "expands a ~/home/path to the correct full path" do
@@ -126,7 +126,7 @@ describe Seth::Application::Knife do
     end
 
     it "should load the environment from the config file" do
-      config_file = File.join(CHEF_SPEC_DATA,"environment-config.rb")
+      config_file = File.join(seth_SPEC_DATA,"environment-config.rb")
       with_argv(*%W{noop knife command -c #{config_file}}) do
         @knife.should_receive(:exit).with(0)
         @knife.run
@@ -143,7 +143,7 @@ describe Seth::Application::Knife do
     end
 
     it "should override the config file environment with the CLI environment" do
-      config_file = File.join(CHEF_SPEC_DATA,"environment-config.rb")
+      config_file = File.join(seth_SPEC_DATA,"environment-config.rb")
       with_argv(*%W{noop knife command -c #{config_file} -E override}) do
         @knife.should_receive(:exit).with(0)
         @knife.run
@@ -152,7 +152,7 @@ describe Seth::Application::Knife do
     end
 
     it "should override the config file environment with the CLI environment regardless of order" do
-      config_file = File.join(CHEF_SPEC_DATA,"environment-config.rb")
+      config_file = File.join(seth_SPEC_DATA,"environment-config.rb")
       with_argv(*%W{noop knife command -E override -c #{config_file}}) do
         @knife.should_receive(:exit).with(0)
         @knife.run

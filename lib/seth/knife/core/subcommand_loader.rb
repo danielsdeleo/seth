@@ -25,7 +25,7 @@ class Seth
       attr_reader :env
 
       def initialize(seth_config_dir, env=ENV)
-        @seth_config_dir, @env = chef_config_dir, env
+        @seth_config_dir, @env = seth_config_dir, env
         @forced_activate = {}
       end
 
@@ -110,7 +110,7 @@ class Seth
         files = Dir[File.expand_path('../../../knife/*.rb', __FILE__)]
         subcommand_files = {}
         files.each do |knife_file|
-          rel_path = knife_file[/#{CHEF_ROOT}#{Regexp.escape(File::SEPARATOR)}(.*)\.rb/,1]
+          rel_path = knife_file[/#{seth_ROOT}#{Regexp.escape(File::SEPARATOR)}(.*)\.rb/,1]
           subcommand_files[rel_path] = knife_file
         end
         subcommand_files

@@ -32,10 +32,10 @@ class Seth
           @new_resource = new_resource
           @uri = uri
         end
-        
-        # CHEF-4472: Remove the leading slash from windows paths that we receive from a file:// URI
-        def fix_windows_path(path) 
-          path.gsub(/^\/([a-zA-Z]:)/,'\1')  
+
+        # seth-4472: Remove the leading slash from windows paths that we receive from a file:// URI
+        def fix_windows_path(path)
+          path.gsub(/^\/([a-zA-Z]:)/,'\1')
         end
 
         # Fetches the file at uri, returning a Tempfile-like File handle

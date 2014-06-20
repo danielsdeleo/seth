@@ -383,7 +383,7 @@ class Seth
               :ruby_block => Seth::Provider::RubyBlock,
               :whyrun_safe_ruby_block => Seth::Provider::WhyrunSafeRubyBlock,
               :erl_call => Seth::Provider::ErlCall,
-              :log => Seth::Provider::Log::ChefLog
+              :log => Seth::Provider::Log::sethLog
             }
           }
         end
@@ -414,7 +414,7 @@ class Seth
                 provider_map.merge!(provider)
               end
             rescue Seth::Exceptions::InvalidPlatformVersion
-              Seth::Log.debug("Chef::Version::Comparable does not know how to parse the platform version: #{version}")
+              Seth::Log.debug("seth::Version::Comparable does not know how to parse the platform version: #{version}")
             end
           end
         else

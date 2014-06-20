@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_dir'
-require 'seth/chef_fs/file_system/rest_list_entry'
-require 'seth/chef_fs/file_system/not_found_error'
-require 'seth/chef_fs/data_handler/node_data_handler'
+require 'seth/seth_fs/file_system/base_fs_dir'
+require 'seth/seth_fs/file_system/rest_list_entry'
+require 'seth/seth_fs/file_system/not_found_error'
+require 'seth/seth_fs/data_handler/node_data_handler'
 
 class Seth
   module SethFS
     module FileSystem
       class NodesDir < RestListDir
         def initialize(parent)
-          super("nodes", parent, nil, Seth::ChefFS::DataHandler::NodeDataHandler.new)
+          super("nodes", parent, nil, Seth::sethFS::DataHandler::NodeDataHandler.new)
         end
 
         # Identical to RestListDir.children, except supports environments
@@ -36,12 +36,12 @@ class Seth
               _make_child_entry("#{key}.json", true)
             end
           rescue Timeout::Error => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:children, self, e), "Timeout retrieving children: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:children, self, e), "Timeout retrieving children: #{e}"
           rescue Net::HTTPServerException => e
             if $!.response.code == "404"
-              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
+              raise Seth::sethFS::FileSystem::NotFoundError.new(self, $!)
             else
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:children, self, e), "HTTP error retrieving children: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:children, self, e), "HTTP error retrieving children: #{e}"
             end
           end
         end

@@ -18,7 +18,7 @@
 
 require 'seth/knife'
 
-class Seth::Knife::Exec < Chef::Knife
+class Seth::Knife::Exec < seth::Knife
 
   banner "knife exec [SCRIPT] (options)"
 
@@ -40,8 +40,8 @@ class Seth::Knife::Exec < Chef::Knife
   def run
     config[:script_path] ||= Array(Seth::Config[:script_path])
 
-    # Default script paths are seth-repo/.chef/scripts and ~/.chef/scripts
-    config[:script_path] << File.join(Seth::Knife.seth_config_dir, 'scripts') if Chef::Knife.chef_config_dir
+    # Default script paths are seth-repo/.seth/scripts and ~/.seth/scripts
+    config[:script_path] << File.join(Seth::Knife.seth_config_dir, 'scripts') if seth::Knife.seth_config_dir
     config[:script_path] << File.join(ENV['HOME'], '.seth', 'scripts') if ENV['HOME']
 
     scripts = Array(name_args)

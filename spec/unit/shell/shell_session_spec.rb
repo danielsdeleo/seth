@@ -49,7 +49,7 @@ end
 
 describe Shell::ClientSession do
   before do
-    Seth::Config[:shell_config] = { :override_runlist => [Chef::RunList::RunListItem.new('shell::override')] }
+    Seth::Config[:shell_config] = { :override_runlist => [seth::RunList::RunListItem.new('shell::override')] }
     @session = Shell::ClientSession.instance
     @node = Seth::Node.build("foo")
     @session.node = @node
@@ -70,7 +70,7 @@ describe Shell::ClientSession do
   end
 
   it "passes the shell CLI args to the client" do
-    Seth::Client.should_receive(:new).with(nil, Chef::Config[:shell_config]).and_return(@client)
+    Seth::Client.should_receive(:new).with(nil, seth::Config[:shell_config]).and_return(@client)
     @session.send(:rebuild_node)
   end
 
@@ -78,7 +78,7 @@ end
 
 describe Shell::StandAloneSession do
   before do
-    Seth::Config[:shell_config] = { :override_runlist => [Chef::RunList::RunListItem.new('shell::override')] }
+    Seth::Config[:shell_config] = { :override_runlist => [seth::RunList::RunListItem.new('shell::override')] }
     @session = Shell::StandAloneSession.instance
     @node = @session.node = Seth::Node.new
     @events = Seth::EventDispatch::Dispatcher.new
@@ -121,7 +121,7 @@ describe Shell::StandAloneSession do
                      :build_node => true,
                      :register => true,
                      :sync_cookbooks => {})
-    Seth::Client.should_receive(:new).with(nil, Chef::Config[:shell_config]).and_return(@client)
+    Seth::Client.should_receive(:new).with(nil, seth::Config[:shell_config]).and_return(@client)
     @session.send(:rebuild_node)
   end
 
@@ -129,7 +129,7 @@ end
 
 describe Shell::SoloSession do
   before do
-    Seth::Config[:shell_config] = { :override_runlist => [Chef::RunList::RunListItem.new('shell::override')] }
+    Seth::Config[:shell_config] = { :override_runlist => [seth::RunList::RunListItem.new('shell::override')] }
     Seth::Config[:shell_solo] = true
     @session = Shell::SoloSession.instance
     @node = Seth::Node.new
@@ -175,7 +175,7 @@ describe Shell::SoloSession do
     @session.stub(:node_built?).and_return(true)
     Seth::Log.stub(:level)
     seth_runner = double("Seth::Runner.new", :converge => :converged)
-    Seth::Runner.should_receive(:new).with(an_instance_of(Chef::RunContext)).and_return(seth_runner)
+    Seth::Runner.should_receive(:new).with(an_instance_of(seth::RunContext)).and_return(seth_runner)
 
     @recipe.run_seth.should == :converged
   end
@@ -187,7 +187,7 @@ describe Shell::SoloSession do
                      :build_node => true,
                      :register => true,
                      :sync_cookbooks => {})
-    Seth::Client.should_receive(:new).with(nil, Chef::Config[:shell_config]).and_return(@client)
+    Seth::Client.should_receive(:new).with(nil, seth::Config[:shell_config]).and_return(@client)
     @session.send(:rebuild_node)
   end
 

@@ -173,7 +173,7 @@ class Seth
     class RunListExpansionFromAPI < RunListExpansion
 
       def rest
-        @rest ||= (source || Seth::REST.new(Chef::Config[:seth_server_url]))
+        @rest ||= (source || Seth::REST.new(seth::Config[:seth_server_url]))
       end
 
       def fetch_role(name, included_by)

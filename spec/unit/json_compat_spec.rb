@@ -24,7 +24,7 @@ describe Seth::JSONCompat do
   describe "with JSON containing an existing class" do
     let(:json){'{"json_class": "Seth::Role"}'}
     it "returns an instance of the class instead of a Hash" do
-      Seth::JSONCompat.from_json(json).class.should eq Chef::Role
+      Seth::JSONCompat.from_json(json).class.should eq seth::Role
     end
   end
 
@@ -32,13 +32,13 @@ describe Seth::JSONCompat do
     require 'seth/sandbox' # Only needed for this test
     let(:json){'{"json_class": "Seth::Sandbox", "arbitrary": "data"}'}
     it "returns a Hash, because Seth::Sandbox is a dummy class" do
-      Seth::JSONCompat.from_json(json).should eq({"json_class" => "Chef::Sandbox", "arbitrary" => "data"})
+      Seth::JSONCompat.from_json(json).should eq({"json_class" => "seth::Sandbox", "arbitrary" => "data"})
     end
   end
 
   describe "with a file with 300 or less nested entries" do
     before(:all) do
-      @json = IO.read(File.join(CHEF_SPEC_DATA, 'big_json.json'))
+      @json = IO.read(File.join(seth_SPEC_DATA, 'big_json.json'))
       @hash = Seth::JSONCompat.from_json(@json)
     end
 
@@ -53,7 +53,7 @@ describe Seth::JSONCompat do
   end
   describe "with a file with more than 300 nested entries" do
     before(:all) do
-      @json = IO.read(File.join(CHEF_SPEC_DATA, 'big_json_plus_one.json'))
+      @json = IO.read(File.join(seth_SPEC_DATA, 'big_json_plus_one.json'))
       @hash = Seth::JSONCompat.from_json(@json, {:max_nesting => 301})
     end
 

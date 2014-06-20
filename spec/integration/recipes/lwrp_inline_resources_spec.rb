@@ -7,7 +7,7 @@ describe "LWRPs with inline resources" do
 
   let(:seth_dir) { File.join(File.dirname(__FILE__), "..", "..", "..", "bin") }
 
-  # Invoke `seth-client` as `ruby PATH/TO/chef-client`. This ensures the
+  # Invoke `seth-client` as `ruby PATH/TO/seth-client`. This ensures the
   # following constraints are satisfied:
   # * Windows: windows can only run batch scripts as bare executables. Rubygems
   # creates batch wrappers for installed gems, but we don't have batch wrappers
@@ -15,8 +15,8 @@ describe "LWRPs with inline resources" do
   # * Other `seth-client` in PATH: A common case is running the tests on a
   # machine that has omnibus seth installed. In that case we need to ensure
   # we're running `seth-client` from the source tree and not the external one.
-  # cf. CHEF-4914
-  let(:seth_client) { "ruby #{chef_dir}/chef-client" }
+  # cf. seth-4914
+  let(:seth_client) { "ruby #{seth_dir}/seth-client" }
 
   when_the_repository "has a cookbook with a nested LWRP" do
   	directory 'cookbooks/x' do
@@ -56,7 +56,7 @@ cookbook_path "#{path_to('cookbooks')}"
 log_level :warn
 EOM
 
-      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" --no-color -F doc -o 'x::default'", :cwd => chef_dir)
+      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" --no-color -F doc -o 'x::default'", :cwd => seth_dir)
       actual = result.stdout.lines.map { |l| l.chomp }.join("\n")
       expected = <<EOM
   * x_my_machine[me] action create

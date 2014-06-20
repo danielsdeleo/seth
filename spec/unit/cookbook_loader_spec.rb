@@ -20,8 +20,8 @@ require 'spec_helper'
 
 describe Seth::CookbookLoader do
   before(:each) do
-    @repo_paths = [ File.expand_path(File.join(CHEF_SPEC_DATA, "kitchen")),
-                    File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks")) ]
+    @repo_paths = [ File.expand_path(File.join(seth_SPEC_DATA, "kitchen")),
+                    File.expand_path(File.join(seth_SPEC_DATA, "cookbooks")) ]
     @cookbook_loader = Seth::CookbookLoader.new(@repo_paths)
   end
 
@@ -74,7 +74,7 @@ describe Seth::CookbookLoader do
 
     describe "load_cookbooks" do
       it "should find all the cookbooks in the cookbook path" do
-        Seth::Config.cookbook_path << File.expand_path(File.join(CHEF_SPEC_DATA, "hidden-cookbooks"))
+        Seth::Config.cookbook_path << File.expand_path(File.join(seth_SPEC_DATA, "hidden-cookbooks"))
         @cookbook_loader.load_cookbooks
         @cookbook_loader.should have_key(:openldap)
         @cookbook_loader.should have_key(:apache2)
@@ -145,7 +145,7 @@ describe Seth::CookbookLoader do
         @cookbook_loader.metadata[:openldap].should be_a_kind_of(Seth::Cookbook::Metadata)
       end
 
-      it "should check each cookbook directory only once (CHEF-3487)" do
+      it "should check each cookbook directory only once (seth-3487)" do
         cookbooks = []
         @repo_paths.each do |repo_path|
           cookbooks |= Dir[File.join(repo_path, "*")]
@@ -175,7 +175,7 @@ describe Seth::CookbookLoader do
 
     it "should not duplicate keys when serialized to JSON" do
       # Seth JSON serialization will generate duplicate keys if given
-      # a Hash containing matching string and symbol keys. See CHEF-4571.
+      # a Hash containing matching string and symbol keys. See seth-4571.
       aa = @cookbook_loader["openldap"]
       aa.to_hash["metadata"].recipes.keys.should_not include(:openldap)
       aa.to_hash["metadata"].recipes.keys.should include("openldap")

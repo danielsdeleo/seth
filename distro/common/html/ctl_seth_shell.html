@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>seth-shell &mdash; chef-client Man Pages</title>
-    
+
+    <title>seth-shell &mdash; seth-client Man Pages</title>
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,24 +33,24 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="seth-shell">
-<h1>seth-shell<a class="headerlink" href="#chef-shell" title="Permalink to this headline">¶</a></h1>
-<p>seth-shell is a recipe debugging tool that allows the use of breakpoints within recipes. chef-shell runs as an Interactive Ruby (IRb) session. chef-shell supports both recipe and attribute file syntax, as well as interactive debugging features.</p>
+<h1>seth-shell<a class="headerlink" href="#seth-shell" title="Permalink to this headline">¶</a></h1>
+<p>seth-shell is a recipe debugging tool that allows the use of breakpoints within recipes. seth-shell runs as an Interactive Ruby (IRb) session. seth-shell supports both recipe and attribute file syntax, as well as interactive debugging features.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">seth-shell is the new name for Shef as of Seth 11.x. chef-shell is backwards compatible and aside from the name change, has the same set of functionality as with previous releases.</p>
+<p class="last">seth-shell is the new name for Shef as of Seth 11.x. seth-shell is backwards compatible and aside from the name change, has the same set of functionality as with previous releases.</p>
 </div>
 <p>The seth-shell executable is run as a command-line tool.</p>
 <div class="section" id="modes">
 <h2>Modes<a class="headerlink" href="#modes" title="Permalink to this headline">¶</a></h2>
-<p>seth-shell is tool that allows Knife to be run using an Interactive Ruby (IRb) session. chef-shell currently supports recipe and attribute file syntax, as well as interactive debugging features. chef-shell has three run modes:</p>
+<p>seth-shell is tool that allows Knife to be run using an Interactive Ruby (IRb) session. seth-shell currently supports recipe and attribute file syntax, as well as interactive debugging features. seth-shell has three run modes:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="40%" />
@@ -66,10 +66,10 @@
 <td>No cookbooks are loaded, and the run list is empty. This mode is the default.</td>
 </tr>
 <tr class="row-odd"><td>Solo</td>
-<td>seth-shell acts as a chef-solo client. It attempts to load the chef-solo configuration file and JSON attributes. If the JSON attributes set a run list, it will be honored. Cookbooks will be loaded in the same way that chef-solo loads them. chef-solo mode is activated with the <tt class="docutils literal"><span class="pre">-s</span></tt> or <tt class="docutils literal"><span class="pre">--solo</span></tt> command line option, and JSON attributes are specified in the same way as for chef-solo, with <tt class="docutils literal"><span class="pre">-j</span> <span class="pre">/path/to/chef-solo.json</span></tt>.</td>
+<td>seth-shell acts as a seth-solo client. It attempts to load the seth-solo configuration file and JSON attributes. If the JSON attributes set a run list, it will be honored. Cookbooks will be loaded in the same way that seth-solo loads them. seth-solo mode is activated with the <tt class="docutils literal"><span class="pre">-s</span></tt> or <tt class="docutils literal"><span class="pre">--solo</span></tt> command line option, and JSON attributes are specified in the same way as for seth-solo, with <tt class="docutils literal"><span class="pre">-j</span> <span class="pre">/path/to/seth-solo.json</span></tt>.</td>
 </tr>
 <tr class="row-even"><td>Client</td>
-<td>seth-shell acts as a chef-client. During startup, it reads the chef-client configuration file and contacts the Seth server to get attributes and cookbooks. The run list will be set in the same way as normal chef-client runs. chef-client mode is activated with the <tt class="docutils literal"><span class="pre">-z</span></tt> or <tt class="docutils literal"><span class="pre">--client</span></tt> options. You can also specify the configuration file with <tt class="docutils literal"><span class="pre">-c</span> <span class="pre">CONFIG</span></tt> and the server URL with <tt class="docutils literal"><span class="pre">-S</span> <span class="pre">SERVER_URL</span></tt>.</td>
+<td>seth-shell acts as a seth-client. During startup, it reads the seth-client configuration file and contacts the Seth server to get attributes and cookbooks. The run list will be set in the same way as normal seth-client runs. seth-client mode is activated with the <tt class="docutils literal"><span class="pre">-z</span></tt> or <tt class="docutils literal"><span class="pre">--client</span></tt> options. You can also specify the configuration file with <tt class="docutils literal"><span class="pre">-c</span> <span class="pre">CONFIG</span></tt> and the server URL with <tt class="docutils literal"><span class="pre">-S</span> <span class="pre">SERVER_URL</span></tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -93,13 +93,13 @@
 <dt><tt class="docutils literal"><span class="pre">-l</span> <span class="pre">LEVEL</span></tt>, <tt class="docutils literal"><span class="pre">--log-level</span> <span class="pre">LEVEL</span></tt></dt>
 <dd>The level of logging that will be stored in a log file.</dd>
 <dt><tt class="docutils literal"><span class="pre">-s</span></tt>, <tt class="docutils literal"><span class="pre">--solo</span></tt></dt>
-<dd>Indicates that seth-shell will be run in chef-solo mode.</dd>
-<dt><tt class="docutils literal"><span class="pre">-S</span> <span class="pre">CHEF_SERVER_URL</span></tt>, <tt class="docutils literal"><span class="pre">--server</span> <span class="pre">CHEF_SERVER_URL</span></tt></dt>
+<dd>Indicates that seth-shell will be run in seth-solo mode.</dd>
+<dt><tt class="docutils literal"><span class="pre">-S</span> <span class="pre">seth_SERVER_URL</span></tt>, <tt class="docutils literal"><span class="pre">--server</span> <span class="pre">seth_SERVER_URL</span></tt></dt>
 <dd>The URL for the Seth server.</dd>
 <dt><tt class="docutils literal"><span class="pre">-v</span></tt>, <tt class="docutils literal"><span class="pre">--version</span></tt></dt>
 <dd>The version of the seth-client.</dd>
 <dt><tt class="docutils literal"><span class="pre">-z</span></tt>, <tt class="docutils literal"><span class="pre">--client</span></tt></dt>
-<dd>Indicates that seth-shell will be run in chef-client mode.</dd>
+<dd>Indicates that seth-shell will be run in seth-client mode.</dd>
 </dl>
 </div>
 </div>
@@ -109,7 +109,7 @@
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

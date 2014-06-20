@@ -64,7 +64,7 @@ class Seth
           end
 
           begin
-            do_upload("#{tmp_cookbook_dir}/#{cookbook_name}.tgz", category, Seth::Config[:node_name], Chef::Config[:client_key])
+            do_upload("#{tmp_cookbook_dir}/#{cookbook_name}.tgz", category, Seth::Config[:node_name], seth::Config[:client_key])
             ui.info("Upload complete!")
             Seth::Log.debug("Removing local staging directory at #{tmp_cookbook_dir}")
             FileUtils.rm_rf tmp_cookbook_dir

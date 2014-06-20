@@ -19,14 +19,14 @@
 
 require 'spec_helper'
 
-describe Seth::Resource::ChefGem, "initialize" do
+describe Seth::Resource::sethGem, "initialize" do
 
   before(:each) do
-    @resource = Seth::Resource::ChefGem.new("foo")
+    @resource = Seth::Resource::sethGem.new("foo")
   end
 
-  it "should return a Seth::Resource::ChefGem" do
-    @resource.should be_a_kind_of(Seth::Resource::ChefGem)
+  it "should return a Seth::Resource::sethGem" do
+    @resource.should be_a_kind_of(Seth::Resource::sethGem)
   end
 
   it "should set the resource_name to :seth_gem" do
@@ -38,10 +38,10 @@ describe Seth::Resource::ChefGem, "initialize" do
   end
 end
 
-describe Seth::Resource::ChefGem, "gem_binary" do
+describe Seth::Resource::sethGem, "gem_binary" do
   before(:each) do
     expect(RbConfig::CONFIG).to receive(:[]).with('bindir').and_return("/opt/seth/embedded/bin")
-    @resource = Seth::Resource::ChefGem.new("foo")
+    @resource = Seth::Resource::sethGem.new("foo")
   end
 
   it "should raise an exception when gem_binary is set" do

@@ -81,7 +81,7 @@ class Seth::Application
 
   # Parse the config file
   def load_config_file
-    config_fetcher = Seth::ConfigFetcher.new(config[:config_file], Chef::Config.config_file_jail)
+    config_fetcher = Seth::ConfigFetcher.new(config[:config_file], seth::Config.config_file_jail)
     if config[:config_file].nil?
       Seth::Log.warn("No config file found or specified on command line, using command line options.")
     elsif config_fetcher.config_missing?
@@ -97,7 +97,7 @@ class Seth::Application
 
   # Initialize and configure the logger.
   # === Loggers and Formatters
-  # In Seth 10.x and previous, the Logger was the primary/only way that Chef
+  # In Seth 10.x and previous, the Logger was the primary/only way that seth
   # communicated information to the user. In Seth 10.14, a new system, "output
   # formatters" was added, and in Seth 11.0+ it is the default when running
   # seth in a console (detected by `STDOUT.tty?`). Because output formatters
@@ -120,13 +120,13 @@ class Seth::Application
   # that a user has configured a log_location in client.rb, but is running
   # seth-client by hand to troubleshoot a problem.
   def configure_logging
-    Seth::Log.init(MonoLogger.new(Chef::Config[:log_location]))
+    Seth::Log.init(MonoLogger.new(seth::Config[:log_location]))
     if want_additional_logger?
       configure_stdout_logger
     end
     Seth::Log.level = resolve_log_level
   rescue StandardError => error
-    Seth::Log.fatal("Failed to open or create log file at #{Chef::Config[:log_location]}: #{error.class} (#{error.message})")
+    Seth::Log.fatal("Failed to open or create log file at #{seth::Config[:log_location]}: #{error.class} (#{error.message})")
     Seth::Application.fatal!("Aborting due to invalid 'log_location' configuration", 2)
   end
 
@@ -139,13 +139,13 @@ class Seth::Application
   # Based on config and whether or not STDOUT is a tty, should we setup a
   # secondary logger for stdout?
   def want_additional_logger?
-    ( Seth::Config[:log_location] != STDOUT ) && STDOUT.tty? && (!Chef::Config[:daemonize]) && (Chef::Config[:force_logger])
+    ( Seth::Config[:log_location] != STDOUT ) && STDOUT.tty? && (!seth::Config[:daemonize]) && (seth::Config[:force_logger])
   end
 
   # Use of output formatters is assumed if `force_formatter` is set or if
   # `force_logger` is not set and STDOUT is to a console (tty)
   def using_output_formatter?
-    Seth::Config[:force_formatter] || (!Chef::Config[:force_logger] && STDOUT.tty?)
+    Seth::Config[:force_formatter] || (!seth::Config[:force_logger] && STDOUT.tty?)
   end
 
   def auto_log_level?
@@ -189,21 +189,21 @@ class Seth::Application
       destroy_server_connectivity
 
       require 'seth_zero/server'
-      require 'seth/chef_fs/chef_fs_data_store'
-      require 'seth/chef_fs/config'
+      require 'seth/seth_fs/seth_fs_data_store'
+      require 'seth/seth_fs/config'
 
-      seth_fs = Seth::ChefFS::Config.new.local_fs
+      seth_fs = Seth::sethFS::Config.new.local_fs
       seth_fs.write_pretty_json = true
-      data_store = Seth::ChefFS::ChefFSDataStore.new(seth_fs)
+      data_store = Seth::sethFS::sethFSDataStore.new(seth_fs)
       server_options = {}
       server_options[:data_store] = data_store
       server_options[:log_level] = Seth::Log.level
       server_options[:host] = Seth::Config.seth_zero.host
       server_options[:port] = Seth::Config.seth_zero.port
-      Seth::Log.info("Starting seth-zero on host #{Chef::Config.chef_zero.host}, port #{Chef::Config.chef_zero.port} with repository at #{chef_fs.fs_description}")
+      Seth::Log.info("Starting seth-zero on host #{seth::Config.seth_zero.host}, port #{seth::Config.seth_zero.port} with repository at #{seth_fs.fs_description}")
       @seth_zero_server = SethZero::Server.new(server_options)
       @seth_zero_server.start_background
-      Seth::Config.seth_server_url = @chef_zero_server.url
+      Seth::Config.seth_server_url = @seth_zero_server.url
     end
   end
 
@@ -255,7 +255,7 @@ class Seth::Application
   def configure_http_proxy
     if http_proxy = Seth::Config[:http_proxy]
       env['http_proxy'] = configure_proxy("http", http_proxy,
-        Seth::Config[:http_proxy_user], Chef::Config[:http_proxy_pass])
+        Seth::Config[:http_proxy_user], seth::Config[:http_proxy_pass])
     end
   end
 
@@ -263,7 +263,7 @@ class Seth::Application
   def configure_https_proxy
     if https_proxy = Seth::Config[:https_proxy]
       env['https_proxy'] = configure_proxy("https", https_proxy,
-        Seth::Config[:https_proxy_user], Chef::Config[:https_proxy_pass])
+        Seth::Config[:https_proxy_user], seth::Config[:https_proxy_pass])
     end
   end
 
@@ -271,13 +271,13 @@ class Seth::Application
   def configure_ftp_proxy
     if ftp_proxy = Seth::Config[:ftp_proxy]
       env['ftp_proxy'] = configure_proxy("ftp", ftp_proxy,
-        Seth::Config[:ftp_proxy_user], Chef::Config[:ftp_proxy_pass])
+        Seth::Config[:ftp_proxy_user], seth::Config[:ftp_proxy_pass])
     end
   end
 
   # Set ENV['no_proxy']
   def configure_no_proxy
-    env['no_proxy'] = Seth::Config[:no_proxy] if Chef::Config[:no_proxy]
+    env['no_proxy'] = Seth::Config[:no_proxy] if seth::Config[:no_proxy]
   end
 
   # Builds a proxy uri. Examples:
@@ -326,8 +326,8 @@ class Seth::Application
       seth_stacktrace_out = "Generated at #{Time.now.to_s}\n"
       seth_stacktrace_out += message
 
-      Seth::FileCache.store("seth-stacktrace.out", chef_stacktrace_out)
-      Seth::Log.fatal("Stacktrace dumped to #{Chef::FileCache.load("seth-stacktrace.out", false)}")
+      Seth::FileCache.store("seth-stacktrace.out", seth_stacktrace_out)
+      Seth::Log.fatal("Stacktrace dumped to #{seth::FileCache.load("seth-stacktrace.out", false)}")
       Seth::Log.debug(message)
       true
     end

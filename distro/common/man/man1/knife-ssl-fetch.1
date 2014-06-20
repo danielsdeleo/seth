@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife ssl fetch\fP subcommand is used to copy SSL certificates from an HTTPS server to the \fBtrusted_certs_dir\fP directory that is used by Knife and the seth\-client to store trusted SSL certificates. When these certificates match the hostname of the remote server, running \fBknife ssl fetch\fP is the only step required to verify a remote server that is accessed by either Knife or the chef\-client\&.
+The \fBknife ssl fetch\fP subcommand is used to copy SSL certificates from an HTTPS server to the \fBtrusted_certs_dir\fP directory that is used by Knife and the seth\-client to store trusted SSL certificates. When these certificates match the hostname of the remote server, running \fBknife ssl fetch\fP is the only step required to verify a remote server that is accessed by either Knife or the seth\-client\&.
 .sp
 \fBWARNING:\fP
 .INDENT 0.0
@@ -147,7 +147,7 @@ The SSH user name.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP

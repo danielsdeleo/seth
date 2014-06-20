@@ -33,7 +33,7 @@ case "$1" in
     PID=$(get_pid)
     if [ -z "$PID" ]; then
       [ -f $PIDF ] && rm -f $PIDF
-      $daemon_bin -P $PIDF $CHEF_SOLR_ARGS
+      $daemon_bin -P $PIDF $seth_SOLR_ARGS
       [ -n "$STARTTIME" ] && sleep $STARTTIME
       if [ $? -gt 0 ]; then
         stat_fail

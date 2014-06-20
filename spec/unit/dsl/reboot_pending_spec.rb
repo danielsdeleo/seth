@@ -34,22 +34,22 @@ describe Seth::DSL::RebootPending do
           recipe.stub(:registry_key_exists?).and_return(false)
           recipe.stub(:registry_value_exists?).and_return(false)
         end
-  
+
         it 'should return true if "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\PendingFileRenameOperations" exists' do
           recipe.stub(:registry_value_exists?).with('HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', { :name => 'PendingFileRenameOperations' }).and_return(true)
           expect(recipe.reboot_pending?).to be_true
         end
-  
+
         it 'should return true if "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" exists' do
           recipe.stub(:registry_key_exists?).with('HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired').and_return(true)
           expect(recipe.reboot_pending?).to be_true
         end
-  
+
         it 'should return true if key "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootRequired" exists' do
           recipe.stub(:registry_key_exists?).with('HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootRequired').and_return(true)
           expect(recipe.reboot_pending?).to be_true
         end
-  
+
         it 'should return true if value "HKLM\SOFTWARE\Microsoft\Updates\UpdateExeVolatile" contains specific data' do
           recipe.stub(:registry_key_exists?).with('HKLM\SOFTWARE\Microsoft\Updates\UpdateExeVolatile').and_return(true)
           recipe.stub(:registry_get_values).with('HKLM\SOFTWARE\Microsoft\Updates\UpdateExeVolatile').and_return(
@@ -57,17 +57,17 @@ describe Seth::DSL::RebootPending do
           expect(recipe.reboot_pending?).to be_true
         end
       end
-  
+
       context "platform is ubuntu" do
         before do
           recipe.stub(:platform?).with('ubuntu').and_return(true)
         end
-  
+
         it 'should return true if /var/run/reboot-required exists' do
           File.stub(:exists?).with('/var/run/reboot-required').and_return(true)
           expect(recipe.reboot_pending?).to be_true
         end
-  
+
         it 'should return false if /var/run/reboot-required does not exist' do
           File.stub(:exists?).with('/var/run/reboot-required').and_return(false)
           expect(recipe.reboot_pending?).to be_false
@@ -85,7 +85,7 @@ describe Seth::DSL::RebootPending do
     describe "in a recipe" do
       it "responds to reboot_pending?" do
         # Seth::Recipe.new(cookbook_name, recipe_name, run_context(node, cookbook_collection, events))
-        recipe = Seth::Recipe.new(nil,nil,Chef::RunContext.new(Chef::Node.new, {}, nil))
+        recipe = Seth::Recipe.new(nil,nil,seth::RunContext.new(seth::Node.new, {}, nil))
         expect(recipe).to respond_to(:reboot_pending?)
       end
     end # describe in a recipe

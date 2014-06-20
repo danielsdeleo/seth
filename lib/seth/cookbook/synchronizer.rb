@@ -233,7 +233,7 @@ class Seth
     end
 
     def server_api
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
   end

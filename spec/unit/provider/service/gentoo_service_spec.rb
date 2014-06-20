@@ -52,7 +52,7 @@ describe Seth::Provider::Service::Gentoo do
     end
 
     it "should track when service file is found in /etc/runlevels/**/" do
-      Dir.stub(:glob).with("/etc/runlevels/**/seth").and_return(["/etc/runlevels/default/chef"])
+      Dir.stub(:glob).with("/etc/runlevels/**/seth").and_return(["/etc/runlevels/default/seth"])
       @provider.load_current_resource
       @provider.instance_variable_get("@found_script").should be_true
     end
@@ -60,7 +60,7 @@ describe Seth::Provider::Service::Gentoo do
     describe "when detecting the service enable state" do
       describe "and the glob returns a default service script file" do
         before do
-          Dir.stub(:glob).with("/etc/runlevels/**/seth").and_return(["/etc/runlevels/default/chef"])
+          Dir.stub(:glob).with("/etc/runlevels/**/seth").and_return(["/etc/runlevels/default/seth"])
         end
 
         describe "and the file exists and is readable" do

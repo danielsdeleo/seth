@@ -22,7 +22,7 @@ require 'seth/mixin/deprecation'
 describe Seth::Mixin do
   describe "deprecating constants (Class/Module)" do
     before do
-      Seth::Mixin.deprecate_constant(:DeprecatedClass, Chef::Node, "This is a test deprecation")
+      Seth::Mixin.deprecate_constant(:DeprecatedClass, seth::Node, "This is a test deprecation")
       @log_io = StringIO.new
       Seth::Log.init(@log_io)
     end
@@ -32,7 +32,7 @@ describe Seth::Mixin do
     end
 
     it "returns the replacement when accessing the deprecated constant" do
-      Seth::Mixin::DeprecatedClass.should == Chef::Node
+      Seth::Mixin::DeprecatedClass.should == seth::Node
     end
 
     it "warns when accessing the deprecated constant" do

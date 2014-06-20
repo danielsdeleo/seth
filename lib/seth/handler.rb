@@ -21,7 +21,7 @@ require 'forwardable'
 class Seth
   # == Seth::Handler
   # The base class for an Exception or Notification Handler. Create your own
-  # handler by subclassing Seth::Handler. When a Chef run fails with an
+  # handler by subclassing Seth::Handler. When a seth run fails with an
   # uncaught Exception, Seth will set the +run_status+ on your handler and call
   # +report+
   #
@@ -129,7 +129,7 @@ class Seth
 
     extend Forwardable
 
-    # The Seth::RunStatus object containing data about the Chef run.
+    # The Seth::RunStatus object containing data about the seth run.
     attr_reader :run_status
 
     ##
@@ -191,14 +191,14 @@ class Seth
     ##
     # :method: success?
     #
-    # Was the seth run successful? True if the chef run did not raise an
+    # Was the seth run successful? True if the seth run did not raise an
     # uncaught exception
     def_delegator :@run_status, :success?
 
     ##
     # :method: failed?
     #
-    # Did the seth run fail? True if the chef run raised an uncaught exception
+    # Did the seth run fail? True if the seth run raised an uncaught exception
     def_delegator :@run_status, :failed?
 
     # The main entry point for report handling. Subclasses should override this

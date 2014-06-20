@@ -77,13 +77,13 @@ class Seth
     end
 
     def destroy
-      Seth::REST.new(Chef::Config[:seth_server_url]).delete_rest("users/#{@name}")
+      Seth::REST.new(seth::Config[:seth_server_url]).delete_rest("users/#{@name}")
     end
 
     def create
       payload = {:name => self.name, :admin => self.admin, :password => self.password }
       payload[:public_key] = public_key if public_key
-      new_user =Seth::REST.new(Chef::Config[:seth_server_url]).post_rest("users", payload)
+      new_user =Seth::REST.new(seth::Config[:seth_server_url]).post_rest("users", payload)
       Seth::User.from_hash(self.to_hash.merge(new_user))
     end
 
@@ -91,7 +91,7 @@ class Seth
       payload = {:name => name, :admin => admin}
       payload[:private_key] = new_key if new_key
       payload[:password] = password if password
-      updated_user = Seth::REST.new(Chef::Config[:seth_server_url]).put_rest("users/#{name}", payload)
+      updated_user = Seth::REST.new(seth::Config[:seth_server_url]).put_rest("users/#{name}", payload)
       Seth::User.from_hash(self.to_hash.merge(updated_user))
     end
 
@@ -108,7 +108,7 @@ class Seth
     end
 
     def reregister
-      r = Seth::REST.new(Chef::Config[:seth_server_url])
+      r = Seth::REST.new(seth::Config[:seth_server_url])
       reregistered_self = r.put_rest("users/#{name}", { :name => name, :admin => admin, :private_key => true })
       private_key(reregistered_self["private_key"])
       self
@@ -136,7 +136,7 @@ class Seth
     end
 
     def self.from_json(json)
-      Seth::User.from_hash(Chef::JSONCompat.from_json(json))
+      Seth::User.from_hash(seth::JSONCompat.from_json(json))
     end
 
     class << self
@@ -144,7 +144,7 @@ class Seth
     end
 
     def self.list(inflate=false)
-      response = Seth::REST.new(Chef::Config[:seth_server_url]).get_rest('users')
+      response = Seth::REST.new(seth::Config[:seth_server_url]).get_rest('users')
       users = if response.is_a?(Array)
         transform_ohc_list_response(response) # OHC/OPC
       else
@@ -161,7 +161,7 @@ class Seth
     end
 
     def self.load(name)
-      response = Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("users/#{name}")
+      response = Seth::REST.new(seth::Config[:seth_server_url]).get_rest("users/#{name}")
       Seth::User.from_hash(response)
     end
 

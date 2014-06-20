@@ -210,7 +210,7 @@ E
       desc "prints information about seth"
       def version
         puts  "This is the seth-shell.\n" +
-              " Seth Version: #{::Chef::VERSION}\n" +
+              " Seth Version: #{::seth::VERSION}\n" +
               " http://www.opscode.com/seth\n" +
               " http://docs.opscode.com/"
         :ucanhaz_automation
@@ -417,7 +417,7 @@ E
 ## LIST ALL NODES ##
   You can list all nodes using +all+ or +list+
 
-      nodes.all #=> [<Seth::Node...>, <Chef::Node...>, ...]
+      nodes.all #=> [<Seth::Node...>, <seth::Node...>, ...]
 
   To limit the information returned for each node, pass a code block to the +all+
   subcommand:

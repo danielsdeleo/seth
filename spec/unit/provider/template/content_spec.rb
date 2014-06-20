@@ -35,8 +35,8 @@ describe Seth::Provider::Template::Content do
   let(:rendered_file_location) { Dir.tmpdir + '/openldap_stuff.conf' }
 
   let(:run_context) do
-    cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
+    cookbook_repo = File.expand_path(File.join(seth_SPEC_DATA, "cookbooks"))
+    Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
     cl = Seth::CookbookLoader.new(cookbook_repo)
     cl.load_cookbooks
     cookbook_collection = Seth::CookbookCollection.new(cl)
@@ -54,7 +54,7 @@ describe Seth::Provider::Template::Content do
   end
 
   it "finds the template file in the cookbook cache if it isn't local" do
-    content.template_location.should == CHEF_SPEC_DATA + '/cookbooks/openldap/templates/default/openldap_stuff.conf.erb'
+    content.template_location.should == seth_SPEC_DATA + '/cookbooks/openldap/templates/default/openldap_stuff.conf.erb'
   end
 
   it "finds the template file locally if it is local" do
@@ -67,7 +67,7 @@ describe Seth::Provider::Template::Content do
     new_resource.stub(:cookbook_name).and_return('apache2')
     new_resource.stub(:cookbook).and_return('openldap')
     new_resource.stub(:source).and_return("test.erb")
-    content.template_location.should == CHEF_SPEC_DATA + '/cookbooks/openldap/templates/default/test.erb'
+    content.template_location.should == seth_SPEC_DATA + '/cookbooks/openldap/templates/default/test.erb'
   end
 
   it "creates the template with the rendered content" do

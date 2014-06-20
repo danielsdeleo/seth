@@ -36,8 +36,8 @@ describe Seth::Resource::Template do
   end
 
   def create_resource
-    cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
+    cookbook_repo = File.expand_path(File.join(seth_SPEC_DATA, "cookbooks"))
+    Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
     cl = Seth::CookbookLoader.new(cookbook_repo)
     cl.load_cookbooks
     cookbook_collection = Seth::CookbookCollection.new(cl)
@@ -73,7 +73,7 @@ describe Seth::Resource::Template do
     end
 
     it "creates the template with the rendered content using a local erb file when the :create action is run" do
-      resource.source(File.expand_path(File.join(CHEF_SPEC_DATA,'cookbooks','openldap','templates','default','openldap_stuff.conf.erb')))
+      resource.source(File.expand_path(File.join(seth_SPEC_DATA,'cookbooks','openldap','templates','default','openldap_stuff.conf.erb')))
       resource.cookbook(nil)
       resource.local(true)
       resource.run_action(:create)

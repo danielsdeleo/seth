@@ -53,7 +53,7 @@ class Seth
 
         current_checksum = nil
         if Seth::FileCache.has_key?(cache_filename)
-          current_checksum = Seth::CookbookVersion.checksum_cookbook_file(Chef::FileCache.load(cache_filename, false))
+          current_checksum = Seth::CookbookVersion.checksum_cookbook_file(seth::FileCache.load(cache_filename, false))
         end
 
         # If the checksums are different between on-disk (current) and on-server

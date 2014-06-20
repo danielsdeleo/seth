@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_dir'
+require 'seth/seth_fs/file_system/base_fs_dir'
 
 class Seth
   module SethFS

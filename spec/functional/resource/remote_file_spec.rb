@@ -99,9 +99,9 @@ describe Seth::Resource::RemoteFile do
   context "when fetching files over HTTPS" do
 
     before(:all) do
-      cert_text = File.read(File.expand_path("ssl/seth-rspec.cert", CHEF_SPEC_DATA))
+      cert_text = File.read(File.expand_path("ssl/seth-rspec.cert", seth_SPEC_DATA))
       cert = OpenSSL::X509::Certificate.new(cert_text)
-      key_text = File.read(File.expand_path("ssl/seth-rspec.key", CHEF_SPEC_DATA))
+      key_text = File.read(File.expand_path("ssl/seth-rspec.key", seth_SPEC_DATA))
       key = OpenSSL::PKey::RSA.new(key_text)
 
       server_opts = { :SSLEnable => true,
@@ -186,7 +186,7 @@ describe Seth::Resource::RemoteFile do
 
       it "should raise ContentLengthMismatch" do
         lambda { resource.run_action(:create) }.should raise_error(Seth::Exceptions::ContentLengthMismatch)
-        #File.should_not exist(path) # XXX: CHEF-5081
+        #File.should_not exist(path) # XXX: seth-5081
       end
     end
 
@@ -199,7 +199,7 @@ describe Seth::Resource::RemoteFile do
 
       it "should raise ContentLengthMismatch" do
         lambda { resource.run_action(:create) }.should raise_error(Seth::Exceptions::ContentLengthMismatch)
-        #File.should_not exist(path) # XXX: CHEF-5081
+        #File.should_not exist(path) # XXX: seth-5081
       end
     end
 

@@ -148,7 +148,7 @@ describe Seth::Provider::Package::Rubygems::CurrentGemEnvironment do
   end
 
   it "finds a matching candidate version from a .gem file when the path to the gem is supplied" do
-    location = CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem'
+    location = seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem'
     @gem_env.candidate_version_from_file(Gem::Dependency.new('seth-integration-test', '>= 0'), location).should == Gem::Version.new('0.1.0')
     @gem_env.candidate_version_from_file(Gem::Dependency.new('seth-integration-test', '>= 0.2.0'), location).should be_nil
   end
@@ -464,7 +464,7 @@ describe Seth::Provider::Package::Rubygems do
     it "parses the gem's specification if the requested source is a file" do
       @new_resource.package_name('seth-integration-test')
       @new_resource.version('>= 0')
-      @new_resource.source(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+      @new_resource.source(seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
       @provider.candidate_version.should == '0.1.0'
     end
 
@@ -492,17 +492,17 @@ describe Seth::Provider::Package::Rubygems do
       end
 
       it "installs the gem from file via the gems api when no explicit options are used" do
-        @new_resource.source(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
-        @provider.gem_env.should_receive(:install).with(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+        @new_resource.source(seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+        @provider.gem_env.should_receive(:install).with(seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
         @provider.action_install.should be_true
       end
 
       it "installs the gem from file via the gems api when the package is a path and the source is nil" do
-        @new_resource = Seth::Resource::GemPackage.new(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+        @new_resource = Seth::Resource::GemPackage.new(seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
         @provider = Seth::Provider::Package::Rubygems.new(@new_resource, @run_context)
         @provider.current_resource = @current_resource
-        @new_resource.source.should == CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem'
-        @provider.gem_env.should_receive(:install).with(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+        @new_resource.source.should == seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem'
+        @provider.gem_env.should_receive(:install).with(seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
         @provider.action_install.should be_true
       end
 
@@ -565,20 +565,20 @@ describe Seth::Provider::Package::Rubygems do
 
       it "installs the gem from file by shelling out to gem install" do
         @new_resource.gem_binary('/usr/weird/bin/gem')
-        @new_resource.source(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+        @new_resource.source(seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
         @new_resource.version('>= 0')
-        @provider.should_receive(:shell_out!).with("/usr/weird/bin/gem install #{CHEF_SPEC_DATA}/gems/seth-integration-test-0.1.0.gem -q --no-rdoc --no-ri -v \">= 0\"", :env=>nil)
+        @provider.should_receive(:shell_out!).with("/usr/weird/bin/gem install #{seth_SPEC_DATA}/gems/seth-integration-test-0.1.0.gem -q --no-rdoc --no-ri -v \">= 0\"", :env=>nil)
         @provider.action_install.should be_true
       end
 
       it "installs the gem from file by shelling out to gem install when the package is a path and the source is nil" do
-        @new_resource = Seth::Resource::GemPackage.new(CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
+        @new_resource = Seth::Resource::GemPackage.new(seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem')
         @provider = Seth::Provider::Package::Rubygems.new(@new_resource, @run_context)
         @provider.current_resource = @current_resource
         @new_resource.gem_binary('/usr/weird/bin/gem')
         @new_resource.version('>= 0')
-        @new_resource.source.should == CHEF_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem'
-        @provider.should_receive(:shell_out!).with("/usr/weird/bin/gem install #{CHEF_SPEC_DATA}/gems/seth-integration-test-0.1.0.gem -q --no-rdoc --no-ri -v \">= 0\"", :env=>nil)
+        @new_resource.source.should == seth_SPEC_DATA + '/gems/seth-integration-test-0.1.0.gem'
+        @provider.should_receive(:shell_out!).with("/usr/weird/bin/gem install #{seth_SPEC_DATA}/gems/seth-integration-test-0.1.0.gem -q --no-rdoc --no-ri -v \">= 0\"", :env=>nil)
         @provider.action_install.should be_true
       end
     end

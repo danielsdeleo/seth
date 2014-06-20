@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/rest_list_dir'
-require 'seth/chef_fs/file_system/cookbook_subdir'
-require 'seth/chef_fs/file_system/cookbook_file'
-require 'seth/chef_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/rest_list_dir'
+require 'seth/seth_fs/file_system/cookbook_subdir'
+require 'seth/seth_fs/file_system/cookbook_file'
+require 'seth/seth_fs/file_system/not_found_error'
 require 'seth/cookbook_version'
 require 'seth/cookbook_uploader'
 
@@ -60,7 +60,7 @@ class Seth
         }
 
         # See Erseth code
-        # https://github.com/opscode/seth_objects/blob/968a63344d38fd507f6ace05f73d53e9cd7fb043/src/chef_regex.erl#L94
+        # https://github.com/opscode/seth_objects/blob/968a63344d38fd507f6ace05f73d53e9cd7fb043/src/seth_regex.erl#L94
         VALID_VERSIONED_COOKBOOK_NAME = /^([.a-zA-Z0-9_-]+)-(\d+\.\d+\.\d+)$/
 
         def add_child(child)
@@ -78,7 +78,7 @@ class Seth
           begin
             result = children.select { |child| child.name == name }.first
             return result if result
-          rescue Seth::ChefFS::FileSystem::NotFoundError
+          rescue Seth::sethFS::FileSystem::NotFoundError
           end
           return NonexistentFSObject.new(name, self)
         end
@@ -128,12 +128,12 @@ class Seth
             begin
               rest.delete(api_path)
             rescue Timeout::Error => e
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
             rescue Net::HTTPServerException
               if $!.response.code == "404"
-                raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
+                raise Seth::sethFS::FileSystem::NotFoundError.new(self, $!)
               else
-                raise Seth::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "HTTP error deleting: #{e}"
+                raise Seth::sethFS::FileSystem::OperationFailedError.new(:delete, self, e), "HTTP error deleting: #{e}"
               end
             end
           else
@@ -156,7 +156,7 @@ class Seth
             return [ !exists?, nil, nil ]
           end
           are_same = true
-          Seth::ChefFS::CommandLine::diff_entries(self, other, nil, :name_only).each do |type, old_entry, new_entry|
+          Seth::sethFS::CommandLine::diff_entries(self, other, nil, :name_only).each do |type, old_entry, new_entry|
             if [ :directory_to_file, :file_to_directory, :deleted, :added, :modified ].include?(type)
               are_same = false
             end
@@ -175,11 +175,11 @@ class Seth
         def seth_object
           # We cheat and cache here, because it seems like a good idea to keep
           # the cookbook view consistent with the directory structure.
-          return @seth_object if @chef_object
+          return @seth_object if @seth_object
 
           # The negative (not found) response is cached
           if @could_not_get_seth_object
-            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, @could_not_get_seth_object)
+            raise Seth::sethFS::FileSystem::NotFoundError.new(self, @could_not_get_seth_object)
           end
 
           begin
@@ -187,7 +187,7 @@ class Seth
             # This will make things worse for parallelism, a little, because
             # Seth::Config is global and this could affect other requests while
             # this request is going on.  (We're not parallel yet, but we will be.)
-            # Seth bug http://tickets.opscode.com/browse/CHEF-3066
+            # Seth bug http://tickets.opscode.com/browse/seth-3066
             old_retry_count = Seth::Config[:http_retry_count]
             begin
               Seth::Config[:http_retry_count] = 0
@@ -197,24 +197,24 @@ class Seth
             end
 
           rescue Timeout::Error => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading: #{e}"
 
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
               @could_not_get_seth_object = e
-              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, @could_not_get_seth_object)
+              raise Seth::sethFS::FileSystem::NotFoundError.new(self, @could_not_get_seth_object)
             else
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
             end
 
-          # Seth bug http://tickets.opscode.com/browse/CHEF-3066 ... instead of 404 we get 500 right now.
+          # Seth bug http://tickets.opscode.com/browse/seth-3066 ... instead of 404 we get 500 right now.
           # Remove this when that bug is fixed.
           rescue Net::HTTPFatalError => e
             if e.response.code == "500"
               @could_not_get_seth_object = e
-              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, @could_not_get_seth_object)
+              raise Seth::sethFS::FileSystem::NotFoundError.new(self, @could_not_get_seth_object)
             else
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
             end
           end
         end

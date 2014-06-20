@@ -45,7 +45,7 @@ describe Seth::Deprecation do
     add_deprecation_warnings_for(DeprecatedMethods.instance_methods)
   end
 
-  method_snapshot_file = File.join(CHEF_SPEC_DATA, "file-providers-method-snapshot-seth-11-4.json")
+  method_snapshot_file = File.join(seth_SPEC_DATA, "file-providers-method-snapshot-seth-11-4.json")
   method_snapshot = JSON.parse(File.open(method_snapshot_file).read())
 
   method_snapshot.each do |class_name, old_methods|

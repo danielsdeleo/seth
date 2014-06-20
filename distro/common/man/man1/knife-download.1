@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife download\fP subcommand is used to download roles, cookbooks, environments, nodes, and data bags from the Seth server to the current working directory. It can be used to back up data on the Chef server, inspect the state of one or more files, or to extract out\-of\-process changes users may have made to files on the Chef server, such as if a user made a change that bypassed version source control. This subcommand is often used in conjunction with \fBknife diff\fP, which can be used to see exactly what changes will be downloaded, and then \fBknife upload\fP, which does the opposite of \fBknife download\fP\&.
+The \fBknife download\fP subcommand is used to download roles, cookbooks, environments, nodes, and data bags from the Seth server to the current working directory. It can be used to back up data on the seth server, inspect the state of one or more files, or to extract out\-of\-process changes users may have made to files on the seth server, such as if a user made a change that bypassed version source control. This subcommand is often used in conjunction with \fBknife diff\fP, which can be used to see exactly what changes will be downloaded, and then \fBknife upload\fP, which does the opposite of \fBknife download\fP\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -56,7 +56,7 @@ This subcommand has the following options:
 The configuration file to use.
 .TP
 .B \fB\-\-seth\-repo\-path PATH\fP
-The path to the seth\-repo\&. This setting will override the default path to the chef\-repo\&. Default: same as specified by \fBchef_repo_path\fP in config.rb.
+The path to the seth\-repo\&. This setting will override the default path to the seth\-repo\&. Default: same as specified by \fBseth_repo_path\fP in config.rb.
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
 The port on which seth\-zero will listen.
@@ -104,7 +104,7 @@ Indicates that no action is taken and that results are only printed out. Default
 Indicates that data will be shown after a destructive operation.
 .TP
 .B \fB\-\-[no\-]purge\fP
-Use \fB\-\-purge\fP to delete local files and directories that do not exist on the Seth server\&. By default, if a role, cookbook, etc. does not exist on the Chef server, the local file for said role will be left alone and NOT deleted. Default: \fB\-\-no\-purge\fP\&.
+Use \fB\-\-purge\fP to delete local files and directories that do not exist on the Seth server\&. By default, if a role, cookbook, etc. does not exist on the seth server, the local file for said role will be left alone and NOT deleted. Default: \fB\-\-no\-purge\fP\&.
 .TP
 .B \fB\-\-[no\-]recurse\fP
 Use \fB\-\-no\-recurse\fP to disable downloading a directory recursively. Default: \fB\-\-recurse\fP\&.
@@ -128,12 +128,12 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP
 .sp
-To download the entire seth\-repo from the Seth server, browse to the top level of the chef\-repo and enter:
+To download the entire seth\-repo from the Seth server, browse to the top level of the seth\-repo and enter:
 .INDENT 0.0
 .INDENT 3.5
 .sp

@@ -24,7 +24,7 @@ if RUBY_PLATFORM =~ /mswin|mingw32|windows/
   require 'win32/service'
 end
 
-class Seth::Provider::Service::Windows < Chef::Provider::Service
+class Seth::Provider::Service::Windows < seth::Provider::Service
 
   include Seth::Mixin::ShellOut
 

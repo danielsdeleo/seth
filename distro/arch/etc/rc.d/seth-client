@@ -33,7 +33,7 @@ case "$1" in
     PID=$(get_pid)
     if [ -z "$PID" ]; then
       [ -f $PIDF ] && rm -f $PIDF
-      $daemon_bin --pid $PIDF $CHEF_CLIENT_ARGS
+      $daemon_bin --pid $PIDF $seth_CLIENT_ARGS
       if [ $? -gt 0 ]; then
         stat_fail
         exit 1

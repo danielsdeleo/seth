@@ -76,7 +76,7 @@ END_CLIENT_RB
 
   let(:seth_dir) { File.join(File.dirname(__FILE__), "..", "..", "..", "bin") }
 
-  let(:seth_client_cmd) { %Q[chef-client -c "#{path_to('config/client.rb')}" -lwarn] }
+  let(:seth_client_cmd) { %Q[seth-client -c "#{path_to('config/client.rb')}" -lwarn] }
 
   after do
     FileUtils.rm_rf(cache_path)
@@ -94,7 +94,7 @@ END_CLIENT_RB
       end
 
       it "should complete with success" do
-        result = shell_out("#{seth_client_cmd} -o 'noop::default'", :cwd => chef_dir)
+        result = shell_out("#{seth_client_cmd} -o 'noop::default'", :cwd => seth_dir)
         result.error!
       end
 
@@ -124,7 +124,7 @@ END_CLIENT_RB
       end
 
       it "should complete with success" do
-        result = shell_out("#{seth_client_cmd} -o 'api-smoke-test::default'", :cwd => chef_dir)
+        result = shell_out("#{seth_client_cmd} -o 'api-smoke-test::default'", :cwd => seth_dir)
         result.error!
       end
 

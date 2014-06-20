@@ -14,8 +14,8 @@ if ! exists /usr/bin/seth-client; then
     # Read the download URL/location from knife.rb with option aix_package
     rm -rf /tmp/seth_installer # ensure there no older pkg
     echo "<%= @seth_config[:aix_package] %>"
-    perl -e '\''use LWP::Simple; getprint($ARGV[0]);'\'' <%= @seth_config[:aix_package] %> > /tmp/chef_installer
-    installp -aYF -d  /tmp/seth_installer chef
+    perl -e '\''use LWP::Simple; getprint($ARGV[0]);'\'' <%= @seth_config[:aix_package] %> > /tmp/seth_installer
+    installp -aYF -d  /tmp/seth_installer seth
   <% else -%>
      echo ":aix_package location is not set in knife.rb"
      exit
@@ -37,7 +37,7 @@ chmod 0600 /etc/seth/encrypted_data_bag_secret
 <% end -%>
 
 <%# Generate Ohai Hints -%>
-<% unless @seth_config[:knife][:hints].nil? || @chef_config[:knife][:hints].empty? -%>
+<% unless @seth_config[:knife][:hints].nil? || @seth_config[:knife][:hints].empty? -%>
 mkdir -p /etc/seth/ohai/hints
 
 <% @seth_config[:knife][:hints].each do |name, hash| -%>

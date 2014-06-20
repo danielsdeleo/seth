@@ -56,7 +56,7 @@ describe Seth::ScanAccessControl do
     end
 
     describe "when new_resource does not specify mode, user or group" do
-      # these tests are necessary for minitest-seth-handler to use as an API, see CHEF-3235
+      # these tests are necessary for minitest-seth-handler to use as an API, see seth-3235
       before do
         @scanner.set_all!
       end

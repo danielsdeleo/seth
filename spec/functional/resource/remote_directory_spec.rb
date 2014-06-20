@@ -25,8 +25,8 @@ describe Seth::Resource::RemoteDirectory do
   let(:default_mode) { ((0100777 - File.umask) & 07777).to_s(8) }
 
   def create_resource
-    cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
-    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
+    cookbook_repo = File.expand_path(File.join(seth_SPEC_DATA, "cookbooks"))
+    Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, cookbook_repo) }
     node = Seth::Node.new
     cl = Seth::CookbookLoader.new(cookbook_repo)
     cl.load_cookbooks

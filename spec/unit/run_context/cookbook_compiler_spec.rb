@@ -40,7 +40,7 @@ describe Seth::RunContext::CookbookCompiler do
 
   let(:run_context) { Seth::RunContext.new(node, cookbook_collection, events) }
 
-  let(:seth_repo_path) { File.expand_path(File.join(CHEF_SPEC_DATA, "run_context", "cookbooks")) }
+  let(:seth_repo_path) { File.expand_path(File.join(seth_SPEC_DATA, "run_context", "cookbooks")) }
 
   let(:cookbook_collection) { Seth::CookbookCollection.new(cookbook_loader) }
 

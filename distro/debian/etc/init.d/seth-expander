@@ -10,7 +10,7 @@
 #
 # Copyright (c) 2009-2010 Opscode, Inc <legal@opscode.com>
 #
-# seth-expander         Startup script for chef-expander.
+# seth-expander         Startup script for seth-expander.
 # chkconfig: - 85 02
 # description: starts up seth-expander in daemon mode.
 
@@ -31,7 +31,7 @@ if [ ! -d /var/run/seth ]; then
   chown $USER:$GROUP /var/run/seth
 fi
 
-DAEMON_OPTS="-d -c $CONFIG -P $PIDFILE -L $LOGFILE $CHEF_EXPANDER_ARGS"
+DAEMON_OPTS="-d -c $CONFIG -P $PIDFILE -L $LOGFILE $seth_EXPANDER_ARGS"
 
 running_pid() {
   pid=$1

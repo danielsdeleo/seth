@@ -202,8 +202,8 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
       provider.new_resource.gid '23'
     end
 
-    # CHEF-3423, -m must come before the username
-    # CHEF-4305, -d must come before -m to support CentOS/RHEL 5
+    # seth-3423, -m must come before the username
+    # seth-4305, -d must come before -m to support CentOS/RHEL 5
     it "runs usermod with the computed command options" do
       command = ["usermod",
                   "-g", '23',
@@ -225,7 +225,7 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
       provider.manage_user
     end
 
-    it "CHEF-3429: does not set -m if we aren't changing the home directory" do
+    it "seth-3429: does not set -m if we aren't changing the home directory" do
       provider.should_receive(:updating_home?).and_return(false)
       command = ["usermod",
                   "-g", '23',
@@ -344,7 +344,7 @@ shared_examples_for "a useradd-based user provider" do |supported_useradd_option
           and_return(passwd_status)
         Seth::Config[:why_run] = true
       end
-  
+
       it "should return false if the user does not exist" do
         provider.check_lock.should eql(false)
       end

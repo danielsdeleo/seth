@@ -61,7 +61,7 @@ module KnifeSupport
 
         # Don't print stuff
         Seth::Config[:verbosity] = ( DEBUG ? 2 : 0 )
-        instance.config[:config_file] = File.join(CHEF_SPEC_DATA, "null_config.rb")
+        instance.config[:config_file] = File.join(seth_SPEC_DATA, "null_config.rb")
 
 
         # Configure seth with a (mostly) blank knife.rb

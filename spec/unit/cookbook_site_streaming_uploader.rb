@@ -39,7 +39,7 @@ describe Seth::CookbookSiteStreamingUploader do
   describe "create_build_dir" do
 
     before(:each) do
-      @cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, 'cookbooks'))
+      @cookbook_repo = File.expand_path(File.join(seth_SPEC_DATA, 'cookbooks'))
       @loader = Seth::CookbookLoader.new(@cookbook_repo)
       @loader.load_cookbooks
       File.stub(:unlink).and_return()
@@ -49,7 +49,7 @@ describe Seth::CookbookSiteStreamingUploader do
       cookbook = @loader[:openldap]
       files_count = Dir.glob(File.join(@cookbook_repo, cookbook.name.to_s, '**', '*'), File::FNM_DOTMATCH).count { |file| File.file?(file) }
 
-      Tempfile.should_receive(:new).with("seth-#{cookbook.name}-build").and_return(FakeTempfile.new("chef-#{cookbook.name}-build"))
+      Tempfile.should_receive(:new).with("seth-#{cookbook.name}-build").and_return(FakeTempfile.new("seth-#{cookbook.name}-build"))
       FileUtils.should_receive(:mkdir_p).exactly(files_count + 1).times
       FileUtils.should_receive(:cp).exactly(files_count).times
       Seth::CookbookSiteStreamingUploader.create_build_dir(cookbook)
@@ -61,7 +61,7 @@ describe Seth::CookbookSiteStreamingUploader do
 
     before(:each) do
       @uri = "http://cookbooks.dummy.com/api/v1/cookbooks"
-      @secret_filename = File.join(CHEF_SPEC_DATA, 'ssl/private_key.pem')
+      @secret_filename = File.join(seth_SPEC_DATA, 'ssl/private_key.pem')
       @rsa_key = File.read(@secret_filename)
       response = Net::HTTPResponse.new('1.0', '200', 'OK')
       Net::HTTP.any_instance.stub(:request).and_return(response)
@@ -102,7 +102,7 @@ describe Seth::CookbookSiteStreamingUploader do
 
     it "should be able to receive files to attach as argument" do
       Seth::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename, {
-        :myfile => File.new(File.join(CHEF_SPEC_DATA, 'config.rb')), # a dummy file
+        :myfile => File.new(File.join(seth_SPEC_DATA, 'config.rb')), # a dummy file
       })
     end
 
@@ -114,9 +114,9 @@ describe Seth::CookbookSiteStreamingUploader do
 
     it "should be able to receive strings and files as argument at the same time" do
       Seth::CookbookSiteStreamingUploader.make_request(:put, @uri, 'bill', @secret_filename, {
-        :myfile1 => File.new(File.join(CHEF_SPEC_DATA, 'config.rb')),
+        :myfile1 => File.new(File.join(seth_SPEC_DATA, 'config.rb')),
         :mystring1 => 'Lorem ipsum',
-        :myfile2 => File.new(File.join(CHEF_SPEC_DATA, 'config.rb')),
+        :myfile2 => File.new(File.join(seth_SPEC_DATA, 'config.rb')),
         :mystring2 => 'Dummy text',
       })
     end
@@ -125,7 +125,7 @@ describe Seth::CookbookSiteStreamingUploader do
 
   describe "StreamPart" do
     before(:each) do
-      @file = File.new(File.join(CHEF_SPEC_DATA, 'config.rb'))
+      @file = File.new(File.join(seth_SPEC_DATA, 'config.rb'))
       @stream_part = Seth::CookbookSiteStreamingUploader::StreamPart.new(@file, File.size(@file))
     end
 
@@ -188,7 +188,7 @@ describe Seth::CookbookSiteStreamingUploader do
       @multipart_stream.read(10).should eql("#{@string1}#{@string2}"[0, 10])
     end
 
-    it "should read receiving destination buffer as second argument (CHEF-4456: Ruby 2 compat)" do
+    it "should read receiving destination buffer as second argument (seth-4456: Ruby 2 compat)" do
       dst_buf = ''
       @multipart_stream.read(10, dst_buf)
       dst_buf.should eql("#{@string1}#{@string2}"[0, 10])

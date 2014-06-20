@@ -56,7 +56,7 @@ Y6S6MeZ69Rp89ma4ttMZ+kwi1+XyHqC/dlcVRW42Zl5Dc7BALRlJjQ==
 
 describe Seth::REST::AuthCredentials do
   before do
-    @key_file_fixture = CHEF_SPEC_DATA + '/ssl/private_key.pem'
+    @key_file_fixture = seth_SPEC_DATA + '/ssl/private_key.pem'
     @key = OpenSSL::PKey::RSA.new(IO.read(@key_file_fixture).strip)
     @auth_credentials = Seth::REST::AuthCredentials.new("client-name", @key)
   end
@@ -72,7 +72,7 @@ describe Seth::REST::AuthCredentials do
 
   describe "when loading the private key" do
     it "strips extra whitespace before checking the key" do
-      key_file_fixture = CHEF_SPEC_DATA + '/ssl/private_key_with_whitespace.pem'
+      key_file_fixture = seth_SPEC_DATA + '/ssl/private_key_with_whitespace.pem'
       lambda {Seth::REST::AuthCredentials.new("client-name", @key_file_fixture)}.should_not raise_error
     end
   end
@@ -132,8 +132,8 @@ describe Seth::REST::RESTRequest do
   end
 
   before do
-    @auth_credentials = Seth::REST::AuthCredentials.new("client-name", CHEF_SPEC_DATA + '/ssl/private_key.pem')
-    @url = URI.parse("http://seth.example.com:4000/?q=chef_is_awesome")
+    @auth_credentials = Seth::REST::AuthCredentials.new("client-name", seth_SPEC_DATA + '/ssl/private_key.pem')
+    @url = URI.parse("http://seth.example.com:4000/?q=seth_is_awesome")
     @req_body = '{"json_data":"as_a_string"}'
     @headers = { "Content-type" =>"application/json",
                  "Accept"=>"application/json",
@@ -151,7 +151,7 @@ describe Seth::REST::RESTRequest do
   end
 
   it "adds the seth version header" do
-    @request.headers.should == @headers.merge("X-Seth-Version" => ::Chef::VERSION)
+    @request.headers.should == @headers.merge("X-Seth-Version" => ::seth::VERSION)
   end
 
   describe "configuring the HTTP request" do
@@ -184,7 +184,7 @@ describe Seth::REST::RESTRequest do
     end
 
     it "configures HTTP basic auth" do
-      @url = URI.parse("http://homie:theclown@seth.example.com:4000/?q=chef_is_awesome")
+      @url = URI.parse("http://homie:theclown@seth.example.com:4000/?q=seth_is_awesome")
       rest_req = new_request(:GET)
       rest_req.http_request.to_hash["authorization"].should == ["Basic aG9taWU6dGhlY2xvd24="]
     end
