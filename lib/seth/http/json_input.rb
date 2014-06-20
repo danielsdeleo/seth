@@ -33,7 +33,7 @@ class Seth
           headers["Content-Type"] = 'application/json'
           data = Seth::JSONCompat.to_json(data)
           # Force encoding to binary to fix SSL related EOFErrors
-          # cf. http://tickets.opscode.com/browse/CHEF-2363
+          # cf. http://tickets.opscode.com/browse/seth-2363
           # http://redmine.ruby-lang.org/issues/5233
           data.force_encoding(Encoding::BINARY) if data.respond_to?(:force_encoding)
         end

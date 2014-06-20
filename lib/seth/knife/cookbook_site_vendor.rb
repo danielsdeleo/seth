@@ -19,7 +19,7 @@
 require 'seth/knife'
 require 'seth/knife/cookbook_site_install'
 
-class Seth::Knife::CookbookSiteVendor < Chef::Knife::CookbookSiteInstall
+class Seth::Knife::CookbookSiteVendor < seth::Knife::CookbookSiteInstall
 
   def self.load_deps
     superclass.load_deps

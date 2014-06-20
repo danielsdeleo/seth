@@ -44,11 +44,11 @@ class Seth
     end
 
     def seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     def self.seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     def name(arg=nil)
@@ -246,7 +246,7 @@ class Seth
 
     def self.load_from_file(name)
       unless File.directory?(Seth::Config[:environment_path])
-        raise Seth::Exceptions::InvalidEnvironmentPath, "Environment path '#{Chef::Config[:environment_path]}' is invalid"
+        raise Seth::Exceptions::InvalidEnvironmentPath, "Environment path '#{seth::Config[:environment_path]}' is invalid"
       end
 
       js_file = File.join(Seth::Config[:environment_path], "#{name}.json")

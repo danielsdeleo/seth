@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe Seth::Provider::Log::ChefLog do
+describe Seth::Provider::Log::sethLog do
 
   before(:each) do
     @log_str = "this is my test string to log"
@@ -33,7 +33,7 @@ describe Seth::Provider::Log::ChefLog do
 
   it "should write the string to the Seth::Log object at default level (info)" do
       @new_resource = Seth::Resource::Log.new(@log_str)
-      @provider = Seth::Provider::Log::ChefLog.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Log::sethLog.new(@new_resource, @run_context)
       Seth::Log.should_receive(:info).with(@log_str).and_return(true)
       @provider.action_write
   end
@@ -41,7 +41,7 @@ describe Seth::Provider::Log::ChefLog do
   it "should write the string to the Seth::Log object at debug level" do
       @new_resource = Seth::Resource::Log.new(@log_str)
       @new_resource.level :debug
-      @provider = Seth::Provider::Log::ChefLog.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Log::sethLog.new(@new_resource, @run_context)
       Seth::Log.should_receive(:debug).with(@log_str).and_return(true)
       @provider.action_write
   end
@@ -49,7 +49,7 @@ describe Seth::Provider::Log::ChefLog do
   it "should write the string to the Seth::Log object at info level" do
       @new_resource = Seth::Resource::Log.new(@log_str)
       @new_resource.level :info
-      @provider = Seth::Provider::Log::ChefLog.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Log::sethLog.new(@new_resource, @run_context)
       Seth::Log.should_receive(:info).with(@log_str).and_return(true)
       @provider.action_write
   end
@@ -57,7 +57,7 @@ describe Seth::Provider::Log::ChefLog do
   it "should write the string to the Seth::Log object at warn level" do
       @new_resource = Seth::Resource::Log.new(@log_str)
       @new_resource.level :warn
-      @provider = Seth::Provider::Log::ChefLog.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Log::sethLog.new(@new_resource, @run_context)
       Seth::Log.should_receive(:warn).with(@log_str).and_return(true)
       @provider.action_write
   end
@@ -65,7 +65,7 @@ describe Seth::Provider::Log::ChefLog do
   it "should write the string to the Seth::Log object at error level" do
       @new_resource = Seth::Resource::Log.new(@log_str)
       @new_resource.level :error
-      @provider = Seth::Provider::Log::ChefLog.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Log::sethLog.new(@new_resource, @run_context)
       Seth::Log.should_receive(:error).with(@log_str).and_return(true)
       @provider.action_write
   end
@@ -73,7 +73,7 @@ describe Seth::Provider::Log::ChefLog do
   it "should write the string to the Seth::Log object at fatal level" do
       @new_resource = Seth::Resource::Log.new(@log_str)
       @new_resource.level :fatal
-      @provider = Seth::Provider::Log::ChefLog.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Log::sethLog.new(@new_resource, @run_context)
       Seth::Log.should_receive(:fatal).with(@log_str).and_return(true)
       @provider.action_write
   end
@@ -82,7 +82,7 @@ describe Seth::Provider::Log::ChefLog do
       Seth::Log.level = :fatal
       @new_resource = Seth::Resource::Log.new(@log_str)
       @new_resource.level :info
-      @provider = Seth::Provider::Log::ChefLog.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Log::sethLog.new(@new_resource, @run_context)
       @provider.action_write
       @new_resource.updated.should be_false
   end
@@ -91,7 +91,7 @@ describe Seth::Provider::Log::ChefLog do
       Seth::Log.level = :debug
       @new_resource = Seth::Resource::Log.new(@log_str)
       @new_resource.level :info
-      @provider = Seth::Provider::Log::ChefLog.new(@new_resource, @run_context)
+      @provider = Seth::Provider::Log::sethLog.new(@new_resource, @run_context)
       @provider.action_write
       @new_resource.updated.should be_true
   end

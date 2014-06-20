@@ -61,7 +61,7 @@ class Seth
         end
 
         # Make sure the counter is reset since this object might get used
-        # again. See CHEF-5100
+        # again. See seth-5100
         @content_length_counter = nil
         return [http_response, rest_request, return_value]
       end
@@ -92,7 +92,7 @@ class Seth
         end
 
         # if Transfer-Encoding is set the RFC states that we must ignore the Content-Length field
-        # CHEF-5041: some proxies uncompress gzip content, leave the incorrect content-length, but set the transfer-encoding field
+        # seth-5041: some proxies uncompress gzip content, leave the incorrect content-length, but set the transfer-encoding field
         unless transfer_encoding.nil?
           Seth::Log.debug "Transfer-Encoding header is set, skipping Content-Length check."
           return true

@@ -64,7 +64,7 @@ class Seth
         @service_signal = ConditionVariable.new
 
         reconfigure
-        Seth::Log.info("Chef Client Service initialized")
+        Seth::Log.info("seth Client Service initialized")
       end
 
       def service_main(*startup_parameters)
@@ -93,7 +93,7 @@ class Seth
               # run seth-client only if service is in RUNNING state
               next if state != RUNNING
 
-              Seth::Log.info("Chef-Client service is starting a seth-client run...")
+              Seth::Log.info("seth-Client service is starting a seth-client run...")
               run_seth_client
             rescue SystemExit => e
               # Do not raise any of the errors here in order to
@@ -178,15 +178,15 @@ class Seth
 
       # Initializes Seth::Client instance and runs it
       def run_seth_client
-        # The seth client will be started in a new process. We have used shell_out to start the chef-client.
+        # The seth client will be started in a new process. We have used shell_out to start the seth-client.
         # The log_location and config_file of the parent process is passed to the new seth-client process.
         # We need to add the --no-fork, as by default it is set to fork=true.
         begin
           Seth::Log.info "Starting seth-client in a new process"
           # Pass config params to the new process
           config_params = " --no-fork"
-          config_params += " -c #{Seth::Config[:config_file]}" unless  Chef::Config[:config_file].nil?
-          config_params += " -L #{Seth::Config[:log_location]}" unless Chef::Config[:log_location] == STDOUT
+          config_params += " -c #{Seth::Config[:config_file]}" unless  seth::Config[:config_file].nil?
+          config_params += " -L #{Seth::Config[:log_location]}" unless seth::Config[:log_location] == STDOUT
           # Starts a new process and waits till the process exits
           result = shell_out("seth-client #{config_params}")
           Seth::Log.debug "#{result.stdout}"
@@ -213,9 +213,9 @@ class Seth
         configure_logging
         configure_proxy_environment_variables
 
-        Seth::Config[:seth_server_url] = config[:chef_server_url] if config.has_key? :chef_server_url
-        unless Seth::Config[:exception_handlers].any? {|h| Chef::Handler::ErrorReport === h}
-          Seth::Config[:exception_handlers] << Chef::Handler::ErrorReport.new
+        Seth::Config[:seth_server_url] = config[:seth_server_url] if config.has_key? :seth_server_url
+        unless Seth::Config[:exception_handlers].any? {|h| seth::Handler::ErrorReport === h}
+          Seth::Config[:exception_handlers] << seth::Handler::ErrorReport.new
         end
 
         Seth::Config[:interval] ||= 1800
@@ -225,7 +225,7 @@ class Seth
       # See application.rb for related comments.
 
       def configure_logging
-        Seth::Log.init(MonoLogger.new(Chef::Config[:log_location]))
+        Seth::Log.init(MonoLogger.new(seth::Config[:log_location]))
         if want_additional_logger?
           configure_stdout_logger
         end
@@ -241,13 +241,13 @@ class Seth
       # Based on config and whether or not STDOUT is a tty, should we setup a
       # secondary logger for stdout?
       def want_additional_logger?
-        ( Seth::Config[:log_location] != STDOUT ) && STDOUT.tty? && (!Chef::Config[:daemonize]) && (Chef::Config[:force_logger])
+        ( Seth::Config[:log_location] != STDOUT ) && STDOUT.tty? && (!seth::Config[:daemonize]) && (seth::Config[:force_logger])
       end
 
       # Use of output formatters is assumed if `force_formatter` is set or if
       # `force_logger` is not set and STDOUT is to a console (tty)
       def using_output_formatter?
-        Seth::Config[:force_formatter] || (!Chef::Config[:force_logger] && STDOUT.tty?)
+        Seth::Config[:force_formatter] || (!seth::Config[:force_logger] && STDOUT.tty?)
       end
 
       def auto_log_level?
@@ -298,11 +298,11 @@ class Seth
 
           Seth::Config.merge!(config)
         rescue SocketError => error
-          Seth::Application.fatal!("Error getting config file #{Chef::Config[:config_file]}", 2)
+          Seth::Application.fatal!("Error getting config file #{seth::Config[:config_file]}", 2)
         rescue Seth::Exceptions::ConfigurationError => error
-          Seth::Application.fatal!("Error processing config file #{Chef::Config[:config_file]} with error #{error.message}", 2)
+          Seth::Application.fatal!("Error processing config file #{seth::Config[:config_file]} with error #{error.message}", 2)
         rescue Exception => error
-          Seth::Application.fatal!("Unknown error processing config file #{Chef::Config[:config_file]} with error #{error.message}", 2)
+          Seth::Application.fatal!("Unknown error processing config file #{seth::Config[:config_file]} with error #{error.message}", 2)
         end
       end
 

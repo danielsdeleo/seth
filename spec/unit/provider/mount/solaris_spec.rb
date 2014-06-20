@@ -189,7 +189,7 @@ describe Seth::Provider::Mount::Solaris do
         expect(provider.current_resource.pass).to eql(2)
       end
 
-      it "should not throw an exception when the device does not exist - CHEF-1565" do
+      it "should not throw an exception when the device does not exist - seth-1565" do
         File.stub(:exist?).with(device).and_return(false)
         expect { provider.load_current_resource }.to_not raise_error
       end

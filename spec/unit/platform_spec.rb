@@ -159,18 +159,18 @@ describe Seth::Platform do
       node.name("Intel")
       node.automatic_attrs[:platform] = "mac_os_x"
       node.automatic_attrs[:platform_version] = "9.2.2"
-      Seth::Platform.find_provider_for_node(node, kitty).should eql(Chef::Provider::File)
+      Seth::Platform.find_provider_for_node(node, kitty).should eql(seth::Provider::File)
     end
 
     it "should look up a provider based on the resource name if nothing else matches" do
       kitty = Seth::Resource::Cat.new("loulou")
-      class Seth::Provider::Cat < Chef::Provider; end
+      class Seth::Provider::Cat < seth::Provider; end
       Seth::Platform.platforms[:default].delete(:cat)
       node = Seth::Node.new
       node.name("Intel")
       node.automatic_attrs[:platform] = "mac_os_x"
       node.automatic_attrs[:platform_version] = "8.5"
-      Seth::Platform.find_provider_for_node(node, kitty).should eql(Chef::Provider::Cat)
+      Seth::Platform.find_provider_for_node(node, kitty).should eql(seth::Provider::Cat)
     end
 
     def setup_file_resource

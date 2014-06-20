@@ -53,9 +53,9 @@ describe 'seth_repo_path tests' do
         file 'users/user3.json', {}
       end
 
-      it 'knife list --local -Rfp --seth-repo-path chef_repo2 / grabs chef_repo2 stuff' do
+      it 'knife list --local -Rfp --seth-repo-path seth_repo2 / grabs seth_repo2 stuff' do
         Seth::Config.delete(:seth_repo_path)
-        knife("list --local -Rfp --seth-repo-path #{path_to('chef_repo2')} /").should_succeed <<EOM
+        knife("list --local -Rfp --seth-repo-path #{path_to('seth_repo2')} /").should_succeed <<EOM
 /clients/
 /clients/client3.json
 /cookbooks/
@@ -78,13 +78,13 @@ EOM
       context 'when all _paths are set to alternates' do
         before :each do
           %w(client cookbook data_bag environment node role user).each do |object_name|
-            Seth::Config["#{object_name}_path".to_sym] = File.join(Chef::Config.seth_repo_path, "#{object_name}s2")
+            Seth::Config["#{object_name}_path".to_sym] = File.join(seth::Config.seth_repo_path, "#{object_name}s2")
           end
-          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
+          Seth::Config.seth_repo_path = File.join(seth::Config.seth_repo_path, 'seth_repo2')
         end
 
-        it 'knife list --local -Rfp --seth-repo-path chef_repo2 / grabs chef_repo2 stuff' do
-          knife("list --local -Rfp --seth-repo-path #{path_to('chef_repo2')} /").should_succeed <<EOM
+        it 'knife list --local -Rfp --seth-repo-path seth_repo2 / grabs seth_repo2 stuff' do
+          knife("list --local -Rfp --seth-repo-path #{path_to('seth_repo2')} /").should_succeed <<EOM
 /clients/
 /clients/client3.json
 /cookbooks/
@@ -159,7 +159,7 @@ EOM
       context 'when all _paths except seth_repo_path are set to alternates' do
         before :each do
           %w(client cookbook data_bag environment node role user).each do |object_name|
-            Seth::Config["#{object_name}_path".to_sym] = File.join(Chef::Config.seth_repo_path, "#{object_name}s2")
+            Seth::Config["#{object_name}_path".to_sym] = File.join(seth::Config.seth_repo_path, "#{object_name}s2")
           end
         end
 
@@ -217,7 +217,7 @@ EOM
           %w(client cookbook data_bag environment node role user).each do |object_name|
             Seth::Config.delete("#{object_name}_path".to_sym)
           end
-          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
+          Seth::Config.seth_repo_path = File.join(seth::Config.seth_repo_path, 'seth_repo2')
         end
 
         context 'when cwd is at the top level' do
@@ -277,7 +277,7 @@ EOM
               File.join(Seth::Config.seth_repo_path, "#{object_name}s2")
             ]
           end
-          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
+          Seth::Config.seth_repo_path = File.join(seth::Config.seth_repo_path, 'seth_repo2')
         end
 
         context 'when there is a directory in clients1 and file in clients2 with the same name' do
@@ -326,7 +326,7 @@ EOM
           file 'cookbooks/blah/metadata.json', {}
           file 'cookbooks2/blah/metadata.rb', ''
           it 'knife list -Rfp cookbooks shows files in the first cookbook and not the second' do
-            knife('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.cookbook_path[0]}/blah and #{Chef::Config.cookbook_path[1]}/blah\n")
+            knife('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.cookbook_path[0]}/blah and #{seth::Config.cookbook_path[1]}/blah\n")
 /cookbooks/blah/
 /cookbooks/blah/metadata.json
 /cookbooks/cookbook1/
@@ -356,7 +356,7 @@ EOM
           file 'data_bags/blah/item1.json', ''
           file 'data_bags2/blah/item2.json', ''
           it 'knife list -Rfp data_bags shows only items in data_bags1' do
-            knife('list --local -Rfp /data_bags').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.data_bag_path[0]}/blah and #{Chef::Config.data_bag_path[1]}/blah\n")
+            knife('list --local -Rfp /data_bags').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.data_bag_path[0]}/blah and #{seth::Config.data_bag_path[1]}/blah\n")
 /data_bags/bag/
 /data_bags/bag/item.json
 /data_bags/bag2/
@@ -487,7 +487,7 @@ EOM
           end
           Seth::Config.seth_repo_path = [
             Seth::Config.seth_repo_path,
-            File.join(Seth::Config.seth_repo_path, 'chef_repo2')
+            File.join(Seth::Config.seth_repo_path, 'seth_repo2')
           ]
         end
 
@@ -748,8 +748,8 @@ EOM
           %w(client cookbook  environment node role user).each do |object_name|
             Seth::Config.delete("#{object_name}_path".to_sym)
           end
-          Seth::Config.data_bag_path = File.join(Chef::Config.seth_repo_path, 'data_bags')
-          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'chef_repo2')
+          Seth::Config.data_bag_path = File.join(seth::Config.seth_repo_path, 'data_bags')
+          Seth::Config.seth_repo_path = File.join(seth::Config.seth_repo_path, 'seth_repo2')
         end
 
         context 'when cwd is at the top level' do
@@ -843,9 +843,9 @@ EOM
       context 'when the repository _paths point to places that do not exist' do
         before :each do
           %w(client cookbook data_bag environment node role user).each do |object_name|
-            Seth::Config["#{object_name}_path".to_sym] = File.join(Chef::Config.seth_repo_path, 'nowhere', object_name)
+            Seth::Config["#{object_name}_path".to_sym] = File.join(seth::Config.seth_repo_path, 'nowhere', object_name)
           end
-          Seth::Config.seth_repo_path = File.join(Chef::Config.chef_repo_path, 'nowhere')
+          Seth::Config.seth_repo_path = File.join(seth::Config.seth_repo_path, 'nowhere')
         end
 
         it 'knife list --local -Rfp / fails' do

@@ -38,7 +38,7 @@ class Seth
 
       def self.method_name_from_marketing_name(marketing_name)
         "#{marketing_name.gsub(/\s/, '_').gsub(/\./, '_').downcase}?"
-        # "#{marketing_name.gsub(/\s/, '_').gsub(//, '_').downcase}?"       
+        # "#{marketing_name.gsub(/\s/, '_').gsub(//, '_').downcase}?"
       end
 
       public
@@ -116,7 +116,7 @@ class Seth
         # WMI always returns the truth. See article at
         # http://msdn.microsoft.com/en-us/library/windows/desktop/ms724439(v=vs.85).aspx
 
-        # CHEF-4888: Work around ruby #2618, expected to be fixed in Ruby 2.1.0
+        # seth-4888: Work around ruby #2618, expected to be fixed in Ruby 2.1.0
         # https://github.com/ruby/ruby/commit/588504b20f5cc880ad51827b93e571e32446e5db
         # https://github.com/ruby/ruby/commit/27ed294c7134c0de582007af3c915a635a6506cd
 

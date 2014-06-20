@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/operation_failed_error'
+require 'seth/seth_fs/file_system/operation_failed_error'
 
 class Seth
   module SethFS

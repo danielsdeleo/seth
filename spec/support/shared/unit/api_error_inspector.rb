@@ -32,7 +32,7 @@ shared_examples_for "an api error inspector" do
     @config = {
       :validation_client_name => "testorg-validator",
       :validation_key => "/etc/seth/testorg-validator.pem",
-      :seth_server_url => "https://chef-api.example.com",
+      :seth_server_url => "https://seth-api.example.com",
       :node_name => "testnode-name",
       :client_key => "/etc/seth/client.pem"
     }

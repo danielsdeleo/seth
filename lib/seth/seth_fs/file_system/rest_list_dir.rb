@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_dir'
-require 'seth/chef_fs/file_system/rest_list_entry'
-require 'seth/chef_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/base_fs_dir'
+require 'seth/seth_fs/file_system/rest_list_entry'
+require 'seth/seth_fs/file_system/not_found_error'
 
 class Seth
   module SethFS
@@ -49,12 +49,12 @@ class Seth
               _make_child_entry("#{key}.json", true)
             end
           rescue Timeout::Error => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:children, self, e), "Timeout retrieving children: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:children, self, e), "Timeout retrieving children: #{e}"
           rescue Net::HTTPServerException => e
             if $!.response.code == "404"
-              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
+              raise Seth::sethFS::FileSystem::NotFoundError.new(self, $!)
             else
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:children, self, e), "HTTP error retrieving children: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:children, self, e), "HTTP error retrieving children: #{e}"
             end
           end
         end
@@ -63,7 +63,7 @@ class Seth
           begin
             object = JSON.parse(file_contents, :create_additions => false)
           rescue JSON::ParserError => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:create_child, self, e), "Parse error reading JSON creating child '#{name}': #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:create_child, self, e), "Parse error reading JSON creating child '#{name}': #{e}"
           end
 
           result = _make_child_entry(name, true)
@@ -71,21 +71,21 @@ class Seth
           if data_handler
             object = data_handler.normalize_for_post(object, result)
             data_handler.verify_integrity(object, result) do |error|
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:create_child, self), "Error creating '#{name}': #{error}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:create_child, self), "Error creating '#{name}': #{error}"
             end
           end
 
           begin
             rest.post(api_path, object)
           rescue Timeout::Error => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:create_child, self, e), "Timeout creating '#{name}': #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:create_child, self, e), "Timeout creating '#{name}': #{e}"
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
-              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, e)
+              raise Seth::sethFS::FileSystem::NotFoundError.new(self, e)
             elsif $!.response.code == "409"
-              raise Seth::ChefFS::FileSystem::AlreadyExistsError.new(:create_child, self, e), "Failure creating '#{name}': #{path}/#{name} already exists"
+              raise Seth::sethFS::FileSystem::AlreadyExistsError.new(:create_child, self, e), "Failure creating '#{name}': #{path}/#{name} already exists"
             else
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:create_child, self, e), "Failure creating '#{name}': #{e.message}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:create_child, self, e), "Failure creating '#{name}': #{e.message}"
             end
           end
 

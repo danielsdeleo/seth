@@ -322,7 +322,7 @@ describe Seth::Recipe do
 
   describe "from_file" do
     it "should load a resource from a ruby file" do
-      recipe.from_file(File.join(CHEF_SPEC_DATA, "recipes", "test.rb"))
+      recipe.from_file(File.join(seth_SPEC_DATA, "recipes", "test.rb"))
       res = recipe.resources(:file => "/etc/nsswitch.conf")
       res.name.should eql("/etc/nsswitch.conf")
       res.action.should eql([:create])

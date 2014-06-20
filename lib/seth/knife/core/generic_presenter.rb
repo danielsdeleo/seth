@@ -142,7 +142,7 @@ class Seth
           elsif config[:id_only]
             name_or_id_for(data)
           elsif config[:environment] && data.respond_to?(:seth_environment)
-            {"seth_environment" => data.chef_environment}
+            {"seth_environment" => data.seth_environment}
           else
             data
           end

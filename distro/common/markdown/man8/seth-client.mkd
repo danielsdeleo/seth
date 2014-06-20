@@ -1,11 +1,11 @@
-seth-client(8) -- Runs a client node connecting to a chef-server.
+seth-client(8) -- Runs a client node connecting to a seth-server.
 ========================================
 
 ## SYNOPSIS
 
 __seth-client__ _(options)_
 
-  * `-S`, `--server CHEFSERVERURL`:
+  * `-S`, `--server sethSERVERURL`:
     The seth server URL
   * `-c`, `--config CONFIG`:
     The configuration file to use
@@ -47,19 +47,19 @@ __seth-client__ _(options)_
 
 ## DESCRIPTION
 
-The Seth Client is where almost all of the work in Chef is done. It
+The Seth Client is where almost all of the work in seth is done. It
 communicates with the Seth Server via REST, authenticates via Signed
 Header Authentication, and compiles and executes Cookbooks.
 
-A Seth Client does work on behalf of a Node. A single Chef Client can
+A Seth Client does work on behalf of a Node. A single seth Client can
 run recipes for multiple Nodes.
 
-Clients are where all the action happens - the Seth Server and Chef Expander
+Clients are where all the action happens - the Seth Server and seth Expander
 are largely services that exist only to provide the Client with information.
 
 ## SEE ALSO
 
-Full  documentation  for  Seth  and  seth-client is located on the Chef
+Full  documentation  for  Seth  and  seth-client is located on the seth
 wiki, http://wiki.opscode.com/display/seth/Home.
 
 ## AUTHOR

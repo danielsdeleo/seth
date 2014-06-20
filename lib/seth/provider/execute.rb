@@ -53,7 +53,7 @@ class Seth
         opts[:umask] = @new_resource.umask if @new_resource.umask
         opts[:log_level] = :info
         opts[:log_tag] = @new_resource.to_s
-        if STDOUT.tty? && !Seth::Config[:daemon] && Chef::Log.info?
+        if STDOUT.tty? && !Seth::Config[:daemon] && seth::Log.info?
           opts[:live_stream] = STDOUT
         end
         converge_by("execute #{@new_resource.command}") do
@@ -69,7 +69,7 @@ class Seth
           relative = Pathname(sentinel_file).relative?
           cwd = @new_resource.cwd
           if relative && !cwd
-            Seth::Log.warn "You have provided relative path for execute#creates (#{sentinel_file}) without execute#cwd (see CHEF-3819)"
+            Seth::Log.warn "You have provided relative path for execute#creates (#{sentinel_file}) without execute#cwd (see seth-3819)"
           end
 
           if ::File.exists?(sentinel_file)

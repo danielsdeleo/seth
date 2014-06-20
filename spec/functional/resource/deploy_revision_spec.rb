@@ -66,11 +66,11 @@ describe Seth::Resource::DeployRevision, :unix_only => true do
   # Generally you can treat a git bundle as a regular git remote.
   #
   # See also: http://git-scm.com/2010/03/10/bundles.html
-  let(:git_bundle_repo) { File.expand_path("git_bundles/sinatra-test-app.gitbundle", CHEF_SPEC_DATA) }
+  let(:git_bundle_repo) { File.expand_path("git_bundles/sinatra-test-app.gitbundle", seth_SPEC_DATA) }
 
-  let(:git_bundle_with_in_repo_callbacks) { File.expand_path("git_bundles/sinatra-test-app-with-callback-files.gitbundle", CHEF_SPEC_DATA) }
+  let(:git_bundle_with_in_repo_callbacks) { File.expand_path("git_bundles/sinatra-test-app-with-callback-files.gitbundle", seth_SPEC_DATA) }
 
-  let(:git_bundle_with_in_repo_symlinks) { File.expand_path("git_bundles/sinatra-test-app-with-symlinks.gitbundle", CHEF_SPEC_DATA) }
+  let(:git_bundle_with_in_repo_symlinks) { File.expand_path("git_bundles/sinatra-test-app-with-symlinks.gitbundle", seth_SPEC_DATA) }
 
   # This is the fourth version
   let(:latest_rev) { "3eb5ca6c353c83d9179dd3b29347539829b401f3" }
@@ -497,7 +497,7 @@ describe Seth::Resource::DeployRevision, :unix_only => true do
 
     end
 
-    # CHEF-3435
+    # seth-3435
     describe "to a deploy_to path that does not yet exist" do
 
       let(:top_level_tmpdir) { Dir.mktmpdir }

@@ -19,4 +19,4 @@
 require "seth/provider/cron/unix"
 
 # Just to create an alias so 'Seth::Provider::Cron::Solaris' is exposed and accessible to existing consumers of class.
-Seth::Provider::Cron::Solaris = Chef::Provider::Cron::Unix
+Seth::Provider::Cron::Solaris = seth::Provider::Cron::Unix

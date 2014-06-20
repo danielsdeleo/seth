@@ -30,12 +30,12 @@ describe Seth::Provider::RemoteDirectory do
     Seth::FileAccessControl.any_instance.stub(:set_all)
 
     @resource = Seth::Resource::RemoteDirectory.new(File.join(Dir.tmpdir, "tafty"))
-    # in CHEF_SPEC_DATA/cookbooks/openldap/files/default/remotedir
+    # in seth_SPEC_DATA/cookbooks/openldap/files/default/remotedir
     @resource.source "remotedir"
     @resource.cookbook('openldap')
 
-    @cookbook_repo = ::File.expand_path(::File.join(CHEF_SPEC_DATA, "cookbooks"))
-    Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
+    @cookbook_repo = ::File.expand_path(::File.join(seth_SPEC_DATA, "cookbooks"))
+    Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, @cookbook_repo) }
 
     @node = Seth::Node.new
     cl = Seth::CookbookLoader.new(@cookbook_repo)
@@ -112,7 +112,7 @@ describe Seth::Provider::RemoteDirectory do
 
     after {FileUtils.rm_rf(@destination_dir)}
 
-    # CHEF-3552
+    # seth-3552
     it "creates the toplevel directory without error " do
       @resource.recursive(false)
       @provider.run_action(:create)

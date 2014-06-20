@@ -56,13 +56,13 @@ class Seth
 
       def setup_run_context(specific_recipes=nil)
         if Seth::Config[:solo]
-          Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::FileSystemFileVendor.new(manifest, Chef::Config[:cookbook_path]) }
-          cl = Seth::CookbookLoader.new(Chef::Config[:cookbook_path])
+          Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::FileSystemFileVendor.new(manifest, seth::Config[:cookbook_path]) }
+          cl = Seth::CookbookLoader.new(seth::Config[:cookbook_path])
           cl.load_cookbooks
           cookbook_collection = Seth::CookbookCollection.new(cl)
           run_context = Seth::RunContext.new(node, cookbook_collection, @events)
         else
-          Seth::Cookbook::FileVendor.on_create { |manifest| Chef::Cookbook::RemoteFileVendor.new(manifest, api_service) }
+          Seth::Cookbook::FileVendor.on_create { |manifest| seth::Cookbook::RemoteFileVendor.new(manifest, api_service) }
           cookbook_hash = sync_cookbooks
           cookbook_collection = Seth::CookbookCollection.new(cookbook_hash)
           run_context = Seth::RunContext.new(node, cookbook_collection, @events)
@@ -107,7 +107,7 @@ class Seth
       def build_node
         # Allow user to override the environment of a node by specifying
         # a config parameter.
-        if Seth::Config[:environment] && !Chef::Config[:environment].chomp.empty?
+        if Seth::Config[:environment] && !seth::Config[:environment].chomp.empty?
           node.seth_environment(Seth::Config[:environment])
         end
 
@@ -179,7 +179,7 @@ class Seth
         synchronizer.sync_cookbooks
 
         # register the file cache path in the cookbook path so that CookbookLoader actually picks up the synced cookbooks
-        Seth::Config[:cookbook_path] = File.join(Chef::Config[:file_cache_path], "cookbooks")
+        Seth::Config[:cookbook_path] = File.join(seth::Config[:file_cache_path], "cookbooks")
 
         cookbook_hash
       end

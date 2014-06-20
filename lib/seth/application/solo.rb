@@ -26,7 +26,7 @@ require 'seth/rest'
 require 'seth/config_fetcher'
 require 'fileutils'
 
-class Seth::Application::Solo < Chef::Application
+class Seth::Application::Solo < seth::Application
 
   option :config_file,
     :short => "-c CONFIG",
@@ -134,7 +134,7 @@ class Seth::Application::Solo < Chef::Application
     :long         => "--version",
     :description  => "Show seth version",
     :boolean      => true,
-    :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
+    :proc         => lambda {|v| puts "Seth: #{::seth::VERSION}"},
     :exit         => 0
 
   option :override_runlist,
@@ -186,7 +186,7 @@ class Seth::Application::Solo < Chef::Application
     end
 
     if Seth::Config[:json_attribs]
-      config_fetcher = Seth::ConfigFetcher.new(Chef::Config[:json_attribs])
+      config_fetcher = Seth::ConfigFetcher.new(seth::Config[:json_attribs])
       @seth_client_json = config_fetcher.fetch_json
     end
 
@@ -225,7 +225,7 @@ class Seth::Application::Solo < Chef::Application
 
         run_seth_client
         if Seth::Config[:interval]
-          Seth::Log.debug("Sleeping for #{Chef::Config[:interval]} seconds")
+          Seth::Log.debug("Sleeping for #{seth::Config[:interval]} seconds")
           sleep Seth::Config[:interval]
         else
           Seth::Application.exit! "Exiting", 0
@@ -236,7 +236,7 @@ class Seth::Application::Solo < Chef::Application
         if Seth::Config[:interval]
           Seth::Log.error("#{e.class}: #{e}")
           Seth::Log.debug("#{e.class}: #{e}\n#{e.backtrace.join("\n")}")
-          Seth::Log.fatal("Sleeping for #{Chef::Config[:interval]} seconds before trying again")
+          Seth::Log.fatal("Sleeping for #{seth::Config[:interval]} seconds before trying again")
           sleep Seth::Config[:interval]
           retry
         else

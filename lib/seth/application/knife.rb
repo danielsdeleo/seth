@@ -22,7 +22,7 @@ require 'ohai/config'
 require 'seth/monkey_patches/net_http.rb'
 require 'seth/monkey_patches/uri.rb'
 
-class Seth::Application::Knife < Chef::Application
+class Seth::Application::Knife < seth::Application
 
   NO_COMMAND_GIVEN = "You need to pass a sub-command (e.g., knife SUB-COMMAND)\n"
 
@@ -127,7 +127,7 @@ class Seth::Application::Knife < Chef::Application
     :long         => "--version",
     :description  => "Show seth version",
     :boolean      => true,
-    :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
+    :proc         => lambda {|v| puts "Seth: #{::seth::VERSION}"},
     :exit         => 0
 
 

@@ -37,11 +37,11 @@ describe Seth::Daemon do
     describe "when the pid_file option has been set" do
 
       before do
-        Seth::Config[:pid_file] = "/var/run/seth/chef-client.pid"
+        Seth::Config[:pid_file] = "/var/run/seth/seth-client.pid"
       end
 
       it "should return the supplied value" do
-        Seth::Daemon.pid_file.should eql("/var/run/seth/chef-client.pid")
+        Seth::Daemon.pid_file.should eql("/var/run/seth/seth-client.pid")
       end
     end
 
@@ -61,11 +61,11 @@ describe Seth::Daemon do
   describe ".pid_from_file" do
 
     before do
-      Seth::Config[:pid_file] = "/var/run/seth/chef-client.pid"
+      Seth::Config[:pid_file] = "/var/run/seth/seth-client.pid"
     end
 
     it "should suck the pid out of pid_file" do
-      File.should_receive(:read).with("/var/run/seth/chef-client.pid").and_return("1337")
+      File.should_receive(:read).with("/var/run/seth/seth-client.pid").and_return("1337")
       Seth::Daemon.pid_from_file
     end
   end

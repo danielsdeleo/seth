@@ -35,7 +35,7 @@ shared_examples_for "a content deploy strategy" do
 
   let(:sandbox_dir) do
     basename = make_tmpname("content-deploy-tests")
-    full_path = File.join(CHEF_SPEC_DATA, basename)
+    full_path = File.join(seth_SPEC_DATA, basename)
     FileUtils.mkdir_p(full_path)
     full_path
   end

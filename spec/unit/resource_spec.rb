@@ -27,8 +27,8 @@ end
 
 describe Seth::Resource do
   before(:each) do
-    @cookbook_repo_path =  File.join(CHEF_SPEC_DATA, 'cookbooks')
-    @cookbook_collection = Seth::CookbookCollection.new(Chef::CookbookLoader.new(@cookbook_repo_path))
+    @cookbook_repo_path =  File.join(seth_SPEC_DATA, 'cookbooks')
+    @cookbook_collection = Seth::CookbookCollection.new(seth::CookbookLoader.new(@cookbook_repo_path))
     @node = Seth::Node.new
     @events = Seth::EventDispatch::Dispatcher.new
     @run_context = Seth::RunContext.new(@node, @cookbook_collection, @events)
@@ -344,7 +344,7 @@ describe Seth::Resource do
       expected_keys = [ :allowed_actions, :params, :provider, :updated,
         :updated_by_last_action, :before, :supports,
         :noop, :ignore_failure, :name, :source_line,
-        :action, :retries, :retry_delay, :elapsed_time, 
+        :action, :retries, :retry_delay, :elapsed_time,
         :guard_interpreter, :sensitive ]
       (hash.keys - expected_keys).should == []
       (expected_keys - hash.keys).should == []
@@ -412,7 +412,7 @@ describe Seth::Resource do
   describe "setting the base provider class for the resource" do
 
     it "defaults to Seth::Provider for the base class" do
-      Seth::Resource.provider_base.should == Chef::Provider
+      Seth::Resource.provider_base.should == seth::Provider
     end
 
     it "allows the base provider to be overriden by a " do
@@ -628,7 +628,7 @@ describe Seth::Resource do
       @node.automatic_attrs[:platform_version] = '10.04'
     end
 
-    it "should not run only_if/not_if conditionals (CHEF-972)" do
+    it "should not run only_if/not_if conditionals (seth-972)" do
       snitch_var1 = 0
       @resource1.only_if { snitch_var1 = 1 }
       @resource1.not_if { snitch_var1 = 2 }
@@ -636,7 +636,7 @@ describe Seth::Resource do
       snitch_var1.should == 0
     end
 
-    it "should run only_if/not_if conditionals when notified to run another action (CHEF-972)" do
+    it "should run only_if/not_if conditionals when notified to run another action (seth-972)" do
       snitch_var1 = snitch_var2 = 0
       @runner = Seth::Runner.new(@run_context)
       Seth::Platform.set(
@@ -786,9 +786,9 @@ describe Seth::Resource do
   describe "resource sensitive attribute" do
 
     before(:each) do
-       @resource_file = Seth::Resource::File.new("/nonexistent/CHEF-5098/file", @run_context)
+       @resource_file = Seth::Resource::File.new("/nonexistent/seth-5098/file", @run_context)
        @action = :create
-    end 
+    end
 
     def compiled_resource_data(resource, action, err)
       error_inspector = Seth::Formatters::ErrorInspectors::ResourceFailureInspector.new(resource, action, err)
@@ -804,7 +804,7 @@ describe Seth::Resource do
 
     it "when set to false should show compiled resource for failed resource" do
       expect { @resource_file.run_action(@action) }.to raise_error { |err|
-            compiled_resource_data(@resource_file, @action, err).should match 'path "/nonexistent/CHEF-5098/file"'
+            compiled_resource_data(@resource_file, @action, err).should match 'path "/nonexistent/seth-5098/file"'
           }
     end
 

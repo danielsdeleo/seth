@@ -188,7 +188,7 @@ describe Seth::RunList do
       end
 
       it "should log a helpful error if the role is not available" do
-        Seth::Role.stub(:from_disk).and_raise(Chef::Exceptions::RoleNotFound)
+        Seth::Role.stub(:from_disk).and_raise(seth::Exceptions::RoleNotFound)
         Seth::Log.should_receive(:error).with("Role stubby (included by 'top level') is in the runlist but does not exist. Skipping expand.")
         @run_list.expand("_default", "disk")
       end

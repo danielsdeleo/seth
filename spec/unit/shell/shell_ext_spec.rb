@@ -120,7 +120,7 @@ describe Shell::Extensions do
       Shell::StandAloneSession.instance.stub(:reset!)
       Shell.session.stub(:rebuild_context)
       events = Seth::EventDispatch::Dispatcher.new
-      run_context = Seth::RunContext.new(Chef::Node.new, {}, events)
+      run_context = Seth::RunContext.new(seth::Node.new, {}, events)
       run_context.resource_collection.instance_variable_set(:@iterator, :the_iterator)
       Shell.session.run_context = run_context
       @root_context.seth_run.should == :the_iterator
@@ -138,7 +138,7 @@ describe Shell::Extensions do
 
     before do
       @events = Seth::EventDispatch::Dispatcher.new
-      @run_context = Seth::RunContext.new(Chef::Node.new, {}, @events)
+      @run_context = Seth::RunContext.new(seth::Node.new, {}, @events)
       @recipe_object = Seth::Recipe.new(nil, nil, @run_context)
       Shell::Extensions.extend_context_recipe(@recipe_object)
     end

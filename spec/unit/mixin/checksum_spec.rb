@@ -28,7 +28,7 @@ describe Seth::Mixin::Checksum do
   before(:each) do
     @checksum_user = Seth::CMCCheck.new
     @cache = Seth::Digester.instance
-    @file = CHEF_SPEC_DATA + "/checksum/random.txt"
+    @file = seth_SPEC_DATA + "/checksum/random.txt"
     @stat = double("File::Stat", { :mtime => Time.at(0) })
     File.stub(:stat).and_return(@stat)
   end

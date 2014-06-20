@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-Search indexes allow queries to be made for any type of data that is indexed by the Seth server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full\-text query that can be done from several locations, including from within a recipe, by using the \fBsearch\fP subcommand in Knife, or by using the \fB/search\fP or \fB/search/INDEX\fP endpoints in the Chef Server API\&. The search engine is based on Apache Solr and is run from the Chef server\&.
+Search indexes allow queries to be made for any type of data that is indexed by the Seth server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full\-text query that can be done from several locations, including from within a recipe, by using the \fBsearch\fP subcommand in Knife, or by using the \fB/search\fP or \fB/search/INDEX\fP endpoints in the seth Server API\&. The search engine is based on Apache Solr and is run from the seth server\&.
 .sp
 The \fBknife search\fP subcommand is used run a search query for information that is indexed on a Seth server\&.
 .sp
@@ -207,7 +207,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .sp
 \fBExamples\fP

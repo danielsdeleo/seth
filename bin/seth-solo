@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# ./seth-solo - Run the chef client, in stand-alone mode
+# ./seth-solo - Run the seth client, in stand-alone mode
 #
 # Author:: AJ Christensen (<aj@opscode.com>)
 # Copyright:: Copyright (c) 2008 Opscode, Inc.

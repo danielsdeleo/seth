@@ -23,7 +23,7 @@ class Seth
   module Mixin
 
     deprecate_constant(:LanguageIncludeRecipe, Seth::DSL::IncludeRecipe, <<-EOM)
-Seth::Mixin::LanguageIncludeRecipe is deprecated, use Chef::DSL::IncludeRecipe
+Seth::Mixin::LanguageIncludeRecipe is deprecated, use seth::DSL::IncludeRecipe
 instead.
 EOM
 

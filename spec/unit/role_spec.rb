@@ -200,7 +200,7 @@ describe Seth::Role do
     describe "and it has per-environment run lists" do
       before do
         @role.env_run_lists("_default" => ['one', 'two', 'role[a]'], "production" => ['role[monitoring]', 'role[auditing]', 'role[apache]'], "dev" => ["role[nginx]"])
-        @serialized_role = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(@role), :create_additions => false)
+        @serialized_role = Seth::JSONCompat.from_json(seth::JSONCompat.to_json(@role), :create_additions => false)
       end
 
       it "includes the per-environment run lists" do
@@ -224,7 +224,7 @@ describe Seth::Role do
       @role.run_list('one', 'two', 'role[a]')
       @role.default_attributes({ 'el_groupo' => 'nuevo' })
       @role.override_attributes({ 'deloused' => 'in the comatorium' })
-      @deserial = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(@role))
+      @deserial = Seth::JSONCompat.from_json(seth::JSONCompat.to_json(@role))
     end
 
     it "should deserialize to a Seth::Role object" do
@@ -251,12 +251,12 @@ EOR
 
   describe "when loading from disk" do
     before do
-      default_cache_path = windows? ? 'C:\seth' : '/var/chef'
+      default_cache_path = windows? ? 'C:\seth' : '/var/seth'
       Seth::Config.stub(:cache_path).and_return(default_cache_path)
     end
 
     it "should return a Seth::Role object from JSON" do
-      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes", "#{Chef::Config[:role_path]}/memes/lolcat.json"])
+      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes", "#{seth::Config[:role_path]}/memes/lolcat.json"])
       file_path = File.join(Seth::Config[:role_path], 'memes/lolcat.json')
       File.should_receive(:exists?).with(file_path).exactly(1).times.and_return(true)
       IO.should_receive(:read).with(file_path).and_return('{"name": "ceiling_cat", "json_class": "Seth::Role" }')
@@ -265,7 +265,7 @@ EOR
     end
 
     it "should return a Seth::Role object from a Ruby DSL" do
-      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes", "#{Chef::Config[:role_path]}/memes/lolcat.rb"])
+      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes", "#{seth::Config[:role_path]}/memes/lolcat.rb"])
       rb_path = File.join(Seth::Config[:role_path], 'memes/lolcat.rb')
       File.should_receive(:exists?).with(rb_path).exactly(2).times.and_return(true)
       File.should_receive(:readable?).with(rb_path).exactly(1).times.and_return(true)
@@ -275,7 +275,7 @@ EOR
     end
 
     it "should prefer a Seth::Role Object from JSON over one from a Ruby DSL" do
-      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes", "#{Chef::Config[:role_path]}/memes/lolcat.json", "#{Chef::Config[:role_path]}/memes/lolcat.rb"])
+      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes", "#{seth::Config[:role_path]}/memes/lolcat.json", "#{seth::Config[:role_path]}/memes/lolcat.rb"])
       js_path = File.join(Seth::Config[:role_path], 'memes/lolcat.json')
       rb_path = File.join(Seth::Config[:role_path], 'memes/lolcat.rb')
       File.should_receive(:exists?).with(js_path).exactly(1).times.and_return(true)
@@ -292,7 +292,7 @@ EOR
     end
 
     it "should raise an exception if two files exist with the same name" do
-      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes/lolcat.rb", "#{Chef::Config[:role_path]}/lolcat.rb"])
+      Dir.should_receive(:glob).and_return(["#{Seth::Config[:role_path]}/memes/lolcat.rb", "#{seth::Config[:role_path]}/lolcat.rb"])
       File.should_not_receive(:exists?)
       lambda {@role.class.from_disk("lolcat")}.should raise_error(Seth::Exceptions::DuplicateRole)
     end

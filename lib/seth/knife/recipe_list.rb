@@ -17,7 +17,7 @@
 #
 
 require 'seth/knife'
-class Seth::Knife::RecipeList < Chef::Knife
+class Seth::Knife::RecipeList < seth::Knife
 
   banner "knife recipe list [PATTERN]"
 

@@ -31,12 +31,12 @@ describe 'sethignore tests' do
 
     context "and has a sethignore everywhere except cookbooks" do
       sethignore = "x.json\nroles/x.json\nenvironments/x.json\ndata_bags/bag1/x.json\nbag1/x.json\ncookbooks/cookbook1/x.json\ncookbook1/x.json\n"
-      file 'sethignore', chefignore
-      file 'roles/sethignore', chefignore
-      file 'environments/sethignore', chefignore
-      file 'data_bags/sethignore', chefignore
-      file 'data_bags/bag1/sethignore', chefignore
-      file 'cookbooks/cookbook1/sethignore', chefignore
+      file 'sethignore', sethignore
+      file 'roles/sethignore', sethignore
+      file 'environments/sethignore', sethignore
+      file 'data_bags/sethignore', sethignore
+      file 'data_bags/bag1/sethignore', sethignore
+      file 'cookbooks/cookbook1/sethignore', sethignore
 
       it 'matching files and directories get ignored' do
         # NOTE: many of the "sethignore" files should probably not show up
@@ -63,7 +63,7 @@ EOM
     file 'cookbooks/sethignore', "libraries/x.rb\ntemplates/default/x.rb\n"
 
     it 'the cookbook is not listed' do
-      knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.chef_repo_path}/cookbooks/cookbook1\n")
+      knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.seth_repo_path}/cookbooks/cookbook1\n")
 /cookbooks/
 EOM
     end
@@ -225,7 +225,7 @@ EOM
         file 'cookbooks2/yourcookbook/onlyincookbooks2.rb', ''
 
         it "sethignores apply only to the winning cookbook" do
-          knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Child with name 'yourcookbook' found in multiple directories: #{Seth::Config.seth_repo_path}/cookbooks1/yourcookbook and #{Chef::Config.chef_repo_path}/cookbooks2/yourcookbook\n")
+          knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Child with name 'yourcookbook' found in multiple directories: #{Seth::Config.seth_repo_path}/cookbooks1/yourcookbook and #{seth::Config.seth_repo_path}/cookbooks2/yourcookbook\n")
 /cookbooks/
 /cookbooks/mycookbook/
 /cookbooks/mycookbook/x.json
@@ -248,7 +248,7 @@ EOM
     end
   end
 
-  when_the_repository 'has multiple cookbook paths, one with a sethignore file and the other with a cookbook named chefignore' do
+  when_the_repository 'has multiple cookbook paths, one with a sethignore file and the other with a cookbook named sethignore' do
     file 'cookbooks1/sethignore', ''
     file 'cookbooks1/blah/metadata.rb', ''
     file 'cookbooks2/sethignore/metadata.rb', ''

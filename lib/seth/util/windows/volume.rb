@@ -21,7 +21,7 @@
 require 'seth/util/windows'
 require 'windows/volume'
 
-class Seth::Util::Windows::Volume < Chef::Util::Windows
+class Seth::Util::Windows::Volume < seth::Util::Windows
 
   private
   include Windows::Volume

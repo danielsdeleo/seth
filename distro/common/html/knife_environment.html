@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>knife environment &mdash; seth-client Man Pages</title>
-    
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,13 +33,13 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="knife-environment">
 <h1>knife environment<a class="headerlink" href="#knife-environment" title="Permalink to this headline">¶</a></h1>
 <p>An environment is a way to map an organization&#8217;s real-life workflow to what can be configured and managed when using Seth server. Every organization begins with a single environment called the <tt class="docutils literal"><span class="pre">_default</span></tt> environment, which cannot be modified (or deleted). Additional environments can be created to reflect each organization&#8217;s patterns and workflow. For example, creating <tt class="docutils literal"><span class="pre">production</span></tt>, <tt class="docutils literal"><span class="pre">staging</span></tt>, <tt class="docutils literal"><span class="pre">testing</span></tt>, and <tt class="docutils literal"><span class="pre">development</span></tt> environments. Generally, an environment is also associated with one (or more) cookbook versions.</p>
@@ -124,7 +124,7 @@ windows            1.0.0    4.1.2
 </div>
 <div class="section" id="create">
 <h2>create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add an environment object to the Seth server. When this argument is run, Knife will open $EDITOR to enable editing of the <tt class="docutils literal"><span class="pre">ENVIRONMENT</span></tt> description field (unless a description is specified as part of the command). When finished, Knife will add the environment to the Chef server.</p>
+<p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to add an environment object to the Seth server. When this argument is run, Knife will open $EDITOR to enable editing of the <tt class="docutils literal"><span class="pre">ENVIRONMENT</span></tt> description field (unless a description is specified as part of the command). When finished, Knife will add the environment to the seth server.</p>
 <div class="section" id="syntax">
 <h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
@@ -316,7 +316,7 @@ override_attributes:
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

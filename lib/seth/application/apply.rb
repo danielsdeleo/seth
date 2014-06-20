@@ -27,7 +27,7 @@ require 'tempfile'
 require 'seth/providers'
 require 'seth/resources'
 
-class Seth::Application::Apply < Chef::Application
+class Seth::Application::Apply < seth::Application
 
   banner "Usage: seth-apply [RECIPE_FILE] [-e RECIPE_TEXT] [-s]"
 
@@ -65,7 +65,7 @@ class Seth::Application::Apply < Chef::Application
     :long         => "--version",
     :description  => "Show seth version",
     :boolean      => true,
-    :proc         => lambda {|v| puts "Seth: #{::Chef::VERSION}"},
+    :proc         => lambda {|v| puts "Seth: #{::seth::VERSION}"},
     :exit         => 0
 
   option :why_run,
@@ -111,9 +111,9 @@ class Seth::Application::Apply < Chef::Application
     run_context = if @seth_client.events.nil?
                     Seth::RunContext.new(@seth_client.node, {})
                   else
-                    Seth::RunContext.new(@seth_client.node, {}, @chef_client.events)
+                    Seth::RunContext.new(@seth_client.node, {}, @seth_client.events)
                   end
-    recipe = Seth::Recipe.new("(seth-apply cookbook)", "(chef-apply recipe)", run_context)
+    recipe = Seth::Recipe.new("(seth-apply cookbook)", "(seth-apply recipe)", run_context)
     [recipe, run_context]
   end
 

@@ -260,7 +260,7 @@ describe Seth::Knife::Ssh do
     Seth::Config[:client_key] = nil
     Seth::Config[:seth_server_url] = 'http://localhost:9000'
 
-    @api.get("/search/node?q=*:*&sort=X_CHEF_id_CHEF_X%20asc&start=0&rows=1000", 200) {
+    @api.get("/search/node?q=*:*&sort=X_seth_id_seth_X%20asc&start=0&rows=1000", 200) {
       %({"total":1, "start":0, "rows":[{"name":"i-xxxxxxxx", "json_class":"Seth::Node", "automatic":{"fqdn":"the.fqdn", "ec2":{"public_hostname":"the_public_hostname"}},"recipes":[]}]})
     }
   end

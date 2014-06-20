@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife diff\fP subcommand is used to compare the differences between files and directories on the Seth server and in the seth\-repo\&. For example, to compare files on the Chef server prior to an uploading or downloading files using the \fBknife download\fP and \fBknife upload\fP subcommands, or to ensure that certain files in multiple production environments are the same. This subcommand is similar to the \fBgit diff\fP command that can be used to diff what is in the chef\-repo with what is synced to a git repository.
+The \fBknife diff\fP subcommand is used to compare the differences between files and directories on the Seth server and in the seth\-repo\&. For example, to compare files on the seth server prior to an uploading or downloading files using the \fBknife download\fP and \fBknife upload\fP subcommands, or to ensure that certain files in multiple production environments are the same. This subcommand is similar to the \fBgit diff\fP command that can be used to diff what is in the seth\-repo with what is synced to a git repository.
 .sp
 \fBSyntax\fP
 .sp
@@ -56,7 +56,7 @@ This subcommand has the following options:
 The configuration file to use.
 .TP
 .B \fB\-\-seth\-repo\-path PATH\fP
-The path to the seth\-repo\&. This setting will override the default path to the chef\-repo\&. Default: same as specified by \fBchef_repo_path\fP in config.rb.
+The path to the seth\-repo\&. This setting will override the default path to the seth\-repo\&. Default: same as specified by \fBseth_repo_path\fP in config.rb.
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
 The port on which seth\-zero will listen.
@@ -125,7 +125,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .sp
 \fBknife.rb File Settings\fP

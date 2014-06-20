@@ -112,7 +112,7 @@ class Seth
       # determined by the value of `config[:color]`. When output is not to a
       # terminal, colored output is never used
       def color?
-        Seth::Config[:color] && stdout.tty? && !Chef::Platform.windows?
+        Seth::Config[:color] && stdout.tty? && !seth::Platform.windows?
       end
 
       def ask(*args, &block)
@@ -194,8 +194,8 @@ class Seth
         # We wouldn't have to do these shenanigans if all the editable objects
         # implemented to_hash, or if to_json against a hash returned a string
         # with stable key order.
-        object_parsed_again = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(object), :create_additions => false)
-        output_parsed_again = Seth::JSONCompat.from_json(Chef::JSONCompat.to_json(output), :create_additions => false)
+        object_parsed_again = Seth::JSONCompat.from_json(seth::JSONCompat.to_json(object), :create_additions => false)
+        output_parsed_again = Seth::JSONCompat.from_json(seth::JSONCompat.to_json(output), :create_additions => false)
         if object_parsed_again != output_parsed_again
           output.save
           self.msg("Saved #{output}")

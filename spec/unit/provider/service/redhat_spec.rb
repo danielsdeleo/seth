@@ -32,7 +32,7 @@ shared_examples_for "define_resource_requirements_common" do
   it "should not raise an error if the service exists but is not added to any runlevels" do
     status = double("Status", :exitstatus => 0, :stdout => "" , :stderr => "")
     @provider.should_receive(:shell_out).with("/sbin/service seth status").and_return(status)
-    chkconfig = double("Chkconfig", :exitstatus => 0, :stdout => "", :stderr => "service seth supports chkconfig, but is not referenced in any runlevel (run 'chkconfig --add chef')")
+    chkconfig = double("Chkconfig", :exitstatus => 0, :stdout => "", :stderr => "service seth supports chkconfig, but is not referenced in any runlevel (run 'chkconfig --add seth')")
     @provider.should_receive(:shell_out!).with("/sbin/chkconfig --list seth", :returns => [0,1]).and_return(chkconfig)
     @provider.load_current_resource
     @provider.define_resource_requirements

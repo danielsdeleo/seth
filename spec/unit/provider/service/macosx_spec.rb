@@ -82,7 +82,7 @@ XML
 
         describe "#load_current_resource" do
 
-          # CHEF-5223 "you can't glob for a file that hasn't been converged
+          # seth-5223 "you can't glob for a file that hasn't been converged
           # onto the node yet."
           context "when the plist doesn't exist" do
 

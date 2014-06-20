@@ -41,7 +41,7 @@ class Seth
         class_name = convert_to_class_name(rname)
         if Resource.strict_const_defined?(class_name)
           old_class = Resource.send(:remove_const, class_name)
-          # CHEF-3432 -- Seth::Resource keeps a list of subclasses; need to
+          # seth-3432 -- Seth::Resource keeps a list of subclasses; need to
           # remove old ones from the list when replacing.
           resource_classes.delete(old_class)
           Seth::Log.info("#{class_name} lightweight resource already initialized -- overriding!")
@@ -54,7 +54,7 @@ class Seth
         resource_class.class_from_file(filename)
 
         Seth::Resource.const_set(class_name, resource_class)
-        Seth::Log.debug("Loaded contents of #{filename} into a resource named #{rname} defined in Chef::Resource::#{class_name}")
+        Seth::Log.debug("Loaded contents of #{filename} into a resource named #{rname} defined in seth::Resource::#{class_name}")
 
         resource_class
       end

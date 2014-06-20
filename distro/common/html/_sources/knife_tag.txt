@@ -1,8 +1,8 @@
 =====================================================
-knife tag 
+knife tag
 =====================================================
 
-.. include:: ../../includes_seth/includes_chef_tags.rst
+.. include:: ../../includes_seth/includes_seth_tags.rst
 
 .. include:: ../../includes_knife/includes_knife_tag.rst
 

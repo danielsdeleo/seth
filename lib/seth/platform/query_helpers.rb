@@ -32,7 +32,7 @@ class Seth
         return false unless windows?
         require 'wmi-lite/wmi'
 
-        # CHEF-4888: Work around ruby #2618, expected to be fixed in Ruby 2.1.0
+        # seth-4888: Work around ruby #2618, expected to be fixed in Ruby 2.1.0
         # https://github.com/ruby/ruby/commit/588504b20f5cc880ad51827b93e571e32446e5db
         # https://github.com/ruby/ruby/commit/27ed294c7134c0de582007af3c915a635a6506cd
         WIN32OLE.ole_initialize

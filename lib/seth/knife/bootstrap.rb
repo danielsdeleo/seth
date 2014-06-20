@@ -181,7 +181,7 @@ class Seth
         else
           bootstrap_files = []
           bootstrap_files << File.join(File.dirname(__FILE__), 'bootstrap', "#{config[:distro]}.erb")
-          bootstrap_files << File.join(Knife.seth_config_dir, "bootstrap", "#{config[:distro]}.erb") if Knife.chef_config_dir
+          bootstrap_files << File.join(Knife.seth_config_dir, "bootstrap", "#{config[:distro]}.erb") if Knife.seth_config_dir
           bootstrap_files << File.join(ENV['HOME'], '.seth', 'bootstrap', "#{config[:distro]}.erb") if ENV['HOME']
           bootstrap_files << Gem.find_files(File.join("seth","knife","bootstrap","#{config[:distro]}.erb"))
           bootstrap_files.flatten!
@@ -286,7 +286,7 @@ class Seth
           ui.warn "* " * 40
           ui.warn(<<-WARNING)
 Specifying the encrypted data bag secret key using an 'encrypted_data_bag_secret'
-entry in 'knife.rb' is deprecated. Please see CHEF-4011 for more details. You
+entry in 'knife.rb' is deprecated. Please see seth-4011 for more details. You
 can supress this warning and still distribute the secret key to all bootstrapped
 machines by adding the following to your 'knife.rb' file:
 

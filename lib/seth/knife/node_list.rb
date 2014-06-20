@@ -36,7 +36,7 @@ class Seth
 
       def run
         env = Seth::Config[:environment]
-        output(format_list_for_display( env ? Seth::Node.list_by_environment(env) : Chef::Node.list ))
+        output(format_list_for_display( env ? Seth::Node.list_by_environment(env) : seth::Node.list ))
       end
 
     end

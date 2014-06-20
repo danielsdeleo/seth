@@ -42,24 +42,24 @@ class Seth
         # compare an existing ACE with one you want to create.
         def predict_rights_mask(generic_mask)
           mask = generic_mask
-          #mask |= Seth::ReservedNames::Win32::API::Security::STANDARD_RIGHTS_READ if (mask | Chef::ReservedNames::Win32::API::Security::GENERIC_READ) != 0
-          #mask |= Seth::ReservedNames::Win32::API::Security::STANDARD_RIGHTS_WRITE if (mask | Chef::ReservedNames::Win32::API::Security::GENERIC_WRITE) != 0
-          #mask |= Seth::ReservedNames::Win32::API::Security::STANDARD_RIGHTS_EXECUTE if (mask | Chef::ReservedNames::Win32::API::Security::GENERIC_EXECUTE) != 0
-          #mask |= Seth::ReservedNames::Win32::API::Security::STANDARD_RIGHTS_ALL if (mask | Chef::ReservedNames::Win32::API::Security::GENERIC_ALL) != 0
+          #mask |= Seth::ReservedNames::Win32::API::Security::STANDARD_RIGHTS_READ if (mask | seth::ReservedNames::Win32::API::Security::GENERIC_READ) != 0
+          #mask |= Seth::ReservedNames::Win32::API::Security::STANDARD_RIGHTS_WRITE if (mask | seth::ReservedNames::Win32::API::Security::GENERIC_WRITE) != 0
+          #mask |= Seth::ReservedNames::Win32::API::Security::STANDARD_RIGHTS_EXECUTE if (mask | seth::ReservedNames::Win32::API::Security::GENERIC_EXECUTE) != 0
+          #mask |= Seth::ReservedNames::Win32::API::Security::STANDARD_RIGHTS_ALL if (mask | seth::ReservedNames::Win32::API::Security::GENERIC_ALL) != 0
           if type == :SE_FILE_OBJECT
-            mask |= Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_READ if (mask & Chef::ReservedNames::Win32::API::Security::GENERIC_READ) != 0
-            mask |= Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_WRITE if (mask & Chef::ReservedNames::Win32::API::Security::GENERIC_WRITE) != 0
-            mask |= Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE if (mask & Chef::ReservedNames::Win32::API::Security::GENERIC_EXECUTE) != 0
-            mask |= Seth::ReservedNames::Win32::API::Security::FILE_ALL_ACCESS if (mask & Chef::ReservedNames::Win32::API::Security::GENERIC_ALL) != 0
+            mask |= Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_READ if (mask & seth::ReservedNames::Win32::API::Security::GENERIC_READ) != 0
+            mask |= Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_WRITE if (mask & seth::ReservedNames::Win32::API::Security::GENERIC_WRITE) != 0
+            mask |= Seth::ReservedNames::Win32::API::Security::FILE_GENERIC_EXECUTE if (mask & seth::ReservedNames::Win32::API::Security::GENERIC_EXECUTE) != 0
+            mask |= Seth::ReservedNames::Win32::API::Security::FILE_ALL_ACCESS if (mask & seth::ReservedNames::Win32::API::Security::GENERIC_ALL) != 0
           else
             raise "Unimplemented object type for predict_security_mask: #{type}"
           end
-          mask &= ~(Seth::ReservedNames::Win32::API::Security::GENERIC_READ | Chef::ReservedNames::Win32::API::Security::GENERIC_WRITE | Chef::ReservedNames::Win32::API::Security::GENERIC_EXECUTE | Chef::ReservedNames::Win32::API::Security::GENERIC_ALL)
+          mask &= ~(Seth::ReservedNames::Win32::API::Security::GENERIC_READ | seth::ReservedNames::Win32::API::Security::GENERIC_WRITE | seth::ReservedNames::Win32::API::Security::GENERIC_EXECUTE | seth::ReservedNames::Win32::API::Security::GENERIC_ALL)
           mask
         end
 
         def security_descriptor(include_sacl = false)
-          security_information = Seth::ReservedNames::Win32::API::Security::OWNER_SECURITY_INFORMATION | Chef::ReservedNames::Win32::API::Security::GROUP_SECURITY_INFORMATION | Chef::ReservedNames::Win32::API::Security::DACL_SECURITY_INFORMATION
+          security_information = Seth::ReservedNames::Win32::API::Security::OWNER_SECURITY_INFORMATION | seth::ReservedNames::Win32::API::Security::GROUP_SECURITY_INFORMATION | seth::ReservedNames::Win32::API::Security::DACL_SECURITY_INFORMATION
           if include_sacl
             security_information |= Seth::ReservedNames::Win32::API::Security::SACL_SECURITY_INFORMATION
             Security.with_privileges("SeSecurityPrivilege") do

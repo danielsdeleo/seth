@@ -13,15 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-CHEF_SPEC_DATA = File.expand_path(File.dirname(__FILE__) + "/../data/")
-CHEF_SPEC_BACKUP_PATH = File.join(Dir.tmpdir, 'test-backup-path')
+seth_SPEC_DATA = File.expand_path(File.dirname(__FILE__) + "/../data/")
+seth_SPEC_BACKUP_PATH = File.join(Dir.tmpdir, 'test-backup-path')
 
 Seth::Config[:log_level] = :fatal
 Seth::Config[:persistent_queue] = false
-Seth::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
+Seth::Config[:file_backup_path] = seth_SPEC_BACKUP_PATH
 
 Seth::Log.init(StringIO.new)
-Seth::Log.level(Chef::Config.log_level)
+Seth::Log.level(seth::Config.log_level)
 Seth::Config.solo(false)
 
 

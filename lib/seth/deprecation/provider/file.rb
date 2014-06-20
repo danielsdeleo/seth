@@ -130,7 +130,7 @@ class Seth
           end
 
           if Seth::Platform.windows?
-            # TODO: To work around CHEF-3554, add support for Windows
+            # TODO: To work around seth-3554, add support for Windows
             # equivalent, or implicit resource reporting won't work for
             # Windows.
             return

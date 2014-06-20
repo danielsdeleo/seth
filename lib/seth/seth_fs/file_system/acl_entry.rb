@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/rest_list_entry'
-require 'seth/chef_fs/file_system/not_found_error'
-require 'seth/chef_fs/file_system/operation_not_allowed_error'
-require 'seth/chef_fs/file_system/operation_failed_error'
+require 'seth/seth_fs/file_system/rest_list_entry'
+require 'seth/seth_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/operation_not_allowed_error'
+require 'seth/seth_fs/file_system/operation_failed_error'
 
 class Seth
   module SethFS
@@ -32,7 +32,7 @@ class Seth
         end
 
         def delete(recurse)
-          raise Seth::ChefFS::FileSystem::OperationNotAllowedError.new(:delete, self, e), "ACLs cannot be deleted."
+          raise Seth::sethFS::FileSystem::OperationNotAllowedError.new(:delete, self, e), "ACLs cannot be deleted."
         end
 
         def write(file_contents)
@@ -42,12 +42,12 @@ class Seth
             begin
               rest.put("#{api_path}/#{permission}", { permission => acls[permission] })
             rescue Timeout::Error => e
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
             rescue Net::HTTPServerException => e
               if e.response.code == "404"
-                raise Seth::ChefFS::FileSystem::NotFoundError.new(self, e)
+                raise Seth::sethFS::FileSystem::NotFoundError.new(self, e)
               else
-                raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
+                raise Seth::sethFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
               end
             end
           end

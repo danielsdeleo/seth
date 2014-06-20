@@ -21,11 +21,11 @@ require 'spec_helper'
 describe "Seth::Platform#windows_server_2003?" do
   it "returns false early when not on windows" do
     Seth::Platform.stub(:windows?).and_return(false)
-    expect(Seth::Platform).not_to receive(:require) 
+    expect(Seth::Platform).not_to receive(:require)
     expect(Seth::Platform.windows_server_2003?).to be_false
   end
 
-  # CHEF-4888: Need to call WIN32OLE.ole_initialize in new threads
+  # seth-4888: Need to call WIN32OLE.ole_initialize in new threads
   it "does not raise an exception" do
     expect { Thread.fork { Seth::Platform.windows_server_2003? }.join }.not_to raise_error
   end

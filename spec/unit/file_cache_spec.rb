@@ -62,7 +62,7 @@ describe Seth::FileCache do
     end
 
     it "should raise a Seth::Exceptions::FileNotFound if the file doesn't exist" do
-      lambda { Seth::FileCache.load('whiz/bang') }.should raise_error(Chef::Exceptions::FileNotFound)
+      lambda { Seth::FileCache.load('whiz/bang') }.should raise_error(seth::Exceptions::FileNotFound)
     end
   end
 

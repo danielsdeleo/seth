@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>knife &mdash; seth-client Man Pages</title>
-    
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,13 +33,13 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="knife">
 <h1>knife<a class="headerlink" href="#knife" title="Permalink to this headline">¶</a></h1>
 <p>Knife is a command-line tool that provides an interface between a local seth-repo and the Seth server. Knife helps users to manage:</p>
@@ -74,7 +74,7 @@
 <td>The <strong>knife bootstrap</strong> subcommand is used to run a bootstrap operation that installs the seth-client on the target system. The bootstrap operation must specify the IP address or FQDN of the target system.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="knife_client.html"><em>knife client</em></a></td>
-<td>The <strong>knife client</strong> subcommand is used to manage an API client list and their associated RSA public key-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the Chef Server API, such as the seth-client and Knife.</td>
+<td>The <strong>knife client</strong> subcommand is used to manage an API client list and their associated RSA public key-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the seth Server API, such as the seth-client and Knife.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="knife_configure.html"><em>knife configure</em></a></td>
 <td>The <strong>knife configure</strong> subcommand is used to create the knife.rb and client.rb files so that they can be distributed to workstations and nodes.</td>
@@ -95,10 +95,10 @@
 <td>The <strong>knife deps</strong> subcommand is used to identify dependencies for a node, role, or cookbook.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="knife_diff.html"><em>knife diff</em></a></td>
-<td>The <strong>knife diff</strong> subcommand is used to compare the differences between files and directories on the Seth server and in the seth-repo. For example, to compare files on the Chef server prior to an uploading or downloading files using the <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">download</span></tt> and <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">upload</span></tt> subcommands, or to ensure that certain files in multiple production environments are the same. This subcommand is similar to the <tt class="docutils literal"><span class="pre">git</span> <span class="pre">diff</span></tt> command that can be used to diff what is in the chef-repo with what is synced to a git repository.</td>
+<td>The <strong>knife diff</strong> subcommand is used to compare the differences between files and directories on the Seth server and in the seth-repo. For example, to compare files on the seth server prior to an uploading or downloading files using the <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">download</span></tt> and <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">upload</span></tt> subcommands, or to ensure that certain files in multiple production environments are the same. This subcommand is similar to the <tt class="docutils literal"><span class="pre">git</span> <span class="pre">diff</span></tt> command that can be used to diff what is in the seth-repo with what is synced to a git repository.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="knife_download.html"><em>knife download</em></a></td>
-<td>The <strong>knife download</strong> subcommand is used to download roles, cookbooks, environments, nodes, and data bags from the Seth server to the current working directory. It can be used to back up data on the Chef server, inspect the state of one or more files, or to extract out-of-process changes users may have made to files on the Chef server, such as if a user made a change that bypassed version source control. This subcommand is often used in conjunction with <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">diff</span></tt>, which can be used to see exactly what changes will be downloaded, and then <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">upload</span></tt>, which does the opposite of <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">download</span></tt>.</td>
+<td>The <strong>knife download</strong> subcommand is used to download roles, cookbooks, environments, nodes, and data bags from the Seth server to the current working directory. It can be used to back up data on the seth server, inspect the state of one or more files, or to extract out-of-process changes users may have made to files on the seth server, such as if a user made a change that bypassed version source control. This subcommand is often used in conjunction with <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">diff</span></tt>, which can be used to see exactly what changes will be downloaded, and then <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">upload</span></tt>, which does the opposite of <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">download</span></tt>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="knife_edit.html"><em>knife edit</em></a></td>
 <td>The <strong>knife edit</strong> subcommand is used to edit objects on the Seth server. This subcommand works similar to <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">cookbook</span> <span class="pre">edit</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">data</span> <span class="pre">bag</span> <span class="pre">edit</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">environment</span> <span class="pre">edit</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">node</span> <span class="pre">edit</span></tt>, and <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">role</span> <span class="pre">edit</span></tt>, but with a single verb (and a single action).</td>
@@ -160,7 +160,7 @@
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

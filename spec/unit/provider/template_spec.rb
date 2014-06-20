@@ -29,7 +29,7 @@ describe Seth::Provider::Template do
   let(:events) { double('Seth::Events').as_null_object }  # mock all the methods
   let(:run_context) { double('Seth::RunContext', :node => node, :events => events) }
   let(:enclosing_directory) {
-    canonicalize_path(File.expand_path(File.join(CHEF_SPEC_DATA, "templates")))
+    canonicalize_path(File.expand_path(File.join(seth_SPEC_DATA, "templates")))
   }
   let(:resource_path) {
     canonicalize_path(File.expand_path(File.join(enclosing_directory, "seattle.txt")))
@@ -63,7 +63,7 @@ describe Seth::Provider::Template do
     let(:events) { double('Seth::Events').as_null_object }  # mock all the methods
     let(:run_context) { double('Seth::RunContext', :node => node, :events => events) }
     let(:enclosing_directory) {
-      canonicalize_path(File.expand_path(File.join(CHEF_SPEC_DATA, "templates")))
+      canonicalize_path(File.expand_path(File.join(seth_SPEC_DATA, "templates")))
     }
     let(:resource_path) {
       canonicalize_path(File.expand_path(File.join(enclosing_directory, "seattle.txt")))

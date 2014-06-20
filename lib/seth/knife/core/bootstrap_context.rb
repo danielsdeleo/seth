@@ -31,7 +31,7 @@ class Seth
         def initialize(config, run_list, seth_config)
           @config       = config
           @run_list     = run_list
-          @seth_config  = chef_config
+          @seth_config  = seth_config
         end
 
         def bootstrap_version_string
@@ -54,7 +54,7 @@ class Seth
           knife_config[:secret] || begin
             if knife_config[:secret_file] && File.exist?(knife_config[:secret_file])
               IO.read(File.expand_path(knife_config[:secret_file]))
-            elsif @seth_config[:encrypted_data_bag_secret] && File.exist?(@chef_config[:encrypted_data_bag_secret])
+            elsif @seth_config[:encrypted_data_bag_secret] && File.exist?(@seth_config[:encrypted_data_bag_secret])
               IO.read(File.expand_path(@seth_config[:encrypted_data_bag_secret]))
             end
           end
@@ -63,7 +63,7 @@ class Seth
         def config_content
           client_rb = <<-CONFIG
 log_location     STDOUT
-seth_server_url  "#{@chef_config[:chef_server_url]}"
+seth_server_url  "#{@seth_config[:seth_server_url]}"
 validation_client_name "#{@seth_config[:validation_client_name]}"
 CONFIG
           if @config[:seth_node_name]
@@ -90,7 +90,7 @@ CONFIG
 
         def start_seth
           # If the user doesn't have a client path configure, let bash use the PATH for what it was designed for
-          client_path = @seth_config[:chef_client_path] || 'chef-client'
+          client_path = @seth_config[:seth_client_path] || 'seth-client'
           s = "#{client_path} -j /etc/seth/first-boot.json"
           s << ' -l debug' if @config[:verbosity] and @config[:verbosity] >= 2
           s << " -E #{bootstrap_environment}" if seth_version.to_f != 0.9 # only use the -E option on Seth 0.10+
@@ -98,7 +98,7 @@ CONFIG
         end
 
         def knife_config
-          @seth_config.key?(:knife) ? @chef_config[:knife] : {}
+          @seth_config.key?(:knife) ? @seth_config[:knife] : {}
         end
 
         #

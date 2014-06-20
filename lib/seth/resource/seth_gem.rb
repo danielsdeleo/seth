@@ -21,7 +21,7 @@ require 'seth/resource/gem_package'
 
 class Seth
   class Resource
-    class SethGem < Chef::Resource::Package::GemPackage
+    class SethGem < seth::Resource::Package::GemPackage
 
       provides :seth_gem, :on_platforms => :all
 
@@ -42,7 +42,7 @@ class Seth
       end
 
       def after_created
-        # Seth::Resource.run_action: Caveat: this skips Chef::Runner.run_action, where notifications are handled
+        # Seth::Resource.run_action: Caveat: this skips seth::Runner.run_action, where notifications are handled
         # Action could be an array of symbols, but probably won't (think install + enable for a package)
         Array(@action).each do |action|
           self.run_action(action)

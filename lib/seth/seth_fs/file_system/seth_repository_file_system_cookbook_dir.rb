@@ -16,16 +16,16 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/chef_repository_file_system_cookbook_entry'
-require 'seth/chef_fs/file_system/cookbook_dir'
-require 'seth/chef_fs/file_system/not_found_error'
-require 'seth/cookbook/chefignore'
+require 'seth/seth_fs/file_system/seth_repository_file_system_cookbook_entry'
+require 'seth/seth_fs/file_system/cookbook_dir'
+require 'seth/seth_fs/file_system/not_found_error'
+require 'seth/cookbook/sethignore'
 require 'seth/cookbook/cookbook_version_loader'
 
 class Seth
   module SethFS
     module FileSystem
-      class SethRepositoryFileSystemCookbookDir < ChefRepositoryFileSystemCookbookEntry
+      class SethRepositoryFileSystemCookbookDir < sethRepositoryFileSystemCookbookEntry
         def initialize(name, parent, file_path = nil)
           super(name, parent, file_path)
         end
@@ -51,7 +51,7 @@ class Seth
             end
             cb
           rescue => e
-            Seth::Log.error("Could not read #{path_for_printing} into a Chef object: #{e}")
+            Seth::Log.error("Could not read #{path_for_printing} into a seth object: #{e}")
             Seth::Log.error(e.backtrace.join("\n"))
             raise
           end
@@ -64,7 +64,7 @@ class Seth
                 map { |child_name| make_child(child_name) }.
                 select { |entry| !(entry.dir? && entry.children.size == 0) }
           rescue Errno::ENOENT
-            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::sethFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 
@@ -80,7 +80,7 @@ class Seth
 
         # Exposed as a class method so that it can be used elsewhere
         def self.canonical_cookbook_name(entry_name)
-          name_match = Seth::ChefFS::FileSystem::CookbookDir::VALID_VERSIONED_COOKBOOK_NAME.match(entry_name)
+          name_match = Seth::sethFS::FileSystem::CookbookDir::VALID_VERSIONED_COOKBOOK_NAME.match(entry_name)
           return nil if name_match.nil?
           return name_match[1]
         end

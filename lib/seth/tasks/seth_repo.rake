@@ -64,11 +64,11 @@ desc "Install the latest copy of the repository on this Seth Server"
 task :install => [ :update, :roles, :upload_cookbooks ] do
   if File.exists?(File.join(TOPDIR, "config", "server.rb"))
     puts "* Installing new Seth Server Config"
-    sh "#{LOCAL_EXEC_PREFIX} rsync -rlt --delete --exclude '.svn' --exclude '.git*' config/server.rb #{REMOTE_PATH_PREFIX}#{CHEF_SERVER_CONFIG}"
+    sh "#{LOCAL_EXEC_PREFIX} rsync -rlt --delete --exclude '.svn' --exclude '.git*' config/server.rb #{REMOTE_PATH_PREFIX}#{seth_SERVER_CONFIG}"
   end
   if File.exists?(File.join(TOPDIR, "config", "client.rb"))
     puts "* Installing new Seth Client Config"
-    sh "#{LOCAL_EXEC_PREFIX} rsync -rlt --delete --exclude '.svn' --exclude '.git*' config/client.rb #{REMOTE_PATH_PREFIX}#{CHEF_CLIENT_CONFIG}"
+    sh "#{LOCAL_EXEC_PREFIX} rsync -rlt --delete --exclude '.svn' --exclude '.git*' config/client.rb #{REMOTE_PATH_PREFIX}#{seth_CLIENT_CONFIG}"
   end
 end
 

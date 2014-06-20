@@ -1,1 +1,1 @@
-seth-integration-test chef-integration-test/sample-var string "<%= node[:preseed_value] -%>"
+seth-integration-test seth-integration-test/sample-var string "<%= node[:preseed_value] -%>"

@@ -197,7 +197,7 @@ describe Seth::Resource::User, metadata do
         end
 
         if %w{rhel fedora}.include?(OHAI_SYSTEM["platform_family"])
-          # Inconsistent behavior. See: CHEF-2205
+          # Inconsistent behavior. See: seth-2205
           it "creates the home dir when not explicitly asked to on RHEL (XXX)" do
             File.should exist("/home/#{username}")
           end
@@ -341,8 +341,8 @@ describe Seth::Resource::User, metadata do
           let(:manage_home) { true }
 
           if %w{rhel fedora}.include?(OHAI_SYSTEM["platform_family"])
-            # Inconsistent behavior. See: CHEF-2205
-            it "created the home dir b/c of CHEF-2205 so it still exists" do
+            # Inconsistent behavior. See: seth-2205
+            it "created the home dir b/c of seth-2205 so it still exists" do
               # This behavior seems contrary to expectation and non-convergent.
               File.should_not exist("/home/foo")
               File.should exist("/home/bar")

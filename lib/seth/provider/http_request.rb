@@ -36,7 +36,7 @@ class Seth
       # Send a HEAD request to @new_resource.url, with ?message=@new_resource.message
       def action_head
         message = check_message(@new_resource.message)
-        # CHEF-4762: we expect a nil return value from Seth::HTTP for a "200 Success" response
+        # seth-4762: we expect a nil return value from Seth::HTTP for a "200 Success" response
         # and false for a "304 Not Modified" response
         modified = @http.head(
           "#{@new_resource.url}?message=#{message}",

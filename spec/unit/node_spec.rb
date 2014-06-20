@@ -32,7 +32,7 @@ describe Seth::Node do
   end
 
   it "should validate the name of the node" do
-    lambda{Seth::Node.build('solo node')}.should raise_error(Chef::Exceptions::ValidationFailed)
+    lambda{Seth::Node.build('solo node')}.should raise_error(seth::Exceptions::ValidationFailed)
   end
 
   it "should be sortable" do
@@ -112,7 +112,7 @@ describe Seth::Node do
       lambda { node.seth_environment("latte") }.should_not raise_error
     end
 
-    it "should return the seth_environment with chef_environment()" do
+    it "should return the seth_environment with seth_environment()" do
       node.seth_environment("latte")
       node.seth_environment.should == "latte"
     end
@@ -185,14 +185,14 @@ describe Seth::Node do
       end
 
       it "should allow you to set a value after a set_unless" do
-        # this tests for set_unless_present state bleeding between statements CHEF-3806
+        # this tests for set_unless_present state bleeding between statements seth-3806
         node.set_unless[:snoopy][:is_a_puppy] = false
         node.set[:snoopy][:is_a_puppy] = true
         node[:snoopy][:is_a_puppy].should == true
       end
 
       it "should let you set a value after a 'dangling' set_unless" do
-        # this tests for set_unless_present state bleeding between statements CHEF-3806
+        # this tests for set_unless_present state bleeding between statements seth-3806
         node.set[:snoopy][:is_a_puppy] = "what"
         node.set_unless[:snoopy][:is_a_puppy]
         node.set[:snoopy][:is_a_puppy] = true
@@ -229,14 +229,14 @@ describe Seth::Node do
       end
 
       it "should allow you to set a value after a default_unless" do
-        # this tests for set_unless_present state bleeding between statements CHEF-3806
+        # this tests for set_unless_present state bleeding between statements seth-3806
         node.default_unless[:snoopy][:is_a_puppy] = false
         node.default[:snoopy][:is_a_puppy] = true
         node[:snoopy][:is_a_puppy].should == true
       end
 
       it "should allow you to set a value after a 'dangling' default_unless" do
-        # this tests for set_unless_present state bleeding between statements CHEF-3806
+        # this tests for set_unless_present state bleeding between statements seth-3806
         node.default[:snoopy][:is_a_puppy] = "what"
         node.default_unless[:snoopy][:is_a_puppy]
         node.default[:snoopy][:is_a_puppy] = true
@@ -274,14 +274,14 @@ describe Seth::Node do
       end
 
       it "should allow you to set a value after an override_unless" do
-        # this tests for set_unless_present state bleeding between statements CHEF-3806
+        # this tests for set_unless_present state bleeding between statements seth-3806
         node.override_unless[:snoopy][:is_a_puppy] = false
         node.override[:snoopy][:is_a_puppy] = true
         node[:snoopy][:is_a_puppy].should == true
       end
 
       it "should allow you to set a value after a 'dangling' override_unless" do
-        # this tests for set_unless_present state bleeding between statements CHEF-3806
+        # this tests for set_unless_present state bleeding between statements seth-3806
         node.override_unless[:snoopy][:is_a_puppy] = "what"
         node.override_unless[:snoopy][:is_a_puppy]
         node.override[:snoopy][:is_a_puppy] = true
@@ -571,7 +571,7 @@ describe Seth::Node do
 
   describe "when evaluating attributes files" do
     before do
-      @cookbook_repo = File.expand_path(File.join(CHEF_SPEC_DATA, "cookbooks"))
+      @cookbook_repo = File.expand_path(File.join(seth_SPEC_DATA, "cookbooks"))
       @cookbook_loader = Seth::CookbookLoader.new(@cookbook_repo)
       @cookbook_loader.load_cookbooks
 
@@ -630,7 +630,7 @@ describe Seth::Node do
 
   describe "from file" do
     it "should load a node from a ruby file" do
-      node.from_file(File.expand_path(File.join(CHEF_SPEC_DATA, "nodes", "test.rb")))
+      node.from_file(File.expand_path(File.join(seth_SPEC_DATA, "nodes", "test.rb")))
       node.name.should eql("test.example.com-short")
       node.sunshine.should eql("in")
       node.something.should eql("else")
@@ -667,7 +667,7 @@ describe Seth::Node do
     it "allows update of everything except name" do
       node.update_from!(@example)
       node.name.should == "orig"
-      node.seth_environment.should == @example.chef_environment
+      node.seth_environment.should == @example.seth_environment
       node.default_attrs.should == @example.default_attrs
       node.override_attrs.should == @example.override_attrs
       node.normal_attrs.should == @example.normal_attrs
@@ -704,7 +704,7 @@ describe Seth::Node do
 
   describe "converting to or from json" do
     it "should serialize itself as json", :json => true do
-      node.from_file(File.expand_path("nodes/test.example.com.rb", CHEF_SPEC_DATA))
+      node.from_file(File.expand_path("nodes/test.example.com.rb", seth_SPEC_DATA))
       json = Seth::JSONCompat.to_json(node)
       json.should =~ /json_class/
       json.should =~ /name/
@@ -751,12 +751,12 @@ describe Seth::Node do
 
 
     it "should deserialize itself from json", :json => true do
-      node.from_file(File.expand_path("nodes/test.example.com.rb", CHEF_SPEC_DATA))
+      node.from_file(File.expand_path("nodes/test.example.com.rb", seth_SPEC_DATA))
       json = Seth::JSONCompat.to_json(node)
       serialized_node = Seth::JSONCompat.from_json(json)
       serialized_node.should be_a_kind_of(Seth::Node)
       serialized_node.name.should eql(node.name)
-      serialized_node.seth_environment.should eql(node.chef_environment)
+      serialized_node.seth_environment.should eql(node.seth_environment)
       node.each_attribute do |k,v|
         serialized_node[k].should eql(v)
       end

@@ -33,8 +33,8 @@ describe Seth::Resource::Link, :not_supported_on_win2k3 do
     Seth::Provider::Link.new(new_resource, run_context)
   end
   let(:new_resource) do
-    result = Seth::Resource::Link.new("#{CHEF_SPEC_DATA}/fofile-link")
-    result.to "#{CHEF_SPEC_DATA}/fofile"
+    result = Seth::Resource::Link.new("#{seth_SPEC_DATA}/fofile-link")
+    result.to "#{seth_SPEC_DATA}/fofile"
     result
   end
 
@@ -48,27 +48,27 @@ describe Seth::Resource::Link, :not_supported_on_win2k3 do
       lstat.stub(:uid).and_return(501)
       lstat.stub(:gid).and_return(501)
       lstat.stub(:mode).and_return(0777)
-      File.stub(:lstat).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(lstat)
-      provider.file_class.stub(:symlink?).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(true)
-      provider.file_class.stub(:readlink).with("#{CHEF_SPEC_DATA}/fofile-link").and_return("#{CHEF_SPEC_DATA}/fofile")
+      File.stub(:lstat).with("#{seth_SPEC_DATA}/fofile-link").and_return(lstat)
+      provider.file_class.stub(:symlink?).with("#{seth_SPEC_DATA}/fofile-link").and_return(true)
+      provider.file_class.stub(:readlink).with("#{seth_SPEC_DATA}/fofile-link").and_return("#{seth_SPEC_DATA}/fofile")
     end
 
     describe "to a file that exists" do
       before do
-        File.stub(:exist?).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(true)
+        File.stub(:exist?).with("#{seth_SPEC_DATA}/fofile-link").and_return(true)
         new_resource.owner 501 # only loaded in current_resource if present in new
         new_resource.group 501
         provider.load_current_resource
       end
 
       it "should set the symlink target" do
-        provider.current_resource.target_file.should == "#{CHEF_SPEC_DATA}/fofile-link"
+        provider.current_resource.target_file.should == "#{seth_SPEC_DATA}/fofile-link"
       end
       it "should set the link type" do
         provider.current_resource.link_type.should == :symbolic
       end
       it "should update the source of the existing link with the links target" do
-        provider.current_resource.to.should == canonicalize("#{CHEF_SPEC_DATA}/fofile")
+        provider.current_resource.to.should == canonicalize("#{seth_SPEC_DATA}/fofile")
       end
       it "should set the owner" do
         provider.current_resource.owner.should == 501
@@ -82,8 +82,8 @@ describe Seth::Resource::Link, :not_supported_on_win2k3 do
       # the functional tests for links.
       context 'when the desired state is identical' do
         let(:new_resource) do
-          result = Seth::Resource::Link.new("#{CHEF_SPEC_DATA}/fofile-link")
-          result.to "#{CHEF_SPEC_DATA}/fofile"
+          result = Seth::Resource::Link.new("#{seth_SPEC_DATA}/fofile-link")
+          result.to "#{seth_SPEC_DATA}/fofile"
           result
         end
         it 'create does no work' do
@@ -95,22 +95,22 @@ describe Seth::Resource::Link, :not_supported_on_win2k3 do
 
     describe "to a file that doesn't exist" do
       before do
-        File.stub(:exist?).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(false)
-        provider.file_class.stub(:symlink?).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(true)
-        provider.file_class.stub(:readlink).with("#{CHEF_SPEC_DATA}/fofile-link").and_return("#{CHEF_SPEC_DATA}/fofile")
+        File.stub(:exist?).with("#{seth_SPEC_DATA}/fofile-link").and_return(false)
+        provider.file_class.stub(:symlink?).with("#{seth_SPEC_DATA}/fofile-link").and_return(true)
+        provider.file_class.stub(:readlink).with("#{seth_SPEC_DATA}/fofile-link").and_return("#{seth_SPEC_DATA}/fofile")
         new_resource.owner "501" # only loaded in current_resource if present in new
         new_resource.group "501"
         provider.load_current_resource
       end
 
       it "should set the symlink target" do
-        provider.current_resource.target_file.should == "#{CHEF_SPEC_DATA}/fofile-link"
+        provider.current_resource.target_file.should == "#{seth_SPEC_DATA}/fofile-link"
       end
       it "should set the link type" do
         provider.current_resource.link_type.should == :symbolic
       end
       it "should update the source of the existing link to the link's target" do
-        provider.current_resource.to.should == canonicalize("#{CHEF_SPEC_DATA}/fofile")
+        provider.current_resource.to.should == canonicalize("#{seth_SPEC_DATA}/fofile")
       end
       it "should not set the owner" do
         provider.current_resource.owner.should be_nil
@@ -123,13 +123,13 @@ describe Seth::Resource::Link, :not_supported_on_win2k3 do
 
   describe "when the target doesn't exist" do
     before do
-      File.stub(:exists?).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(false)
-      provider.file_class.stub(:symlink?).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(false)
+      File.stub(:exists?).with("#{seth_SPEC_DATA}/fofile-link").and_return(false)
+      provider.file_class.stub(:symlink?).with("#{seth_SPEC_DATA}/fofile-link").and_return(false)
       provider.load_current_resource
     end
 
     it "should set the symlink target" do
-      provider.current_resource.target_file.should == "#{CHEF_SPEC_DATA}/fofile-link"
+      provider.current_resource.target_file.should == "#{seth_SPEC_DATA}/fofile-link"
     end
     it "should update the source of the existing link to nil" do
       provider.current_resource.to.should be_nil
@@ -148,20 +148,20 @@ describe Seth::Resource::Link, :not_supported_on_win2k3 do
       stat.stub(:uid).and_return(501)
       stat.stub(:gid).and_return(501)
       stat.stub(:mode).and_return(0755)
-      provider.file_class.stub(:stat).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(stat)
+      provider.file_class.stub(:stat).with("#{seth_SPEC_DATA}/fofile-link").and_return(stat)
 
-      File.stub(:exists?).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(true)
-      provider.file_class.stub(:symlink?).with("#{CHEF_SPEC_DATA}/fofile-link").and_return(false)
+      File.stub(:exists?).with("#{seth_SPEC_DATA}/fofile-link").and_return(true)
+      provider.file_class.stub(:symlink?).with("#{seth_SPEC_DATA}/fofile-link").and_return(false)
     end
 
     describe "and the source does not exist" do
       before do
-        File.stub(:exists?).with("#{CHEF_SPEC_DATA}/fofile").and_return(false)
+        File.stub(:exists?).with("#{seth_SPEC_DATA}/fofile").and_return(false)
         provider.load_current_resource
       end
 
       it "should set the symlink target" do
-        provider.current_resource.target_file.should == "#{CHEF_SPEC_DATA}/fofile-link"
+        provider.current_resource.target_file.should == "#{seth_SPEC_DATA}/fofile-link"
       end
       it "should update the current source of the existing link with an empty string" do
         provider.current_resource.to.should == ''
@@ -181,14 +181,14 @@ describe Seth::Resource::Link, :not_supported_on_win2k3 do
         stat.stub(:gid).and_return(502)
         stat.stub(:mode).and_return(0644)
 
-        provider.file_class.stub(:stat).with("#{CHEF_SPEC_DATA}/fofile").and_return(stat)
+        provider.file_class.stub(:stat).with("#{seth_SPEC_DATA}/fofile").and_return(stat)
 
-        File.stub(:exists?).with("#{CHEF_SPEC_DATA}/fofile").and_return(true)
+        File.stub(:exists?).with("#{seth_SPEC_DATA}/fofile").and_return(true)
         provider.load_current_resource
       end
 
       it "should set the symlink target" do
-        provider.current_resource.target_file.should == "#{CHEF_SPEC_DATA}/fofile-link"
+        provider.current_resource.target_file.should == "#{seth_SPEC_DATA}/fofile-link"
       end
       it "should update the current source of the existing link with an empty string" do
         provider.current_resource.to.should == ''
@@ -208,20 +208,20 @@ describe Seth::Resource::Link, :not_supported_on_win2k3 do
         stat.stub(:gid).and_return(502)
         stat.stub(:mode).and_return(0644)
 
-        provider.file_class.stub(:stat).with("#{CHEF_SPEC_DATA}/fofile").and_return(stat)
+        provider.file_class.stub(:stat).with("#{seth_SPEC_DATA}/fofile").and_return(stat)
 
-        File.stub(:exists?).with("#{CHEF_SPEC_DATA}/fofile").and_return(true)
+        File.stub(:exists?).with("#{seth_SPEC_DATA}/fofile").and_return(true)
         provider.load_current_resource
       end
 
       it "should set the symlink target" do
-        provider.current_resource.target_file.should == "#{CHEF_SPEC_DATA}/fofile-link"
+        provider.current_resource.target_file.should == "#{seth_SPEC_DATA}/fofile-link"
       end
       it "should set the link type" do
         provider.current_resource.link_type.should == :hard
       end
       it "should update the source of the existing link to the link's target" do
-        provider.current_resource.to.should == canonicalize("#{CHEF_SPEC_DATA}/fofile")
+        provider.current_resource.to.should == canonicalize("#{seth_SPEC_DATA}/fofile")
       end
       it "should not set the owner" do
         provider.current_resource.owner.should == nil
@@ -235,8 +235,8 @@ describe Seth::Resource::Link, :not_supported_on_win2k3 do
       # the functional tests for links.
       context 'when the desired state is identical' do
         let(:new_resource) do
-          result = Seth::Resource::Link.new("#{CHEF_SPEC_DATA}/fofile-link")
-          result.to "#{CHEF_SPEC_DATA}/fofile"
+          result = Seth::Resource::Link.new("#{seth_SPEC_DATA}/fofile-link")
+          result.to "#{seth_SPEC_DATA}/fofile"
           result.link_type :hard
           result
         end

@@ -26,7 +26,7 @@ class Seth
     # == [DEPRECATED] Seth::Mixin::DeprecatedLanguageModule
     # This module is a temporary replacement for the previous
     # Seth::Mixin::Language. That module's functionality was split into two
-    # modules, Seth::DSL::PlatformIntrospection, and Chef::DSL::DataQuery.
+    # modules, Seth::DSL::PlatformIntrospection, and seth::DSL::DataQuery.
     #
     # This module includes both PlatformIntrospection and DataQuery to provide
     # the same interfaces and behavior as the prior Mixin::Language.
@@ -42,7 +42,7 @@ class Seth
 
     deprecate_constant(:Language, DeprecatedLanguageModule, <<-EOM)
 Seth::Mixin::Language is deprecated. Use either (or both)
-Seth::DSL::PlatformIntrospection or Chef::DSL::DataQuery instead.
+Seth::DSL::PlatformIntrospection or seth::DSL::DataQuery instead.
 EOM
   end
 end

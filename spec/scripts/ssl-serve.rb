@@ -2,7 +2,7 @@
 # USAGE: ruby ssl-serve.rb
 #
 # ssl-serve is a script that serves a local directory over SSL.
-# You can use it to test various HTTP behaviors in seth, like chef-client's
+# You can use it to test various HTTP behaviors in seth, like seth-client's
 # `-j` and `-c` options and remote_file with https connections.
 #
 require 'pp'
@@ -13,10 +13,10 @@ require 'webrick/https'
 
 $ssl = true
 
-CHEF_SPEC_DATA = File.expand_path("../../data", __FILE__)
-cert_text = File.read(File.expand_path("ssl/seth-rspec.cert", CHEF_SPEC_DATA))
+seth_SPEC_DATA = File.expand_path("../../data", __FILE__)
+cert_text = File.read(File.expand_path("ssl/seth-rspec.cert", seth_SPEC_DATA))
 cert = OpenSSL::X509::Certificate.new(cert_text)
-key_text = File.read(File.expand_path("ssl/seth-rspec.key", CHEF_SPEC_DATA))
+key_text = File.read(File.expand_path("ssl/seth-rspec.key", seth_SPEC_DATA))
 key = OpenSSL::PKey::RSA.new(key_text)
 
 server_opts = {}

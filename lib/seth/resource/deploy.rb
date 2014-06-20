@@ -30,7 +30,7 @@
 #   action :deploy # or :rollback
 #   restart_command "touch tmp/restart.txt"
 #   git_ssh_wrapper "wrap-ssh4git.sh"
-#   scm_provider Seth::Provider::Git # is the default, for svn: Chef::Provider::Subversion
+#   scm_provider Seth::Provider::Git # is the default, for svn: seth::Provider::Subversion
 #   svn_username "whoami"
 #   svn_password "supersecret"
 # end

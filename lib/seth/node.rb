@@ -78,7 +78,7 @@ class Seth
     end
 
     def seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     # Set the name of this Node, or return the current name.
@@ -392,7 +392,7 @@ class Seth
       index_hash = Hash.new
       index_hash["seth_type"] = "node"
       index_hash["name"] = name
-      index_hash["seth_environment"] = chef_environment
+      index_hash["seth_environment"] = seth_environment
       attribute.each do |key, value|
         index_hash[key] = value
       end
@@ -405,7 +405,7 @@ class Seth
     def display_hash
       display = {}
       display["name"]             = name
-      display["seth_environment"] = chef_environment
+      display["seth_environment"] = seth_environment
       display["automatic"]        = automatic_attrs
       display["normal"]           = normal_attrs
       display["default"]          = attributes.combined_default
@@ -422,7 +422,7 @@ class Seth
     def for_json
       result = {
         "name" => name,
-        "seth_environment" => chef_environment,
+        "seth_environment" => seth_environment,
         'json_class' => self.class.name,
         "automatic" => attributes.automatic,
         "normal" => attributes.normal,
@@ -441,7 +441,7 @@ class Seth
       self.normal_attrs = o.normal_attrs
       self.override_attrs = o.override_attrs
       self.default_attrs = o.default_attrs
-      seth_environment(o.chef_environment)
+      seth_environment(o.seth_environment)
       self
     end
 
@@ -449,7 +449,7 @@ class Seth
     def self.json_create(o)
       node = new
       node.name(o["name"])
-      node.seth_environment(o["chef_environment"])
+      node.seth_environment(o["seth_environment"])
       if o.has_key?("attributes")
         node.normal_attrs = o["attributes"]
       end
@@ -472,7 +472,7 @@ class Seth
         Seth::Search::Query.new.search(:node, "seth_environment:#{environment}") {|n| response[n.name] = n unless n.nil?}
         response
       else
-        Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("environments/#{environment}/nodes")
+        Seth::REST.new(seth::Config[:seth_server_url]).get_rest("environments/#{environment}/nodes")
       end
     end
 
@@ -484,7 +484,7 @@ class Seth
         end
         response
       else
-        Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("nodes")
+        Seth::REST.new(seth::Config[:seth_server_url]).get_rest("nodes")
       end
     end
 
@@ -499,13 +499,13 @@ class Seth
     def self.build(node_name)
       node = new
       node.name(node_name)
-      node.seth_environment(Seth::Config[:environment]) unless Chef::Config[:environment].nil? || Chef::Config[:environment].chomp.empty?
+      node.seth_environment(Seth::Config[:environment]) unless seth::Config[:environment].nil? || seth::Config[:environment].chomp.empty?
       node
     end
 
     # Load a node by name
     def self.load(name)
-      Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("nodes/#{name}")
+      Seth::REST.new(seth::Config[:seth_server_url]).get_rest("nodes/#{name}")
     end
 
     # Remove this node via the REST API

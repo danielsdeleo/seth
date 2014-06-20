@@ -53,7 +53,7 @@ describe Seth::Resource::Git do
   # of the bundle to use as a remote for the tests. This at least
   # gives the expected responses for ls-remote using git version
   # 1.7.12.4
-  let(:git_bundle_repo) { File.expand_path("git_bundles/example-repo.gitbundle", CHEF_SPEC_DATA) }
+  let(:git_bundle_repo) { File.expand_path("git_bundles/example-repo.gitbundle", seth_SPEC_DATA) }
   let(:origin_repo_dir) { Dir.mktmpdir }
   let(:origin_repo) { "#{origin_repo_dir}/example" }
 

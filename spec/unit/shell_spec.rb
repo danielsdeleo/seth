@@ -56,7 +56,7 @@ describe Shell do
   describe "configuring IRB" do
     it "configures irb history" do
       Shell.configure_irb
-      Shell.irb_conf[:HISTORY_FILE].should == "~/.seth/chef_shell_history"
+      Shell.irb_conf[:HISTORY_FILE].should == "~/.seth/seth_shell_history"
       Shell.irb_conf[:SAVE_HISTORY].should == 1000
     end
 
@@ -80,7 +80,7 @@ describe Shell do
 
       conf = OpenStruct.new
       events = Seth::EventDispatch::Dispatcher.new
-      conf.main = Seth::Recipe.new(nil,nil,Chef::RunContext.new(Chef::Node.new, {}, events))
+      conf.main = Seth::Recipe.new(nil,nil,seth::RunContext.new(seth::Node.new, {}, events))
       Shell.irb_conf[:IRB_RC].call(conf)
       conf.prompt_c.should      == "seth:recipe > "
       conf.prompt_i.should      == "seth:recipe > "

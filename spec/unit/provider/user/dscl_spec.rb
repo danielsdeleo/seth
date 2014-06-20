@@ -152,7 +152,7 @@ describe Seth::Provider::User::Dscl do
     it "moves the users home to the new location if it exists and the target location is different" do
       @new_resource.supports(:manage_home => true)
 
-      current_home = CHEF_SPEC_DATA + '/old_home_dir'
+      current_home = seth_SPEC_DATA + '/old_home_dir'
       current_home_files = [current_home + '/my-dot-emacs', current_home + '/my-dot-vim']
       @current_resource.home(current_home)
       @new_resource.gid(23)
@@ -161,7 +161,7 @@ describe Seth::Provider::User::Dscl do
 
       FileUtils.should_receive(:mkdir_p).with('/Users/toor').and_return(true)
       FileUtils.should_receive(:rmdir).with(current_home)
-      ::Dir.should_receive(:glob).with("#{CHEF_SPEC_DATA}/old_home_dir/*",::File::FNM_DOTMATCH).and_return(current_home_files)
+      ::Dir.should_receive(:glob).with("#{seth_SPEC_DATA}/old_home_dir/*",::File::FNM_DOTMATCH).and_return(current_home_files)
       FileUtils.should_receive(:mv).with(current_home_files, "/Users/toor", :force => true)
       FileUtils.should_receive(:chown_R).with('toor','23','/Users/toor')
 

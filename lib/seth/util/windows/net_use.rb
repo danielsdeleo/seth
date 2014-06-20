@@ -22,7 +22,7 @@
 
 require 'seth/util/windows'
 
-class Seth::Util::Windows::NetUse < Chef::Util::Windows
+class Seth::Util::Windows::NetUse < seth::Util::Windows
 
   private
 

@@ -1,4 +1,4 @@
-require 'seth/chef_fs/file_system/memory_dir'
+require 'seth/seth_fs/file_system/memory_dir'
 
 class Seth
   module SethFS

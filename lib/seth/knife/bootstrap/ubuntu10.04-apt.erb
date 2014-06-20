@@ -3,7 +3,7 @@ bash -c '
 
 if [ ! -f /usr/bin/seth-client ]; then
   apt-get install -y wget
-  echo "seth	chef/chef_server_url	string	<%= @chef_config[:chef_server_url] %>" | debconf-set-selections
+  echo "seth	seth/seth_server_url	string	<%= @seth_config[:seth_server_url] %>" | debconf-set-selections
   [ -f /etc/apt/sources.list.d/opscode.list ] || echo "deb http://apt.opscode.com <%= seth_version.to_f == 0.10 ? "lucid-0.10" : "lucid" %> main" > /etc/apt/sources.list.d/opscode.list
   wget <%= "--proxy=on " if knife_config[:bootstrap_proxy] %>-O- http://apt.opscode.com/packages@opscode.com.gpg.key | apt-key add -
 fi
@@ -23,7 +23,7 @@ chmod 0600 /etc/seth/encrypted_data_bag_secret
 <% end -%>
 
 <%# Generate Ohai Hints -%>
-<% unless @seth_config[:knife][:hints].nil? || @chef_config[:knife][:hints].empty? -%>
+<% unless @seth_config[:knife][:hints].nil? || @seth_config[:knife][:hints].empty? -%>
 mkdir -p /etc/seth/ohai/hints
 
 <% @seth_config[:knife][:hints].each do |name, hash| -%>
@@ -33,12 +33,12 @@ EOP
 <% end -%>
 <% end -%>
 
-<% unless @seth_config[:validation_client_name] == "chef-validator" -%>
-[  `grep -qx "validation_client_name \"<%= @seth_config[:validation_client_name] %>\"" /etc/chef/client.rb` ] || echo "validation_client_name \"<%= @chef_config[:validation_client_name] %>\"" >> /etc/chef/client.rb
+<% unless @seth_config[:validation_client_name] == "seth-validator" -%>
+[  `grep -qx "validation_client_name \"<%= @seth_config[:validation_client_name] %>\"" /etc/seth/client.rb` ] || echo "validation_client_name \"<%= @seth_config[:validation_client_name] %>\"" >> /etc/seth/client.rb
 <% end -%>
 
 <% if @config[:seth_node_name] %>
-[ `grep -qx "node_name \"<%= @config[:seth_node_name] %>\"" /etc/chef/client.rb` ] || echo "node_name \"<%= @config[:chef_node_name] %>\"" >> /etc/chef/client.rb
+[ `grep -qx "node_name \"<%= @config[:seth_node_name] %>\"" /etc/seth/client.rb` ] || echo "node_name \"<%= @config[:seth_node_name] %>\"" >> /etc/seth/client.rb
 <% end -%>
 
 <% if knife_config[:bootstrap_proxy] %>

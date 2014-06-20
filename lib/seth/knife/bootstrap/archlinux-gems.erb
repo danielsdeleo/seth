@@ -24,7 +24,7 @@ chmod 0600 /etc/seth/encrypted_data_bag_secret
 <% end -%>
 
 <%# Generate Ohai Hints -%>
-<% unless @seth_config[:knife][:hints].nil? || @chef_config[:knife][:hints].empty? -%>
+<% unless @seth_config[:knife][:hints].nil? || @seth_config[:knife][:hints].empty? -%>
 mkdir -p /etc/seth/ohai/hints
 
 <% @seth_config[:knife][:hints].each do |name, hash| -%>
@@ -37,7 +37,7 @@ EOP
 cat > /etc/seth/client.rb <<'EOP'
 log_level        :info
 log_location     STDOUT
-seth_server_url  "<%= @chef_config[:chef_server_url] %>"
+seth_server_url  "<%= @seth_config[:seth_server_url] %>"
 validation_client_name "<%= @seth_config[:validation_client_name] %>"
 <% if @config[:seth_node_name] -%>
 node_name "<%= @config[:seth_node_name] %>"

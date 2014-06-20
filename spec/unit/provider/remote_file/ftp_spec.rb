@@ -20,7 +20,7 @@ require 'spec_helper'
 
 describe Seth::Provider::RemoteFile::FTP do
   let(:enclosing_directory) {
-    canonicalize_path(File.expand_path(File.join(CHEF_SPEC_DATA, "templates")))
+    canonicalize_path(File.expand_path(File.join(seth_SPEC_DATA, "templates")))
   }
   let(:resource_path) {
     canonicalize_path(File.expand_path(File.join(enclosing_directory, "seattle.txt")))

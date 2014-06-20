@@ -5,7 +5,7 @@ seth-shell(1) -- Interactive Seth Console
 
 __seth-shell__ [_named configuration_] _(options)_
 
-  * `-S`, `--server CHEF_SERVER_URL`:
+  * `-S`, `--server seth_SERVER_URL`:
     The seth server URL
   * `-z`, `--client`:
     seth-client mode
@@ -27,12 +27,12 @@ __seth-shell__ [_named configuration_] _(options)_
 When no --config option is specified, seth-shell attempts to load a
 default configuration file:
 
-* If a _named configuration_ is given, seth-shell will load ~/.chef/_named
+* If a _named configuration_ is given, seth-shell will load ~/.seth/_named
   configuration_/seth_shell.rb
 * If no _named configuration_ is given seth-shell will load
-  ~/.seth/chef_shell.rb if it exists
-* seth-shell falls back to loading /etc/chef/client.rb or
-/etc/seth/solo.rb if -z or -s options are given and no chef_shell.rb
+  ~/.seth/seth_shell.rb if it exists
+* seth-shell falls back to loading /etc/seth/client.rb or
+/etc/seth/solo.rb if -z or -s options are given and no seth_shell.rb
 can be found.
 * The --config option takes precedence over implicit configuration
   paths.
@@ -144,7 +144,7 @@ convergence run via `run_seth`
   seth > recipe
   seth:recipe > echo :off
   seth:recipe > file "/tmp/hello\_world"
-  seth:recipe > run\_chef
+  seth:recipe > run\_seth
   [Sat, 09 Apr 2011 08:56:56 -0700] INFO: Processing file[/tmp/hello\_world] action create ((irb#1) line 2)
   [Sat, 09 Apr 2011 08:56:56 -0700] INFO: file[/tmp/hello\_world] created file /tmp/hello\_world
   seth:recipe > pp ls '/tmp'
@@ -160,7 +160,7 @@ convergence run via `run_seth`
 * Remove the role _obsolete_ from every node in the system
 
   seth > nodes.transform(:all) {|n| n.run\_list.delete('role[obsolete]') }
-   => [node[seth098b2.opschef.com], node[ree-woot], node[graphite-dev], node[fluke.localdomain], node[ghost.local], node[kallistec]]
+   => [node[seth098b2.opsseth.com], node[ree-woot], node[graphite-dev], node[fluke.localdomain], node[ghost.local], node[kallistec]]
 
 
 ## BUGS
@@ -169,7 +169,7 @@ convergence run via `run_seth`
 seth-client(8) configures a host, which may lead to discrepancies in
 observed behavior.
 
-`seth-shell` has to duplicate much code from chef-client's internal
+`seth-shell` has to duplicate much code from seth-client's internal
 libraries and may become out of sync with the behavior of those
 libraries.
 
@@ -190,6 +190,6 @@ libraries.
    Permission is granted to copy, distribute and / or modify this
    document under the terms of the Apache 2.0 License.
 
-## CHEF
+## seth
 
-   seth-shell is distributed with Seth. <http://wiki.opscode.com/display/chef/Home>
+   seth-shell is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>

@@ -20,7 +20,7 @@ require 'seth/resource/service'
 require 'seth/provider/service/simple'
 require 'seth/mixin/command'
 
-class Seth::Provider::Service::Systemd < Chef::Provider::Service::Simple
+class Seth::Provider::Service::Systemd < seth::Provider::Service::Simple
   def load_current_resource
     @current_resource = Seth::Resource::Service.new(@new_resource.name)
     @current_resource.service_name(@new_resource.service_name)

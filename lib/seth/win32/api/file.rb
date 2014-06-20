@@ -471,10 +471,10 @@ BOOL WINAPI DeviceIoControl(
         # ensures the handle is closed on exit of the block
         def file_search_handle(path, &block)
           begin
-            # Workaround for CHEF-4419:
+            # Workaround for seth-4419:
             # Make sure paths starting with "/" has a drive letter
             # assigned from the current working diretory.
-            # Note: With CHEF-4427 this issue will be fixed with a
+            # Note: With seth-4427 this issue will be fixed with a
             # broader fix to map all the paths starting with "/" to
             # SYSTEM_DRIVE on windows.
             path = ::File.expand_path(path) if path.start_with? "/"

@@ -90,7 +90,7 @@ describe Seth::Provider::Subversion do
     end
 
     it "finds the current revision when loading the current resource state" do
-      # note: the test is kinda janky, but it provides regression coverage for CHEF-2092
+      # note: the test is kinda janky, but it provides regression coverage for seth-2092
       @resource.instance_variable_set(:@action, :sync)
       @provider.should_receive(:find_current_revision).and_return("12345")
       @provider.load_current_resource

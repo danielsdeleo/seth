@@ -1,4 +1,4 @@
-seth-solo(8) -- Runs chef in solo mode against a specified cookbook location.
+seth-solo(8) -- Runs seth in solo mode against a specified cookbook location.
 ========================================
 
 ## SYNOPSIS
@@ -36,7 +36,7 @@ __seth-solo__ _(options)_
 
 ## DESCRIPTION
 
-Seth Solo allows you to run Chef Cookbooks in the absence of a Chef Server.
+Seth Solo allows you to run seth Cookbooks in the absence of a seth Server.
 To do this, the complete cookbook needs to be present on disk.
 
 By default Seth Solo will look in /etc/seth/solo.rb for its configuration.
@@ -56,7 +56,7 @@ to search for cookbooks.
 
 For example:
     file_cache_path "/var/seth-solo"
-    cookbook_path ["/var/seth-solo/cookbooks", "/var/chef-solo/site-cookbooks"]
+    cookbook_path ["/var/seth-solo/cookbooks", "/var/seth-solo/site-cookbooks"]
 
 Note that earlier entries are now overridden by later ones.
 
@@ -84,7 +84,7 @@ You can use -c to specify the path to the configuration file (if you don't want
 seth-solo to use the default). You can also specify -r for a cookbook tarball.
 
 For example:
-    seth-solo -c ~/solo.rb -j ~/node.json  -r http://www.example.com/chef-solo.tar.gz
+    seth-solo -c ~/solo.rb -j ~/node.json  -r http://www.example.com/seth-solo.tar.gz
 
 In the above case, seth-solo would extract the tarball to your specified
 cookbook_path, use ~/solo.rb as the configuration file, and apply attributes
@@ -92,7 +92,7 @@ and use the run_list from ~/node.json.
 
 ## SEE ALSO
 
-Full documentation for Seth and  seth-solo  is  located  on  the  Chef  wiki,
+Full documentation for Seth and  seth-solo  is  located  on  the  seth  wiki,
 http://wiki.opscode.com/display/seth/Home.
 
 ## AUTHOR

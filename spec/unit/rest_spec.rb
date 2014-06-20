@@ -98,7 +98,7 @@ describe Seth::REST do
     end
 
     it "replaces the base URL when given an absolute URL" do
-      expect(rest.create_url("http://seth-rulez.example.com:9000")).to eq(URI.parse("http://chef-rulez.example.com:9000"))
+      expect(rest.create_url("http://seth-rulez.example.com:9000")).to eq(URI.parse("http://seth-rulez.example.com:9000"))
     end
 
     it "makes a :GET request with the composed url object" do
@@ -150,7 +150,7 @@ describe Seth::REST do
 
     before(:each) do
       Seth::Config[:node_name]  = "webmonkey.example.com"
-      Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+      Seth::Config[:client_key] = seth_SPEC_DATA + "/ssl/private_key.pem"
     end
 
     it 'responds to raw_http_request as a public method' do
@@ -194,12 +194,12 @@ describe Seth::REST do
 
     before do
       Seth::Config[:node_name]  = "webmonkey.example.com"
-      Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+      Seth::Config[:client_key] = seth_SPEC_DATA + "/ssl/private_key.pem"
     end
 
     it "configures itself to use the node_name and client_key in the config by default" do
       expect(rest.client_name).to eq("webmonkey.example.com")
-      expect(rest.signing_key_filename).to eq(CHEF_SPEC_DATA + "/ssl/private_key.pem")
+      expect(rest.signing_key_filename).to eq(seth_SPEC_DATA + "/ssl/private_key.pem")
     end
 
     it "provides access to the raw key data" do
@@ -218,12 +218,12 @@ describe Seth::REST do
     end
 
     it "raises PrivateKeyMissing when the key file doesn't exist" do
-      expect {Seth::REST.new(base_url, "client-name", "/dev/null/nothing_here")}.to raise_error(Chef::Exceptions::PrivateKeyMissing)
+      expect {Seth::REST.new(base_url, "client-name", "/dev/null/nothing_here")}.to raise_error(seth::Exceptions::PrivateKeyMissing)
     end
 
     it "raises InvalidPrivateKey when the key file doesnt' look like a key" do
-      invalid_key_file = CHEF_SPEC_DATA + "/bad-config.rb"
-      expect {Seth::REST.new(base_url, "client-name", invalid_key_file)}.to raise_error(Chef::Exceptions::InvalidPrivateKey)
+      invalid_key_file = seth_SPEC_DATA + "/bad-config.rb"
+      expect {Seth::REST.new(base_url, "client-name", invalid_key_file)}.to raise_error(seth::Exceptions::InvalidPrivateKey)
     end
 
     it "can take private key as a sting :raw_key in options during initializaton" do
@@ -231,7 +231,7 @@ describe Seth::REST do
     end
 
     it "raises InvalidPrivateKey when the key passed as string :raw_key in options doesnt' look like a key" do
-      expect {Seth::REST.new(base_url, "client-name", nil, :raw_key => "bad key string")}.to raise_error(Chef::Exceptions::InvalidPrivateKey)
+      expect {Seth::REST.new(base_url, "client-name", nil, :raw_key => "bad key string")}.to raise_error(seth::Exceptions::InvalidPrivateKey)
     end
 
   end
@@ -271,7 +271,7 @@ describe Seth::REST do
     let(:base_headers) do
       {
         'Accept' => 'application/json',
-        'X-Seth-Version' => Chef::VERSION,
+        'X-Seth-Version' => seth::VERSION,
         'Accept-Encoding' => Seth::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
         'X-REMOTE-REQUEST-ID' => request_id
       }
@@ -292,7 +292,7 @@ describe Seth::REST do
       let(:base_headers) do  #FIXME: huh?
         {
           'Accept' => 'application/json',
-          'X-Seth-Version' => Chef::VERSION,
+          'X-Seth-Version' => seth::VERSION,
           'Accept-Encoding' => Seth::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
           'Host' => host_header,
           'X-REMOTE-REQUEST-ID' => request_id
@@ -315,12 +315,12 @@ describe Seth::REST do
 
       it "sets the user agent to seth-client" do
         # XXX: must reset to default b/c knife changes the UA
-        Seth::REST::RESTRequest.user_agent = Chef::REST::RESTRequest::DEFAULT_UA
+        Seth::REST::RESTRequest.user_agent = seth::REST::RESTRequest::DEFAULT_UA
         rest.request(:GET, url, {})
-        expect(request_mock['User-Agent']).to match(/^Seth Client\/#{Chef::VERSION}/)
+        expect(request_mock['User-Agent']).to match(/^Seth Client\/#{seth::VERSION}/)
       end
 
-      # CHEF-3140
+      # seth-3140
       context "when configured to disable compression" do
         let(:rest) do
           Net::HTTP.stub(:new).and_return(http_client)
@@ -567,7 +567,7 @@ describe Seth::REST do
 
       it " build a new HTTP GET request without the application/json accept header" do
         expected_headers = {'Accept' => "*/*",
-                            'X-Seth-Version' => Chef::VERSION,
+                            'X-Seth-Version' => seth::VERSION,
                             'Accept-Encoding' => Seth::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
                             'Host' => host_header,
                             'X-REMOTE-REQUEST-ID'=> request_id
@@ -578,7 +578,7 @@ describe Seth::REST do
 
       it "build a new HTTP GET request with the X-Remote-Request-Id header" do
         expected_headers = {'Accept' => "*/*",
-                            'X-Seth-Version' => Chef::VERSION,
+                            'X-Seth-Version' => seth::VERSION,
                             'Accept-Encoding' => Seth::REST::RESTRequest::ENCODING_GZIP_DEFLATE,
                             'Host' => host_header,
                             'X-REMOTE-REQUEST-ID'=> request_id
@@ -688,7 +688,7 @@ describe Seth::REST do
 
     before do
       Seth::Config[:node_name]  = "webmonkey.example.com"
-      Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+      Seth::Config[:client_key] = seth_SPEC_DATA + "/ssl/private_key.pem"
     end
 
     it "raises a RedirectLimitExceeded when redirected more than 10 times" do

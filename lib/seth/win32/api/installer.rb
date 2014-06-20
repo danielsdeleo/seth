@@ -94,7 +94,7 @@ UINT MsiCloseHandle(
             msg << Seth::ReservedNames::Win32::Error.format_message(status)
             raise Seth::Exceptions::Package, msg
           end
-         
+
           buffer_length = FFI::Buffer.new(:long).write_long(buffer_length.read_long + 1)
           buffer = 0.chr * buffer_length.read_long
 
@@ -114,18 +114,18 @@ UINT MsiCloseHandle(
         # Opens a Microsoft Installer (MSI) file from an absolute path and returns a pointer to a handle
         # Remember to close the handle with msi_close_handle()
         def open_package(package_path)
-          # MsiOpenPackage expects a perfect absolute Windows path to the MSI 
+          # MsiOpenPackage expects a perfect absolute Windows path to the MSI
           raise ArgumentError, "Provided path '#{package_path}' must be an absolute path" unless Pathname.new(package_path).absolute?
 
           pkg_ptr = FFI::MemoryPointer.new(:pointer, 4)
           status = msi_open_package(package_path, 1, pkg_ptr)
           case status
-          when 0 
+          when 0
             # success
           else
-            raise Seth::Exceptions::Package, "msi_open_package: unexpected status #{status}: #{Chef::ReservedNames::Win32::Error.format_message(status)}"
+            raise Seth::Exceptions::Package, "msi_open_package: unexpected status #{status}: #{seth::ReservedNames::Win32::Error.format_message(status)}"
           end
-          return pkg_ptr        
+          return pkg_ptr
         end
 
         # All installed product_codes should have a VersionString
@@ -133,11 +133,11 @@ UINT MsiCloseHandle(
         def get_installed_version(product_code)
           version = 0.chr
           version_length = FFI::Buffer.new(:long).write_long(0)
-         
+
           status = msi_get_product_info(product_code, "VersionString", version, version_length)
-          
+
           return nil if status == 1605 # ERROR_UNKNOWN_PRODUCT (0x645)
-         
+
           # We expect error ERROR_MORE_DATA (234) here because we passed a buffer length of 0
           if status != 234
             msg = "msi_get_product_info: product code '#{product_code}' returned unknown error #{status} when retrieving VersionString: "
@@ -149,9 +149,9 @@ UINT MsiCloseHandle(
 
           version_length = FFI::Buffer.new(:long).write_long(version_length.read_long + 1)
           version = 0.chr * version_length.read_long
-           
+
           status = msi_get_product_info(product_code, "VersionString", version, version_length)
-           
+
           if status != 0
             msg = "msi_get_product_info: product code '#{product_code}' returned unknown error #{status} when retrieving VersionString: "
             msg << Seth::ReservedNames::Win32::Error.format_message(status)

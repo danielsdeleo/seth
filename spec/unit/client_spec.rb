@@ -216,7 +216,7 @@ describe Seth::Client do
         #   Seth::REST object, this time with the client key it got from the
         #   previous step.
         Seth::REST.should_receive(:new).
-          with(Seth::Config[:seth_server_url], fqdn, Chef::Config[:client_key]).
+          with(Seth::Config[:seth_server_url], fqdn, seth::Config[:client_key]).
           exactly(1).
           and_return(http_node_load)
 
@@ -235,7 +235,7 @@ describe Seth::Client do
         # ---Client#sync_cookbooks -- downloads the list of cookbooks to sync
         #
         Seth::CookbookSynchronizer.any_instance.should_receive(:sync_cookbooks)
-        Seth::REST.should_receive(:new).with(Chef::Config[:seth_server_url]).and_return(http_cookbook_sync)
+        Seth::REST.should_receive(:new).with(seth::Config[:seth_server_url]).and_return(http_cookbook_sync)
         http_cookbook_sync.should_receive(:post).
           with("environments/_default/cookbook_versions", {:run_list => []}).
           and_return({})
@@ -256,7 +256,7 @@ describe Seth::Client do
         node.stub(:data_for_save).and_return(node.for_json)
 
         # --Client#save_updated_node
-        Seth::REST.should_receive(:new).with(Chef::Config[:seth_server_url]).and_return(http_node_save)
+        Seth::REST.should_receive(:new).with(seth::Config[:seth_server_url]).and_return(http_node_save)
         http_node_save.should_receive(:put_rest).with("nodes/#{fqdn}", node.for_json).and_return(true)
       end
 
@@ -272,7 +272,7 @@ describe Seth::Client do
 
       before do
         Seth::Config[:client_fork] = enable_fork
-        Seth::Config[:cache_path] = windows? ? 'C:\seth' : '/var/chef'
+        Seth::Config[:cache_path] = windows? ? 'C:\seth' : '/var/seth'
 
         stub_const("Seth::Client::STDOUT_FD", stdout)
         stub_const("Seth::Client::STDERR_FD", stderr)
@@ -347,7 +347,7 @@ describe Seth::Client do
             # ---Client#sync_cookbooks -- downloads the list of cookbooks to sync
             #
             Seth::CookbookSynchronizer.any_instance.should_receive(:sync_cookbooks)
-            Seth::REST.should_receive(:new).with(Chef::Config[:seth_server_url]).and_return(http_cookbook_sync)
+            Seth::REST.should_receive(:new).with(seth::Config[:seth_server_url]).and_return(http_cookbook_sync)
             http_cookbook_sync.should_receive(:post).
               with("environments/_default/cookbook_versions", {:run_list => ["override_recipe"]}).
               and_return({})
@@ -373,7 +373,7 @@ describe Seth::Client do
           # ---Client#sync_cookbooks -- downloads the list of cookbooks to sync
           #
           Seth::CookbookSynchronizer.any_instance.should_receive(:sync_cookbooks)
-          Seth::REST.should_receive(:new).with(Chef::Config[:seth_server_url]).and_return(http_cookbook_sync)
+          Seth::REST.should_receive(:new).with(seth::Config[:seth_server_url]).and_return(http_cookbook_sync)
           http_cookbook_sync.should_receive(:post).
             with("environments/_default/cookbook_versions", {:run_list => ["new_run_list_recipe"]}).
             and_return({})
@@ -576,7 +576,7 @@ describe Seth::Client do
       it "raises CookbookNotFound error" do
         expect do
           client.send(:assert_cookbook_path_not_empty, nil)
-        end.to raise_error(Seth::Exceptions::CookbookNotFound, 'None of the cookbook paths set in Chef::Config[:cookbook_path], ["/path/to/invalid/cookbook_path"], contain any cookbooks')
+        end.to raise_error(Seth::Exceptions::CookbookNotFound, 'None of the cookbook paths set in seth::Config[:cookbook_path], ["/path/to/invalid/cookbook_path"], contain any cookbooks')
       end
     end
   end

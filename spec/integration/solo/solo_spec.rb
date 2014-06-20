@@ -20,7 +20,7 @@ describe "seth-solo" do
 cookbook_path "#{path_to('cookbooks')}"
 file_cache_path "#{path_to('config/cache')}"
 EOM
-      result = shell_out("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' -l debug", :cwd => chef_dir)
+      result = shell_out("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' -l debug", :cwd => seth_dir)
       result.error!
       result.stdout.should include("ITWORKS")
     end
@@ -35,7 +35,7 @@ EOM
 {"run_list":["x::default"]}
 E
 
-      result = shell_out("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -j '#{path_to('config/node.json')}' -l debug", :cwd => chef_dir)
+      result = shell_out("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -j '#{path_to('config/node.json')}' -l debug", :cwd => seth_dir)
       result.error!
       result.stdout.should include("ITWORKS")
     end
@@ -54,8 +54,8 @@ E
 cookbook_path "#{path_to('cookbooks')}"
 file_cache_path "#{path_to('config/cache')}"
 EOM
-      result = shell_out("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' -l debug", :cwd => chef_dir)
-      result.exitstatus.should == 0 # For CHEF-5120 this becomes 1
+      result = shell_out("ruby bin/seth-solo -c \"#{path_to('config/solo.rb')}\" -o 'x::default' -l debug", :cwd => seth_dir)
+      result.exitstatus.should == 0 # For seth-5120 this becomes 1
       result.stdout.should include("WARN: MissingCookbookDependency")
     end
   end

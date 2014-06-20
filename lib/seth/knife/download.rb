@@ -1,14 +1,14 @@
-require 'seth/chef_fs/knife'
+require 'seth/seth_fs/knife'
 
 class Seth
   class Knife
-    class Download < Seth::ChefFS::Knife
+    class Download < Seth::sethFS::Knife
       banner "knife download PATTERNS"
 
       category "path-based"
 
       deps do
-        require 'seth/chef_fs/command_line'
+        require 'seth/seth_fs/command_line'
       end
 
       option :recurse,
@@ -55,7 +55,7 @@ class Seth
 
         error = false
         pattern_args.each do |pattern|
-          if Seth::ChefFS::FileSystem.copy_to(pattern, seth_fs, local_fs, config[:recurse] ? nil : 1, config, ui, proc { |entry| format_path(entry) })
+          if Seth::sethFS::FileSystem.copy_to(pattern, seth_fs, local_fs, config[:recurse] ? nil : 1, config, ui, proc { |entry| format_path(entry) })
             error = true
           end
         end

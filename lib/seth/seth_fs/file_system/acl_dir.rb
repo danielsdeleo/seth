@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_dir'
-require 'seth/chef_fs/file_system/acl_entry'
-require 'seth/chef_fs/file_system/operation_not_allowed_error'
+require 'seth/seth_fs/file_system/base_fs_dir'
+require 'seth/seth_fs/file_system/acl_entry'
+require 'seth/seth_fs/file_system/operation_not_allowed_error'
 
 class Seth
   module SethFS

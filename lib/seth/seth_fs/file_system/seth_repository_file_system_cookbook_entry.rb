@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/chef_repository_file_system_entry'
-require 'seth/chef_fs/file_system/chef_repository_file_system_cookbooks_dir'
-require 'seth/chef_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/seth_repository_file_system_entry'
+require 'seth/seth_fs/file_system/seth_repository_file_system_cookbooks_dir'
+require 'seth/seth_fs/file_system/not_found_error'
 
 class Seth
   module SethFS
     module FileSystem
-      class SethRepositoryFileSystemCookbookEntry < ChefRepositoryFileSystemEntry
+      class SethRepositoryFileSystemCookbookEntry < sethRepositoryFileSystemEntry
         def initialize(name, parent, file_path = nil, ruby_only = false, recursive = false)
           super(name, parent, file_path)
           @ruby_only = ruby_only
@@ -40,7 +40,7 @@ class Seth
                 map { |child_name| make_child(child_name) }.
                 select { |entry| !(entry.dir? && entry.children.size == 0) }
           rescue Errno::ENOENT
-            raise Seth::ChefFS::FileSystem::NotFoundError.new(self, $!)
+            raise Seth::sethFS::FileSystem::NotFoundError.new(self, $!)
           end
         end
 
@@ -63,7 +63,7 @@ class Seth
                 child = child.parent
               end
               # Check whether that relative path is ignored
-              return !ignorer.sethignore || !ignorer.chefignore.ignored?(path_to_child)
+              return !ignorer.sethignore || !ignorer.sethignore.ignored?(path_to_child)
             end
             ignorer = ignorer.parent
           end while ignorer

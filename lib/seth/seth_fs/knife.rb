@@ -21,14 +21,14 @@ require 'seth/knife'
 class Seth
   module SethFS
     class Knife < Seth::Knife
-      # Workaround for CHEF-3932
+      # Workaround for seth-3932
       def self.deps
         super do
           require 'seth/config'
-          require 'seth/chef_fs/parallelizer'
-          require 'seth/chef_fs/config'
-          require 'seth/chef_fs/file_pattern'
-          require 'seth/chef_fs/path_utils'
+          require 'seth/seth_fs/parallelizer'
+          require 'seth/seth_fs/config'
+          require 'seth/seth_fs/file_pattern'
+          require 'seth/seth_fs/path_utils'
           yield
         end
       end
@@ -49,7 +49,7 @@ class Seth
 
       option :seth_repo_path,
         :long => '--seth-repo-path PATH',
-        :description => 'Overrides the location of seth repo. Default is specified by chef_repo_path in the config'
+        :description => 'Overrides the location of seth repo. Default is specified by seth_repo_path in the config'
 
       option :concurrency,
         :long => '--concurrency THREADS',
@@ -62,23 +62,23 @@ class Seth
 
         # --seth-repo-path forcibly overrides all other paths
         if config[:seth_repo_path]
-          Seth::Config[:seth_repo_path] = config[:chef_repo_path]
+          Seth::Config[:seth_repo_path] = config[:seth_repo_path]
           %w(acl client cookbook container data_bag environment group node role user).each do |variable_name|
             Seth::Config.delete("#{variable_name}_path".to_sym)
           end
         end
 
-        @seth_fs_config = Seth::ChefFS::Config.new(Chef::Config, Dir.pwd, config)
+        @seth_fs_config = Seth::sethFS::Config.new(seth::Config, Dir.pwd, config)
 
-        Seth::ChefFS::Parallelizer.threads = (Chef::Config[:concurrency] || 10) - 1
+        Seth::sethFS::Parallelizer.threads = (seth::Config[:concurrency] || 10) - 1
       end
 
       def seth_fs
-        @seth_fs_config.chef_fs
+        @seth_fs_config.seth_fs
       end
 
       def create_seth_fs
-        @seth_fs_config.create_chef_fs
+        @seth_fs_config.create_seth_fs
       end
 
       def local_fs
@@ -100,12 +100,12 @@ class Seth
       def pattern_arg_from(arg)
         # TODO support absolute file paths and not just patterns?  Too much?
         # Could be super useful in a world with multiple repo paths
-        if !@seth_fs_config.base_path && !Seth::ChefFS::PathUtils.is_absolute?(arg)
+        if !@seth_fs_config.base_path && !Seth::sethFS::PathUtils.is_absolute?(arg)
           # Check if seth repo path is specified to give a better error message
           ui.error("Attempt to use relative path '#{arg}' when current directory is outside the repository path")
           exit(1)
         end
-        Seth::ChefFS::FilePattern.relative_to(@seth_fs_config.base_path, arg)
+        Seth::sethFS::FilePattern.relative_to(@seth_fs_config.base_path, arg)
       end
 
       def format_path(entry)
@@ -113,7 +113,7 @@ class Seth
       end
 
       def parallelize(inputs, options = {}, &block)
-        Seth::ChefFS::Parallelizer.parallelize(inputs, options, &block)
+        Seth::sethFS::Parallelizer.parallelize(inputs, options, &block)
       end
 
       def discover_repo_dir(dir)

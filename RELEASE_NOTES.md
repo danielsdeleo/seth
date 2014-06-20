@@ -8,7 +8,7 @@ Details about the thing that changed that needs to get included in the Release N
 -->
 # Seth Client Release Notes:
 
-#### CHEF-5223 OS X Service provider regression.
+#### seth-5223 OS X Service provider regression.
 
 This commit: https://github.com/opscode/seth/commit/024b1e3e4de523d3c1ebbb42883a2bef3f9f415c
 introduced a requirement that a service have a plist file for any
@@ -18,8 +18,8 @@ and disable actions.
 
 #### Signal Regression Fix
 
-CHEF-1761 introduced a regression for signal handling when not in daemon mode
-(see CHEF-5172). Seth will now, once again, exit immediately on SIGTERM if it
+seth-1761 introduced a regression for signal handling when not in daemon mode
+(see seth-5172). Seth will now, once again, exit immediately on SIGTERM if it
 is not in daemon mode, otherwise it will complete it's current run before
 existing.
 

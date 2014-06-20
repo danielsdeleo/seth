@@ -41,11 +41,11 @@ describe Seth::VersionConstraint do
     end
 
     it "should allow initialization with [] for back compatibility" do
-      Seth::VersionConstraint.new([]) == Chef::VersionConstraint.new
+      Seth::VersionConstraint.new([]) == seth::VersionConstraint.new
     end
 
     it "should allow initialization with ['1.2.3'] for back compatibility" do
-      Seth::VersionConstraint.new(["1.2"]) == Chef::VersionConstraint.new("1.2")
+      Seth::VersionConstraint.new(["1.2"]) == seth::VersionConstraint.new("1.2")
     end
 
   end
@@ -65,15 +65,15 @@ describe Seth::VersionConstraint do
   end
 
   it "should allow ops without space separator" do
-    Seth::VersionConstraint.new("=1.2.3").should eql(Chef::VersionConstraint.new("= 1.2.3"))
-    Seth::VersionConstraint.new(">1.2.3").should eql(Chef::VersionConstraint.new("> 1.2.3"))
-    Seth::VersionConstraint.new("<1.2.3").should eql(Chef::VersionConstraint.new("< 1.2.3"))
-    Seth::VersionConstraint.new(">=1.2.3").should eql(Chef::VersionConstraint.new(">= 1.2.3"))
-    Seth::VersionConstraint.new("<=1.2.3").should eql(Chef::VersionConstraint.new("<= 1.2.3"))
+    Seth::VersionConstraint.new("=1.2.3").should eql(seth::VersionConstraint.new("= 1.2.3"))
+    Seth::VersionConstraint.new(">1.2.3").should eql(seth::VersionConstraint.new("> 1.2.3"))
+    Seth::VersionConstraint.new("<1.2.3").should eql(seth::VersionConstraint.new("< 1.2.3"))
+    Seth::VersionConstraint.new(">=1.2.3").should eql(seth::VersionConstraint.new(">= 1.2.3"))
+    Seth::VersionConstraint.new("<=1.2.3").should eql(seth::VersionConstraint.new("<= 1.2.3"))
   end
 
   it "should allow ops with multiple spaces" do
-    Seth::VersionConstraint.new("=  1.2.3").should eql(Chef::VersionConstraint.new("= 1.2.3"))
+    Seth::VersionConstraint.new("=  1.2.3").should eql(seth::VersionConstraint.new("= 1.2.3"))
   end
 
   describe "include?" do

@@ -1,15 +1,15 @@
-require 'seth/chef_fs/knife'
+require 'seth/seth_fs/knife'
 
 class Seth
   class Knife
-    class Edit < Seth::ChefFS::Knife
+    class Edit < Seth::sethFS::Knife
       banner "knife edit [PATTERN1 ... PATTERNn]"
 
       category "path-based"
 
       deps do
-        require 'seth/chef_fs/file_system'
-        require 'seth/chef_fs/file_system/not_found_error'
+        require 'seth/seth_fs/file_system'
+        require 'seth/seth_fs/file_system/not_found_error'
       end
 
       option :local,
@@ -21,7 +21,7 @@ class Seth
         # Get the matches (recursively)
         error = false
         pattern_args.each do |pattern|
-          Seth::ChefFS::FileSystem.list(config[:local] ? local_fs : seth_fs, pattern).each do |result|
+          Seth::sethFS::FileSystem.list(config[:local] ? local_fs : seth_fs, pattern).each do |result|
             if result.dir?
               ui.error "#{format_path(result)}: is a directory" if pattern.exact_path
               error = true
@@ -34,10 +34,10 @@ class Seth
                 else
                   output "#{format_path(result)} unchanged!"
                 end
-              rescue Seth::ChefFS::FileSystem::OperationNotAllowedError => e
+              rescue Seth::sethFS::FileSystem::OperationNotAllowedError => e
                 ui.error "#{format_path(e.entry)}: #{e.reason}."
                 error = true
-              rescue Seth::ChefFS::FileSystem::NotFoundError => e
+              rescue Seth::sethFS::FileSystem::NotFoundError => e
                 ui.error "#{format_path(e.entry)}: No such file or directory"
                 error = true
               end

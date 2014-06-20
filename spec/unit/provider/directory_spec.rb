@@ -182,7 +182,7 @@ describe Seth::Provider::Directory do
     cstats.stub(:mode).and_return(0755)
     # File.stat is called in:
     # - Seth::Provider::File.load_current_resource_attrs
-    # - Seth::ScanAccessControl via Chef::Provider::File.setup_acl
+    # - Seth::ScanAccessControl via seth::Provider::File.setup_acl
     File.stub(:stat).and_return(cstats)
   end
 end

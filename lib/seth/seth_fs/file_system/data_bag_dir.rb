@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/rest_list_dir'
-require 'seth/chef_fs/file_system/not_found_error'
-require 'seth/chef_fs/file_system/must_delete_recursively_error'
-require 'seth/chef_fs/data_handler/data_bag_item_data_handler'
+require 'seth/seth_fs/file_system/rest_list_dir'
+require 'seth/seth_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/must_delete_recursively_error'
+require 'seth/seth_fs/data_handler/data_bag_item_data_handler'
 
 class Seth
   module SethFS
     module FileSystem
       class DataBagDir < RestListDir
         def initialize(name, parent, exists = nil)
-          super(name, parent, nil, Seth::ChefFS::DataHandler::DataBagItemDataHandler.new)
+          super(name, parent, nil, Seth::sethFS::DataHandler::DataBagItemDataHandler.new)
           @exists = nil
         end
 
@@ -36,7 +36,7 @@ class Seth
 
         def read
           # This will only be called if dir? is false, which means exists? is false.
-          raise Seth::ChefFS::FileSystem::NotFoundError.new(self)
+          raise Seth::sethFS::FileSystem::NotFoundError.new(self)
         end
 
         def exists?
@@ -54,12 +54,12 @@ class Seth
           begin
             rest.delete(api_path)
           rescue Timeout::Error => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
-              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, e)
+              raise Seth::sethFS::FileSystem::NotFoundError.new(self, e)
             else
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "HTTP error deleting: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:delete, self, e), "HTTP error deleting: #{e}"
             end
           end
         end

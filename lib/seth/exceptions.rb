@@ -19,7 +19,7 @@
 
 class Seth
   # == Seth::Exceptions
-  # Seth's custom exceptions are all contained within the Chef::Exceptions
+  # Seth's custom exceptions are all contained within the seth::Exceptions
   # namespace.
   class Exceptions
 
@@ -28,7 +28,7 @@ class Seth
 
     def self.const_missing(const_name)
       if const_name == :ShellCommandFailed
-        Seth::Log.warn("Chef::Exceptions::ShellCommandFailed is deprecated, use Mixlib::ShellOut::ShellCommandFailed")
+        Seth::Log.warn("seth::Exceptions::ShellCommandFailed is deprecated, use Mixlib::ShellOut::ShellCommandFailed")
         called_from = caller[0..3].inject("Called from:\n") {|msg, trace_line| msg << "  #{trace_line}\n" }
         Seth::Log.warn(called_from)
         Mixlib::ShellOut::ShellCommandFailed
@@ -77,7 +77,7 @@ class Seth
     class CookbookNotFoundInRepo < ArgumentError; end
     class RecipeNotFound < ArgumentError; end
     class AttributeNotFound < RuntimeError; end
-    class MissingCookbookDependency < StandardError; end # CHEF-5120
+    class MissingCookbookDependency < StandardError; end # seth-5120
     class InvalidCommandOption < RuntimeError; end
     class CommandTimeout < RuntimeError; end
     class RequestedUIDUnavailable < RuntimeError; end

@@ -31,15 +31,15 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-Every request made by the seth\-client to the Seth server must be an authenticated request using the Chef Server API and a private key. When the chef\-client makes a request to the Chef server, the chef\-client authenticates each request using a private key located in \fB/etc/chef/client.pem\fP\&.
+Every request made by the seth\-client to the Seth server must be an authenticated request using the seth Server API and a private key. When the seth\-client makes a request to the seth server, the seth\-client authenticates each request using a private key located in \fB/etc/seth/client.pem\fP\&.
 .sp
-However, during the first seth\-client run, this private key does not exist. Instead, the chef\-client will attempt to use the private key assigned to the chef\-validator, located in \fB/etc/chef/validation.pem\fP\&. (If, for any reason, the chef\-validator is unable to make an authenticated request to the Seth server, the initial chef\-client run will fail.)
+However, during the first seth\-client run, this private key does not exist. Instead, the seth\-client will attempt to use the private key assigned to the seth\-validator, located in \fB/etc/seth/validation.pem\fP\&. (If, for any reason, the seth\-validator is unable to make an authenticated request to the Seth server, the initial seth\-client run will fail.)
 .sp
-During the initial seth\-client run, the chef\-client will register with the Seth server using the private key assigned to the chef\-validator, after which the chef\-client will obtain a \fBclient.pem\fP private key for all future authentication requests to the Chef server\&.
+During the initial seth\-client run, the seth\-client will register with the Seth server using the private key assigned to the seth\-validator, after which the seth\-client will obtain a \fBclient.pem\fP private key for all future authentication requests to the seth server\&.
 .sp
-After the initial seth\-client run has completed successfully, the chef\-validator is no longer required and may be deleted from the node. Use the \fBdelete_validation\fP recipe found in the \fBchef\-client\fP cookbook (\fI\%https://github.com/opscode\-cookbooks/chef\-client\fP) to remove the chef\-validator\&.
+After the initial seth\-client run has completed successfully, the seth\-validator is no longer required and may be deleted from the node. Use the \fBdelete_validation\fP recipe found in the \fBseth\-client\fP cookbook (\fI\%https://github.com/opscode\-cookbooks/seth\-client\fP) to remove the seth\-validator\&.
 .sp
-The \fBknife client\fP subcommand is used to manage an API client list and their associated RSA public key\-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the Chef Server API, such as the seth\-client and Knife\&.
+The \fBknife client\fP subcommand is used to manage an API client list and their associated RSA public key\-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the seth Server API, such as the seth\-client and Knife\&.
 .SH COMMON OPTIONS
 .sp
 The following options may be used with any of the arguments available to the \fBknife client\fP subcommand:
@@ -94,7 +94,7 @@ The version of the seth\-client\&.
 Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
-Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef\-repo\&.
+Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
 .UNINDENT
 .SH BULK DELETE
 .sp
@@ -122,7 +122,7 @@ This command does not have any specific options.
 The \fBcreate\fP argument is used to create a new API client\&. This process will generate an RSA key pair for the named API client\&. The public key will be stored on the Seth server and the private key will be displayed on \fBSTDOUT\fP or written to a named file.
 .INDENT 0.0
 .IP \(bu 2
-For the seth\-client, the private key should be copied to the system as \fB/etc/chef/client.pem\fP\&.
+For the seth\-client, the private key should be copied to the system as \fB/etc/seth/client.pem\fP\&.
 .IP \(bu 2
 For Knife, the private key is typically copied to \fB~/.seth/client_name.pem\fP and referenced in the knife.rb configuration file.
 .UNINDENT
@@ -147,7 +147,7 @@ This argument has the following options:
 .INDENT 0.0
 .TP
 .B \fB\-a\fP, \fB\-\-admin\fP
-Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the Chef Server API as an administrator. This option only works when used with the open source Chef server and will have no effect when used with Enterprise Chef\&.
+Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the seth Server API as an administrator. This option only works when used with the open source seth server and will have no effect when used with Enterprise seth\&.
 .TP
 .B \fB\-f FILE_NAME\fP, \fB\-\-file FILE_NAME\fP
 Use to save a private key to the specified file name.

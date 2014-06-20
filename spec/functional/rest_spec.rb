@@ -24,7 +24,7 @@ describe Seth::REST do
   include SethHTTPShared
 
   let(:http_client) { described_class.new(source) }
-  let(:http_client_disable_gzip) { described_class.new(source, Seth::Config[:node_name], Chef::Config[:client_key], { :disable_gzip => true } ) }
+  let(:http_client_disable_gzip) { described_class.new(source, Seth::Config[:node_name], seth::Config[:client_key], { :disable_gzip => true } ) }
 
   shared_examples_for "downloads requests correctly" do
     it "successfully downloads a streaming request" do
@@ -60,7 +60,7 @@ describe Seth::REST do
     end
   end
 
-  # see CHEF-5100
+  # see seth-5100
   shared_examples_for "a 403 after a successful request when reusing the request object" do
     it "fails with a Net::HTTPServerException on a streaming download" do
       tempfile = http_client.streaming_request(source, {})
@@ -79,7 +79,7 @@ describe Seth::REST do
 
   before do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+    Seth::Config[:client_key] = seth_SPEC_DATA + "/ssl/private_key.pem"
   end
 
   before(:all) do

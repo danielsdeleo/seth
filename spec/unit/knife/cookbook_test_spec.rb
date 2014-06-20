@@ -25,7 +25,7 @@ describe Seth::Knife::CookbookTest do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
     @knife = Seth::Knife::CookbookTest.new
-    @knife.config[:cookbook_path] = File.join(CHEF_SPEC_DATA,'cookbooks')
+    @knife.config[:cookbook_path] = File.join(seth_SPEC_DATA,'cookbooks')
     @knife.cookbook_loader.stub(:cookbook_exists?).and_return(true)
     @cookbooks = []
     %w{tats central_market jimmy_johns pho}.each do |cookbook_name|

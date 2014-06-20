@@ -29,7 +29,7 @@ require 'seth/mixin/deprecation'
 class Seth
   module Mixin
     deprecate_constant(:RecipeDefinitionDSLCore, Seth::DSL::Recipe, <<-EOM)
-Seth::Mixin::RecipeDefinitionDSLCore is deprecated. Use Chef::DSL::Recipe instead.
+Seth::Mixin::RecipeDefinitionDSLCore is deprecated. Use seth::DSL::Recipe instead.
 EOM
   end
 end

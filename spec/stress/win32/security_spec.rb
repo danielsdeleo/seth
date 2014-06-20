@@ -27,11 +27,11 @@ end
 describe 'Seth::ReservedNames::Win32::Security', :windows_only do
 
   def monkeyfoo
-    File.join(CHEF_SPEC_DATA, "monkeyfoo").gsub("/", "\\")
+    File.join(seth_SPEC_DATA, "monkeyfoo").gsub("/", "\\")
   end
 
   before :all do
-    @test_tempdir = File.join(Dir::tmpdir, "sethtests", "chef_win32_security")
+    @test_tempdir = File.join(Dir::tmpdir, "sethtests", "seth_win32_security")
     FileUtils.mkdir_p(@test_tempdir)
     @monkeyfoo = File.join(@test_tempdir, "monkeyfoo.txt")
   end
@@ -59,8 +59,8 @@ describe 'Seth::ReservedNames::Win32::Security', :windows_only do
     securable_object = Security::SecurableObject.new(@monkeyfoo)
     lambda {
       securable_object.dacl = Seth::ReservedNames::Win32::Security::ACL.create([
-        Seth::ReservedNames::Win32::Security::ACE.access_allowed(Chef::ReservedNames::Win32::Security::SID.Everyone, Chef::ReservedNames::Win32::API::Security::GENERIC_READ),
-        Seth::ReservedNames::Win32::Security::ACE.access_denied(Chef::ReservedNames::Win32::Security::SID.from_account("Users"), Chef::ReservedNames::Win32::API::Security::GENERIC_ALL)
+        Seth::ReservedNames::Win32::Security::ACE.access_allowed(seth::ReservedNames::Win32::Security::SID.Everyone, seth::ReservedNames::Win32::API::Security::GENERIC_READ),
+        Seth::ReservedNames::Win32::Security::ACE.access_denied(seth::ReservedNames::Win32::Security::SID.from_account("Users"), seth::ReservedNames::Win32::API::Security::GENERIC_ALL)
       ])
       GC.start
     }.should_not leak_memory(:warmup => 50, :iterations => 100)

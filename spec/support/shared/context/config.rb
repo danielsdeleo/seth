@@ -13,7 +13,7 @@ require 'spec_helper'
 # Basic config. Nothing fancy.
 shared_context "default config options" do
   before do
-    Seth::Config[:cache_path] = windows? ? 'C:\seth' : '/var/chef'
+    Seth::Config[:cache_path] = windows? ? 'C:\seth' : '/var/seth'
   end
 
   # Don't need to have an after block to reset the config...

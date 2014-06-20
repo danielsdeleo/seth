@@ -55,11 +55,11 @@ class Seth
     end
 
     def seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     def self.seth_server_rest
-      Seth::REST.new(Chef::Config[:seth_server_url])
+      Seth::REST.new(seth::Config[:seth_server_url])
     end
 
     def raw_data
@@ -146,7 +146,7 @@ class Seth
         bag = Seth::DataBag.load(data_bag)
         item = bag[name]
       else
-        item = Seth::REST.new(Chef::Config[:seth_server_url]).get_rest("data/#{data_bag}/#{name}")
+        item = Seth::REST.new(seth::Config[:seth_server_url]).get_rest("data/#{data_bag}/#{name}")
       end
 
       if item.kind_of?(DataBagItem)

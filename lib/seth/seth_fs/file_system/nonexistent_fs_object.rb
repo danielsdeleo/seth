@@ -16,8 +16,8 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_object'
-require 'seth/chef_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/base_fs_object'
+require 'seth/seth_fs/file_system/not_found_error'
 
 class Seth
   module SethFS

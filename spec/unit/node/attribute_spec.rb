@@ -237,7 +237,7 @@ describe Seth::Node::Attribute do
   describe "when printing attribute components" do
 
     it "does not cause a type error" do
-      # See CHEF-3799; IO#puts implicitly calls #to_ary on its argument. This
+      # See seth-3799; IO#puts implicitly calls #to_ary on its argument. This
       # is expected to raise a NoMethodError or return an Array. `to_ary` is
       # the "strict" conversion method that should only be implemented by
       # things that are truly Array-like, so NoMethodError is the right choice.
@@ -1138,7 +1138,7 @@ describe Seth::Node::Attribute do
 
   describe "when not mutated" do
 
-    it "does not reset the cache when dup'd [CHEF-3680]" do
+    it "does not reset the cache when dup'd [seth-3680]" do
       @attributes.default[:foo][:bar] = "set on original"
       subtree = @attributes[:foo]
       @attributes.default[:foo].dup[:bar] = "set on dup"

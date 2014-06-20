@@ -9,7 +9,7 @@ class Seth
 
       option :seth_repo_path,
         :long => '--seth-repo-path PATH',
-        :description => 'Overrides the location of seth repo. Default is specified by chef_repo_path in the config'
+        :description => 'Overrides the location of seth repo. Default is specified by seth_repo_path in the config'
 
       option :seth_zero_host,
         :long => '--seth-zero-host IP',
@@ -22,7 +22,7 @@ class Seth
 
         # --seth-repo-path forcibly overrides all other paths
         if config[:seth_repo_path]
-          Seth::Config.seth_repo_path = config[:chef_repo_path]
+          Seth::Config.seth_repo_path = config[:seth_repo_path]
           %w(acl client cookbook container data_bag environment group node role user).each do |variable_name|
             Seth::Config.delete("#{variable_name}_path".to_sym)
           end

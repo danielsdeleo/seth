@@ -63,8 +63,8 @@ describe Shell do
     def run_seth_shell_with(options)
       case ohai[:platform]
       when "aix"
-        config = File.expand_path("shef-config.rb", CHEF_SPEC_DATA)
-        path_to_seth_shell = File.expand_path("../../../bin/chef-shell", __FILE__)
+        config = File.expand_path("shef-config.rb", seth_SPEC_DATA)
+        path_to_seth_shell = File.expand_path("../../../bin/seth-shell", __FILE__)
         output = ''
         status = popen4("#{path_to_seth_shell} -c #{config} #{options}", :waitlast => true) do |pid, stdin, stdout, stderr|
           read_until(stdout, "seth >")
@@ -81,8 +81,8 @@ describe Shell do
         # so hide the require here
         begin
           require 'pty'
-          config = File.expand_path("shef-config.rb", CHEF_SPEC_DATA)
-          path_to_seth_shell = File.expand_path("../../../bin/chef-shell", __FILE__)
+          config = File.expand_path("shef-config.rb", seth_SPEC_DATA)
+          path_to_seth_shell = File.expand_path("../../../bin/seth-shell", __FILE__)
           reader, writer, pid = PTY.spawn("#{path_to_seth_shell} -c #{config} #{options}")
           read_until(reader, "seth >")
           yield reader, writer if block_given?

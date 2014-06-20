@@ -122,7 +122,7 @@ class Seth
           when false
             " --no-gpg-checks"
           when nil
-            Seth::Log.warn("Chef::Config[:zypper_check_gpg] was not set. " +
+            Seth::Log.warn("seth::Config[:zypper_check_gpg] was not set. " +
               "All packages will be installed without gpg signature checks. " +
               "This is a security hazard.")
             " --no-gpg-checks"

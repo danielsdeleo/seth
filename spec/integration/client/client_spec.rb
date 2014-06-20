@@ -7,7 +7,7 @@ describe "seth-client" do
 
   let(:seth_dir) { File.join(File.dirname(__FILE__), "..", "..", "..", "bin") }
 
-  # Invoke `seth-client` as `ruby PATH/TO/chef-client`. This ensures the
+  # Invoke `seth-client` as `ruby PATH/TO/seth-client`. This ensures the
   # following constraints are satisfied:
   # * Windows: windows can only run batch scripts as bare executables. Rubygems
   # creates batch wrappers for installed gems, but we don't have batch wrappers
@@ -15,8 +15,8 @@ describe "seth-client" do
   # * Other `seth-client` in PATH: A common case is running the tests on a
   # machine that has omnibus seth installed. In that case we need to ensure
   # we're running `seth-client` from the source tree and not the external one.
-  # cf. CHEF-4914
-  let(:seth_client) { "ruby #{chef_dir}/chef-client" }
+  # cf. seth-4914
+  let(:seth_client) { "ruby #{seth_dir}/seth-client" }
 
   when_the_repository "has a cookbook with a no-op recipe" do
     file 'cookbooks/x/recipes/default.rb', ''
@@ -27,7 +27,7 @@ local_mode true
 cookbook_path "#{path_to('cookbooks')}"
 EOM
 
-      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default'", :cwd => chef_dir)
+      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default'", :cwd => seth_dir)
       result.error!
     end
 
@@ -57,7 +57,7 @@ EOM
         result.stdout.should include("xxx")
       end
 
-      it 'fails to load .seth/knife.rb when -z is specified and --config-file-jail does not include the .chef/knife.rb' do
+      it 'fails to load .seth/knife.rb when -z is specified and --config-file-jail does not include the .seth/knife.rb' do
         result = shell_out("#{seth_client} -z -o 'x::default' --config-file-jail \"#{path_to('roles')}\"", :cwd => path_to(''))
         result.error!
       end
@@ -69,7 +69,7 @@ local_mode true
 cookbook_path "#{path_to('cookbooks')}"
 EOM
 
-      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default'", :cwd => chef_dir)
+      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default'", :cwd => seth_dir)
       result.error!
     end
 
@@ -111,7 +111,7 @@ client_key #{path_to('mykey.pem').inspect}
 cookbook_path #{path_to('cookbooks').inspect}
 EOM
 
-        result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default'", :cwd => chef_dir)
+        result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default'", :cwd => seth_dir)
         result.error!
       end
 
@@ -134,7 +134,7 @@ file #{path_to('tempfile2.txt').inspect} do
 end
 EOM
 
-        result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" #{path_to('arbitrary.rb')} #{path_to('arbitrary2.rb')}", :cwd => chef_dir)
+        result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" #{path_to('arbitrary.rb')} #{path_to('arbitrary2.rb')}", :cwd => seth_dir)
         result.error!
 
         IO.read(path_to('tempfile.txt')).should == '1'
@@ -192,7 +192,7 @@ seth_server_url 'http://omg.com/blah'
 cookbook_path "#{path_to('cookbooks')}"
 EOM
 
-      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default' -z", :cwd => chef_dir)
+      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default' -z", :cwd => seth_dir)
       result.error!
     end
 
@@ -202,7 +202,7 @@ seth_server_url 'http://omg.com/blah'
 cookbook_path "#{path_to('cookbooks')}"
 EOM
 
-      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default' --local-mode", :cwd => chef_dir)
+      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default' --local-mode", :cwd => seth_dir)
       result.error!
     end
 
@@ -212,7 +212,7 @@ seth_server_url 'http://omg.com/blah'
 cookbook_path "#{path_to('cookbooks')}"
 EOM
 
-      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default' --local-mode", :cwd => chef_dir)
+      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default' --local-mode", :cwd => seth_dir)
       result.stdout.should_not include("SSL validation of HTTPS requests is disabled.")
       result.error!
     end
@@ -223,7 +223,7 @@ seth_server_url 'http://omg.com/blah'
 cookbook_path "#{path_to('cookbooks')}"
 EOM
 
-      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default' -z", :cwd => chef_dir)
+      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -o 'x::default' -z", :cwd => seth_dir)
       result.error!
     end
 
@@ -233,7 +233,7 @@ seth_server_url 'http://omg.com/blah'
 cookbook_path "#{path_to('cookbooks')}"
 EOM
 
-      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -r 'x::default' -z", :cwd => chef_dir)
+      result = shell_out("#{seth_client} -c \"#{path_to('config/client.rb')}\" -r 'x::default' -z", :cwd => seth_dir)
       result.stdout.should_not include("Overridden Run List")
       result.stdout.should include("Run List is [recipe[x::default]]")
       #puts result.stdout

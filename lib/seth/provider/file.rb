@@ -206,7 +206,7 @@ class Seth
         elsif file_class.symlink?(@new_resource.path) && @new_resource.manage_symlink_source.nil?
           Seth::Log.warn("File #{path} managed by #{@new_resource} is really a symlink. Managing the source file instead.")
           Seth::Log.warn("Disable this warning by setting `manage_symlink_source true` on the resource")
-          Seth::Log.warn("In a future Chef release, 'manage_symlink_source' will not be enabled by default")
+          Seth::Log.warn("In a future seth release, 'manage_symlink_source' will not be enabled by default")
           verify_symlink_sanity(path)
         elsif @new_resource.force_unlink
           [nil, nil, nil]
@@ -419,7 +419,7 @@ class Seth
       def load_resource_attributes_from_file(resource)
 
         if Seth::Platform.windows?
-          # This is a work around for CHEF-3554.
+          # This is a work around for seth-3554.
           # OC-6534: is tracking the real fix for this workaround.
           # Add support for Windows equivalent, or implicit resource
           # reporting won't work for Windows.

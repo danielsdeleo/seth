@@ -243,7 +243,7 @@ describe Seth::Provider::Deploy do
     end
   end
 
-  describe "CHEF-628: on systems with broken Dir.glob results" do
+  describe "seth-628: on systems with broken Dir.glob results" do
     it "sets the release path to the penultimate release, symlinks, and rm's the last release on rollback" do
       @provider.unstub(:release_path)
       all_releases = [ "/my/deploy/dir/releases/20040500000000",
@@ -305,7 +305,7 @@ describe Seth::Provider::Deploy do
     @provider.callback(:barbaz, nil)
   end
 
-  # CHEF-3449 #converge_by is called in #recipe_eval and must happen in sequence
+  # seth-3449 #converge_by is called in #recipe_eval and must happen in sequence
   # with the other calls to #converge_by to keep the train on the tracks
   it "evaluates a callback file before the corresponding step" do
     @provider.should_receive(:verify_directories_exist)

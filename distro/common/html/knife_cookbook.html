@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>knife cookbook &mdash; seth-client Man Pages</title>
-    
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,13 +33,13 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="knife-cookbook">
 <h1>knife cookbook<a class="headerlink" href="#knife-cookbook" title="Permalink to this headline">¶</a></h1>
 <p>A cookbook is the fundamental unit of configuration and policy distribution. Each cookbook defines a scenario, such as everything needed to install and configure MySQL, and then it contains all of the components that are required to support that scenario, including:</p>
@@ -74,7 +74,7 @@
 <p>This argument has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">-p</span></tt>, <tt class="docutils literal"><span class="pre">--purge</span></tt></dt>
-<dd>Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server. This action should be used carefully because only one copy of any single file is stored on the Chef server. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.</dd>
+<dd>Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server. This action should be used carefully because only one copy of any single file is stored on the seth server. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.</dd>
 </dl>
 </div>
 <div class="section" id="examples">
@@ -164,7 +164,7 @@
 <dt><tt class="docutils literal"><span class="pre">COOKBOOK_VERSION</span></tt></dt>
 <dd>The version of a cookbook to be deleted. If a cookbook has only one version, this option does not need to be specified. If a cookbook has more than one version and this option is not specified, Knife will prompt for a version.</dd>
 <dt><tt class="docutils literal"><span class="pre">-p</span></tt>, <tt class="docutils literal"><span class="pre">--purge</span></tt></dt>
-<dd>Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server. This action should be used carefully because only one copy of any single file is stored on the Chef server. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.</dd>
+<dd>Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server. This action should be used carefully because only one copy of any single file is stored on the seth server. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.</dd>
 </dl>
 </div>
 <div class="section" id="id6">
@@ -410,10 +410,10 @@ url:          https://someurlhere.com
 </div>
 <div class="section" id="upload">
 <h2>upload<a class="headerlink" href="#upload" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">upload</span></tt> argument is used to upload one or more cookbooks (and any files that are associated with those cookbooks) from a local repository to the Seth server. Only files that do not already exist on the Chef server will be uploaded.</p>
+<p>The <tt class="docutils literal"><span class="pre">upload</span></tt> argument is used to upload one or more cookbooks (and any files that are associated with those cookbooks) from a local repository to the Seth server. Only files that do not already exist on the seth server will be uploaded.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Use a .sethignore file to prevent the upload of specific files and file types, such as temporary files or files placed in folders by version control systems. The .chefignore file must be located in the root of the cookbook repository and must use rules similar to filename globbing (as defined by the Ruby <tt class="docutils literal"><span class="pre">File.fnmatch</span></tt> syntax).</p>
+<p class="last">Use a .sethignore file to prevent the upload of specific files and file types, such as temporary files or files placed in folders by version control systems. The .sethignore file must be located in the root of the cookbook repository and must use rules similar to filename globbing (as defined by the Ruby <tt class="docutils literal"><span class="pre">File.fnmatch</span></tt> syntax).</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -477,7 +477,7 @@ ERROR: Version 0.1.6 of cookbook redis is frozen. Use --force to override.
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

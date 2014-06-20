@@ -16,7 +16,7 @@
 # limitations under the License.
 
 class Seth
-  CHEF_ROOT = File.dirname(File.expand_path(File.dirname(__FILE__)))
+  seth_ROOT = File.dirname(File.expand_path(File.dirname(__FILE__)))
   VERSION = '11.14.0.alpha.5'
 end
 

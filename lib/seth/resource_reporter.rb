@@ -107,7 +107,7 @@ class Seth
     PROTOCOL_VERSION = '0.1.0'
 
     def initialize(rest_client)
-      if Seth::Config[:enable_reporting] && !Chef::Config[:why_run]
+      if Seth::Config[:enable_reporting] && !seth::Config[:why_run]
         @reporting_enabled = true
       else
         @reporting_enabled = false
@@ -238,8 +238,8 @@ class Seth
           @rest_client.raw_http_request(:POST, reporting_url, headers({'Content-Encoding' => 'gzip'}), compressed_data)
         rescue Net::HTTPServerException => e
           if e.response.code.to_s == "400"
-            Seth::FileCache.store("failed-reporting-data.json", Chef::JSONCompat.to_json_pretty(run_data), 0640)
-            Seth::Log.error("Failed to post reporting data to server (HTTP 400), saving to #{Chef::FileCache.load("failed-reporting-data.json", false)}")
+            Seth::FileCache.store("failed-reporting-data.json", seth::JSONCompat.to_json_pretty(run_data), 0640)
+            Seth::Log.error("Failed to post reporting data to server (HTTP 400), saving to #{seth::FileCache.load("failed-reporting-data.json", false)}")
           else
             Seth::Log.error("Failed to post reporting data to server (HTTP #{e.response.code.to_s})")
           end

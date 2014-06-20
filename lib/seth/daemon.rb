@@ -52,7 +52,7 @@ class Seth
             Seth::Application.fatal!("There is no fork: #{e.message}")
           end
         else
-          Seth::Application.fatal!("Chef is already running pid #{pid_from_file}")
+          Seth::Application.fatal!("seth is already running pid #{pid_from_file}")
         end
       end
 
@@ -82,11 +82,11 @@ class Seth
       def change_privilege
         Dir.chdir("/")
 
-        if Seth::Config[:user] and Chef::Config[:group]
-          Seth::Log.info("About to change privilege to #{Chef::Config[:user]}:#{Chef::Config[:group]}")
-          _change_privilege(Seth::Config[:user], Chef::Config[:group])
+        if Seth::Config[:user] and seth::Config[:group]
+          Seth::Log.info("About to change privilege to #{seth::Config[:user]}:#{seth::Config[:group]}")
+          _change_privilege(Seth::Config[:user], seth::Config[:group])
         elsif Seth::Config[:user]
-          Seth::Log.info("About to change privilege to #{Chef::Config[:user]}")
+          Seth::Log.info("About to change privilege to #{seth::Config[:user]}")
           _change_privilege(Seth::Config[:user])
         end
       end

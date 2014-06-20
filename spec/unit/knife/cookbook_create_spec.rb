@@ -31,7 +31,7 @@ describe Seth::Knife::CookbookCreate do
 
   describe "run" do
 
-    # Fixes CHEF-2579
+    # Fixes seth-2579
     it "should expand the path of the cookbook directory" do
       File.should_receive(:expand_path).with("~/tmp/monkeypants")
       @knife.config = {:cookbook_path => "~/tmp/monkeypants"}

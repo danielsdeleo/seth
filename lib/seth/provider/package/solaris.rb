@@ -107,7 +107,7 @@ class Seth
         def install_package(name, version)
           Seth::Log.debug("#{@new_resource} package install options: #{@new_resource.options}")
           if @new_resource.options.nil?
-            if ::File.directory?(@new_resource.source) # CHEF-4469
+            if ::File.directory?(@new_resource.source) # seth-4469
               command = "pkgadd -n -d #{@new_resource.source} #{@new_resource.package_name}"
             else
               command = "pkgadd -n -d #{@new_resource.source} all"
@@ -117,7 +117,7 @@ class Seth
                   )
             Seth::Log.debug("#{@new_resource} installed version #{@new_resource.version} from: #{@new_resource.source}")
           else
-            if ::File.directory?(@new_resource.source) # CHEF-4469
+            if ::File.directory?(@new_resource.source) # seth-4469
               command = "pkgadd -n#{expand_options(@new_resource.options)} -d #{@new_resource.source} #{@new_resource.package_name}"
             else
               command = "pkgadd -n#{expand_options(@new_resource.options)} -d #{@new_resource.source} all"

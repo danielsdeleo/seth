@@ -27,7 +27,7 @@ class Seth
       end
 
       def make_request(http_verb, to_url, user_id, secret_key_filename, params = {}, headers = {})
-        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader instead.')
+        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader class is deprecated. It will be removed in seth 12. Please use CookbookSiteStreamingUploader instead.')
         boundary = '----RubyMultipartClient' + rand(1000000).to_s + 'ZZZZZ'
         parts = []
         content_file = nil
@@ -125,7 +125,7 @@ class Seth
 
     class StreamPart
       def initialize(stream, size)
-        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader::StreamPart class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader::StreamPart instead.')
+        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader::StreamPart class is deprecated. It will be removed in seth 12. Please use CookbookSiteStreamingUploader::StreamPart instead.')
         @stream, @size = stream, size
       end
 
@@ -141,7 +141,7 @@ class Seth
 
     class StringPart
       def initialize(str)
-        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader::StringPart class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader::StringPart instead.')
+        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader::StringPart class is deprecated. It will be removed in seth 12. Please use CookbookSiteStreamingUploader::StringPart instead.')
         @str = str
       end
 
@@ -157,7 +157,7 @@ class Seth
 
     class MultipartStream
       def initialize(parts)
-        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader::MultipartStream class is deprecated. It will be removed in Chef 12. Please use CookbookSiteStreamingUploader::MultipartStream instead.')
+        Seth::Log.warn('[DEPRECATED] StreamingCookbookUploader::MultipartStream class is deprecated. It will be removed in seth 12. Please use CookbookSiteStreamingUploader::MultipartStream instead.')
         @parts = parts
         @part_no = 0
         @part_offset = 0

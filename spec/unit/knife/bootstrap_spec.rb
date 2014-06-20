@@ -27,7 +27,7 @@ describe Seth::Knife::Bootstrap do
     @knife = Seth::Knife::Bootstrap.new
     # Merge default settings in.
     @knife.merge_configs
-    @knife.config[:template_file] = File.expand_path(File.join(CHEF_SPEC_DATA, "bootstrap", "test.erb"))
+    @knife.config[:template_file] = File.expand_path(File.join(seth_SPEC_DATA, "bootstrap", "test.erb"))
     @stdout = StringIO.new
     @knife.ui.stub(:stdout).and_return(@stdout)
     @stderr = StringIO.new
@@ -63,7 +63,7 @@ describe Seth::Knife::Bootstrap do
 
   it "should load the specified template from a Ruby gem" do
     @knife.config[:template_file] = false
-    Gem.stub(:find_files).and_return(["/Users/schisamo/.rvm/gems/ruby-1.9.2-p180@seth-0.10/gems/knife-windows-0.5.4/lib/chef/knife/bootstrap/fake-bootstrap-template.erb"])
+    Gem.stub(:find_files).and_return(["/Users/schisamo/.rvm/gems/ruby-1.9.2-p180@seth-0.10/gems/knife-windows-0.5.4/lib/seth/knife/bootstrap/fake-bootstrap-template.erb"])
     File.stub(:exists?).and_return(true)
     IO.stub(:read).and_return('random content')
     @knife.config[:distro] = 'fake-bootstrap-template'
@@ -100,7 +100,7 @@ describe Seth::Knife::Bootstrap do
   end
 
   it "should create a hint file when told to" do
-    @knife.config[:template_file] = File.expand_path(File.join(CHEF_SPEC_DATA, "bootstrap", "test-hints.erb"))
+    @knife.config[:template_file] = File.expand_path(File.join(seth_SPEC_DATA, "bootstrap", "test-hints.erb"))
     @knife.instance_variable_set("@template_file", @knife.config[:template_file])
     template_string = @knife.read_template
     @knife.parse_options(["--hint", "openstack"])
@@ -109,7 +109,7 @@ describe Seth::Knife::Bootstrap do
 
   it "should populate a hint file with JSON when given a file to read" do
     @knife.stub(:find_template).and_return(true)
-    @knife.config[:template_file] = File.expand_path(File.join(CHEF_SPEC_DATA, "bootstrap", "test-hints.erb"))
+    @knife.config[:template_file] = File.expand_path(File.join(seth_SPEC_DATA, "bootstrap", "test-hints.erb"))
     ::File.stub(:read).and_return('{ "foo" : "bar" }')
     @knife.instance_variable_set("@template_file", @knife.config[:template_file])
     template_string = @knife.read_template
@@ -137,7 +137,7 @@ describe Seth::Knife::Bootstrap do
     # can fail when the file exists but can't be accessed by the user
     # running the tests.
     let(:options){ ["--bootstrap-no-proxy", setting, "-s", "foo"] }
-    let(:template_file) { File.expand_path(File.join(CHEF_SPEC_DATA, "bootstrap", "no_proxy.erb")) }
+    let(:template_file) { File.expand_path(File.join(seth_SPEC_DATA, "bootstrap", "no_proxy.erb")) }
     let(:rendered_template) do
       template_string = knife.read_template
       knife.render_template(template_string)
@@ -163,9 +163,9 @@ describe Seth::Knife::Bootstrap do
   describe "specifying the encrypted data bag secret key" do
     subject(:knife) { described_class.new }
     let(:secret) { "supersekret" }
-    let(:secret_file) { File.join(CHEF_SPEC_DATA, 'bootstrap', 'encrypted_data_bag_secret') }
+    let(:secret_file) { File.join(seth_SPEC_DATA, 'bootstrap', 'encrypted_data_bag_secret') }
     let(:options) { [] }
-    let(:template_file) { File.expand_path(File.join(CHEF_SPEC_DATA, "bootstrap", "secret.erb")) }
+    let(:template_file) { File.expand_path(File.join(seth_SPEC_DATA, "bootstrap", "secret.erb")) }
     let(:rendered_template) do
       knife.instance_variable_set("@template_file", template_file)
       knife.parse_options(options)
@@ -383,7 +383,7 @@ describe Seth::Knife::Bootstrap do
     end
 
     context "Seth::Config[:encrypted_data_bag_secret] is set" do
-      let(:secret_file) { File.join(CHEF_SPEC_DATA, 'bootstrap', 'encrypted_data_bag_secret') }
+      let(:secret_file) { File.join(seth_SPEC_DATA, 'bootstrap', 'encrypted_data_bag_secret') }
       before { Seth::Config[:encrypted_data_bag_secret] = secret_file }
 
       it "warns the configuration option is deprecated" do

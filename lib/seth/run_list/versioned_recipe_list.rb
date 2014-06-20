@@ -31,7 +31,7 @@ class Seth
 
       def add_recipe(name, version=nil)
         if version && @versions.has_key?(name)
-          unless Seth::Version.new(@versions[name]) == Chef::Version.new(version)
+          unless Seth::Version.new(@versions[name]) == seth::Version.new(version)
             raise Seth::Exceptions::CookbookVersionConflict, "Run list requires #{name} at versions #{@versions[name]} and #{version}"
           end
         end

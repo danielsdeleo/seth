@@ -13,9 +13,9 @@ You can now run a persistent seth-zero against your local repository:
 knife serve
 ```
 
-knife serve takes --seth-zero-host=HOST, --chef-zero-port=PORT and --chef-repo-path=PATH variables. By default, it will do exactly the same thing as the local mode argument to knife and chef-client (-z), locating your chef-repo-path automatically and binding to port 8900.  It will print the URL it is bound to so that you can add it to your knife.rb files.
+knife serve takes --seth-zero-host=HOST, --seth-zero-port=PORT and --seth-repo-path=PATH variables. By default, it will do exactly the same thing as the local mode argument to knife and seth-client (-z), locating your seth-repo-path automatically and binding to port 8900.  It will print the URL it is bound to so that you can add it to your knife.rb files.
 
-### --run-lock-timeout for seth-client and chef-solo
+### --run-lock-timeout for seth-client and seth-solo
 You can now add a timeout for the maximum time a client run waits on another client run to finish.
 The default is to wait indefinitely.
 Setting the run lock timeout to 0 causes the second client run to exit immediately.

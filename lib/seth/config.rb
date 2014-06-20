@@ -84,7 +84,7 @@ class Seth
 
     def self.platform_specific_path(path)
       if on_windows?
-        # turns /etc/seth/client.rb into C:/chef/client.rb
+        # turns /etc/seth/client.rb into C:/seth/client.rb
         system_drive = env['SYSTEMDRIVE'] ? env['SYSTEMDRIVE'] : ""
         path = File.join(system_drive, path.split('/')[2..-1])
         # ensure all forward slashes are backslashes
@@ -180,8 +180,8 @@ class Seth
     default(:client_path) { derive_path_from_seth_repo_path('clients') }
 
     # Location of cookbooks on disk. String or array of strings.
-    # Defaults to <seth_repo_path>/cookbooks.  If chef_repo_path
-    # is not specified, this is set to [/var/seth/cookbooks, /var/chef/site-cookbooks]).
+    # Defaults to <seth_repo_path>/cookbooks.  If seth_repo_path
+    # is not specified, this is set to [/var/seth/cookbooks, /var/seth/site-cookbooks]).
     default(:cookbook_path) do
       if self.configuration[:seth_repo_path]
         derive_path_from_seth_repo_path('cookbooks')
@@ -413,7 +413,7 @@ class Seth
     # `node_name` of the client.
     #
     # If seth-zero is enabled, this defaults to nil (no authentication).
-    default(:client_key) { seth_zero.enabled ? nil : platform_specific_path("/etc/chef/client.pem") }
+    default(:client_key) { seth_zero.enabled ? nil : platform_specific_path("/etc/seth/client.pem") }
 
     # This secret is used to decrypt encrypted data bag items.
     default(:encrypted_data_bag_secret) do
@@ -451,7 +451,7 @@ class Seth
     # The `validation_key` is never used if the `client_key` exists.
     #
     # If seth-zero is enabled, this defaults to nil (no authentication).
-    default(:validation_key) { seth_zero.enabled ? nil : platform_specific_path("/etc/chef/validation.pem") }
+    default(:validation_key) { seth_zero.enabled ? nil : platform_specific_path("/etc/seth/validation.pem") }
     default :validation_client_name, "seth-validator"
 
     # When creating a new client via the validation_client account, Seth 11

@@ -25,7 +25,7 @@ describe 'Seth::ReservedNames::Win32::File', :windows_only do
   end
 
   it "should not leak memory" do
-    pending "Fix required for CHEF-5004"
+    pending "Fix required for seth-5004"
     test = lambda { Seth::ReservedNames::Win32::File.symlink?(@path) }
     test.should_not leak_memory(:warmup => 50, :iterations => 100)
   end

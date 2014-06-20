@@ -87,7 +87,7 @@ describe Seth::Runner do
     @node.automatic[:platform] = "mac_os_x"
     @node.automatic[:platform_version] = "10.5.1"
     @events = Seth::EventDispatch::Dispatcher.new
-    @run_context = Seth::RunContext.new(@node, Chef::CookbookCollection.new({}), @events)
+    @run_context = Seth::RunContext.new(@node, seth::CookbookCollection.new({}), @events)
     @first_resource = Seth::Resource::Cat.new("loulou1", @run_context)
     @run_context.resource_collection << @first_resource
     Seth::Platform.set(
@@ -111,12 +111,12 @@ describe Seth::Runner do
   end
 
   it "should use the platform provider if it has one" do
-    Seth::Platform.should_receive(:find_provider_for_node).once.and_return(Chef::Provider::SnakeOil)
+    Seth::Platform.should_receive(:find_provider_for_node).once.and_return(seth::Provider::SnakeOil)
     @runner.converge
   end
 
   it "should run the action for each resource" do
-    Seth::Platform.should_receive(:find_provider_for_node).once.and_return(Chef::Provider::SnakeOil)
+    Seth::Platform.should_receive(:find_provider_for_node).once.and_return(seth::Provider::SnakeOil)
     provider = Seth::Provider::SnakeOil.new(@run_context.resource_collection[0], @run_context)
     provider.should_receive(:action_sell).once.and_return(true)
     Seth::Provider::SnakeOil.should_receive(:new).once.and_return(provider)
@@ -258,8 +258,8 @@ describe Seth::Runner do
 
     expected_message =<<-E
 Multiple failures occurred:
-* FailureProvider::SethClientFail occurred in delayed notification: [explode] (dynamically defined) had an error: FailureProvider::ChefClientFail: seth had an error of some sort
-* FailureProvider::SethClientFail occurred in delayed notification: [explode again] (dynamically defined) had an error: FailureProvider::ChefClientFail: seth had an error of some sort
+* FailureProvider::SethClientFail occurred in delayed notification: [explode] (dynamically defined) had an error: FailureProvider::sethClientFail: seth had an error of some sort
+* FailureProvider::SethClientFail occurred in delayed notification: [explode again] (dynamically defined) had an error: FailureProvider::sethClientFail: seth had an error of some sort
 E
     exception.message.should == expected_message
 
@@ -327,7 +327,7 @@ E
   end
 
   it "does not fire notifications if the resource was not updated by the last action executed" do
-    # REGRESSION TEST FOR CHEF-1452
+    # REGRESSION TEST FOR seth-1452
     SnitchyProvider.clear_action_record
 
     Seth::Platform.set(

@@ -42,7 +42,7 @@ describe Seth::Knife::SslCheck do
   end
 
   before do
-    Seth::Config.seth_server_url = "https://example.com:8443/chef-server"
+    Seth::Config.seth_server_url = "https://example.com:8443/seth-server"
   end
 
   context "when no arguments are given" do
@@ -132,7 +132,7 @@ E
       let(:tcp_socket_for_debug) { double(TCPSocket) }
       let(:ssl_socket_for_debug) { double(OpenSSL::SSL::SSLSocket) }
 
-      let(:self_signed_crt_path) { File.join(CHEF_SPEC_DATA, "trusted_certs", "example.crt") }
+      let(:self_signed_crt_path) { File.join(seth_SPEC_DATA, "trusted_certs", "example.crt") }
       let(:self_signed_crt) { OpenSSL::X509::Certificate.new(File.read(self_signed_crt_path)) }
 
       before do

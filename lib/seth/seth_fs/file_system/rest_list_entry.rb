@@ -16,9 +16,9 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_object'
-require 'seth/chef_fs/file_system/not_found_error'
-require 'seth/chef_fs/file_system/operation_failed_error'
+require 'seth/seth_fs/file_system/base_fs_object'
+require 'seth/seth_fs/file_system/not_found_error'
+require 'seth/seth_fs/file_system/operation_failed_error'
 require 'seth/role'
 require 'seth/node'
 
@@ -58,7 +58,7 @@ class Seth
           if @exists.nil?
             begin
               @exists = parent.children.any? { |child| child.name == name }
-            rescue Seth::ChefFS::FileSystem::NotFoundError
+            rescue Seth::sethFS::FileSystem::NotFoundError
               @exists = false
             end
           end
@@ -69,12 +69,12 @@ class Seth
           begin
             rest.delete(api_path)
           rescue Timeout::Error => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
-              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, e)
+              raise Seth::sethFS::FileSystem::NotFoundError.new(self, e)
             else
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:delete, self, e), "Timeout deleting: #{e}"
             end
           end
         end
@@ -88,12 +88,12 @@ class Seth
             # Minimize the value (get rid of defaults) so the results don't look terrible
             minimize_value(root.get_json(api_path))
           rescue Timeout::Error => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:read, self, e), "Timeout reading: #{e}"
           rescue Net::HTTPServerException => e
             if $!.response.code == "404"
-              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, e)
+              raise Seth::sethFS::FileSystem::NotFoundError.new(self, e)
             else
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:read, self, e), "HTTP error reading: #{e}"
             end
           end
         end
@@ -113,14 +113,14 @@ class Seth
           # Grab the other value
           begin
             other_value_json = other.read
-          rescue Seth::ChefFS::FileSystem::NotFoundError
+          rescue Seth::sethFS::FileSystem::NotFoundError
             return [ nil, nil, :none ]
           end
 
           # Grab this value
           begin
             value = _read_hash
-          rescue Seth::ChefFS::FileSystem::NotFoundError
+          rescue Seth::sethFS::FileSystem::NotFoundError
             return [ false, :none, other_value_json ]
           end
 
@@ -147,25 +147,25 @@ class Seth
           begin
             object = JSON.parse(file_contents, :create_additions => false)
           rescue JSON::ParserError => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "Parse error reading JSON: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:write, self, e), "Parse error reading JSON: #{e}"
           end
 
           if data_handler
             object = data_handler.normalize_for_put(object, self)
             data_handler.verify_integrity(object, self) do |error|
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self), "#{error}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:write, self), "#{error}"
             end
           end
 
           begin
             rest.put(api_path, object)
           rescue Timeout::Error => e
-            raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
+            raise Seth::sethFS::FileSystem::OperationFailedError.new(:write, self, e), "Timeout writing: #{e}"
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
-              raise Seth::ChefFS::FileSystem::NotFoundError.new(self, e)
+              raise Seth::sethFS::FileSystem::NotFoundError.new(self, e)
             else
-              raise Seth::ChefFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
+              raise Seth::sethFS::FileSystem::OperationFailedError.new(:write, self, e), "HTTP error writing: #{e}"
             end
           end
         end

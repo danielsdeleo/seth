@@ -95,12 +95,12 @@ PS
 
   describe "when an init command has been specified" do
     before do
-      @new_resource.stub(:init_command).and_return("/opt/seth-server/service/erchef")
+      @new_resource.stub(:init_command).and_return("/opt/seth-server/service/erseth")
       @provider = Seth::Provider::Service::Init.new(@new_resource, @run_context)
     end
 
     it "should use the init_command if one has been specified" do
-      @provider.should_receive(:shell_out!).with("/opt/seth-server/service/erchef start")
+      @provider.should_receive(:shell_out!).with("/opt/seth-server/service/erseth start")
       @provider.start_service
     end
 

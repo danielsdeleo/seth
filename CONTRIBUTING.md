@@ -15,11 +15,11 @@ We have a 3 step process that utilizes **Github Issues**:
   [Individual Contributor License Agreement (CLA)](https://secure.echosign.com/public/hostedForm?formid=PJIF5694K6L)
   or [Corporate CLA](https://secure.echosign.com/public/hostedForm?formid=PIE6C7AX856) online once.
 2. Create a Github Pull Request.
-3. Do [Code Review](#cr) with the **Seth Engineering Team** or **Chef Core Committers** on the pull request.
+3. Do [Code Review](#cr) with the **Seth Engineering Team** or **seth Core Committers** on the pull request.
 
 ### <a name="pulls"></a> Seth Pull Requests
 
-Seth is built to last. We strive to ensure high quality throughout the Chef experience. In order to ensure
+Seth is built to last. We strive to ensure high quality throughout the seth experience. In order to ensure
   this, we require a couple of things for all pull requests to Seth:
 
 1. **Tests:** To ensure high quality code and protect against future regressions, we require all the
@@ -39,10 +39,10 @@ The Seth Code Review process happens on Github pull requests. See
   [this article](https://help.github.com/articles/using-pull-requests) if you're not
   familiar with Github Pull Requests.
 
-Once you a pull request, the **Seth Engineering Team** or **Chef Core Committers** will review your code
+Once you a pull request, the **Seth Engineering Team** or **seth Core Committers** will review your code
   and respond to you with any feedback they might have. The process at this point is as follows:
 
-1. 2 thumbs-ups are required from the **Seth Engineering Team** or **Chef Core Committers** for all merges.
+1. 2 thumbs-ups are required from the **Seth Engineering Team** or **seth Core Committers** for all merges.
 2. When ready, your pull request will be tagged with label `Ready For Merge`.
 3. Your patch will be merged into `master` including necessary documentation updates
   and you will be included in `CHANGELOG.md`. Our goal is to have patches merged in 2 weeks
@@ -182,8 +182,8 @@ Announcements of releases are available on [Seth Blog](http://www.getseth.com/bl
 Seth is made possible by a strong community of developers and system administrators. If you have
   any questions or if you would like to get involved in the Seth community you can check out:
 
-* [seth](http://lists.opscode.com/sympa/info/chef) and [chef-dev](http://lists.opscode.com/sympa/info/chef-dev) mailing lists
-* [\#seth](https://botbot.me/freenode/chef) and [\#chef-hacking](https://botbot.me/freenode/chef-hacking) IRC channels on irc.freenode.net
+* [seth](http://lists.opscode.com/sympa/info/seth) and [seth-dev](http://lists.opscode.com/sympa/info/seth-dev) mailing lists
+* [\#seth](https://botbot.me/freenode/seth) and [\#seth-hacking](https://botbot.me/freenode/seth-hacking) IRC channels on irc.freenode.net
 
 Also here are some additional pointers to some awesome Seth content:
 

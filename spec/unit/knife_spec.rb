@@ -49,7 +49,7 @@ describe Seth::Knife do
       before do
         Seth::Knife.reset_config_path!
         # pwd according to your shell is /home/someuser/prod/seth-repo, but
-        # seth-repo is a symlink to /home/someuser/codes/chef-repo
+        # seth-repo is a symlink to /home/someuser/codes/seth-repo
         if Seth::Platform.windows?
           ENV.should_receive(:[]).with("CD").and_return("/home/someuser/prod/seth-repo")
         else
@@ -64,10 +64,10 @@ describe Seth::Knife do
       end
 
       it "loads the config from the non-dereferenced directory path" do
-        File.should_receive(:exist?).with("/home/someuser/prod/seth-repo/.chef").and_return(false)
+        File.should_receive(:exist?).with("/home/someuser/prod/seth-repo/.seth").and_return(false)
         File.should_receive(:exist?).with("/home/someuser/prod/.seth").and_return(true)
         File.should_receive(:directory?).with("/home/someuser/prod/.seth").and_return(true)
-        Seth::Knife.seth_config_dir.should == "/home/someuser/prod/.chef"
+        Seth::Knife.seth_config_dir.should == "/home/someuser/prod/.seth"
       end
     end
   end
@@ -84,8 +84,8 @@ describe Seth::Knife do
         KnifeSpecs.send(:remove_const, :TestExplicitCategory)
       end
 
-      Kernel.load(File.join(CHEF_SPEC_DATA, 'knife_subcommand', 'test_name_mapping.rb'))
-      Kernel.load(File.join(CHEF_SPEC_DATA, 'knife_subcommand', 'test_explicit_category.rb'))
+      Kernel.load(File.join(seth_SPEC_DATA, 'knife_subcommand', 'test_name_mapping.rb'))
+      Kernel.load(File.join(seth_SPEC_DATA, 'knife_subcommand', 'test_explicit_category.rb'))
     end
 
     it "has a category based on its name" do
@@ -149,7 +149,7 @@ describe Seth::Knife do
 
     let(:headers) {{"Accept"=>"application/json",
                     "Accept-Encoding"=>"gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-                    'X-Seth-Version' => Chef::VERSION,
+                    'X-Seth-Version' => seth::VERSION,
                     "Host"=>"api.opscode.piab",
                     "X-REMOTE-REQUEST-ID"=>request_id}}
 
@@ -189,8 +189,8 @@ describe Seth::Knife do
       if KnifeSpecs.const_defined?(:TestYourself)
         KnifeSpecs.send :remove_const, :TestYourself
       end
-      Kernel.load(File.join(CHEF_SPEC_DATA, 'knife_subcommand', 'test_yourself.rb'))
-      Seth::Knife.subcommands.each { |name, klass| Chef::Knife.subcommands.delete(name) unless klass.kind_of?(Class) }
+      Kernel.load(File.join(seth_SPEC_DATA, 'knife_subcommand', 'test_yourself.rb'))
+      Seth::Knife.subcommands.each { |name, klass| seth::Knife.subcommands.delete(name) unless klass.kind_of?(Class) }
     end
 
     it "confirms that the headers include X-Remote-Request-Id" do
@@ -204,8 +204,8 @@ describe Seth::Knife do
       if KnifeSpecs.const_defined?(:TestYourself)
         KnifeSpecs.send :remove_const, :TestYourself
       end
-      Kernel.load(File.join(CHEF_SPEC_DATA, 'knife_subcommand', 'test_yourself.rb'))
-      Seth::Knife.subcommands.each { |name, klass| Chef::Knife.subcommands.delete(name) unless klass.kind_of?(Class) }
+      Kernel.load(File.join(seth_SPEC_DATA, 'knife_subcommand', 'test_yourself.rb'))
+      Seth::Knife.subcommands.each { |name, klass| seth::Knife.subcommands.delete(name) unless klass.kind_of?(Class) }
     end
 
     it "merges the global knife CLI options" do
@@ -294,7 +294,7 @@ describe Seth::Knife do
   describe "when first created" do
     before do
       unless KnifeSpecs.const_defined?(:TestYourself)
-        Kernel.load(File.join(CHEF_SPEC_DATA, 'knife_subcommand', 'test_yourself.rb'))
+        Kernel.load(File.join(seth_SPEC_DATA, 'knife_subcommand', 'test_yourself.rb'))
       end
       @knife = KnifeSpecs::TestYourself.new(%w{with some args -s scrogramming})
     end

@@ -207,7 +207,7 @@ class Seth
                                 ssh_port || # Use cloud port if available
                                 Seth::Config[:knife][:ssh_port] ||
                                 ssh_config[:port]
-          session_opts[:logger] = Seth::Log.logger if Chef::Log.level == :debug
+          session_opts[:logger] = Seth::Log.logger if seth::Log.level == :debug
 
           if !config[:host_key_verify]
             session_opts[:paranoid] = false

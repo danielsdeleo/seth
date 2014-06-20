@@ -23,7 +23,7 @@ describe Seth::Provider::Env::Windows, :windows_only do
     @node = Seth::Node.new
     @events = Seth::EventDispatch::Dispatcher.new
     @run_context = Seth::RunContext.new(@node, {}, @events)
-    @new_resource = Seth::Resource::Env.new("CHEF_WINDOWS_ENV_TEST")
+    @new_resource = Seth::Resource::Env.new("seth_WINDOWS_ENV_TEST")
     @new_resource.value("foo")
     @provider = Seth::Provider::Env::Windows.new(@new_resource, @run_context)
     @provider.stub(:env_obj).and_return(double('null object').as_null_object)
@@ -31,37 +31,37 @@ describe Seth::Provider::Env::Windows, :windows_only do
 
   describe "action_create" do
     before do
-      ENV.delete('CHEF_WINDOWS_ENV_TEST')
+      ENV.delete('seth_WINDOWS_ENV_TEST')
       @provider.key_exists = false
     end
 
     it "should update the ruby ENV object when it creates the key" do
       @provider.action_create
-      expect(ENV['CHEF_WINDOWS_ENV_TEST']).to eql('foo')
+      expect(ENV['seth_WINDOWS_ENV_TEST']).to eql('foo')
     end
   end
 
   describe "action_modify" do
     before do
-      ENV['CHEF_WINDOWS_ENV_TEST'] = 'foo'
+      ENV['seth_WINDOWS_ENV_TEST'] = 'foo'
     end
 
     it "should update the ruby ENV object when it updates the value" do
       @provider.should_receive(:compare_value).and_return(true)
       @new_resource.value("foobar")
       @provider.action_modify
-      expect(ENV['CHEF_WINDOWS_ENV_TEST']).to eql('foobar')
+      expect(ENV['seth_WINDOWS_ENV_TEST']).to eql('foobar')
     end
   end
 
   describe "action_delete" do
     before do
-      ENV['CHEF_WINDOWS_ENV_TEST'] = 'foo'
+      ENV['seth_WINDOWS_ENV_TEST'] = 'foo'
     end
 
     it "should update the ruby ENV object when it deletes the key" do
       @provider.action_delete
-      expect(ENV['CHEF_WINDOWS_ENV_TEST']).to eql(nil)
+      expect(ENV['seth_WINDOWS_ENV_TEST']).to eql(nil)
     end
   end
 end

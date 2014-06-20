@@ -65,7 +65,7 @@ class Seth
 
         def http_client_opts(source)
           opts={}
-          # CHEF-3140
+          # seth-3140
           # 1. If it's already compressed, trying to compress it more will
           # probably be counter-productive.
           # 2. Some servers are misconfigured so that you GET $URL/file.tgz but

@@ -16,19 +16,19 @@
 # limitations under the License.
 #
 
-require 'seth/chef_fs/file_system/base_fs_dir'
-require 'seth/chef_fs/file_system/chef_repository_file_system_entry'
-require 'seth/chef_fs/file_system/chef_repository_file_system_acls_dir'
-require 'seth/chef_fs/file_system/chef_repository_file_system_cookbooks_dir'
-require 'seth/chef_fs/file_system/chef_repository_file_system_data_bags_dir'
-require 'seth/chef_fs/file_system/multiplexed_dir'
-require 'seth/chef_fs/data_handler/client_data_handler'
-require 'seth/chef_fs/data_handler/environment_data_handler'
-require 'seth/chef_fs/data_handler/node_data_handler'
-require 'seth/chef_fs/data_handler/role_data_handler'
-require 'seth/chef_fs/data_handler/user_data_handler'
-require 'seth/chef_fs/data_handler/group_data_handler'
-require 'seth/chef_fs/data_handler/container_data_handler'
+require 'seth/seth_fs/file_system/base_fs_dir'
+require 'seth/seth_fs/file_system/seth_repository_file_system_entry'
+require 'seth/seth_fs/file_system/seth_repository_file_system_acls_dir'
+require 'seth/seth_fs/file_system/seth_repository_file_system_cookbooks_dir'
+require 'seth/seth_fs/file_system/seth_repository_file_system_data_bags_dir'
+require 'seth/seth_fs/file_system/multiplexed_dir'
+require 'seth/seth_fs/data_handler/client_data_handler'
+require 'seth/seth_fs/data_handler/environment_data_handler'
+require 'seth/seth_fs/data_handler/node_data_handler'
+require 'seth/seth_fs/data_handler/role_data_handler'
+require 'seth/seth_fs/data_handler/user_data_handler'
+require 'seth/seth_fs/data_handler/group_data_handler'
+require 'seth/seth_fs/data_handler/container_data_handler'
 
 class Seth
   module SethFS
@@ -102,19 +102,19 @@ class Seth
           else
             data_handler = case name
               when 'clients'
-                Seth::ChefFS::DataHandler::ClientDataHandler.new
+                Seth::sethFS::DataHandler::ClientDataHandler.new
               when 'environments'
-                Seth::ChefFS::DataHandler::EnvironmentDataHandler.new
+                Seth::sethFS::DataHandler::EnvironmentDataHandler.new
               when 'nodes'
-                Seth::ChefFS::DataHandler::NodeDataHandler.new
+                Seth::sethFS::DataHandler::NodeDataHandler.new
               when 'roles'
-                Seth::ChefFS::DataHandler::RoleDataHandler.new
+                Seth::sethFS::DataHandler::RoleDataHandler.new
               when 'users'
-                Seth::ChefFS::DataHandler::UserDataHandler.new
+                Seth::sethFS::DataHandler::UserDataHandler.new
               when 'groups'
-                Seth::ChefFS::DataHandler::GroupDataHandler.new
+                Seth::sethFS::DataHandler::GroupDataHandler.new
               when 'containers'
-                Seth::ChefFS::DataHandler::ContainerDataHandler.new
+                Seth::sethFS::DataHandler::ContainerDataHandler.new
               else
                 raise "Unknown top level path #{name}"
               end

@@ -103,7 +103,7 @@ describe Seth::Provider::HttpRequest do
       end
     end
 
-    # CHEF-4762: we expect a nil return value for a "200 Success" response
+    # seth-4762: we expect a nil return value for a "200 Success" response
     # and false for a "304 Not Modified" response
     describe "action_head" do
       before do
@@ -123,19 +123,19 @@ describe Seth::Provider::HttpRequest do
         @new_resource.should be_updated
       end
 
-      it "should update a HEAD request with empty string response body (CHEF-4762)" do
+      it "should update a HEAD request with empty string response body (seth-4762)" do
         @http.should_receive(:head).with("http://www.opscode.com/?message=is cool", {}).and_return("")
         @provider.run_action(:head)
         @new_resource.should be_updated
       end
 
-      it "should update a HEAD request with nil response body (CHEF-4762)" do
+      it "should update a HEAD request with nil response body (seth-4762)" do
         @http.should_receive(:head).with("http://www.opscode.com/?message=is cool", {}).and_return(nil)
         @provider.run_action(:head)
         @new_resource.should be_updated
       end
 
-      it "should not update a HEAD request if a not modified response (CHEF-4762)" do
+      it "should not update a HEAD request if a not modified response (seth-4762)" do
         if_modified_since = File.mtime(__FILE__).httpdate
         @new_resource.headers "If-Modified-Since" => if_modified_since
         @http.should_receive(:head).with("http://www.opscode.com/?message=is cool", {"If-Modified-Since" => if_modified_since}).and_return(false)

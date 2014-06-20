@@ -18,14 +18,14 @@
 
 shared_context "deploying with move" do
   before do
-    Seth::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
+    Seth::Config[:file_backup_path] = seth_SPEC_BACKUP_PATH
     Seth::Config[:file_atomic_update] = true
   end
 end
 
 shared_context "deploying with copy" do
   before do
-    Seth::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
+    Seth::Config[:file_backup_path] = seth_SPEC_BACKUP_PATH
     Seth::Config[:file_atomic_update] = false
   end
 end
@@ -33,14 +33,14 @@ end
 shared_context "deploying via tmpdir" do
   before do
     Seth::Config[:file_staging_uses_destdir] = false
-    Seth::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
+    Seth::Config[:file_backup_path] = seth_SPEC_BACKUP_PATH
   end
 end
 
 shared_context "deploying via destdir" do
   before do
     Seth::Config[:file_staging_uses_destdir] = true
-    Seth::Config[:file_backup_path] = CHEF_SPEC_BACKUP_PATH
+    Seth::Config[:file_backup_path] = seth_SPEC_BACKUP_PATH
   end
 end
 
@@ -281,7 +281,7 @@ shared_examples_for "a file resource" do
     end
 
     context "and the resource has a path with a missing intermediate directory" do
-      # CHEF-3978
+      # seth-3978
 
       let(:path) do
         File.join(test_file_dir, "intermediate_dir", make_tmpname(file_base))
@@ -356,7 +356,7 @@ shared_examples_for "a configured file resource" do
   end
 
    # note the stripping of the drive letter from the tmpdir on windows
-  let(:backup_glob) { File.join(CHEF_SPEC_BACKUP_PATH, test_file_dir.sub(/^([A-Za-z]:)/, ""), "#{file_base}*") }
+  let(:backup_glob) { File.join(seth_SPEC_BACKUP_PATH, test_file_dir.sub(/^([A-Za-z]:)/, ""), "#{file_base}*") }
 
   # Most tests update the resource, but a few do not. We need to test that the
   # resource is marked updated or not correctly, but the test contexts are
@@ -386,7 +386,7 @@ shared_examples_for "a configured file resource" do
 
   context "when the target file is a symlink", :not_supported_on_win2k3 do
     let(:symlink_target) {
-      File.join(CHEF_SPEC_DATA, "file-test-target")
+      File.join(seth_SPEC_DATA, "file-test-target")
     }
 
 
@@ -444,8 +444,8 @@ shared_examples_for "a configured file resource" do
       end
 
       context "but the symlink is part of a loop" do
-        let(:link1_path) { File.join(CHEF_SPEC_DATA, "points-to-link2") }
-        let(:link2_path) { File.join(CHEF_SPEC_DATA, "points-to-link1") }
+        let(:link1_path) { File.join(seth_SPEC_DATA, "points-to-link2") }
+        let(:link2_path) { File.join(seth_SPEC_DATA, "points-to-link1") }
 
         before do
           # point resource at link1:
@@ -475,8 +475,8 @@ shared_examples_for "a configured file resource" do
       end
 
       context "but the symlink points to a nonexistent file" do
-        let(:link_path) { File.join(CHEF_SPEC_DATA, "points-to-nothing") }
-        let(:not_existent_source) { File.join(CHEF_SPEC_DATA, "i-am-not-here") }
+        let(:link_path) { File.join(seth_SPEC_DATA, "points-to-nothing") }
+        let(:not_existent_source) { File.join(seth_SPEC_DATA, "i-am-not-here") }
 
         before do
           resource.path(link_path)
@@ -503,8 +503,8 @@ shared_examples_for "a configured file resource" do
       end
 
       context "but the symlink is points to a non-file fs entry" do
-        let(:link_path) { File.join(CHEF_SPEC_DATA, "points-to-dir") }
-        let(:not_a_file_path) { File.join(CHEF_SPEC_DATA, "dir-at-end-of-symlink") }
+        let(:link_path) { File.join(seth_SPEC_DATA, "points-to-dir") }
+        let(:not_a_file_path) { File.join(seth_SPEC_DATA, "dir-at-end-of-symlink") }
 
         before do
           # point resource at link1:
@@ -536,7 +536,7 @@ shared_examples_for "a configured file resource" do
       context "when the symlink source is a real file" do
 
         let(:wrong_content) { "this is the wrong content" }
-        let(:link_path) { File.join(CHEF_SPEC_DATA, "points-to-real-file") }
+        let(:link_path) { File.join(seth_SPEC_DATA, "points-to-real-file") }
 
         before do
           # point resource at link:
@@ -609,8 +609,8 @@ shared_examples_for "a configured file resource" do
       context "when the symlink points to a symlink which points to a real file" do
 
         let(:wrong_content) { "this is the wrong content" }
-        let(:link_to_file_path) { File.join(CHEF_SPEC_DATA, "points-to-real-file") }
-        let(:link_to_link_path) { File.join(CHEF_SPEC_DATA, "points-to-next-link") }
+        let(:link_to_file_path) { File.join(seth_SPEC_DATA, "points-to-real-file") }
+        let(:link_to_link_path) { File.join(seth_SPEC_DATA, "points-to-next-link") }
 
         before do
           # point resource at link:
@@ -712,7 +712,7 @@ shared_examples_for "a configured file resource" do
   context "when the target file is a blockdev",:unix_only, :requires_root, :not_supported_on_solaris do
     include Seth::Mixin::ShellOut
     let(:path) do
-      File.join(CHEF_SPEC_DATA, "testdev")
+      File.join(seth_SPEC_DATA, "testdev")
     end
 
     before(:each) do
@@ -730,7 +730,7 @@ shared_examples_for "a configured file resource" do
   context "when the target file is a chardev",:unix_only, :requires_root, :not_supported_on_solaris do
     include Seth::Mixin::ShellOut
     let(:path) do
-      File.join(CHEF_SPEC_DATA, "testdev")
+      File.join(seth_SPEC_DATA, "testdev")
     end
 
     before(:each) do
@@ -748,7 +748,7 @@ shared_examples_for "a configured file resource" do
   context "when the target file is a pipe",:unix_only do
     include Seth::Mixin::ShellOut
     let(:path) do
-      File.join(CHEF_SPEC_DATA, "testpipe")
+      File.join(seth_SPEC_DATA, "testpipe")
     end
 
     before(:each) do
@@ -795,7 +795,7 @@ shared_examples_for "a configured file resource" do
     it_behaves_like "file resource not pointing to a real file"
   end
 
-  # Regression test for http://tickets.opscode.com/browse/CHEF-4082
+  # Regression test for http://tickets.opscode.com/browse/seth-4082
   context "when notification is configured" do
     describe "when path is specified with normal seperator" do
       before do
@@ -967,7 +967,7 @@ shared_examples_for "a configured file resource" do
     end
   end
 
-  # Regression test for http://tickets.opscode.com/browse/CHEF-4419
+  # Regression test for http://tickets.opscode.com/browse/seth-4419
   context "when the path starts with '/' and target file exists", :windows_only do
     let(:path) do
       File.join(test_file_dir[2..test_file_dir.length], make_tmpname(file_base))
@@ -1017,7 +1017,7 @@ shared_context Seth::Resource::File  do
     if windows?
       File.join(ENV['systemdrive'], "test-dir")
     else
-      File.join(CHEF_SPEC_DATA, "test-dir")
+      File.join(seth_SPEC_DATA, "test-dir")
     end
   end
 
@@ -1031,7 +1031,7 @@ shared_context Seth::Resource::File  do
 
   after(:each) do
     FileUtils.rm_r(path) if File.exists?(path)
-    FileUtils.rm_r(CHEF_SPEC_BACKUP_PATH) if File.exists?(CHEF_SPEC_BACKUP_PATH)
+    FileUtils.rm_r(seth_SPEC_BACKUP_PATH) if File.exists?(seth_SPEC_BACKUP_PATH)
   end
 
   after do

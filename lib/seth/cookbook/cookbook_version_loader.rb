@@ -1,6 +1,6 @@
 
 require 'seth/cookbook_version'
-require 'seth/cookbook/chefignore'
+require 'seth/cookbook/sethignore'
 require 'seth/cookbook/metadata'
 
 class Seth
@@ -30,7 +30,7 @@ class Seth
         # We keep a list of all cookbook paths that have been merged in
         @cookbook_paths = [ @cookbook_path ]
         @cookbook_name = File.basename( path )
-        @sethignore = chefignore
+        @sethignore = sethignore
         @metadata = Hash.new
         @relative_path = /#{Regexp.escape(@cookbook_path)}\/(.+)$/
         @cookbook_settings = {

@@ -139,10 +139,10 @@ class Seth
         @headers = headers.dup
         # No response compression unless we asked for it explicitly:
         @headers[HTTPRequest::ACCEPT_ENCODING] ||= "identity"
-        @headers['X-Seth-Version'] = ::Chef::VERSION
+        @headers['X-Seth-Version'] = ::seth::VERSION
 
         # Only include port in Host header when it is not the default port
-        # for the url scheme (80;443) - Fixes CHEF-5355
+        # for the url scheme (80;443) - Fixes seth-5355
         host_header = uri_safe_host.dup
         host_header << ":#{port}" unless URI_SCHEME_DEFAULT_PORT[@url.scheme] == port.to_i
         @headers['Host'] = host_header unless @headers.keys.any? {|k| k.downcase.to_s == HOST_LOWER }

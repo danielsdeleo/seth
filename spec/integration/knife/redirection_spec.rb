@@ -31,7 +31,7 @@ describe 'redirection' do
 
     context 'and another server redirects to it with 302' do
       before :each do
-        real_seth_server_url = Seth::Config.chef_server_url
+        real_seth_server_url = Seth::Config.seth_server_url
         Seth::Config.seth_server_url = "http://localhost:9018"
         app = lambda do |env|
           [302, {'Content-Type' => 'text','Location' => "#{real_seth_server_url}#{env['PATH_INFO']}" }, ['302 found'] ]

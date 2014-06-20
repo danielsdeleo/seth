@@ -31,7 +31,7 @@ require 'pp'
 class Seth
   class Knife
 
-    Seth::REST::RESTRequest.user_agent = "Chef Knife#{Chef::REST::RESTRequest::UA_COMMON}"
+    Seth::REST::RESTRequest.user_agent = "seth Knife#{seth::REST::RESTRequest::UA_COMMON}"
 
     include Mixlib::CLI
     include Seth::Mixin::PathSanity
@@ -316,13 +316,13 @@ class Seth
     def config_file_settings
       config_file_settings = {}
       self.class.options.keys.each do |key|
-        config_file_settings[key] = Seth::Config[:knife][key] if Chef::Config[:knife].has_key?(key)
+        config_file_settings[key] = Seth::Config[:knife][key] if seth::Config[:knife].has_key?(key)
       end
       config_file_settings
     end
 
     def self.config_fetcher(candidate_config)
-      Seth::ConfigFetcher.new(candidate_config, Chef::Config.config_file_jail)
+      Seth::ConfigFetcher.new(candidate_config, seth::Config.config_file_jail)
     end
 
     def self.locate_config_file
@@ -387,27 +387,27 @@ class Seth
 
       Seth::Config[:node_name]         = config[:node_name]       if config[:node_name]
       Seth::Config[:client_key]        = config[:client_key]      if config[:client_key]
-      Seth::Config[:seth_server_url]   = config[:chef_server_url] if config[:chef_server_url]
+      Seth::Config[:seth_server_url]   = config[:seth_server_url] if config[:seth_server_url]
       Seth::Config[:environment]       = config[:environment]     if config[:environment]
 
       Seth::Config.local_mode = config[:local_mode] if config.has_key?(:local_mode)
-      if Seth::Config.local_mode && !Chef::Config.has_key?(:cookbook_path) && !Chef::Config.has_key?(:seth_repo_path)
-        Seth::Config.seth_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
+      if Seth::Config.local_mode && !seth::Config.has_key?(:cookbook_path) && !seth::Config.has_key?(:seth_repo_path)
+        Seth::Config.seth_repo_path = seth::Config.find_seth_repo_path(Dir.pwd)
       end
-      Seth::Config.seth_zero.host = config[:chef_zero_host] if config[:chef_zero_host]
-      Seth::Config.seth_zero.port = config[:chef_zero_port] if config[:chef_zero_port]
+      Seth::Config.seth_zero.host = config[:seth_zero_host] if config[:seth_zero_host]
+      Seth::Config.seth_zero.port = config[:seth_zero_port] if config[:seth_zero_port]
 
       # Expand a relative path from the config directory. Config from command
       # line should already be expanded, and absolute paths will be unchanged.
       if Seth::Config[:client_key] && config[:config_file]
-        Seth::Config[:client_key] = File.expand_path(Chef::Config[:client_key], File.dirname(config[:config_file]))
+        Seth::Config[:client_key] = File.expand_path(seth::Config[:client_key], File.dirname(config[:config_file]))
       end
 
       Mixlib::Log::Formatter.show_time = false
-      Seth::Log.init(Chef::Config[:log_location])
-      Seth::Log.level(Chef::Config[:log_level] || :error)
+      Seth::Log.init(seth::Config[:log_location])
+      Seth::Log.level(seth::Config[:log_level] || :error)
 
-      if Seth::Config[:node_name] && Chef::Config[:node_name].bytesize > 90
+      if Seth::Config[:node_name] && seth::Config[:node_name].bytesize > 90
         # node names > 90 bytes only work with authentication protocol >= 1.1
         # see discussion in config.rb.
         Seth::Config[:authentication_protocol_version] = "1.1"
@@ -423,9 +423,9 @@ class Seth
       # Don't try to load a knife.rb if it wasn't specified.
       if config[:config_file]
         Seth::Config.config_file = config[:config_file]
-        fetcher = Seth::ConfigFetcher.new(config[:config_file], Chef::Config.config_file_jail)
+        fetcher = Seth::ConfigFetcher.new(config[:config_file], seth::Config.config_file_jail)
         if fetcher.config_missing?
-          ui.error("Specified config file #{config[:config_file]} does not exist#{Seth::Config.config_file_jail ? " or is not under config file jail #{Chef::Config.config_file_jail}" : ""}!")
+          ui.error("Specified config file #{config[:config_file]} does not exist#{Seth::Config.config_file_jail ? " or is not under config file jail #{seth::Config.config_file_jail}" : ""}!")
           exit 1
         end
         Seth::Log.debug("Using configuration from #{config[:config_file]}")
@@ -608,14 +608,14 @@ class Seth
     def rest
       @rest ||= begin
         require 'seth/rest'
-        Seth::REST.new(Chef::Config[:seth_server_url])
+        Seth::REST.new(seth::Config[:seth_server_url])
       end
     end
 
     def noauth_rest
       @rest ||= begin
         require 'seth/rest'
-        Seth::REST.new(Chef::Config[:seth_server_url], false, false)
+        Seth::REST.new(seth::Config[:seth_server_url], false, false)
       end
     end
 

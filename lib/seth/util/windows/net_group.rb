@@ -20,7 +20,7 @@ require 'seth/util/windows'
 
 #wrapper around a subset of the NetGroup* APIs.
 #nothing Seth specific, but not complete enough to be its own gem, so util for now.
-class Seth::Util::Windows::NetGroup < Chef::Util::Windows
+class Seth::Util::Windows::NetGroup < seth::Util::Windows
 
   private
 

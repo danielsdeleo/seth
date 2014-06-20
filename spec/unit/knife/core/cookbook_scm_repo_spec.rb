@@ -21,7 +21,7 @@ require 'seth/knife/core/cookbook_scm_repo'
 
 describe Seth::Knife::CookbookSCMRepo do
   before do
-    @repo_path = File.join(CHEF_SPEC_DATA, 'cookbooks')
+    @repo_path = File.join(seth_SPEC_DATA, 'cookbooks')
     @stdout, @stderr, @stdin = StringIO.new, StringIO.new, StringIO.new
     @ui = Seth::Knife::UI.new(@stdout, @stderr, @stdin, {})
     @cookbook_repo = Seth::Knife::CookbookSCMRepo.new(@repo_path, @ui, :default_branch => 'master')
@@ -83,7 +83,7 @@ BRANCHES
           it "exits when the git repo is dirty" do
             @dirty_status = Mixlib::ShellOut.new
             @dirty_status.stdout.replace(<<-DIRTY)
- M seth/lib/chef/knife/cookbook_site_vendor.rb
+ M seth/lib/seth/knife/cookbook_site_vendor.rb
 DIRTY
             @cookbook_repo.should_receive(:shell_out!).with('git status --porcelain', :cwd => @repo_path).and_return(@dirty_status)
             lambda {@cookbook_repo.sanity_check}.should raise_error(SystemExit)

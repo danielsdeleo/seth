@@ -31,7 +31,7 @@ class Seth
       # * message: A message telling the user what to do instead.
       # === Example:
       #   deprecate_constant(:RecipeDefinitionDSLCore, Seth::DSL::Recipe, <<-EOM)
-      #     Seth::Mixin::RecipeDefinitionDSLCore is deprecated, use Chef::DSL::Recipe instead.
+      #     Seth::Mixin::RecipeDefinitionDSLCore is deprecated, use seth::DSL::Recipe instead.
       #   EOM
       def self.deprecate_constant(name, replacement, message)
         deprecated_constants[name] = {:replacement => replacement, :message => message}

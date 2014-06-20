@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>seth-client &mdash; chef-client Man Pages</title>
-    
+
+    <title>seth-client &mdash; seth-client Man Pages</title>
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,16 +33,16 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="seth-client">
-<h1>seth-client<a class="headerlink" href="#chef-client" title="Permalink to this headline">¶</a></h1>
-<p>A seth-client is an agent that runs locally on every node that is registered with the Seth server. When a chef-client is run, it will perform all of the steps that are required to bring the node into the expected state, including:</p>
+<h1>seth-client<a class="headerlink" href="#seth-client" title="Permalink to this headline">¶</a></h1>
+<p>A seth-client is an agent that runs locally on every node that is registered with the Seth server. When a seth-client is run, it will perform all of the steps that are required to bring the node into the expected state, including:</p>
 <ul class="simple">
 <li>Registering and authenticating the node with the Seth server</li>
 <li>Building the node object</li>
@@ -54,8 +54,8 @@
 <p>The seth-client executable is run as a command-line tool.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>A client.rb file is used to specify the configuration details for the seth-client. This file is the default configuration file and is loaded every time the chef-client executable is run. The chef-client executable can be run as a daemon.</p>
-<p class="last">On UNIX- and Linux-based machines, the configuration file is located at: <tt class="docutils literal"><span class="pre">/etc/seth/client.rb</span></tt>. On Microsoft Windows machines, the configuration file is located at <tt class="docutils literal"><span class="pre">C:\chef\client.rb</span></tt>. When a client.rb file is present in this directory, the settings contained within that file will override the default configuration settings.</p>
+<p>A client.rb file is used to specify the configuration details for the seth-client. This file is the default configuration file and is loaded every time the seth-client executable is run. The seth-client executable can be run as a daemon.</p>
+<p class="last">On UNIX- and Linux-based machines, the configuration file is located at: <tt class="docutils literal"><span class="pre">/etc/seth/client.rb</span></tt>. On Microsoft Windows machines, the configuration file is located at <tt class="docutils literal"><span class="pre">C:\seth\client.rb</span></tt>. When a client.rb file is present in this directory, the settings contained within that file will override the default configuration settings.</p>
 </div>
 <div class="section" id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
@@ -66,13 +66,13 @@
 <p>This command has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">-A</span></tt>, <tt class="docutils literal"><span class="pre">--fatal-windows-admin-check</span></tt></dt>
-<dd>Use to cause a seth-client run to fail when the chef-client does not have administrator privileges in Microsoft Windows.</dd>
+<dd>Use to cause a seth-client run to fail when the seth-client does not have administrator privileges in Microsoft Windows.</dd>
 <dt><tt class="docutils literal"><span class="pre">--seth-zero-port</span> <span class="pre">PORT</span></tt></dt>
 <dd>The port on which seth-zero will listen.</dd>
 <dt><tt class="docutils literal"><span class="pre">-F</span> <span class="pre">FORMAT</span></tt>, <tt class="docutils literal"><span class="pre">--format</span> <span class="pre">FORMAT</span></tt></dt>
 <dd><p class="first">The output format: <tt class="docutils literal"><span class="pre">doc</span></tt> (default) or <tt class="docutils literal"><span class="pre">min</span></tt>.</p>
 <p>Use <tt class="docutils literal"><span class="pre">doc</span></tt> to print the progress of the seth-client run using full strings that display a summary of updates as they occur.</p>
-<p>Use <tt class="docutils literal"><span class="pre">min</span></tt> to print the progress of the seth-client run using single characters. A summary of updates is printed at the end of the chef-client run. A dot (<tt class="docutils literal"><span class="pre">.</span></tt>) is printed for events that do not have meaningful status information, such as loading a file or synchronizing a cookbook. For resources, a dot (<tt class="docutils literal"><span class="pre">.</span></tt>) is printed when the resource is up to date, an <tt class="docutils literal"><span class="pre">S</span></tt> is printed when the resource is skipped by <tt class="docutils literal"><span class="pre">not_if</span></tt> or <tt class="docutils literal"><span class="pre">only_if</span></tt>, and a <tt class="docutils literal"><span class="pre">U</span></tt> is printed when the resource is updated.</p>
+<p>Use <tt class="docutils literal"><span class="pre">min</span></tt> to print the progress of the seth-client run using single characters. A summary of updates is printed at the end of the seth-client run. A dot (<tt class="docutils literal"><span class="pre">.</span></tt>) is printed for events that do not have meaningful status information, such as loading a file or synchronizing a cookbook. For resources, a dot (<tt class="docutils literal"><span class="pre">.</span></tt>) is printed when the resource is up to date, an <tt class="docutils literal"><span class="pre">S</span></tt> is printed when the resource is skipped by <tt class="docutils literal"><span class="pre">not_if</span></tt> or <tt class="docutils literal"><span class="pre">only_if</span></tt>, and a <tt class="docutils literal"><span class="pre">U</span></tt> is printed when the resource is updated.</p>
 <p class="last">Other formatting options are available when those formatters are configured in the client.rb file using the <tt class="docutils literal"><span class="pre">add_formatter</span></tt> option.</p>
 </dd>
 <dt><tt class="docutils literal"><span class="pre">--force-formatter</span></tt></dt>
@@ -90,7 +90,7 @@
 <dt><tt class="docutils literal"><span class="pre">-k</span> <span class="pre">KEY_FILE</span></tt>, <tt class="docutils literal"><span class="pre">--client_key</span> <span class="pre">KEY_FILE</span></tt></dt>
 <dd>The location of the file which contains the client key. Default value: <tt class="docutils literal"><span class="pre">/etc/seth/client.pem</span></tt>.</dd>
 <dt><tt class="docutils literal"><span class="pre">-K</span> <span class="pre">KEY_FILE</span></tt>, <tt class="docutils literal"><span class="pre">--validation_key</span> <span class="pre">KEY_FILE</span></tt></dt>
-<dd>The location of the file which contains the key used when a seth-client is registered with a Seth server. A validation key is signed using the <tt class="docutils literal"><span class="pre">validation_client_name</span></tt> for authentication. Default value: <tt class="docutils literal"><span class="pre">/etc/chef/validation.pem</span></tt>.</dd>
+<dd>The location of the file which contains the key used when a seth-client is registered with a Seth server. A validation key is signed using the <tt class="docutils literal"><span class="pre">validation_client_name</span></tt> for authentication. Default value: <tt class="docutils literal"><span class="pre">/etc/seth/validation.pem</span></tt>.</dd>
 <dt><tt class="docutils literal"><span class="pre">-l</span> <span class="pre">LEVEL</span></tt>, <tt class="docutils literal"><span class="pre">--log_level</span> <span class="pre">LEVEL</span></tt></dt>
 <dd>The level of logging that will be stored in a log file.</dd>
 <dt><tt class="docutils literal"><span class="pre">-L</span> <span class="pre">LOGLOCATION</span></tt>, <tt class="docutils literal"><span class="pre">--logfile</span> <span class="pre">c</span></tt></dt>
@@ -109,16 +109,16 @@
 <dd>Use to enable data collection reporting during a seth-client run.</dd>
 <dt><tt class="docutils literal"><span class="pre">-s</span> <span class="pre">SECONDS</span></tt>, <tt class="docutils literal"><span class="pre">--splay</span> <span class="pre">SECONDS</span></tt></dt>
 <dd>A number (in seconds) to add to the <tt class="docutils literal"><span class="pre">interval</span></tt> that is used to determine the frequency of seth-client runs. This number can help prevent server load when there are many clients running at the same time.</dd>
-<dt><tt class="docutils literal"><span class="pre">-S</span> <span class="pre">CHEF_SERVER_URL</span></tt>, <tt class="docutils literal"><span class="pre">--server</span> <span class="pre">CHEF_SERVER_URL</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">-S</span> <span class="pre">seth_SERVER_URL</span></tt>, <tt class="docutils literal"><span class="pre">--server</span> <span class="pre">seth_SERVER_URL</span></tt></dt>
 <dd>The URL for the Seth server.</dd>
 <dt><tt class="docutils literal"><span class="pre">-u</span> <span class="pre">USER</span></tt>, <tt class="docutils literal"><span class="pre">--user</span> <span class="pre">USER</span></tt></dt>
 <dd>The user that owns a process. This is required when starting any executable as a daemon.</dd>
 <dt><tt class="docutils literal"><span class="pre">-v</span></tt>, <tt class="docutils literal"><span class="pre">--version</span></tt></dt>
 <dd>The version of the seth-client.</dd>
 <dt><tt class="docutils literal"><span class="pre">-W</span></tt>, <tt class="docutils literal"><span class="pre">--why-run</span></tt></dt>
-<dd>Indicates that the executable will be run in why-run mode, which is a type of seth-client run that does everything except modify the system. Use why-run mode to understand why the chef-client makes the decisions that it makes and to learn more about the current and proposed state of the system.</dd>
+<dd>Indicates that the executable will be run in why-run mode, which is a type of seth-client run that does everything except modify the system. Use why-run mode to understand why the seth-client makes the decisions that it makes and to learn more about the current and proposed state of the system.</dd>
 <dt><tt class="docutils literal"><span class="pre">-z</span></tt>, <tt class="docutils literal"><span class="pre">--local-mode</span></tt></dt>
-<dd>Indicates that the seth-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local chef-repo.</dd>
+<dd>Indicates that the seth-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth-repo.</dd>
 </dl>
 </div>
 <div class="section" id="run-with-elevated-privileges">
@@ -129,7 +129,7 @@
 <p>On Linux, the following error sometimes occurs when the permissions used to run the seth-client are incorrect:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>seth-client
 <span class="o">[</span>Tue, 29 Nov 2011 19:46:17 -0800<span class="o">]</span> INFO: *** Seth 10.X.X ***
-<span class="o">[</span>Tue, 29 Nov 2011 19:46:18 -0800<span class="o">]</span> WARN: Failed to <span class="nb">read </span>the private key /etc/seth/client.pem: <span class="c">#&lt;Errno::EACCES: Permission denied - /etc/chef/client.pem&gt;</span>
+<span class="o">[</span>Tue, 29 Nov 2011 19:46:18 -0800<span class="o">]</span> WARN: Failed to <span class="nb">read </span>the private key /etc/seth/client.pem: <span class="c">#&lt;Errno::EACCES: Permission denied - /etc/seth/client.pem&gt;</span>
 </pre></div>
 </div>
 <p>This can be resolved by running the command as root. There are a few ways this can be done:</p>
@@ -154,13 +154,13 @@
 </div>
 </div></blockquote>
 </li>
-<li><p class="first">Give a user access to read <tt class="docutils literal"><span class="pre">/etc/seth</span></tt> and also the files accessed by the chef-client. This requires super user privileges and, as such, is not a recommended approach</p>
+<li><p class="first">Give a user access to read <tt class="docutils literal"><span class="pre">/etc/seth</span></tt> and also the files accessed by the seth-client. This requires super user privileges and, as such, is not a recommended approach</p>
 </li>
 </ul>
 </div>
 <div class="section" id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
-<p>On Microsoft Windows, running without elevated privileges (when they are necessary) is an issue that fails silently. It will appear that the seth-client completed its run successfully, but the changes will not have been made. When this occurs, do one of the following to run the chef-client as the administrator:</p>
+<p>On Microsoft Windows, running without elevated privileges (when they are necessary) is an issue that fails silently. It will appear that the seth-client completed its run successfully, but the changes will not have been made. When this occurs, do one of the following to run the seth-client as the administrator:</p>
 <ul>
 <li><p class="first">Log in to the administrator account. (This is not the same as an account in the administrator&#8217;s security group.)</p>
 </li>
@@ -180,7 +180,7 @@
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p><strong>Start a Seth run when the seth-client is running as a daemon</strong></p>
-<p>A seth-client that is running as a daemon can be woken up and started by sending the process a <tt class="docutils literal"><span class="pre">SIGUSR1</span></tt>. For example, to trigger a chef-client run on a machine running Linux:</p>
+<p>A seth-client that is running as a daemon can be woken up and started by sending the process a <tt class="docutils literal"><span class="pre">SIGUSR1</span></tt>. For example, to trigger a seth-client run on a machine running Linux:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>sudo killall -USR1 seth-client
 </pre></div>
 </div>
@@ -205,7 +205,7 @@
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

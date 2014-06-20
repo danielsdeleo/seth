@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+
     <title>knife client &mdash; seth-client Man Pages</title>
-    
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,16 +33,16 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
+
   <div class="section" id="knife-client">
 <h1>knife client<a class="headerlink" href="#knife-client" title="Permalink to this headline">¶</a></h1>
-<p>The <strong>knife client</strong> subcommand is used to manage an API client list and their associated RSA public key-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the Chef Server API, such as the seth-client and Knife.</p>
+<p>The <strong>knife client</strong> subcommand is used to manage an API client list and their associated RSA public key-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the seth Server API, such as the seth-client and Knife.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
@@ -70,7 +70,7 @@
 <h2>create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to create a new API client. This process will generate an RSA key pair for the named API client. The public key will be stored on the Seth server and the private key will be displayed on <tt class="docutils literal"><span class="pre">STDOUT</span></tt> or written to a named file.</p>
 <ul class="simple">
-<li>For the seth-client, the private key should be copied to the system as <tt class="docutils literal"><span class="pre">/etc/chef/client.pem</span></tt>.</li>
+<li>For the seth-client, the private key should be copied to the system as <tt class="docutils literal"><span class="pre">/etc/seth/client.pem</span></tt>.</li>
 <li>For Knife, the private key is typically copied to <tt class="docutils literal"><span class="pre">~/.seth/client_name.pem</span></tt> and referenced in the knife.rb configuration file.</li>
 </ul>
 <div class="section" id="id1">
@@ -85,7 +85,7 @@
 <p>This argument has the following options:</p>
 <dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">-a</span></tt>, <tt class="docutils literal"><span class="pre">--admin</span></tt></dt>
-<dd>Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the Chef Server API as an administrator. This option only works when used with the open source Chef server and will have no effect when used with Enterprise Chef.</dd>
+<dd>Indicates that a client will be created as an admin client. This is required when users of the open source Seth server need to access the seth Server API as an administrator. This option only works when used with the open source seth server and will have no effect when used with Enterprise seth.</dd>
 </dl>
 </div>
 <div class="section" id="id3">
@@ -271,7 +271,7 @@ public_key:
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

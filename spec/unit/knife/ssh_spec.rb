@@ -22,7 +22,7 @@ require 'net/ssh/multi'
 
 describe Seth::Knife::Ssh do
   before(:each) do
-    Seth::Config[:client_key] = CHEF_SPEC_DATA + "/ssl/private_key.pem"
+    Seth::Config[:client_key] = seth_SPEC_DATA + "/ssl/private_key.pem"
   end
 
   before do
@@ -111,7 +111,7 @@ describe Seth::Knife::Ssh do
           Seth::Search::Query.stub(:new).and_return(@query)
         end
 
-        it "should raise a specific error (CHEF-3402)" do
+        it "should raise a specific error (seth-3402)" do
           @knife.ui.should_receive(:fatal).with(/^2 nodes found/)
           @knife.should_receive(:exit).with(10)
           @knife.configure_session

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# ./seth-service-manager - Control chef-service on Windows platforms.
+# ./seth-service-manager - Control seth-service on Windows platforms.
 #
 # Author:: Serdar Sutay (serdar@opscode.com)
 # Copyright:: Copyright (c) 2013 Opscode, Inc.

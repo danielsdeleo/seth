@@ -26,21 +26,21 @@ class Seth
 
     JSON_CLASS = "json_class".freeze
 
-    CHEF_APICLIENT          = "Seth::ApiClient".freeze
-    CHEF_CHECKSUM           = "Seth::Checksum".freeze
-    CHEF_COOKBOOKVERSION    = "Seth::CookbookVersion".freeze
-    CHEF_DATABAG            = "Seth::DataBag".freeze
-    CHEF_DATABAGITEM        = "Seth::DataBagItem".freeze
-    CHEF_ENVIRONMENT        = "Seth::Environment".freeze
-    CHEF_NODE               = "Seth::Node".freeze
-    CHEF_ROLE               = "Seth::Role".freeze
-    CHEF_SANDBOX            = "Seth::Sandbox".freeze
-    CHEF_RESOURCE           = "Seth::Resource".freeze
-    CHEF_RESOURCECOLLECTION = "Seth::ResourceCollection".freeze
+    seth_APICLIENT          = "Seth::ApiClient".freeze
+    seth_CHECKSUM           = "Seth::Checksum".freeze
+    seth_COOKBOOKVERSION    = "Seth::CookbookVersion".freeze
+    seth_DATABAG            = "Seth::DataBag".freeze
+    seth_DATABAGITEM        = "Seth::DataBagItem".freeze
+    seth_ENVIRONMENT        = "Seth::Environment".freeze
+    seth_NODE               = "Seth::Node".freeze
+    seth_ROLE               = "Seth::Role".freeze
+    seth_SANDBOX            = "Seth::Sandbox".freeze
+    seth_RESOURCE           = "Seth::Resource".freeze
+    seth_RESOURCECOLLECTION = "Seth::ResourceCollection".freeze
 
     class <<self
 
-      # See CHEF-1292/PL-538. Increase the max nesting for JSON, which defaults
+      # See seth-1292/PL-538. Increase the max nesting for JSON, which defaults
       # to 19, and isn't enough for some (for example, a Node within a Node)
       # structures.
       def opts_add_max_nesting(opts)
@@ -113,30 +113,30 @@ class Seth
       # the world to get json, which would make knife very slow.
       def class_for_json_class(json_class)
         case json_class
-        when CHEF_APICLIENT
+        when seth_APICLIENT
           Seth::ApiClient
-        when CHEF_CHECKSUM
+        when seth_CHECKSUM
           Seth::Checksum
-        when CHEF_COOKBOOKVERSION
+        when seth_COOKBOOKVERSION
           Seth::CookbookVersion
-        when CHEF_DATABAG
+        when seth_DATABAG
           Seth::DataBag
-        when CHEF_DATABAGITEM
+        when seth_DATABAGITEM
           Seth::DataBagItem
-        when CHEF_ENVIRONMENT
+        when seth_ENVIRONMENT
           Seth::Environment
-        when CHEF_NODE
+        when seth_NODE
           Seth::Node
-        when CHEF_ROLE
+        when seth_ROLE
           Seth::Role
-        when CHEF_SANDBOX
+        when seth_SANDBOX
           # a falsey return here will disable object inflation/"create
           # additions" in the caller. In Seth 11 this is correct, we just have
-          # a dummy Seth::Sandbox class for compat with Chef 10 servers.
+          # a dummy Seth::Sandbox class for compat with seth 10 servers.
           false
-        when CHEF_RESOURCE
+        when seth_RESOURCE
           Seth::Resource
-        when CHEF_RESOURCECOLLECTION
+        when seth_RESOURCECOLLECTION
           Seth::ResourceCollection
         when /^Seth::Resource/
           Seth::Resource.find_subclass_by_name(json_class)

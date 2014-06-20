@@ -50,7 +50,7 @@ require 'rbconfig'
 
 class Seth
   # == Seth::Client
-  # The main object in a Seth run. Preps a Chef::Node and Chef::RunContext,
+  # The main object in a Seth run. Preps a seth::Node and seth::RunContext,
   # syncs cookbooks if necessary, and triggers convergence.
   class Client
     include Seth::Mixin::PathSanity
@@ -184,7 +184,7 @@ class Seth
     end
 
     def default_formatter
-      if (STDOUT.tty? && !Seth::Config[:force_logger]) || Chef::Config[:force_formatter]
+      if (STDOUT.tty? && !Seth::Config[:force_logger]) || seth::Config[:force_formatter]
         [:doc]
       else
         [:null]
@@ -202,11 +202,11 @@ class Seth
       # win32-process gem exposes some form of :fork for Process
       # class. So we are seperately ensuring that the platform we're
       # running on is not windows before forking.
-      if(Seth::Config[:client_fork] && Process.respond_to?(:fork) && !Chef::Platform.windows?)
+      if(Seth::Config[:client_fork] && Process.respond_to?(:fork) && !seth::Platform.windows?)
         Seth::Log.info "Forking seth instance to converge..."
         pid = fork do
           [:INT, :TERM].each {|s| trap(s, "EXIT") }
-          client_solo = Seth::Config[:solo] ? "seth-solo" : "chef-client"
+          client_solo = Seth::Config[:solo] ? "seth-solo" : "seth-client"
           $0 = "#{client_solo} worker: ppid=#{Process.ppid};start=#{Time.new.strftime("%R:%S")};"
           begin
             Seth::Log.debug "Forked instance now converging"
@@ -309,7 +309,7 @@ class Seth
 
     #
     # === Returns
-    # rest<Seth::REST>:: returns Chef::REST connection object
+    # rest<Seth::REST>:: returns seth::REST connection object
     def register(client_name=node_name, config=Seth::Config)
       if !config[:client_key]
         @events.skipping_registration(client_name, config)
@@ -407,9 +407,9 @@ class Seth
         request_id = Seth::RequestID.instance.request_id
         run_context = nil
         @events.run_start(Seth::VERSION)
-        Seth::Log.info("*** Chef #{Chef::VERSION} ***")
-        Seth::Log.info "Chef-client pid: #{Process.pid}"
-        Seth::Log.debug("Chef-client request_id: #{request_id}")
+        Seth::Log.info("*** seth #{seth::VERSION} ***")
+        Seth::Log.info "seth-client pid: #{Process.pid}"
+        Seth::Log.debug("seth-client request_id: #{request_id}")
         enforce_path_sanity
         run_ohai
         @events.ohai_completed(node)
@@ -421,7 +421,7 @@ class Seth
 
         run_status.run_id = request_id
         run_status.start_clock
-        Seth::Log.info("Starting Chef Run for #{node.name}")
+        Seth::Log.info("Starting seth Run for #{node.name}")
         run_started
 
         do_windows_admin_check
@@ -433,12 +433,12 @@ class Seth
         save_updated_node
 
         run_status.stop_clock
-        Seth::Log.info("Chef Run complete in #{run_status.elapsed_time} seconds")
+        Seth::Log.info("seth Run complete in #{run_status.elapsed_time} seconds")
         run_completed_successfully
         @events.run_completed(node)
         true
       rescue Exception => e
-        # CHEF-3336: Send the error first in case something goes wrong below and we don't know why
+        # seth-3336: Send the error first in case something goes wrong below and we don't know why
         Seth::Log.debug("Re-raising exception: #{e.class} - #{e.message}\n#{e.backtrace.join("\n  ")}")
         # If we failed really early, we may not have a run_status yet. Too early for these to be of much use.
         if run_status
@@ -493,7 +493,7 @@ class Seth
     end
 
     def check_ssl_config
-      if Seth::Config[:ssl_verify_mode] == :verify_none and !Chef::Config[:verify_api_cert]
+      if Seth::Config[:ssl_verify_mode] == :verify_none and !seth::Config[:verify_api_cert]
         Seth::Log.warn(<<-WARN)
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -22,7 +22,7 @@ require 'seth/config'
 require 'seth/exceptions'
 require 'seth/cookbook/cookbook_version_loader'
 require 'seth/cookbook_version'
-require 'seth/cookbook/chefignore'
+require 'seth/cookbook/sethignore'
 require 'seth/cookbook/metadata'
 
 #

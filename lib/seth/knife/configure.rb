@@ -81,7 +81,7 @@ node_name                '#{new_client_name}'
 client_key               '#{new_client_key}'
 validation_client_name   '#{validation_client_name}'
 validation_key           '#{validation_key}'
-seth_server_url          '#{chef_server}'
+seth_server_url          '#{seth_server}'
 syntax_check_cache_path  '#{File.join(seth_config_path, "syntax_check_cache")}'
 EOH
           unless seth_repo.empty?
@@ -91,7 +91,7 @@ EOH
 
         if config[:initial]
           ui.msg("Creating initial API user...")
-          Seth::Config[:seth_server_url] = chef_server
+          Seth::Config[:seth_server_url] = seth_server
           Seth::Config[:node_name] = admin_client_name
           Seth::Config[:client_key] = admin_client_key
           user_create = Seth::Knife::UserCreate.new
@@ -133,7 +133,7 @@ EOH
 
       def ask_user_for_config
         server_name = guess_servername
-        @seth_server            = config[:chef_server_url] || ask_question("Please enter the chef server URL: ", :default => "https://#{server_name}:443")
+        @seth_server            = config[:seth_server_url] || ask_question("Please enter the seth server URL: ", :default => "https://#{server_name}:443")
         if config[:initial]
           @new_client_name        = config[:node_name] || ask_question("Please enter a name for the new user: ", :default => Etc.getlogin)
           @admin_client_name      = config[:admin_client_name] || ask_question("Please enter the existing admin name: ", :default => 'admin')
@@ -143,9 +143,9 @@ EOH
           @new_client_name        = config[:node_name] || ask_question("Please enter an existing username or clientname for the API: ", :default => Etc.getlogin)
         end
         @validation_client_name = config[:validation_client_name] || ask_question("Please enter the validation clientname: ", :default => 'seth-validator')
-        @validation_key         = config[:validation_key] || ask_question("Please enter the location of the validation key: ", :default => '/etc/seth-server/chef-validator.pem')
+        @validation_key         = config[:validation_key] || ask_question("Please enter the location of the validation key: ", :default => '/etc/seth-server/seth-validator.pem')
         @validation_key         = File.expand_path(@validation_key)
-        @seth_repo              = config[:repository] || ask_question("Please enter the path to a chef repository (or leave blank): ")
+        @seth_repo              = config[:repository] || ask_question("Please enter the path to a seth repository (or leave blank): ")
 
         @new_client_key = config[:client_key] || File.join(seth_config_path, "#{@new_client_name}.pem")
         @new_client_key = File.expand_path(@new_client_key)

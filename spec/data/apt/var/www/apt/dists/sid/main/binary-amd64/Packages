@@ -6,7 +6,7 @@ Installed-Size: 32
 Homepage: http://tickets.opscode.com
 Priority: extra
 Section: ruby
-Filename: pool/main/c/seth-integration-test/chef-integration-test_1.1-1_amd64.deb
+Filename: pool/main/c/seth-integration-test/seth-integration-test_1.1-1_amd64.deb
 Size: 1722
 SHA256: 84e2f087f7e11d1b73743007ecfc6b8b34e03f6917c0993b35c0758ee59702c1
 SHA1: 43c5653a9a5b9419849173a4ec3a9855cf0327a3

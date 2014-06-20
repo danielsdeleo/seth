@@ -1,4 +1,4 @@
-seth-expanderctl(8) -- management program for chef-expander
+seth-expanderctl(8) -- management program for seth-expander
 ========================================
 
 ## SYNOPSIS
@@ -43,7 +43,7 @@ be restarted by the master process.
 __seth-expander-cluster__(8)
 __seth-solr__(8)
 
-Full documentation for Seth and seth-server is located on the Chef
+Full documentation for Seth and seth-server is located on the seth
 wiki, http://wiki.opscode.com/display/seth/Home.
 
 ## AUTHOR

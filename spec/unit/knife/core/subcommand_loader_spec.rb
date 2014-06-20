@@ -21,9 +21,9 @@ require 'spec_helper'
 describe Seth::Knife::SubcommandLoader do
   before do
 
-    @home = File.join(CHEF_SPEC_DATA, 'knife-home')
+    @home = File.join(seth_SPEC_DATA, 'knife-home')
     @env = {'HOME' => @home}
-    @loader = Seth::Knife::SubcommandLoader.new(File.join(CHEF_SPEC_DATA, 'knife-site-subcommands'), @env)
+    @loader = Seth::Knife::SubcommandLoader.new(File.join(seth_SPEC_DATA, 'knife-site-subcommands'), @env)
   end
 
   it "builds a list of the core subcommand file require paths" do
@@ -69,11 +69,11 @@ describe Seth::Knife::SubcommandLoader do
   end
 
   it "finds repo specific subcommands by searching for a .seth directory" do
-    expected_command = File.join(CHEF_SPEC_DATA, 'knife-site-subcommands', 'plugins', 'knife', 'example_subcommand.rb')
+    expected_command = File.join(seth_SPEC_DATA, 'knife-site-subcommands', 'plugins', 'knife', 'example_subcommand.rb')
     @loader.site_subcommands.should include(expected_command)
   end
 
-  describe "finding 3rd party plugins" do 
+  describe "finding 3rd party plugins" do
     let(:env_home) { "/home/alice" }
     let(:manifest_path) { env_home + "/.seth/plugin_manifest.json" }
 

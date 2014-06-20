@@ -36,7 +36,7 @@ describe Seth::Resource::RemoteFile do
   it "says its provider is RemoteFile when the source is an absolute URI" do
     @resource.source("http://www.google.com/robots.txt")
     @resource.provider.should == Seth::Provider::RemoteFile
-    Seth::Platform.find_provider(:noplatform, 'noversion', @resource).should == Chef::Provider::RemoteFile
+    Seth::Platform.find_provider(:noplatform, 'noversion', @resource).should == seth::Provider::RemoteFile
   end
 
 

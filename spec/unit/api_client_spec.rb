@@ -213,7 +213,7 @@ describe Seth::ApiClient do
   describe "with correctly configured API credentials" do
     before do
       Seth::Config[:node_name] = "silent-bob"
-      Seth::Config[:client_key] = File.expand_path('ssl/private_key.pem', CHEF_SPEC_DATA)
+      Seth::Config[:client_key] = File.expand_path('ssl/private_key.pem', seth_SPEC_DATA)
     end
 
     after do

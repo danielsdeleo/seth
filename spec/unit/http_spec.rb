@@ -29,17 +29,17 @@ describe Seth::HTTP do
 
   describe "create_url" do
 
-    it 'should return a correctly formatted url 1/3 CHEF-5261' do
+    it 'should return a correctly formatted url 1/3 seth-5261' do
       http = Seth::HTTP.new('http://www.getseth.com')
       http.create_url('api/endpoint').should eql(URI.parse('http://www.getseth.com/api/endpoint'))
     end
 
-    it 'should return a correctly formatted url 2/3 CHEF-5261' do
+    it 'should return a correctly formatted url 2/3 seth-5261' do
       http = Seth::HTTP.new('http://www.getseth.com/')
       http.create_url('/organization/org/api/endpoint/').should eql(URI.parse('http://www.getseth.com/organization/org/api/endpoint/'))
     end
 
-    it 'should return a correctly formatted url 3/3 CHEF-5261' do
+    it 'should return a correctly formatted url 3/3 seth-5261' do
       http = Seth::HTTP.new('http://www.getseth.com/organization/org///')
       http.create_url('///api/endpoint?url=http://foo.bar').should eql(URI.parse('http://www.getseth.com/organization/org/api/endpoint?url=http://foo.bar'))
     end
@@ -48,7 +48,7 @@ describe Seth::HTTP do
 
   describe "head" do
 
-    it 'should return nil for a "200 Success" response (CHEF-4762)' do
+    it 'should return nil for a "200 Success" response (seth-4762)' do
       resp = Net::HTTPOK.new("1.1", 200, "OK")
       resp.should_receive(:read_body).and_return(nil)
       http = Seth::HTTP.new("")
@@ -57,7 +57,7 @@ describe Seth::HTTP do
       http.head("http://www.getseth.com/").should eql(nil)
     end
 
-    it 'should return false for a "304 Not Modified" response (CHEF-4762)' do
+    it 'should return false for a "304 Not Modified" response (seth-4762)' do
       resp = Net::HTTPNotModified.new("1.1", 304, "Not Modified")
       resp.should_receive(:read_body).and_return(nil)
       http = Seth::HTTP.new("")
