@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-SEARCH" "1" "Seth 11.12.0" "" "knife search"
+.TH "ceth-SEARCH" "1" "Seth 11.12.0" "" "ceth search"
 .SH NAME
-knife-search \- The man page for the knife search subcommand.
+ceth-search \- The man page for the ceth search subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,9 +31,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-Search indexes allow queries to be made for any type of data that is indexed by the Seth server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full\-text query that can be done from several locations, including from within a recipe, by using the \fBsearch\fP subcommand in Knife, or by using the \fB/search\fP or \fB/search/INDEX\fP endpoints in the seth Server API\&. The search engine is based on Apache Solr and is run from the seth server\&.
+Search indexes allow queries to be made for any type of data that is indexed by the Seth server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full\-text query that can be done from several locations, including from within a recipe, by using the \fBsearch\fP subcommand in ceth, or by using the \fB/search\fP or \fB/search/INDEX\fP endpoints in the seth Server API\&. The search engine is based on Apache Solr and is run from the seth server\&.
 .sp
-The \fBknife search\fP subcommand is used run a search query for information that is indexed on a Seth server\&.
+The \fBceth search\fP subcommand is used run a search query for information that is indexed on a Seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -43,7 +43,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife search INDEX SEARCH_QUERY
+$ ceth search INDEX SEARCH_QUERY
 .ft P
 .fi
 .UNINDENT
@@ -57,7 +57,7 @@ where \fBINDEX\fP is one of \fBclient\fP, \fBenvironment\fP, \fBnode\fP, \fBrole
 .sp
 .nf
 .ft C
-$ knife search \(aq*:*\(aq \-i
+$ ceth search \(aq*:*\(aq \-i
 .ft P
 .fi
 .UNINDENT
@@ -90,7 +90,7 @@ and is the same search as:
 .sp
 .nf
 .ft C
-$ knife search node \(aq*:*" \-i
+$ ceth search node \(aq*:*" \-i
 .ft P
 .fi
 .UNINDENT
@@ -102,7 +102,7 @@ If the \fBSEARCH_QUERY\fP does not contain a colon character (\fB:\fP), then the
 .sp
 .nf
 .ft C
-$ knife search ubuntu
+$ ceth search ubuntu
 .ft P
 .fi
 .UNINDENT
@@ -114,7 +114,7 @@ or:
 .sp
 .nf
 .ft C
-$ knife search node "tags:*ubuntu* OR roles:*ubuntu* OR fqdn:*ubuntu* (etc.)"
+$ ceth search node "tags:*ubuntu* OR roles:*ubuntu* OR fqdn:*ubuntu* (etc.)"
 .ft P
 .fi
 .UNINDENT
@@ -144,7 +144,7 @@ Indicates whether colored output will be used.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -165,7 +165,7 @@ Indicates that only matching object IDs will be shown.
 The name of the index to be queried: \fBclient\fP, \fBenvironment\fP, \fBnode\fP, \fBrole\fP, or \fBDATA_BAG_NAME\fP\&. Default index: \fBnode\fP\&.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-l\fP, \fB\-\-long\fP
 Display long output when searching nodes while using the default summary format.
@@ -195,7 +195,7 @@ The URL for the Seth server\&.
 The search query used to identify a a list of items on a Seth server\&. This option uses the same syntax as the \fBsearch\fP sub\-command.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -204,7 +204,7 @@ The version of the seth\-client\&.
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -218,7 +218,7 @@ To search for the IDs of all nodes running on the Amazon EC2 platform, enter:
 .sp
 .nf
 .ft C
-$ knife search node \(aqec2:*\(aq \-i
+$ ceth search node \(aqec2:*\(aq \-i
 .ft P
 .fi
 .UNINDENT
@@ -250,7 +250,7 @@ To search for the instance type (flavor) of all nodes running on the Amazon EC2 
 .sp
 .nf
 .ft C
-$ knife search node \(aqec2:*\(aq \-a ec2.instance_type
+$ ceth search node \(aqec2:*\(aq \-a ec2.instance_type
 .ft P
 .fi
 .UNINDENT
@@ -286,7 +286,7 @@ To search for all nodes running Ubuntu, enter:
 .sp
 .nf
 .ft C
-$ knife search node \(aqplatform:ubuntu\(aq
+$ ceth search node \(aqplatform:ubuntu\(aq
 .ft P
 .fi
 .UNINDENT
@@ -298,7 +298,7 @@ To search for all nodes running CentOS in the production environment, enter:
 .sp
 .nf
 .ft C
-$ knife search node \(aqseth_environment:production AND platform:centos\(aq
+$ ceth search node \(aqseth_environment:production AND platform:centos\(aq
 .ft P
 .fi
 .UNINDENT
@@ -310,7 +310,7 @@ To find a nested attribute, use a pattern similar to the following:
 .sp
 .nf
 .ft C
-$ knife search node <query_to_run> \-a <main_attribute>.<nested_attribute>
+$ ceth search node <query_to_run> \-a <main_attribute>.<nested_attribute>
 .ft P
 .fi
 .UNINDENT
@@ -322,7 +322,7 @@ To build a search query to use more than one attribute, use an underscore (\fB_\
 .sp
 .nf
 .ft C
-$ knife search node "languages_ruby_version:1.9.3"
+$ ceth search node "languages_ruby_version:1.9.3"
 .ft P
 .fi
 .UNINDENT
@@ -334,19 +334,19 @@ To build a search query that can find a nested attribute:
 .sp
 .nf
 .ft C
-$ knife search node name:<node_name> \-a kernel.machine
+$ ceth search node name:<node_name> \-a kernel.machine
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .sp
-To test a search query that will be used in a \fBknife ssh\fP command:
+To test a search query that will be used in a \fBceth ssh\fP command:
 .INDENT 0.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
-$ knife search node "role:web NOT name:web03"
+$ ceth search node "role:web NOT name:web03"
 .ft P
 .fi
 .UNINDENT

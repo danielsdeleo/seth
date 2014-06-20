@@ -10,7 +10,7 @@ class Seth
     # and make use of its "auto-inflation" of classes (driven by the
     # contents of the 'json_class' key in all of our JSON), any
     # sandbox responses from a Seth 10 server to a seth 11 client
-    # would cause knife to crash.  The JSON gem would attempt to
+    # would cause ceth to crash.  The JSON gem would attempt to
     # auto-inflate based on a "json_class": "Seth::Sandbox" hash
     # entry, but would not be able to find a Seth::Sandbox class!
     #

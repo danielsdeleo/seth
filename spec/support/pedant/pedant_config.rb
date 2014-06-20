@@ -80,13 +80,13 @@ requestors({
     :admin => {
       :name => "pedant_admin_client",
       :create_me => true,
-      :create_knife => true,
+      :create_ceth => true,
       :admin => true
     },
     :non_admin => {
       :name => 'pedant_client',
       :create_me => true,
-      :create_knife => true
+      :create_ceth => true
     },
     :bad => {
       :name => 'bad_client',
@@ -98,21 +98,21 @@ requestors({
       :name => "admin",
       :key_file => key,
       :create_me => false,
-      :create_knife => false,
+      :create_ceth => false,
       :admin => true
      },
     :non_admin => {
       :name => "pedant_non_admin_user",
       :create_me => true,
-      :create_knife => true,
+      :create_ceth => true,
       :admin => false
     },
-    # A user for Knife tests.  A knife.rb and key files will be set up
+    # A user for ceth tests.  A ceth.rb and key files will be set up
     # for this user
-    :knife_user => {
-      :name => "knifey",
+    :ceth_user => {
+      :name => "cethy",
       :create_me => true,
-      :create_knife => true
+      :create_ceth => true
     }
   }
 })

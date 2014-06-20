@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>knife xargs &mdash; seth-client Man Pages</title>
+    <title>ceth xargs &mdash; seth-client Man Pages</title>
 
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,13 +40,13 @@
 
           <div class="body">
 
-  <div class="section" id="knife-xargs">
-<h1>knife xargs<a class="headerlink" href="#knife-xargs" title="Permalink to this headline">¶</a></h1>
-<p>The <strong>knife xargs</strong> subcommand is used to build and execute command lines against objects on a Seth server using standard input.</p>
+  <div class="section" id="ceth-xargs">
+<h1>ceth xargs<a class="headerlink" href="#ceth-xargs" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>ceth xargs</strong> subcommand is used to build and execute command lines against objects on a Seth server using standard input.</p>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <p>This subcommand has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife xargs <span class="o">[</span>PATTERN...<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth xargs <span class="o">[</span>PATTERN...<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -54,7 +54,7 @@
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
+<p class="last">Review the list of <a class="reference internal" href="ceth_common_options.html"><em>common options</em></a> available to this (and all) ceth subcommands and plugins.</p>
 </div>
 <p>This subcommand has the following options:</p>
 <dl class="docutils">
@@ -90,9 +90,9 @@
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-<p>The following examples show how to use this Knife subcommand:</p>
-<p><strong>Use output of knife deps to pass command to knife xargs</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife deps nodes/*.json | xargs knife upload
+<p>The following examples show how to use this ceth subcommand:</p>
+<p><strong>Use output of ceth deps to pass command to ceth xargs</strong></p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth deps nodes/*.json | xargs ceth upload
 </pre></div>
 </div>
 </div>

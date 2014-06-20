@@ -15,7 +15,7 @@
 * [**Joe Richards**](https://github.com/viyh):
   Made -E option to work with single lettered environments. (seth-3075)
 * [**Jimmy McCrory**](https://github.com/JimmyMcCrory):
-  Added a 'knife node environment set' command. (seth-1910)
+  Added a 'ceth node environment set' command. (seth-1910)
 * [**Hongbin Lu**](https://github.com/hongbin):
   Made bootstrap report authentication exceptions. (seth-5161)
 * [**Richard Manyanza**](https://github.com/liseki):
@@ -44,7 +44,7 @@
 * [**Michael Bernstein**](https://github.com/mrb):
   Add Code Climate badge to README.
 * [**Phil Sturgeon**](https://github.com/philsturgeon):
-  Documentation that -E is not respected by knife ssh [search]. (seth-4778)
+  Documentation that -E is not respected by ceth ssh [search]. (seth-4778)
 * [**kaustubh**](https://github.com/kaustubh-d):
   Use 'guest' user on AIX for RSpec tests. (OC-9954)
 * [**Stephan Renatus**](https://github.com/srenatus):
@@ -78,7 +78,7 @@
 * [**MarkGibbons**](https://github.com/MarkGibbons):
   Allow for undefined solaris services in the service resource. (seth-5347)
 * [**Allan Espinosa**](https://github.com/aespinosa):
-  Properly knife bootstrap on ArchLinux. (seth-5366)
+  Properly ceth bootstrap on ArchLinux. (seth-5366)
 
 * Update rpm provider checking regex to allow for special characters (seth-4893)
 * Allow for spaces in selinux controlled directories (seth-5095)
@@ -86,7 +86,7 @@
 * Prevent tracing? from throwing an exception when first starting seth-shell.
 * Use Upstart provider on Ubuntu 13.10+. (seth-5276)
 * Cleaned up mount provider superclass
-* Added "knife serve" to bring up local mode as a server
+* Added "ceth serve" to bring up local mode as a server
 * Print nested LWRPs with indentation in doc formatter output
 * Make local mode stable enough to run seth-pedant
 * Wrap code in block context when syntax checking so `return` is valid
@@ -100,8 +100,8 @@
 * `option` attribute of mount resource now supports lazy evaluation. (seth-5163)
 * `force_unlink` now only unlinks if the file already exists. (seth-5015)
 * `seth_gem` resource now uses omnibus gem binary. (seth-5092)
-* seth-full template gets knife options to override install script url, add wget/curl cli options, and custom install commands (seth-4697)
-* knife now bootstraps node with the latest current version of seth-client. (seth-4911)
+* seth-full template gets ceth options to override install script url, add wget/curl cli options, and custom install commands (seth-4697)
+* ceth now bootstraps node with the latest current version of seth-client. (seth-4911)
 * Add config options for attribute whitelisting in node.save. (seth-3811)
 * Use user's .seth as a fallback cache path if /var/seth is not accessible. (seth-5259)
 * Fixed Ruby 2.0 Windows compatibility issues around ruby-wmi gem by replacing it with wmi-lite gem.
@@ -109,7 +109,7 @@
 * Automatically enable verify_api_cert when running seth-client in local-mode. (Seth Issues 1464)
 * Add helper to warn for broken [windows] paths. (seth-5322)
 * Send md5 checksummed data for registry key if data type is binary, dword, or qword. (Seth-5323)
-* Add warning if host resembles winrm command and knife-windows is not present.
+* Add warning if host resembles winrm command and ceth-windows is not present.
 
 ## Release: 11.12.4 (04/30/2014)
 http://www.getseth.com/blog/2014/04/30/release-seth-client-11-12-4-ohai-7-0-4/

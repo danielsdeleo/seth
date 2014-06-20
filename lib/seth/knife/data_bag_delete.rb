@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class DataBagDelete < Knife
+  class ceth
+    class DataBagDelete < ceth
 
       deps do
         require 'seth/data_bag'
       end
 
-      banner "knife data bag delete BAG [ITEM] (options)"
+      banner "ceth data bag delete BAG [ITEM] (options)"
       category "data bag"
 
       def run

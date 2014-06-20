@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class EnvironmentShow < Knife
+  class ceth
+    class EnvironmentShow < ceth
 
-      include Knife::Core::MultiAttributeReturnOption
+      include ceth::Core::MultiAttributeReturnOption
 
       deps do
         require 'seth/environment'
         require 'seth/json_compat'
       end
 
-      banner "knife environment show ENVIRONMENT (options)"
+      banner "ceth environment show ENVIRONMENT (options)"
 
       def run
         env_name = @name_args[0]

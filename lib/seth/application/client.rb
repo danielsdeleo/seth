@@ -221,7 +221,7 @@ class Seth::Application::Client < seth::Application
 
   option :config_file_jail,
     :long         => "--config-file-jail PATH",
-    :description  => "Directory under which config files are allowed to be loaded (no client.rb or knife.rb outside this path will be loaded)."
+    :description  => "Directory under which config files are allowed to be loaded (no client.rb or ceth.rb outside this path will be loaded)."
 
   option :run_lock_timeout,
     :long         => "--run-lock-timeout SECONDS",
@@ -276,8 +276,8 @@ class Seth::Application::Client < seth::Application
     Seth::Config.config_file_jail = config[:config_file_jail] if config[:config_file_jail]
     if !config.has_key?(:config_file)
       if config[:local_mode]
-        require 'seth/knife'
-        config[:config_file] = Seth::Knife.locate_config_file
+        require 'seth/ceth'
+        config[:config_file] = Seth::ceth.locate_config_file
       else
         config[:config_file] = Seth::Config.platform_specific_path("/etc/seth/client.rb")
       end

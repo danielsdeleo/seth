@@ -18,12 +18,12 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe Seth::Knife::CookbookSiteDownload do
+describe Seth::ceth::CookbookSiteDownload do
 
   describe 'run' do
     before do
-      @knife            = Seth::Knife::CookbookSiteDownload.new
-      @knife.name_args  = ['apache2']
+      @ceth            = Seth::ceth::CookbookSiteDownload.new
+      @ceth.name_args  = ['apache2']
       @noauth_rest      = double('no auth rest')
       @stdout           = StringIO.new
       @cookbook_api_url = 'http://cookbooks.opscode.com/api/v1/cookbooks'
@@ -33,8 +33,8 @@ describe Seth::Knife::CookbookSiteDownload do
                             'latest_version'   => "#{@cookbook_api_url}/apache2/versions/#{@version_us}",
                             'replacement' => 'other_apache2' }
 
-      @knife.ui.stub(:stdout).and_return(@stdout)
-      @knife.stub(:noauth_rest).and_return(@noauth_rest)
+      @ceth.ui.stub(:stdout).and_return(@stdout)
+      @ceth.stub(:noauth_rest).and_return(@noauth_rest)
       @noauth_rest.should_receive(:get_rest).
                    with("#{@cookbook_api_url}/apache2").
                    and_return(@current_data)
@@ -46,11 +46,11 @@ describe Seth::Knife::CookbookSiteDownload do
       end
 
       it 'should warn with info about the replacement' do
-        @knife.ui.should_receive(:warn).
+        @ceth.ui.should_receive(:warn).
                   with(/.+deprecated.+replaced by other_apache2.+/i)
-        @knife.ui.should_receive(:warn).
+        @ceth.ui.should_receive(:warn).
                   with(/use --force.+download.+/i)
-        @knife.run
+        @ceth.run
       end
     end
 
@@ -77,14 +77,14 @@ describe Seth::Knife::CookbookSiteDownload do
         context 'and it is deprecated and with --force' do
           before do
             @current_data['deprecated'] = true
-            @knife.config[:force] = true
+            @ceth.config[:force] = true
           end
 
           it 'should download the latest version' do
-            @knife.ui.should_receive(:warn).
+            @ceth.ui.should_receive(:warn).
                       with(/.+deprecated.+replaced by other_apache2.+/i)
             FileUtils.should_receive(:cp).with(@temp_file.path, @file)
-            @knife.run
+            @ceth.run
             @stdout.string.should match /downloading apache2.+version.+#{Regexp.escape(@version)}/i
             @stdout.string.should match /cookbook save.+#{Regexp.escape(@file)}/i
           end
@@ -93,7 +93,7 @@ describe Seth::Knife::CookbookSiteDownload do
 
         it 'should download the latest version' do
           FileUtils.should_receive(:cp).with(@temp_file.path, @file)
-          @knife.run
+          @ceth.run
           @stdout.string.should match /downloading apache2.+version.+#{Regexp.escape(@version)}/i
           @stdout.string.should match /cookbook save.+#{Regexp.escape(@file)}/i
         end
@@ -101,12 +101,12 @@ describe Seth::Knife::CookbookSiteDownload do
         context 'with -f or --file' do
           before do
             @file = '/opt/seth/cookbooks/apache2.tar.gz'
-            @knife.config[:file] = @file
+            @ceth.config[:file] = @file
             FileUtils.should_receive(:cp).with(@temp_file.path, @file)
           end
 
           it 'should download the cookbook to the desired file' do
-            @knife.run
+            @ceth.run
             @stdout.string.should match /downloading apache2.+version.+#{Regexp.escape(@version)}/i
             @stdout.string.should match /cookbook save.+#{Regexp.escape(@file)}/i
           end
@@ -114,8 +114,8 @@ describe Seth::Knife::CookbookSiteDownload do
 
         it 'should provide an accessor to the version' do
           FileUtils.stub(:cp).and_return(true)
-          @knife.version.should == @version
-          @knife.run
+          @ceth.version.should == @version
+          @ceth.run
         end
       end
 
@@ -127,7 +127,7 @@ describe Seth::Knife::CookbookSiteDownload do
                                'file'    => "http://example.com/apache2_#{@version_us}.tgz" }
           @temp_file       = double(:path => "/tmp/apache2_#{@version_us}.tgz")
           @file            = File.join(Dir.pwd, "apache2-#{@version}.tar.gz")
-          @knife.name_args << @version
+          @ceth.name_args << @version
         end
 
         it 'should download the desired version' do
@@ -138,7 +138,7 @@ describe Seth::Knife::CookbookSiteDownload do
                        with(@cookbook_data['file'], true).
                        and_return(@temp_file)
           FileUtils.should_receive(:cp).with(@temp_file.path, @file)
-          @knife.run
+          @ceth.run
           @stdout.string.should match /downloading apache2.+version.+#{Regexp.escape(@version)}/i
           @stdout.string.should match /cookbook save.+#{Regexp.escape(@file)}/i
         end

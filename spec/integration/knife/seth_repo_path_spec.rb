@@ -17,12 +17,12 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'seth/knife/list'
-require 'seth/knife/show'
+require 'seth/ceth/list'
+require 'seth/ceth/show'
 
 describe 'seth_repo_path tests' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
 
   # TODO alternate repo_path / *_path
   context 'alternate *_path' do
@@ -53,9 +53,9 @@ describe 'seth_repo_path tests' do
         file 'users/user3.json', {}
       end
 
-      it 'knife list --local -Rfp --seth-repo-path seth_repo2 / grabs seth_repo2 stuff' do
+      it 'ceth list --local -Rfp --seth-repo-path seth_repo2 / grabs seth_repo2 stuff' do
         Seth::Config.delete(:seth_repo_path)
-        knife("list --local -Rfp --seth-repo-path #{path_to('seth_repo2')} /").should_succeed <<EOM
+        ceth("list --local -Rfp --seth-repo-path #{path_to('seth_repo2')} /").should_succeed <<EOM
 /clients/
 /clients/client3.json
 /cookbooks/
@@ -83,8 +83,8 @@ EOM
           Seth::Config.seth_repo_path = File.join(seth::Config.seth_repo_path, 'seth_repo2')
         end
 
-        it 'knife list --local -Rfp --seth-repo-path seth_repo2 / grabs seth_repo2 stuff' do
-          knife("list --local -Rfp --seth-repo-path #{path_to('seth_repo2')} /").should_succeed <<EOM
+        it 'ceth list --local -Rfp --seth-repo-path seth_repo2 / grabs seth_repo2 stuff' do
+          ceth("list --local -Rfp --seth-repo-path #{path_to('seth_repo2')} /").should_succeed <<EOM
 /clients/
 /clients/client3.json
 /cookbooks/
@@ -106,22 +106,22 @@ EOM
 
         context 'when cwd is at the top level' do
           cwd '.'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside the data_bags directory' do
           cwd 'data_bags'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside seth_repo2' do
           cwd 'seth_repo2'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client2.json
 cookbooks/
@@ -144,14 +144,14 @@ EOM
 
         context 'when cwd is inside data_bags2' do
           cwd 'data_bags2'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag2/
 bag2/item2.json
 EOM
           end
-          it 'knife list --local -Rfp ../roles lists roles' do
-            knife('list --local -Rfp ../roles').should_succeed "/roles/role2.json\n"
+          it 'ceth list --local -Rfp ../roles lists roles' do
+            ceth('list --local -Rfp ../roles').should_succeed "/roles/role2.json\n"
           end
         end
       end
@@ -165,8 +165,8 @@ EOM
 
         context 'when cwd is at the top level' do
           cwd '.'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client2.json
 cookbooks/
@@ -189,22 +189,22 @@ EOM
 
         context 'when cwd is inside the data_bags directory' do
           cwd 'data_bags'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside seth_repo2' do
           cwd 'seth_repo2'
-          it 'knife list -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside data_bags2' do
           cwd 'data_bags2'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag2/
 bag2/item2.json
 EOM
@@ -222,22 +222,22 @@ EOM
 
         context 'when cwd is at the top level' do
           cwd '.'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside the data_bags directory' do
           cwd 'data_bags'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside seth_repo2' do
           cwd 'seth_repo2'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client3.json
 cookbooks/
@@ -260,8 +260,8 @@ EOM
 
         context 'when cwd is inside seth_repo2/data_bags' do
           cwd 'seth_repo2/data_bags'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag3/
 bag3/item3.json
 EOM
@@ -283,8 +283,8 @@ EOM
         context 'when there is a directory in clients1 and file in clients2 with the same name' do
           directory 'clients/blah.json'
           file 'clients2/blah.json', {}
-          it 'knife show /clients/blah.json succeeds' do
-            knife('show --local /clients/blah.json').should_succeed <<EOM
+          it 'ceth show /clients/blah.json succeeds' do
+            ceth('show --local /clients/blah.json').should_succeed <<EOM
 /clients/blah.json:
 {
 }
@@ -295,8 +295,8 @@ EOM
         context 'when there is a file in cookbooks1 and directory in cookbooks2 with the same name' do
           file 'cookbooks/blah', ''
           file 'cookbooks2/blah/metadata.rb', ''
-          it 'knife list -Rfp cookbooks shows files in blah' do
-            knife('list --local -Rfp /cookbooks').should_succeed <<EOM
+          it 'ceth list -Rfp cookbooks shows files in blah' do
+            ceth('list --local -Rfp /cookbooks').should_succeed <<EOM
 /cookbooks/blah/
 /cookbooks/blah/metadata.rb
 /cookbooks/cookbook1/
@@ -310,8 +310,8 @@ EOM
         context 'when there is an empty directory in cookbooks1 and a real cookbook in cookbooks2 with the same name' do
           directory 'cookbooks/blah'
           file 'cookbooks2/blah/metadata.rb', ''
-          it 'knife list -Rfp cookbooks shows files in blah' do
-            knife('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'blah' is empty or entirely sethignored at #{Seth::Config.cookbook_path[0]}/blah\n")
+          it 'ceth list -Rfp cookbooks shows files in blah' do
+            ceth('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'blah' is empty or entirely sethignored at #{Seth::Config.cookbook_path[0]}/blah\n")
 /cookbooks/blah/
 /cookbooks/blah/metadata.rb
 /cookbooks/cookbook1/
@@ -325,8 +325,8 @@ EOM
         context 'when there is a cookbook in cookbooks1 and a cookbook in cookbooks2 with the same name' do
           file 'cookbooks/blah/metadata.json', {}
           file 'cookbooks2/blah/metadata.rb', ''
-          it 'knife list -Rfp cookbooks shows files in the first cookbook and not the second' do
-            knife('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.cookbook_path[0]}/blah and #{seth::Config.cookbook_path[1]}/blah\n")
+          it 'ceth list -Rfp cookbooks shows files in the first cookbook and not the second' do
+            ceth('list --local -Rfp /cookbooks').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.cookbook_path[0]}/blah and #{seth::Config.cookbook_path[1]}/blah\n")
 /cookbooks/blah/
 /cookbooks/blah/metadata.json
 /cookbooks/cookbook1/
@@ -340,8 +340,8 @@ EOM
         context 'when there is a file in data_bags1 and a directory in data_bags2 with the same name' do
           file 'data_bags/blah', ''
           file 'data_bags2/blah/item.json', ''
-          it 'knife list -Rfp data_bags shows files in blah' do
-            knife('list --local -Rfp /data_bags').should_succeed <<EOM
+          it 'ceth list -Rfp data_bags shows files in blah' do
+            ceth('list --local -Rfp /data_bags').should_succeed <<EOM
 /data_bags/bag/
 /data_bags/bag/item.json
 /data_bags/bag2/
@@ -355,8 +355,8 @@ EOM
         context 'when there is a data bag in data_bags1 and a data bag in data_bags2 with the same name' do
           file 'data_bags/blah/item1.json', ''
           file 'data_bags2/blah/item2.json', ''
-          it 'knife list -Rfp data_bags shows only items in data_bags1' do
-            knife('list --local -Rfp /data_bags').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.data_bag_path[0]}/blah and #{seth::Config.data_bag_path[1]}/blah\n")
+          it 'ceth list -Rfp data_bags shows only items in data_bags1' do
+            ceth('list --local -Rfp /data_bags').should_succeed(<<EOM, :stderr => "WARN: Child with name 'blah' found in multiple directories: #{Seth::Config.data_bag_path[0]}/blah and #{seth::Config.data_bag_path[1]}/blah\n")
 /data_bags/bag/
 /data_bags/bag/item.json
 /data_bags/bag2/
@@ -370,8 +370,8 @@ EOM
         context 'when there is a directory in environments1 and file in environments2 with the same name' do
           directory 'environments/blah.json'
           file 'environments2/blah.json', {}
-          it 'knife show /environments/blah.json succeeds' do
-            knife('show --local /environments/blah.json').should_succeed <<EOM
+          it 'ceth show /environments/blah.json succeeds' do
+            ceth('show --local /environments/blah.json').should_succeed <<EOM
 /environments/blah.json:
 {
 }
@@ -382,8 +382,8 @@ EOM
         context 'when there is a directory in nodes1 and file in nodes2 with the same name' do
           directory 'nodes/blah.json'
           file 'nodes2/blah.json', {}
-          it 'knife show /nodes/blah.json succeeds' do
-            knife('show --local /nodes/blah.json').should_succeed <<EOM
+          it 'ceth show /nodes/blah.json succeeds' do
+            ceth('show --local /nodes/blah.json').should_succeed <<EOM
 /nodes/blah.json:
 {
 }
@@ -394,8 +394,8 @@ EOM
         context 'when there is a directory in roles1 and file in roles2 with the same name' do
           directory 'roles/blah.json'
           file 'roles2/blah.json', {}
-          it 'knife show /roles/blah.json succeeds' do
-            knife('show --local /roles/blah.json').should_succeed <<EOM
+          it 'ceth show /roles/blah.json succeeds' do
+            ceth('show --local /roles/blah.json').should_succeed <<EOM
 /roles/blah.json:
 {
 }
@@ -406,8 +406,8 @@ EOM
         context 'when there is a directory in users1 and file in users2 with the same name' do
           directory 'users/blah.json'
           file 'users2/blah.json', {}
-          it 'knife show /users/blah.json succeeds' do
-            knife('show --local /users/blah.json').should_succeed <<EOM
+          it 'ceth show /users/blah.json succeeds' do
+            ceth('show --local /users/blah.json').should_succeed <<EOM
 /users/blah.json:
 {
 }
@@ -417,15 +417,15 @@ EOM
 
         context 'when cwd is at the top level' do
           cwd '.'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside the data_bags directory' do
           cwd 'data_bags'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag/
 bag/item.json
 bag2/
@@ -436,8 +436,8 @@ EOM
 
         context 'when cwd is inside seth_repo2' do
           cwd 'seth_repo2'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client1.json
 clients/client2.json
@@ -469,8 +469,8 @@ EOM
 
         context 'when cwd is inside data_bags2' do
           cwd 'data_bags2'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag/
 bag/item.json
 bag2/
@@ -493,8 +493,8 @@ EOM
 
         context 'when cwd is at the top level' do
           cwd '.'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client1.json
 clients/client3.json
@@ -526,8 +526,8 @@ EOM
 
         context 'when cwd is inside the data_bags directory' do
           cwd 'data_bags'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag/
 bag/item.json
 bag3/
@@ -538,8 +538,8 @@ EOM
 
         context 'when cwd is inside seth_repo2' do
           cwd 'seth_repo2'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client1.json
 clients/client3.json
@@ -571,8 +571,8 @@ EOM
 
         context 'when cwd is inside seth_repo2/data_bags' do
           cwd 'seth_repo2/data_bags'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag/
 bag/item.json
 bag3/
@@ -593,22 +593,22 @@ EOM
 
         context 'when cwd is at the top level' do
           cwd '.'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside the data_bags directory' do
           cwd 'data_bags'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside seth_repo2' do
           cwd 'seth_repo2'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client3.json
 cookbooks/
@@ -631,8 +631,8 @@ EOM
 
         context 'when cwd is inside seth_repo2/data_bags' do
           cwd 'seth_repo2/data_bags'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag3/
 bag3/item3.json
 EOM
@@ -654,8 +654,8 @@ EOM
 
         context 'when cwd is at the top level' do
           cwd '.'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client1.json
 clients/client3.json
@@ -687,8 +687,8 @@ EOM
 
         context 'when cwd is inside the data_bags directory' do
           cwd 'data_bags'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag/
 bag/item.json
 bag3/
@@ -699,8 +699,8 @@ EOM
 
         context 'when cwd is inside seth_repo2' do
           cwd 'seth_repo2'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client1.json
 clients/client3.json
@@ -732,8 +732,8 @@ EOM
 
         context 'when cwd is inside seth_repo2/data_bags' do
           cwd 'seth_repo2/data_bags'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag/
 bag/item.json
 bag3/
@@ -754,15 +754,15 @@ EOM
 
         context 'when cwd is at the top level' do
           cwd '.'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
 
         context 'when cwd is inside the data_bags directory' do
           cwd 'data_bags'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag/
 bag/item.json
 EOM
@@ -771,8 +771,8 @@ EOM
 
         context 'when cwd is inside seth_repo2' do
           cwd 'seth_repo2'
-          it 'knife list --local -Rfp lists everything' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists everything' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 clients/
 clients/client3.json
 cookbooks/
@@ -795,8 +795,8 @@ EOM
 
         context 'when cwd is inside seth_repo2/data_bags' do
           cwd 'seth_repo2/data_bags'
-          it 'knife list --local -Rfp fails' do
-            knife('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
+          it 'ceth list --local -Rfp fails' do
+            ceth('list --local -Rfp').should_fail("ERROR: Attempt to use relative path '' when current directory is outside the repository path\n")
           end
         end
       end
@@ -812,16 +812,16 @@ EOM
           Seth::Config.data_bag_path = File.join(@repository_dir, 'data_bags')
         end
 
-        it 'knife list --local -Rfp / lists data bags' do
-          knife('list --local -Rfp /').should_succeed <<EOM
+        it 'ceth list --local -Rfp / lists data bags' do
+          ceth('list --local -Rfp /').should_succeed <<EOM
 /data_bags/
 /data_bags/bag/
 /data_bags/bag/item.json
 EOM
         end
 
-        it 'knife list --local -Rfp /data_bags lists data bags' do
-          knife('list --local -Rfp /data_bags').should_succeed <<EOM
+        it 'ceth list --local -Rfp /data_bags lists data bags' do
+          ceth('list --local -Rfp /data_bags').should_succeed <<EOM
 /data_bags/bag/
 /data_bags/bag/item.json
 EOM
@@ -829,8 +829,8 @@ EOM
 
         context 'when cwd is inside the data_bags directory' do
           cwd 'data_bags'
-          it 'knife list --local -Rfp lists data bags' do
-            knife('list --local -Rfp').should_succeed <<EOM
+          it 'ceth list --local -Rfp lists data bags' do
+            ceth('list --local -Rfp').should_succeed <<EOM
 bag/
 bag/item.json
 EOM
@@ -848,12 +848,12 @@ EOM
           Seth::Config.seth_repo_path = File.join(seth::Config.seth_repo_path, 'nowhere')
         end
 
-        it 'knife list --local -Rfp / fails' do
-          knife('list --local -Rfp /').should_succeed ''
+        it 'ceth list --local -Rfp / fails' do
+          ceth('list --local -Rfp /').should_succeed ''
         end
 
-        it 'knife list --local -Rfp /data_bags fails' do
-          knife('list --local -Rfp /data_bags').should_fail("ERROR: /data_bags: No such file or directory\n")
+        it 'ceth list --local -Rfp /data_bags fails' do
+          ceth('list --local -Rfp /data_bags').should_fail("ERROR: /data_bags: No such file or directory\n")
         end
       end
     end

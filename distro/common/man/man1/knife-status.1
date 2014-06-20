@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-STATUS" "1" "Seth 11.12.0" "" "knife status"
+.TH "ceth-STATUS" "1" "Seth 11.12.0" "" "ceth status"
 .SH NAME
-knife-status \- The man page for the knife status subcommand.
+ceth-status \- The man page for the ceth status subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife status\fP subcommand is used to display a brief summary of the nodes on a Seth server, including the time of the most recent successful seth\-client run.
+The \fBceth status\fP subcommand is used to display a brief summary of the nodes on a Seth server, including the time of the most recent successful seth\-client run.
 .sp
 \fBSyntax\fP
 .sp
@@ -41,7 +41,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife status (options)
+$ ceth status (options)
 .ft P
 .fi
 .UNINDENT
@@ -65,7 +65,7 @@ Indicates whether colored output will be used.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -83,7 +83,7 @@ Shows help for the command.
 Indicates that nodes on which a seth\-client run has occurred within the previous hour will be hidden.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-print\-after\fP
 Indicates that data will be shown after a destructive operation.
@@ -101,7 +101,7 @@ Indicates that the list will be sorted by last run time, descending.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -110,7 +110,7 @@ The version of the seth\-client\&.
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -124,7 +124,7 @@ To include run lists in the status, enter:
 .sp
 .nf
 .ft C
-$ knife status \-\-run\-list
+$ ceth status \-\-run\-list
 .ft P
 .fi
 .UNINDENT
@@ -153,7 +153,7 @@ To show the status for nodes on which the seth\-client did not run successfully 
 .sp
 .nf
 .ft C
-$ knife status \-\-hide\-healthy
+$ ceth status \-\-hide\-healthy
 .ft P
 .fi
 .UNINDENT
@@ -178,7 +178,7 @@ To show the status of a subset of nodes that are returned by a specific query, e
 .sp
 .nf
 .ft C
-$ knife status "role:web" \-\-run\-list
+$ ceth status "role:web" \-\-run\-list
 .ft P
 .fi
 .UNINDENT
@@ -206,7 +206,7 @@ To view the status of all nodes in the organization, enter:
 .sp
 .nf
 .ft C
-$ knife status
+$ ceth status
 .ft P
 .fi
 .UNINDENT

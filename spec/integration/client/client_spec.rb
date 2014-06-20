@@ -48,16 +48,16 @@ EOM
       end
     end
 
-    context 'and a config file under .seth/knife.rb' do
-      file '.seth/knife.rb', 'xxx.xxx'
+    context 'and a config file under .seth/ceth.rb' do
+      file '.seth/ceth.rb', 'xxx.xxx'
 
-      it 'should load .seth/knife.rb when -z is specified' do
+      it 'should load .seth/ceth.rb when -z is specified' do
         result = shell_out("#{seth_client} -z -o 'x::default' --config-file-jail \"#{path_to('')}\"", :cwd => path_to(''))
         # FATAL: Configuration error NoMethodError: undefined method `xxx' for nil:NilClass
         result.stdout.should include("xxx")
       end
 
-      it 'fails to load .seth/knife.rb when -z is specified and --config-file-jail does not include the .seth/knife.rb' do
+      it 'fails to load .seth/ceth.rb when -z is specified and --config-file-jail does not include the .seth/ceth.rb' do
         result = shell_out("#{seth_client} -z -o 'x::default' --config-file-jail \"#{path_to('roles')}\"", :cwd => path_to(''))
         result.error!
       end

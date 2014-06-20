@@ -1,18 +1,18 @@
 =====================================================
-knife delete 
+ceth delete
 =====================================================
 
-.. include:: ../../includes_knife/includes_knife_delete.rst
+.. include:: ../../includes_ceth/includes_ceth_delete.rst
 
 Syntax
 =====================================================
-.. include:: ../../includes_knife/includes_knife_delete_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_delete_syntax.rst
 
 Options
 =====================================================
-.. note:: Review the list of :doc:`common options </knife_common_options>` available to this (and all) |knife| subcommands and plugins.
+.. note:: Review the list of :doc:`common options </ceth_common_options>` available to this (and all) |ceth| subcommands and plugins.
 
-.. include:: ../../includes_knife/includes_knife_delete_options.rst
+.. include:: ../../includes_ceth/includes_ceth_delete_options.rst
 
 Examples
 =====================================================

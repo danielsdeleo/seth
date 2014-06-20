@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class ClientCreate < Knife
+  class ceth
+    class ClientCreate < ceth
 
       deps do
         require 'seth/api_client'
@@ -43,7 +43,7 @@ class Seth
         :description => "Create the client as a validator",
         :boolean => true
 
-      banner "knife client create CLIENT (options)"
+      banner "ceth client create CLIENT (options)"
 
       def run
         @client_name = @name_args[0]

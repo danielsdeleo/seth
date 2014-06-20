@@ -110,7 +110,7 @@ class Seth
       # Map +json_class+ to a Class object. We use a +case+ instead of a Hash
       # assigned to a constant because otherwise this file could not be loaded
       # until all the constants were defined, which means you'd have to load
-      # the world to get json, which would make knife very slow.
+      # the world to get json, which would make ceth very slow.
       def class_for_json_class(json_class)
         case json_class
         when seth_APICLIENT

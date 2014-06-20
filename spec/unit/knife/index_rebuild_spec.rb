@@ -18,18 +18,18 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::IndexRebuild do
+describe Seth::ceth::IndexRebuild do
 
-  let(:knife){Seth::Knife::IndexRebuild.new}
+  let(:ceth){Seth::ceth::IndexRebuild.new}
   let(:rest_client){double(Seth::REST)}
 
   let(:stub_rest!) do
-    knife.should_receive(:rest).and_return(rest_client)
+    ceth.should_receive(:rest).and_return(rest_client)
   end
 
   before :each do
     # This keeps the test output clean
-    knife.ui.stub(:stdout).and_return(StringIO.new)
+    ceth.ui.stub(:stdout).and_return(StringIO.new)
   end
 
   context "#grab_api_info" do
@@ -51,14 +51,14 @@ describe Seth::Knife::IndexRebuild do
     context "against a Seth 11 server" do
       let(:api_header_value){"flavor=osc;version=11.0.0;erseth=1.2.3"}
       it "retrieves API information" do
-        knife.grab_api_info.should == {"flavor" => "osc", "version" => "11.0.0", "erseth" => "1.2.3"}
+        ceth.grab_api_info.should == {"flavor" => "osc", "version" => "11.0.0", "erseth" => "1.2.3"}
       end
     end # Seth 11
 
     context "against a Seth 10 server" do
       let(:api_header_value){nil}
       it "finds no API information" do
-        knife.grab_api_info.should == {}
+        ceth.grab_api_info.should == {}
       end
     end # Seth 10
   end # grab_api_info
@@ -66,26 +66,26 @@ describe Seth::Knife::IndexRebuild do
   context "#unsupported_version?" do
     context "with Seth 11 API metadata" do
       it "is unsupported" do
-        knife.unsupported_version?({"version" => "11.0.0", "flavor" => "osc", "erseth" => "1.2.3"}).should be_true
+        ceth.unsupported_version?({"version" => "11.0.0", "flavor" => "osc", "erseth" => "1.2.3"}).should be_true
       end
 
       it "only truly relies on the version being non-nil" do
-        knife.unsupported_version?({"version" => "1", "flavor" => "osc", "erseth" => "1.2.3"}).should be_true
+        ceth.unsupported_version?({"version" => "1", "flavor" => "osc", "erseth" => "1.2.3"}).should be_true
       end
     end
 
     context "with Seth 10 API metadata" do
       it "is supported" do
         # Seth 10 will have no metadata
-        knife.unsupported_version?({}).should be_false
+        ceth.unsupported_version?({}).should be_false
       end
     end
   end # unsupported_version?
 
-  context "Simulating a 'knife index rebuild' run" do
+  context "Simulating a 'ceth index rebuild' run" do
 
     before :each do
-      knife.should_receive(:grab_api_info).and_return(api_info)
+      ceth.should_receive(:grab_api_info).and_return(api_info)
       server_specific_stubs!
     end
 
@@ -97,12 +97,12 @@ describe Seth::Knife::IndexRebuild do
         }
       end
       let(:server_specific_stubs!) do
-        knife.should_receive(:unsupported_server_message).with(api_info)
-        knife.should_receive(:exit).with(1)
+        ceth.should_receive(:unsupported_server_message).with(api_info)
+        ceth.should_receive(:exit).with(1)
       end
 
       it "should not be allowed" do
-        knife.run
+        ceth.run
       end
     end
 
@@ -111,13 +111,13 @@ describe Seth::Knife::IndexRebuild do
       let(:server_specific_stubs!) do
         stub_rest!
         rest_client.should_receive(:post_rest).with("/search/reindex", {}).and_return("representative output")
-        knife.should_not_receive(:unsupported_server_message)
-        knife.should_receive(:deprecated_server_message)
-        knife.should_receive(:nag)
-        knife.should_receive(:output).with("representative output")
+        ceth.should_not_receive(:unsupported_server_message)
+        ceth.should_receive(:deprecated_server_message)
+        ceth.should_receive(:nag)
+        ceth.should_receive(:output).with("representative output")
       end
       it "should be allowed" do
-        knife.run
+        ceth.run
       end
     end
   end

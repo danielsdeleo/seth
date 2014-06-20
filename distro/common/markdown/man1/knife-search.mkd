@@ -1,9 +1,9 @@
-knife-search(1) -- Find objects on a Seth Server by query
+ceth-search(1) -- Find objects on a Seth Server by query
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __search INDEX QUERY__ _(options)_
+__ceth__ __search INDEX QUERY__ _(options)_
 
   * `-a`, `--attribute ATTR`:
     Show only one attribute
@@ -31,7 +31,7 @@ __knife__ __search INDEX QUERY__ _(options)_
 Search is a feature of the Seth Server that allows you to use a
 full-text search engine to query information about your infrastructure
 and applications. You can utilize this service via search calls in a
-recipe or the knife search command.  The search syntax is based on
+recipe or the ceth search command.  The search syntax is based on
 Lucene.
 
 
@@ -50,7 +50,7 @@ query syntax. The following data types are indexed for search:
 Data bags are indexed by the data bag's name. For example, to search a
 data bag named "admins":
 
-    knife search admins "field:search_pattern"
+    ceth search admins "field:search_pattern"
 
 ## QUERY SYNTAX
 
@@ -95,11 +95,11 @@ within a search pattern.
 Range searches allows one to match values between two given values.  To
 match values between X and Y, inclusively, use square brackets:
 
-    knife search INDEX 'field:[X TO Y]
+    ceth search INDEX 'field:[X TO Y]
 
 To match values between X and Y, exclusively, use curly brackets:
 
-    knife search INDEX 'field:{X TO Y}'
+    ceth search INDEX 'field:{X TO Y}'
 
 Values are sorted in lexicographic order.
 
@@ -109,7 +109,7 @@ Fuzzy searches allows one to match values based on the Levenshtein
 Distance algorithm.  To perform a fuzzy match, append a tilda (~) to
 the search term:
 
-    knife search INDEX 'field:term~'
+    ceth search INDEX 'field:term~'
 
 This search would return nodes whose `field` was 'perm' or 'germ'.
 
@@ -118,15 +118,15 @@ This search would return nodes whose `field` was 'perm' or 'germ'.
 The boolean operators NOT, AND, and OR are supported.  To find values
 of `field` that are not X:
 
-    knife search INDEX 'field:(NOT X)'
+    ceth search INDEX 'field:(NOT X)'
 
 To find records where `field1` is X and `field2` is Y:
 
-    knife search INDEX 'field1:X AND field2:Y'
+    ceth search INDEX 'field1:X AND field2:Y'
 
 To find records where `field` is X or Y:
 
-    knife search INDEX 'field:X OR field:Y'
+    ceth search INDEX 'field:X OR field:Y'
 
 ### QUOTING AND SPECIAL CHARACTERS
 
@@ -136,7 +136,7 @@ enclose them in single quotes.
 
 Search terms that include spaces should be enclosed in double-quotes:
 
-    knife search INDEX 'field:"term with spaces"'
+    ceth search INDEX 'field:"term with spaces"'
 
 The following characters must be escaped:
 
@@ -147,15 +147,15 @@ The following characters must be escaped:
 Find the nodes with the fully-qualified domain name (FQDN)
 www.example.com:
 
-    knife search node 'fqdn:www.example.com'
+    ceth search node 'fqdn:www.example.com'
 
 Find the nodes running a version of Ubuntu:
 
-    knife search node 'platform:ubuntu*'
+    ceth search node 'platform:ubuntu*'
 
 Find all nodes running CentOS in the production environment:
 
-    knife search node 'seth_environment:production AND platform:centos'
+    ceth search node 'seth_environment:production AND platform:centos'
 
 ## KNOWN BUGS
 
@@ -163,7 +163,7 @@ Find all nodes running CentOS in the production environment:
   * Searches using the fuzzy match operator (~) produce an error. (seth-2478)
 
 ## SEE ALSO
-   __knife-ssh__(1)
+   __ceth-ssh__(1)
    <http://wiki.opscode.com/display/seth/Attributes>
    [Lucene Query Parser Syntax](http://lucene.apache.org/java/2_3_2/queryparsersyntax.html)
 
@@ -175,6 +175,6 @@ Find all nodes running CentOS in the production environment:
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 
 

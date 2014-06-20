@@ -18,58 +18,58 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::SubcommandLoader do
+describe Seth::ceth::SubcommandLoader do
   before do
 
-    @home = File.join(seth_SPEC_DATA, 'knife-home')
+    @home = File.join(seth_SPEC_DATA, 'ceth-home')
     @env = {'HOME' => @home}
-    @loader = Seth::Knife::SubcommandLoader.new(File.join(seth_SPEC_DATA, 'knife-site-subcommands'), @env)
+    @loader = Seth::ceth::SubcommandLoader.new(File.join(seth_SPEC_DATA, 'ceth-site-subcommands'), @env)
   end
 
   it "builds a list of the core subcommand file require paths" do
     @loader.subcommand_files.should_not be_empty
     @loader.subcommand_files.each do |require_path|
-      require_path.should match(/seth\/knife\/.*|plugins\/knife\/.*/)
+      require_path.should match(/seth\/ceth\/.*|plugins\/ceth\/.*/)
     end
   end
 
   it "finds files installed via rubygems" do
-    @loader.find_subcommands_via_rubygems.should include('seth/knife/node_create')
-    @loader.find_subcommands_via_rubygems.each {|rel_path, abs_path| abs_path.should match(%r[seth/knife/.+])}
+    @loader.find_subcommands_via_rubygems.should include('seth/ceth/node_create')
+    @loader.find_subcommands_via_rubygems.each {|rel_path, abs_path| abs_path.should match(%r[seth/ceth/.+])}
   end
 
   it "finds files from latest version of installed gems" do
-    gems = [ double('knife-ec2-0.5.12') ]
+    gems = [ double('ceth-ec2-0.5.12') ]
     gem_files = [
-      '/usr/lib/ruby/gems/knife-ec2-0.5.12/lib/seth/knife/ec2_base.rb',
-      '/usr/lib/ruby/gems/knife-ec2-0.5.12/lib/seth/knife/ec2_otherstuff.rb'
+      '/usr/lib/ruby/gems/ceth-ec2-0.5.12/lib/seth/ceth/ec2_base.rb',
+      '/usr/lib/ruby/gems/ceth-ec2-0.5.12/lib/seth/ceth/ec2_otherstuff.rb'
     ]
     $LOAD_PATH.should_receive(:map).and_return([])
     if Gem::Specification.respond_to? :latest_specs
       Gem::Specification.should_receive(:latest_specs).with(true).and_return(gems)
-      gems[0].should_receive(:matches_for_glob).with(/seth\/knife\/\*\.rb\{(.*),\.rb,(.*)\}/).and_return(gem_files)
+      gems[0].should_receive(:matches_for_glob).with(/seth\/ceth\/\*\.rb\{(.*),\.rb,(.*)\}/).and_return(gem_files)
     else
       Gem.source_index.should_receive(:latest_specs).with(true).and_return(gems)
       gems[0].should_receive(:require_paths).twice.and_return(['lib'])
-      gems[0].should_receive(:full_gem_path).and_return('/usr/lib/ruby/gems/knife-ec2-0.5.12')
-      Dir.should_receive(:[]).with('/usr/lib/ruby/gems/knife-ec2-0.5.12/lib/seth/knife/*.rb').and_return(gem_files)
+      gems[0].should_receive(:full_gem_path).and_return('/usr/lib/ruby/gems/ceth-ec2-0.5.12')
+      Dir.should_receive(:[]).with('/usr/lib/ruby/gems/ceth-ec2-0.5.12/lib/seth/ceth/*.rb').and_return(gem_files)
     end
     @loader.should_receive(:find_subcommands_via_dirglob).and_return({})
-    @loader.find_subcommands_via_rubygems.values.select { |file| file =~ /knife-ec2/ }.sort.should == gem_files
+    @loader.find_subcommands_via_rubygems.values.select { |file| file =~ /ceth-ec2/ }.sort.should == gem_files
   end
 
   it "finds files using a dirglob when rubygems is not available" do
-    @loader.find_subcommands_via_dirglob.should include('seth/knife/node_create')
-    @loader.find_subcommands_via_dirglob.each {|rel_path, abs_path| abs_path.should match(%r[seth/knife/.+])}
+    @loader.find_subcommands_via_dirglob.should include('seth/ceth/node_create')
+    @loader.find_subcommands_via_dirglob.each {|rel_path, abs_path| abs_path.should match(%r[seth/ceth/.+])}
   end
 
   it "finds user-specific subcommands in the user's ~/.seth directory" do
-    expected_command = File.join(@home, '.seth', 'plugins', 'knife', 'example_home_subcommand.rb')
+    expected_command = File.join(@home, '.seth', 'plugins', 'ceth', 'example_home_subcommand.rb')
     @loader.site_subcommands.should include(expected_command)
   end
 
   it "finds repo specific subcommands by searching for a .seth directory" do
-    expected_command = File.join(seth_SPEC_DATA, 'knife-site-subcommands', 'plugins', 'knife', 'example_subcommand.rb')
+    expected_command = File.join(seth_SPEC_DATA, 'ceth-site-subcommands', 'plugins', 'ceth', 'example_subcommand.rb')
     @loader.site_subcommands.should include(expected_command)
   end
 
@@ -95,7 +95,7 @@ describe Seth::Knife::SubcommandLoader do
           Gem.source_index.should_receive(:latest_specs).and_call_original
         end
         @loader.subcommand_files.each do |require_path|
-          require_path.should match(/seth\/knife\/.*|plugins\/knife\/.*/)
+          require_path.should match(/seth\/ceth\/.*|plugins\/ceth\/.*/)
         end
       end
 
@@ -111,7 +111,7 @@ describe Seth::Knife::SubcommandLoader do
             Gem.source_index.should_receive(:latest_specs).and_call_original
           end
           @loader.subcommand_files.each do |require_path|
-            require_path.should match(/seth\/knife\/.*|plugins\/knife\/.*/)
+            require_path.should match(/seth\/ceth\/.*|plugins\/ceth\/.*/)
           end
         end
       end
@@ -119,11 +119,11 @@ describe Seth::Knife::SubcommandLoader do
     end
 
     context "when there is a ~/.seth/plugin_manifest.json file" do
-      let(:ec2_server_create_plugin) { "/usr/lib/ruby/gems/knife-ec2-0.5.12/lib/seth/knife/ec2_server_create.rb" }
+      let(:ec2_server_create_plugin) { "/usr/lib/ruby/gems/ceth-ec2-0.5.12/lib/seth/ceth/ec2_server_create.rb" }
 
       let(:manifest_content) do
         { "plugins" => {
-            "knife-ec2" => {
+            "ceth-ec2" => {
               "paths" => [
                 ec2_server_create_plugin
               ]

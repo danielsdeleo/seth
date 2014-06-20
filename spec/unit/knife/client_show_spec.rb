@@ -18,25 +18,25 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::ClientShow do
+describe Seth::ceth::ClientShow do
   before(:each) do
-    @knife = Seth::Knife::ClientShow.new
-    @knife.name_args = [ 'adam' ]
+    @ceth = Seth::ceth::ClientShow.new
+    @ceth.name_args = [ 'adam' ]
     @client_mock = double('client_mock')
   end
 
   describe 'run' do
     it 'should list the client' do
       Seth::ApiClient.should_receive(:load).with('adam').and_return(@client_mock)
-      @knife.should_receive(:format_for_display).with(@client_mock)
-      @knife.run
+      @ceth.should_receive(:format_for_display).with(@client_mock)
+      @ceth.run
     end
 
     it 'should print usage and exit when a client name is not provided' do
-      @knife.name_args = []
-      @knife.should_receive(:show_usage)
-      @knife.ui.should_receive(:fatal)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = []
+      @ceth.should_receive(:show_usage)
+      @ceth.ui.should_receive(:fatal)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
   end
 end

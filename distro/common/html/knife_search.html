@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>knife search &mdash; seth-client Man Pages</title>
+    <title>ceth search &mdash; seth-client Man Pages</title>
 
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,19 +40,19 @@
 
           <div class="body">
 
-  <div class="section" id="knife-search">
-<h1>knife search<a class="headerlink" href="#knife-search" title="Permalink to this headline">¶</a></h1>
-<p>Search indexes allow queries to be made for any type of data that is indexed by the Seth server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full-text query that can be done from several locations, including from within a recipe, by using the <tt class="docutils literal"><span class="pre">search</span></tt> subcommand in Knife, or by using the <tt class="docutils literal"><span class="pre">/search</span></tt> or <tt class="docutils literal"><span class="pre">/search/INDEX</span></tt> endpoints in the seth Server API. The search engine is based on Apache Solr and is run from the seth server.</p>
-<p>The <strong>knife search</strong> subcommand is used run a search query for information that is indexed on a Seth server.</p>
+  <div class="section" id="ceth-search">
+<h1>ceth search<a class="headerlink" href="#ceth-search" title="Permalink to this headline">¶</a></h1>
+<p>Search indexes allow queries to be made for any type of data that is indexed by the Seth server, including data bags (and data bag items), environments, nodes, and roles. A defined query syntax is used to support search patterns like exact, wildcard, range, and fuzzy. A search is a full-text query that can be done from several locations, including from within a recipe, by using the <tt class="docutils literal"><span class="pre">search</span></tt> subcommand in ceth, or by using the <tt class="docutils literal"><span class="pre">/search</span></tt> or <tt class="docutils literal"><span class="pre">/search/INDEX</span></tt> endpoints in the seth Server API. The search engine is based on Apache Solr and is run from the seth server.</p>
+<p>The <strong>ceth search</strong> subcommand is used run a search query for information that is indexed on a Seth server.</p>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <p>This subcommand has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search INDEX SEARCH_QUERY
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search INDEX SEARCH_QUERY
 </pre></div>
 </div>
 <p>where <tt class="docutils literal"><span class="pre">INDEX</span></tt> is one of <tt class="docutils literal"><span class="pre">client</span></tt>, <tt class="docutils literal"><span class="pre">environment</span></tt>, <tt class="docutils literal"><span class="pre">node</span></tt>, <tt class="docutils literal"><span class="pre">role</span></tt>, or the name of a data bag and <tt class="docutils literal"><span class="pre">SEARCH_QUERY</span></tt> is the search query syntax for the query that will be executed.</p>
 <p><tt class="docutils literal"><span class="pre">INDEX</span></tt> is implied if omitted, and will default to <tt class="docutils literal"><span class="pre">node</span></tt>. For example:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search <span class="s1">&#39;*:*&#39;</span> -i
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search <span class="s1">&#39;*:*&#39;</span> -i
 </pre></div>
 </div>
 <p>will return something similar to:</p>
@@ -69,15 +69,15 @@ win2k8-dev
 </pre></div>
 </div>
 <p>and is the same search as:</p>
-<div class="highlight-bash"><div class="highlight"><pre>$ knife search node &#39;*:*&quot; -i
+<div class="highlight-bash"><div class="highlight"><pre>$ ceth search node &#39;*:*&quot; -i
 </pre></div>
 </div>
 <p>If the <tt class="docutils literal"><span class="pre">SEARCH_QUERY</span></tt> does not contain a colon character (<tt class="docutils literal"><span class="pre">:</span></tt>), then the default query pattern is <tt class="docutils literal"><span class="pre">tags:*#{&#64;query}*</span> <span class="pre">OR</span> <span class="pre">roles:*#{&#64;query}*</span> <span class="pre">OR</span> <span class="pre">fqdn:*#{&#64;query}*</span> <span class="pre">OR</span> <span class="pre">addresses:*#{&#64;query}*</span></tt>, which means the following two search queries are effectively the same:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search ubuntu
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search ubuntu
 </pre></div>
 </div>
 <p>or:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node <span class="s2">&quot;tags:*ubuntu* OR roles:*ubuntu* OR fqdn:*ubuntu* (etc.)&quot;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search node <span class="s2">&quot;tags:*ubuntu* OR roles:*ubuntu* OR fqdn:*ubuntu* (etc.)&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -85,7 +85,7 @@ win2k8-dev
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
+<p class="last">Review the list of <a class="reference internal" href="ceth_common_options.html"><em>common options</em></a> available to this (and all) ceth subcommands and plugins.</p>
 </div>
 <p>This sub-command has the following options:</p>
 <dl class="docutils">
@@ -115,10 +115,10 @@ win2k8-dev
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Search by platform ID</strong></p>
 <p>To search for the IDs of all nodes running on the Amazon EC2 platform, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node <span class="s1">&#39;ec2:*&#39;</span> -i
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search node <span class="s1">&#39;ec2:*&#39;</span> -i
 </pre></div>
 </div>
 <p>to return something like:</p>
@@ -135,7 +135,7 @@ ip-0A7CFFD5.ec2.internal
 </div>
 <p><strong>Search by instance type</strong></p>
 <p>To search for the instance type (flavor) of all nodes running on the Amazon EC2 platform, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node <span class="s1">&#39;ec2:*&#39;</span> -a ec2.instance_type
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search node <span class="s1">&#39;ec2:*&#39;</span> -a ec2.instance_type
 </pre></div>
 </div>
 <p>to return something like:</p>
@@ -156,32 +156,32 @@ id:                 ip-0A7CFFD5.ec2.internal
 </div>
 <p><strong>Search by node</strong></p>
 <p>To search for all nodes running Ubuntu, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node <span class="s1">&#39;platform:ubuntu&#39;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search node <span class="s1">&#39;platform:ubuntu&#39;</span>
 </pre></div>
 </div>
 <p><strong>Search by node and environment</strong></p>
 <p>To search for all nodes running CentOS in the production environment, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node <span class="s1">&#39;seth_environment:production AND platform:centos&#39;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search node <span class="s1">&#39;seth_environment:production AND platform:centos&#39;</span>
 </pre></div>
 </div>
 <p><strong>Search for nested attributes</strong></p>
 <p>To find a nested attribute, use a pattern similar to the following:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node &lt;query_to_run&gt; -a &lt;main_attribute&gt;.&lt;nested_attribute&gt;
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search node &lt;query_to_run&gt; -a &lt;main_attribute&gt;.&lt;nested_attribute&gt;
 </pre></div>
 </div>
 <p><strong>Search for multiple attributes</strong></p>
 <p>To build a search query to use more than one attribute, use an underscore (<tt class="docutils literal"><span class="pre">_</span></tt>) to separate each attribute. For example, the following query will search for all nodes running a specific version of Ruby:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node <span class="s2">&quot;languages_ruby_version:1.9.3&quot;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search node <span class="s2">&quot;languages_ruby_version:1.9.3&quot;</span>
 </pre></div>
 </div>
 <p><strong>Search for nested attributes using a search query</strong></p>
 <p>To build a search query that can find a nested attribute:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node name:&lt;node_name&gt; -a kernel.machine
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search node name:&lt;node_name&gt; -a kernel.machine
 </pre></div>
 </div>
 <p><strong>Use a test query</strong></p>
-<p>To test a search query that will be used in a <strong>knife ssh</strong> command:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife search node <span class="s2">&quot;role:web NOT name:web03&quot;</span>
+<p>To test a search query that will be used in a <strong>ceth ssh</strong> command:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth search node <span class="s2">&quot;role:web NOT name:web03&quot;</span>
 </pre></div>
 </div>
 <p>where the query in the previous example will search all servers that have the <tt class="docutils literal"><span class="pre">web</span></tt> role, but not on the server named <tt class="docutils literal"><span class="pre">web03</span></tt>.</p>

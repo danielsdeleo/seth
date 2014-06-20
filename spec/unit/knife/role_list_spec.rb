@@ -18,11 +18,11 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::RoleList do
+describe Seth::ceth::RoleList do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::RoleList.new
-    @knife.stub(:output).and_return(true)
+    @ceth = Seth::ceth::RoleList.new
+    @ceth.stub(:output).and_return(true)
     @list = {
       "foo" => "http://example.com/foo",
       "bar" => "http://example.com/foo"
@@ -33,21 +33,21 @@ describe Seth::Knife::RoleList do
   describe "run" do
     it "should list the roles" do
       Seth::Role.should_receive(:list).and_return(@list)
-      @knife.run
+      @ceth.run
     end
 
     it "should pretty print the list" do
       Seth::Role.should_receive(:list).and_return(@list)
-      @knife.should_receive(:output).with([ "bar", "foo" ])
-      @knife.run
+      @ceth.should_receive(:output).with([ "bar", "foo" ])
+      @ceth.run
     end
 
     describe "with -w or --with-uri" do
       it "should pretty print the hash" do
-        @knife.config[:with_uri] = true
+        @ceth.config[:with_uri] = true
         Seth::Role.should_receive(:list).and_return(@list)
-        @knife.should_receive(:output).with(@list)
-        @knife.run
+        @ceth.should_receive(:output).with(@list)
+        @ceth.run
       end
     end
   end

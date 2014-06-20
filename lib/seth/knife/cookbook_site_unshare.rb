@@ -17,17 +17,17 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookSiteUnshare < Knife
+  class ceth
+    class CookbookSiteUnshare < ceth
 
       deps do
         require 'seth/json_compat'
       end
 
-      banner "knife cookbook site unshare COOKBOOK"
+      banner "ceth cookbook site unshare COOKBOOK"
       category "cookbook site"
 
       def run

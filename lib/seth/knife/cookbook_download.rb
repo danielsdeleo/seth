@@ -17,11 +17,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookDownload < Knife
+  class ceth
+    class CookbookDownload < ceth
 
       attr_reader :version
       attr_accessor :cookbook_name
@@ -30,7 +30,7 @@ class Seth
         require 'seth/cookbook_version'
       end
 
-      banner "knife cookbook download COOKBOOK [VERSION] (options)"
+      banner "ceth cookbook download COOKBOOK [VERSION] (options)"
 
       option :latest,
        :short => "-N",
@@ -49,7 +49,7 @@ class Seth
        :long => "--force",
        :description => "Force download over the download directory if it exists"
 
-      # TODO: tim/cw: 5-23-2010: need to implement knife-side
+      # TODO: tim/cw: 5-23-2010: need to implement ceth-side
       # specificity for downloads - need to implement --platform and
       # --fqdn here
       def run

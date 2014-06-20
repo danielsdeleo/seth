@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'seth/knife/ssl_fetch'
+require 'seth/ceth/ssl_fetch'
 require 'seth/config'
 
 class Seth
-  class Knife
-    class SslFetch < Seth::Knife
+  class ceth
+    class SslFetch < Seth::ceth
 
       deps do
         require 'pp'
@@ -30,7 +30,7 @@ class Seth
         require 'openssl'
       end
 
-      banner "knife ssl fetch [URL] (options)"
+      banner "ceth ssl fetch [URL] (options)"
 
       def initialize(*args)
         super
@@ -129,7 +129,7 @@ class Seth
 Certificates from #{host} will be fetched and placed in your trusted_cert
 directory (#{trusted_certs_dir}).
 
-Knife has no means to verify these are the correct certificates. You should
+ceth has no means to verify these are the correct certificates. You should
 verify the authenticity of these certificates after downloading.
 
 TRUST_TRUST

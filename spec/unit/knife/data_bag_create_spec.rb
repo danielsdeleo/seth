@@ -34,42 +34,42 @@ module SethSpecs
 end
 
 
-describe Seth::Knife::DataBagCreate do
+describe Seth::ceth::DataBagCreate do
   before do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::DataBagCreate.new
+    @ceth = Seth::ceth::DataBagCreate.new
     @rest = SethSpecs::sethRest.new
-    @knife.stub(:rest).and_return(@rest)
+    @ceth.stub(:rest).and_return(@rest)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
 
   it "creates a data bag when given one argument" do
-    @knife.name_args = ['sudoing_admins']
+    @ceth.name_args = ['sudoing_admins']
     @rest.should_receive(:post_rest).with("data", {"name" => "sudoing_admins"})
-    @knife.ui.should_receive(:info).with("Created data_bag[sudoing_admins]")
+    @ceth.ui.should_receive(:info).with("Created data_bag[sudoing_admins]")
 
-    @knife.run
+    @ceth.run
   end
 
   it "tries to create a data bag with an invalid name when given one argument" do
-    @knife.name_args = ['invalid&char']
-    @knife.should_receive(:exit).with(1)
+    @ceth.name_args = ['invalid&char']
+    @ceth.should_receive(:exit).with(1)
 
-    @knife.run
+    @ceth.run
   end
 
   it "creates a data bag item when given two arguments" do
-    @knife.name_args = ['sudoing_admins', 'ME']
+    @ceth.name_args = ['sudoing_admins', 'ME']
     user_supplied_hash = {"login_name" => "alphaomega", "id" => "ME"}
     data_bag_item = Seth::DataBagItem.from_hash(user_supplied_hash)
     data_bag_item.data_bag("sudoing_admins")
-    @knife.should_receive(:create_object).and_yield(user_supplied_hash)
+    @ceth.should_receive(:create_object).and_yield(user_supplied_hash)
     @rest.should_receive(:post_rest).with("data", {'name' => 'sudoing_admins'}).ordered
     @rest.should_receive(:post_rest).with("data/sudoing_admins", data_bag_item).ordered
 
-    @knife.run
+    @ceth.run
   end
 
   describe "encrypted data bag items" do
@@ -78,8 +78,8 @@ describe Seth::Knife::DataBagCreate do
       @plain_data = {"login_name" => "alphaomega", "id" => "ME"}
       @enc_data = Seth::EncryptedDataBagItem.encrypt_data_bag_item(@plain_data,
                                                                    @secret)
-      @knife.name_args = ['sudoing_admins', 'ME']
-      @knife.should_receive(:create_object).and_yield(@plain_data)
+      @ceth.name_args = ['sudoing_admins', 'ME']
+      @ceth.should_receive(:create_object).and_yield(@plain_data)
       data_bag_item = Seth::DataBagItem.from_hash(@enc_data)
       data_bag_item.data_bag("sudoing_admins")
 
@@ -101,16 +101,16 @@ describe Seth::Knife::DataBagCreate do
     end
 
     it "creates an encrypted data bag item via --secret" do
-      @knife.stub(:config).and_return({:secret => @secret})
-      @knife.run
+      @ceth.stub(:config).and_return({:secret => @secret})
+      @ceth.run
     end
 
     it "creates an encrypted data bag item via --secret_file" do
       secret_file = Tempfile.new("encrypted_data_bag_secret_file_test")
       secret_file.puts(@secret)
       secret_file.flush
-      @knife.stub(:config).and_return({:secret_file => secret_file.path})
-      @knife.run
+      @ceth.stub(:config).and_return({:secret_file => secret_file.path})
+      @ceth.run
     end
   end
 

@@ -1,9 +1,9 @@
-knife-index(1) -- Rebuild the search index on a Seth Server
+ceth-index(1) -- Rebuild the search index on a Seth Server
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __index rebuild__ _(options)_
+__ceth__ __index rebuild__ _(options)_
 
   * `-y`, `--yes`:
     don't bother to ask if I'm sure
@@ -16,7 +16,7 @@ Depending on the number of objects in the database, it may take some
 time for all objects to be indexed and available for search.
 
 ## SEE ALSO
-   __knife-search__(1)
+   __ceth-search__(1)
 
 ## AUTHOR
    Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
@@ -26,5 +26,5 @@ time for all objects to be indexed and available for search.
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

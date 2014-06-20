@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe "knife smoke tests" do
+describe "ceth smoke tests" do
 
-  # Since our specs load all code, there could be a case where knife does not
+  # Since our specs load all code, there could be a case where ceth does not
   # run correctly b/c of a missing require, but is not caught by other tests.
   #
-  # We run `knife -v` to verify that knife at least loads all its code.
+  # We run `ceth -v` to verify that ceth at least loads all its code.
   it "can run and print its version" do
-    knife_path = File.expand_path("../../bin/knife", seth_SPEC_DATA)
-    knife_cmd = Mixlib::ShellOut.new("#{knife_path} -v")
-    knife_cmd.run_command
-    knife_cmd.error!
-    knife_cmd.stdout.should include(Seth::VERSION)
+    ceth_path = File.expand_path("../../bin/ceth", seth_SPEC_DATA)
+    ceth_cmd = Mixlib::ShellOut.new("#{ceth_path} -v")
+    ceth_cmd.run_command
+    ceth_cmd.error!
+    ceth_cmd.stdout.should include(Seth::VERSION)
   end
 end

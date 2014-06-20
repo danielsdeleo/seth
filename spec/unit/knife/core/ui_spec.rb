@@ -21,7 +21,7 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::UI do
+describe Seth::ceth::UI do
   before do
     @out, @err, @in = StringIO.new, StringIO.new, StringIO.new
     @config = {
@@ -29,7 +29,7 @@ describe Seth::Knife::UI do
       :yes => nil,
       :format => "summary",
     }
-    @ui = Seth::Knife::UI.new(@out, @err, @in, @config)
+    @ui = Seth::ceth::UI.new(@out, @err, @in, @config)
   end
 
   describe "edit" do
@@ -71,7 +71,7 @@ describe Seth::Knife::UI do
         @mock.should_receive(:puts).with(json_from_ruby)
         @mock.should_receive(:close)
         @mock.should_receive(:path).at_least(:once).and_return(temp_path)
-        Tempfile.should_receive(:open).with([ 'knife-edit-', '.json' ]).and_yield(@mock)
+        Tempfile.should_receive(:open).with([ 'ceth-edit-', '.json' ]).and_yield(@mock)
       end
       context "and the editor works" do
         before do
@@ -114,8 +114,8 @@ describe Seth::Knife::UI do
       before do
         @ui.config[:disable_editing] = false
         @ui.config[:editor] = my_editor
-        @tempfile = Tempfile.new([ 'knife-edit-', '.json' ])
-        Tempfile.should_receive(:open).with([ 'knife-edit-', '.json' ]).and_yield(@tempfile)
+        @tempfile = Tempfile.new([ 'ceth-edit-', '.json' ])
+        Tempfile.should_receive(:open).with([ 'ceth-edit-', '.json' ]).and_yield(@tempfile)
       end
 
       context "and the editor works" do

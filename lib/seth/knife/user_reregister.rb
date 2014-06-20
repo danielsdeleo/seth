@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class UserReregister < Knife
+  class ceth
+    class UserReregister < ceth
 
       deps do
         require 'seth/user'
         require 'seth/json_compat'
       end
 
-      banner "knife user reregister USER (options)"
+      banner "ceth user reregister USER (options)"
 
       option :file,
         :short => "-f FILE",

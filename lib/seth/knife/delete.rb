@@ -1,9 +1,9 @@
-require 'seth/seth_fs/knife'
+require 'seth/seth_fs/ceth'
 
 class Seth
-  class Knife
-    class Delete < Seth::sethFS::Knife
-      banner "knife delete [PATTERN1 ... PATTERNn]"
+  class ceth
+    class Delete < Seth::sethFS::ceth
+      banner "ceth delete [PATTERN1 ... PATTERNn]"
 
       category "path-based"
 
@@ -31,7 +31,7 @@ class Seth
       def run
         if name_args.length == 0
           show_usage
-          ui.fatal("Must specify at least one argument.  If you want to delete everything in this directory, type \"knife delete --recurse .\"")
+          ui.fatal("Must specify at least one argument.  If you want to delete everything in this directory, type \"ceth delete --recurse .\"")
           exit 1
         end
 
@@ -85,7 +85,7 @@ class Seth
           rescue Seth::sethFS::FileSystem::NotFoundError
             # This is not an error unless *all* of them were not found
           rescue Seth::sethFS::FileSystem::MustDeleteRecursivelyError => e
-            ui.error "#{format_path_with_root(e.entry)} must be deleted recursively!  Pass -r to knife delete."
+            ui.error "#{format_path_with_root(e.entry)} must be deleted recursively!  Pass -r to ceth delete."
             found_any = true
             error = true
           rescue Seth::sethFS::FileSystem::OperationNotAllowedError => e

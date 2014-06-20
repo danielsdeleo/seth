@@ -17,30 +17,30 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class DataBagEdit < Knife
+  class ceth
+    class DataBagEdit < ceth
 
       deps do
         require 'seth/data_bag_item'
         require 'seth/encrypted_data_bag_item'
       end
 
-      banner "knife data bag edit BAG ITEM (options)"
+      banner "ceth data bag edit BAG ITEM (options)"
       category "data bag"
 
       option :secret,
         :short => "-s SECRET",
         :long  => "--secret ",
         :description => "The secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |s| Seth::Config[:knife][:secret] = s }
+        :proc => Proc.new { |s| Seth::Config[:ceth][:secret] = s }
 
       option :secret_file,
         :long => "--secret-file SECRET_FILE",
         :description => "A file containing the secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |sf| Seth::Config[:knife][:secret_file] = sf }
+        :proc => Proc.new { |sf| Seth::Config[:ceth][:secret_file] = sf }
 
       def read_secret
         if config[:secret]

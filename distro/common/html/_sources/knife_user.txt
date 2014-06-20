@@ -1,40 +1,40 @@
 =====================================================
-knife user
+ceth user
 =====================================================
 
-.. include:: ../../includes_knife/includes_knife_user.rst
+.. include:: ../../includes_ceth/includes_ceth_user.rst
 
 .. note:: This subcommand ONLY works when run against the open source |seth server| and will not run against |seth server oec| (including hosted |seth server oec|), or |seth private|.
 
-.. note:: Review the list of :doc:`common options </knife_common_options>` available to this (and all) |knife| subcommands and plugins.
+.. note:: Review the list of :doc:`common options </ceth_common_options>` available to this (and all) |ceth| subcommands and plugins.
 
 create
 =====================================================
-.. include:: ../../includes_knife/includes_knife_user_create.rst
+.. include:: ../../includes_ceth/includes_ceth_user_create.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_create_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_user_create_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_create_options.rst
+.. include:: ../../includes_ceth/includes_ceth_user_create_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Create a user**
 
-.. include:: ../../step_knife/step_knife_user_create.rst
+.. include:: ../../step_ceth/step_ceth_user_create.rst
 
 delete
 =====================================================
-.. include:: ../../includes_knife/includes_knife_user_delete.rst
+.. include:: ../../includes_ceth/includes_ceth_user_delete.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_delete_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_user_delete_syntax.rst
 
 Options
 -----------------------------------------------------
@@ -42,19 +42,19 @@ Options
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Delete a user**
 
-.. include:: ../../step_knife/step_knife_user_delete.rst
+.. include:: ../../step_ceth/step_ceth_user_delete.rst
 
 edit
 =====================================================
-.. include:: ../../includes_knife/includes_knife_user_edit.rst
+.. include:: ../../includes_ceth/includes_ceth_user_edit.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_edit_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_user_edit_syntax.rst
 
 Options
 -----------------------------------------------------
@@ -67,15 +67,15 @@ None.
 
 list
 =====================================================
-.. include:: ../../includes_knife/includes_knife_user_list.rst
+.. include:: ../../includes_ceth/includes_ceth_user_list.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_list_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_user_list_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_list_options.rst
+.. include:: ../../includes_ceth/includes_ceth_user_list_options.rst
 
 Examples
 -----------------------------------------------------
@@ -83,45 +83,45 @@ None.
 
 reregister
 =====================================================
-.. include:: ../../includes_knife/includes_knife_user_reregister.rst
+.. include:: ../../includes_ceth/includes_ceth_user_reregister.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_reregister_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_user_reregister_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_reregister_options.rst
+.. include:: ../../includes_ceth/includes_ceth_user_reregister_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Regenerate the RSA key-pair**
 
-.. include:: ../../step_knife/step_knife_user_reregister.rst
+.. include:: ../../step_ceth/step_ceth_user_reregister.rst
 
 show
 =====================================================
-.. include:: ../../includes_knife/includes_knife_user_show.rst
+.. include:: ../../includes_ceth/includes_ceth_user_show.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_show_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_user_show_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_user_show_options.rst
+.. include:: ../../includes_ceth/includes_ceth_user_show_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Show user data**
 
-.. include:: ../../step_knife/step_knife_user_show.rst
+.. include:: ../../step_ceth/step_ceth_user_show.rst
 
 **Show user data as JSON**
 
-.. include:: ../../step_knife/step_knife_user_show_json.rst
+.. include:: ../../step_ceth/step_ceth_user_show_json.rst
 

@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class RoleDelete < Knife
+  class ceth
+    class RoleDelete < ceth
 
       deps do
         require 'seth/role'
         require 'seth/json_compat'
       end
 
-      banner "knife role delete ROLE (options)"
+      banner "ceth role delete ROLE (options)"
 
       def run
         @role_name = @name_args[0]

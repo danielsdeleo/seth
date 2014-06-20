@@ -1,41 +1,41 @@
-knife-configure(1) -- Generate configuration files for knife or Seth Client
+ceth-configure(1) -- Generate configuration files for ceth or Seth Client
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __configure__ [client] _(options)_
+__ceth__ __configure__ [client] _(options)_
 
 ## DESCRIPTION
-Generates a knife.rb configuration file interactively. When given the
+Generates a ceth.rb configuration file interactively. When given the
 --initial option, also creates a new administrative user.
 
 ## CONFIGURE SUBCOMMANDS ##
 
-__knife configure__ _(options)_
+__ceth configure__ _(options)_
 
   * `-i`, `--initial`:
     Create an initial API Client
   * `-r`, `--repository REPO`:
     The path to your seth-repo
 
-Create a configuration file for knife. This will prompt for values to
+Create a configuration file for ceth. This will prompt for values to
 enter into the file. Default values are listed in square brackets if no
-other entry is typed. See __knife__(1) for a description of
+other entry is typed. See __ceth__(1) for a description of
 configuration options.
 
-__knife configure client__ _directory_
+__ceth configure client__ _directory_
 
-Read the _knife.rb_ config file and generate a config file suitable for
+Read the _ceth.rb_ config file and generate a config file suitable for
 use in _/etc/seth/client.rb_ and copy the validation certificate into
 the specified _directory_.
 
 ## EXAMPLES
-  * On a freshly installed Seth Server, use _knife configure -i_ to
-    create an administrator and knife configuration file. Leave the
+  * On a freshly installed Seth Server, use _ceth configure -i_ to
+    create an administrator and ceth configuration file. Leave the
     field blank to accept the default value. On most systems, the
     default values are acceptable.
 
-    user@host$ knife configure -i
+    user@host$ ceth configure -i
     Please enter the seth server URL: [http://localhost:4000]
     Please enter a clientname for the new client: [username]
     Please enter the existing admin clientname: [seth-webui]
@@ -45,10 +45,10 @@ the specified _directory_.
     Please enter the path to a seth repository (or leave blank):
     Creating initial API user...
     Created (or updated) client[username]
-    Configuration file written to /home/username/.seth/knife.rb
+    Configuration file written to /home/username/.seth/ceth.rb
 
     This creates a new administrator client named _username_, writes
-    a configuration file to _/home/username/.seth/knife.rb_, and the
+    a configuration file to _/home/username/.seth/ceth.rb_, and the
     private key to _/home/username/.seth/username.pem_. The
     configuration file and private key may be copied to another system
     to facilitate administration of the Seth Server from a remote
@@ -56,7 +56,7 @@ the specified _directory_.
     may need to modify that setting after copying to a remote host.
 
 ## SEE ALSO
-   __knife__(1) __knife-client__(1)
+   __ceth__(1) __ceth-client__(1)
 
 ## AUTHOR
    Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
@@ -66,5 +66,5 @@ the specified _directory_.
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

@@ -16,13 +16,13 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'seth/knife/delete'
-require 'seth/knife/list'
-require 'seth/knife/raw'
+require 'seth/ceth/delete'
+require 'seth/ceth/list'
+require 'seth/ceth/raw'
 
-describe 'knife delete' do
+describe 'ceth delete' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
 
   let :everything do
     <<EOM
@@ -117,18 +117,18 @@ EOM
       file 'roles/x.json', {}
       file 'users/x.json', {}
 
-      it 'knife delete --both /cookbooks/x fails' do
-        knife('delete --both /cookbooks/x').should_fail <<EOM
-ERROR: /cookbooks/x (remote) must be deleted recursively!  Pass -r to knife delete.
-ERROR: /cookbooks/x (local) must be deleted recursively!  Pass -r to knife delete.
+      it 'ceth delete --both /cookbooks/x fails' do
+        ceth('delete --both /cookbooks/x').should_fail <<EOM
+ERROR: /cookbooks/x (remote) must be deleted recursively!  Pass -r to ceth delete.
+ERROR: /cookbooks/x (local) must be deleted recursively!  Pass -r to ceth delete.
 EOM
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed everything
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed everything
       end
 
-      it 'knife delete --both -r /cookbooks/x deletes x' do
-        knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('list -Rf /').should_succeed <<EOM
+      it 'ceth delete --both -r /cookbooks/x deletes x' do
+        ceth('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -148,7 +148,7 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-        knife('list -Rf --local /').should_succeed <<EOM
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -167,10 +167,10 @@ EOM
 EOM
       end
 
-      it 'knife delete -r --local /cookbooks/x deletes x locally but not remotely' do
-        knife('delete -r --local /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed <<EOM
+      it 'ceth delete -r --local /cookbooks/x deletes x locally but not remotely' do
+        ceth('delete -r --local /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -189,9 +189,9 @@ EOM
 EOM
       end
 
-      it 'knife delete -r /cookbooks/x deletes x remotely but not locally' do
-        knife('delete -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('list -Rf /').should_succeed <<EOM
+      it 'ceth delete -r /cookbooks/x deletes x remotely but not locally' do
+        ceth('delete -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -211,19 +211,19 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-        knife('list -Rf --local /').should_succeed everything
+        ceth('list -Rf --local /').should_succeed everything
       end
 
       # TODO delete empty data bag (particularly different on local side)
       context 'with an empty data bag on both' do
         data_bag 'empty', {}
         directory 'data_bags/empty'
-        it 'knife delete --both /data_bags/empty fails but deletes local version' do
-          knife('delete --both /data_bags/empty').should_fail <<EOM
-ERROR: /data_bags/empty (remote) must be deleted recursively!  Pass -r to knife delete.
-ERROR: /data_bags/empty (local) must be deleted recursively!  Pass -r to knife delete.
+        it 'ceth delete --both /data_bags/empty fails but deletes local version' do
+          ceth('delete --both /data_bags/empty').should_fail <<EOM
+ERROR: /data_bags/empty (remote) must be deleted recursively!  Pass -r to ceth delete.
+ERROR: /data_bags/empty (local) must be deleted recursively!  Pass -r to ceth delete.
 EOM
-          knife('list -Rf /').should_succeed <<EOM
+          ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -246,7 +246,7 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-          knife('list -Rf --local /').should_succeed <<EOM
+          ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -269,18 +269,18 @@ EOM
         end
       end
 
-      it 'knife delete --both /data_bags/x fails' do
-        knife('delete --both /data_bags/x').should_fail <<EOM
-ERROR: /data_bags/x (remote) must be deleted recursively!  Pass -r to knife delete.
-ERROR: /data_bags/x (local) must be deleted recursively!  Pass -r to knife delete.
+      it 'ceth delete --both /data_bags/x fails' do
+        ceth('delete --both /data_bags/x').should_fail <<EOM
+ERROR: /data_bags/x (remote) must be deleted recursively!  Pass -r to ceth delete.
+ERROR: /data_bags/x (local) must be deleted recursively!  Pass -r to ceth delete.
 EOM
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed everything
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed everything
       end
 
-      it 'knife delete --both -r /data_bags/x deletes x' do
-        knife('delete --both -r /data_bags/x').should_succeed "Deleted /data_bags/x\n"
-        knife('list -Rf /').should_succeed <<EOM
+      it 'ceth delete --both -r /data_bags/x deletes x' do
+        ceth('delete --both -r /data_bags/x').should_succeed "Deleted /data_bags/x\n"
+        ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -300,7 +300,7 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-        knife('list -Rf --local /').should_succeed <<EOM
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -319,9 +319,9 @@ EOM
 EOM
       end
 
-      it 'knife delete --both /environments/x.json deletes x' do
-        knife('delete --both /environments/x.json').should_succeed "Deleted /environments/x.json\n"
-        knife('list -Rf /').should_succeed <<EOM
+      it 'ceth delete --both /environments/x.json deletes x' do
+        ceth('delete --both /environments/x.json').should_succeed "Deleted /environments/x.json\n"
+        ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -342,7 +342,7 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-        knife('list -Rf --local /').should_succeed <<EOM
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -362,9 +362,9 @@ EOM
 EOM
       end
 
-      it 'knife delete --both /roles/x.json deletes x' do
-        knife('delete --both /roles/x.json').should_succeed "Deleted /roles/x.json\n"
-        knife('list -Rf /').should_succeed <<EOM
+      it 'ceth delete --both /roles/x.json deletes x' do
+        ceth('delete --both /roles/x.json').should_succeed "Deleted /roles/x.json\n"
+        ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -385,7 +385,7 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-        knife('list -Rf --local /').should_succeed <<EOM
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -405,10 +405,10 @@ EOM
 EOM
       end
 
-      it 'knife delete --both /environments/_default.json fails but still deletes the local copy' do
-        knife('delete --both /environments/_default.json').should_fail :stderr => "ERROR: /environments/_default.json (remote) cannot be deleted (default environment cannot be modified).\n", :stdout => "Deleted /environments/_default.json\n"
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed <<EOM
+      it 'ceth delete --both /environments/_default.json fails but still deletes the local copy' do
+        ceth('delete --both /environments/_default.json').should_fail :stderr => "ERROR: /environments/_default.json (remote) cannot be deleted (default environment cannot be modified).\n", :stdout => "Deleted /environments/_default.json\n"
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -428,23 +428,23 @@ EOM
 EOM
       end
 
-      it 'knife delete --both /environments/nonexistent.json fails' do
-        knife('delete --both /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed everything
+      it 'ceth delete --both /environments/nonexistent.json fails' do
+        ceth('delete --both /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed everything
       end
 
-      it 'knife delete --both / fails' do
-        knife('delete --both /').should_fail <<EOM
+      it 'ceth delete --both / fails' do
+        ceth('delete --both /').should_fail <<EOM
 ERROR: / (remote) cannot be deleted.
 ERROR: / (local) cannot be deleted.
 EOM
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed everything
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed everything
       end
 
-      it 'knife delete --both -r /* fails' do
-        knife('delete --both -r /*').should_fail <<EOM
+      it 'ceth delete --both -r /* fails' do
+        ceth('delete --both -r /*').should_fail <<EOM
 ERROR: / (remote) cannot be deleted.
 ERROR: / (local) cannot be deleted.
 ERROR: /clients (remote) cannot be deleted.
@@ -462,8 +462,8 @@ ERROR: /roles (local) cannot be deleted.
 ERROR: /users (remote) cannot be deleted.
 ERROR: /users (local) cannot be deleted.
 EOM
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed everything
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed everything
       end
     end
 
@@ -476,15 +476,15 @@ EOM
       directory 'roles'
       directory 'users'
 
-      it 'knife delete --both /cookbooks/x fails' do
-        knife('delete --both /cookbooks/x').should_fail "ERROR: /cookbooks/x (remote) must be deleted recursively!  Pass -r to knife delete.\n"
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed nothing
+      it 'ceth delete --both /cookbooks/x fails' do
+        ceth('delete --both /cookbooks/x').should_fail "ERROR: /cookbooks/x (remote) must be deleted recursively!  Pass -r to ceth delete.\n"
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
-      it 'knife delete --both -r /cookbooks/x deletes x' do
-        knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('list -Rf /').should_succeed <<EOM
+      it 'ceth delete --both -r /cookbooks/x deletes x' do
+        ceth('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -504,18 +504,18 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-        knife('list -Rf --local /').should_succeed nothing
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
-      it 'knife delete --both /data_bags/x fails' do
-        knife('delete --both /data_bags/x').should_fail "ERROR: /data_bags/x (remote) must be deleted recursively!  Pass -r to knife delete.\n"
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed nothing
+      it 'ceth delete --both /data_bags/x fails' do
+        ceth('delete --both /data_bags/x').should_fail "ERROR: /data_bags/x (remote) must be deleted recursively!  Pass -r to ceth delete.\n"
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
-      it 'knife delete --both -r /data_bags/x deletes x' do
-        knife('delete --both -r /data_bags/x').should_succeed "Deleted /data_bags/x\n"
-        knife('list -Rf /').should_succeed <<EOM
+      it 'ceth delete --both -r /data_bags/x deletes x' do
+        ceth('delete --both -r /data_bags/x').should_succeed "Deleted /data_bags/x\n"
+        ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -535,12 +535,12 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-        knife('list -Rf --local /').should_succeed nothing
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
-      it 'knife delete --both /environments/x.json deletes x' do
-        knife('delete --both /environments/x.json').should_succeed "Deleted /environments/x.json\n"
-        knife('list -Rf /').should_succeed <<EOM
+      it 'ceth delete --both /environments/x.json deletes x' do
+        ceth('delete --both /environments/x.json').should_succeed "Deleted /environments/x.json\n"
+        ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -561,12 +561,12 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-        knife('list -Rf --local /').should_succeed nothing
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
-      it 'knife delete --both /roles/x.json deletes x' do
-        knife('delete --both /roles/x.json').should_succeed "Deleted /roles/x.json\n"
-        knife('list -Rf /').should_succeed <<EOM
+      it 'ceth delete --both /roles/x.json deletes x' do
+        ceth('delete --both /roles/x.json').should_succeed "Deleted /roles/x.json\n"
+        ceth('list -Rf /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -587,23 +587,23 @@ EOM
 /users/admin.json
 /users/x.json
 EOM
-        knife('list -Rf --local /').should_succeed nothing
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
-      it 'knife delete --both /environments/_default.json fails' do
-        knife('delete --both /environments/_default.json').should_fail "", :stderr => "ERROR: /environments/_default.json (remote) cannot be deleted (default environment cannot be modified).\n"
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed nothing
+      it 'ceth delete --both /environments/_default.json fails' do
+        ceth('delete --both /environments/_default.json').should_fail "", :stderr => "ERROR: /environments/_default.json (remote) cannot be deleted (default environment cannot be modified).\n"
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
-      it 'knife delete --both / fails' do
-        knife('delete --both /').should_fail "ERROR: / (remote) cannot be deleted.\nERROR: / (local) cannot be deleted.\n"
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed nothing
+      it 'ceth delete --both / fails' do
+        ceth('delete --both /').should_fail "ERROR: / (remote) cannot be deleted.\nERROR: / (local) cannot be deleted.\n"
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
-      it 'knife delete --both -r /* fails' do
-        knife('delete --both -r /*').should_fail <<EOM
+      it 'ceth delete --both -r /* fails' do
+        ceth('delete --both -r /*').should_fail <<EOM
 ERROR: / (remote) cannot be deleted.
 ERROR: / (local) cannot be deleted.
 ERROR: /clients (remote) cannot be deleted.
@@ -621,21 +621,21 @@ ERROR: /roles (local) cannot be deleted.
 ERROR: /users (remote) cannot be deleted.
 ERROR: /users (local) cannot be deleted.
 EOM
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed nothing
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
-      it 'knife delete --both /environments/nonexistent.json fails' do
-        knife('delete --both /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
-        knife('list -Rf /').should_succeed server_everything
-        knife('list -Rf --local /').should_succeed nothing
+      it 'ceth delete --both /environments/nonexistent.json fails' do
+        ceth('delete --both /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
+        ceth('list -Rf /').should_succeed server_everything
+        ceth('list -Rf --local /').should_succeed nothing
       end
 
       context 'and cwd is at the top level' do
         cwd '.'
-        it 'knife delete fails' do
-          knife('delete').should_fail "FATAL: Must specify at least one argument.  If you want to delete everything in this directory, type \"knife delete --recurse .\"\n", :stdout => /USAGE/
-          knife('list -Rf /').should_succeed <<EOM
+        it 'ceth delete fails' do
+          ceth('delete').should_fail "FATAL: Must specify at least one argument.  If you want to delete everything in this directory, type \"ceth delete --recurse .\"\n", :stdout => /USAGE/
+          ceth('list -Rf /').should_succeed <<EOM
 clients
 clients/seth-validator.json
 clients/seth-webui.json
@@ -657,7 +657,7 @@ users
 users/admin.json
 users/x.json
 EOM
-          knife('list -Rf --local /').should_succeed <<EOM
+          ceth('list -Rf --local /').should_succeed <<EOM
 clients
 cookbooks
 data_bags
@@ -682,16 +682,16 @@ EOM
       file 'roles/x.json', {}
       file 'users/x.json', {}
 
-      it 'knife delete --both /cookbooks/x fails' do
-        knife('delete --both /cookbooks/x').should_fail "ERROR: /cookbooks/x (local) must be deleted recursively!  Pass -r to knife delete.\n"
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed everything
+      it 'ceth delete --both /cookbooks/x fails' do
+        ceth('delete --both /cookbooks/x').should_fail "ERROR: /cookbooks/x (local) must be deleted recursively!  Pass -r to ceth delete.\n"
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed everything
       end
 
-      it 'knife delete --both -r /cookbooks/x deletes x' do
-        knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed <<EOM
+      it 'ceth delete --both -r /cookbooks/x deletes x' do
+        ceth('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -710,16 +710,16 @@ EOM
 EOM
       end
 
-      it 'knife delete --both /data_bags/x fails' do
-        knife('delete --both /data_bags/x').should_fail "ERROR: /data_bags/x (local) must be deleted recursively!  Pass -r to knife delete.\n"
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed everything
+      it 'ceth delete --both /data_bags/x fails' do
+        ceth('delete --both /data_bags/x').should_fail "ERROR: /data_bags/x (local) must be deleted recursively!  Pass -r to ceth delete.\n"
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed everything
       end
 
-      it 'knife delete --both -r /data_bags/x deletes x' do
-        knife('delete --both -r /data_bags/x').should_succeed "Deleted /data_bags/x\n"
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed <<EOM
+      it 'ceth delete --both -r /data_bags/x deletes x' do
+        ceth('delete --both -r /data_bags/x').should_succeed "Deleted /data_bags/x\n"
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -738,10 +738,10 @@ EOM
 EOM
       end
 
-      it 'knife delete --both /environments/x.json deletes x' do
-        knife('delete --both /environments/x.json').should_succeed "Deleted /environments/x.json\n"
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed <<EOM
+      it 'ceth delete --both /environments/x.json deletes x' do
+        ceth('delete --both /environments/x.json').should_succeed "Deleted /environments/x.json\n"
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -761,10 +761,10 @@ EOM
 EOM
       end
 
-      it 'knife delete --both /roles/x.json deletes x' do
-        knife('delete --both /roles/x.json').should_succeed "Deleted /roles/x.json\n"
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed <<EOM
+      it 'ceth delete --both /roles/x.json deletes x' do
+        ceth('delete --both /roles/x.json').should_succeed "Deleted /roles/x.json\n"
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -784,10 +784,10 @@ EOM
 EOM
       end
 
-      it 'knife delete --both /environments/_default.json fails but still deletes the local copy' do
-        knife('delete --both /environments/_default.json').should_fail :stderr => "ERROR: /environments/_default.json (remote) cannot be deleted (default environment cannot be modified).\n", :stdout => "Deleted /environments/_default.json\n"
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed <<EOM
+      it 'ceth delete --both /environments/_default.json fails but still deletes the local copy' do
+        ceth('delete --both /environments/_default.json').should_fail :stderr => "ERROR: /environments/_default.json (remote) cannot be deleted (default environment cannot be modified).\n", :stdout => "Deleted /environments/_default.json\n"
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed <<EOM
 /clients
 /clients/x.json
 /cookbooks
@@ -807,14 +807,14 @@ EOM
 EOM
       end
 
-      it 'knife delete --both / fails' do
-        knife('delete --both /').should_fail "ERROR: / (remote) cannot be deleted.\nERROR: / (local) cannot be deleted.\n"
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed everything
+      it 'ceth delete --both / fails' do
+        ceth('delete --both /').should_fail "ERROR: / (remote) cannot be deleted.\nERROR: / (local) cannot be deleted.\n"
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed everything
       end
 
-      it 'knife delete --both -r /* fails' do
-        knife('delete --both -r /*').should_fail <<EOM
+      it 'ceth delete --both -r /* fails' do
+        ceth('delete --both -r /*').should_fail <<EOM
 ERROR: / (remote) cannot be deleted.
 ERROR: / (local) cannot be deleted.
 ERROR: /clients (remote) cannot be deleted.
@@ -832,21 +832,21 @@ ERROR: /roles (local) cannot be deleted.
 ERROR: /users (remote) cannot be deleted.
 ERROR: /users (local) cannot be deleted.
 EOM
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed everything
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed everything
       end
 
-      it 'knife delete --both /environments/nonexistent.json fails' do
-        knife('delete --both /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
-        knife('list -Rf /').should_succeed server_nothing
-        knife('list -Rf --local /').should_succeed everything
+      it 'ceth delete --both /environments/nonexistent.json fails' do
+        ceth('delete --both /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
+        ceth('list -Rf /').should_succeed server_nothing
+        ceth('list -Rf --local /').should_succeed everything
       end
 
       context 'and cwd is at the top level' do
         cwd '.'
-        it 'knife delete fails' do
-          knife('delete').should_fail "FATAL: Must specify at least one argument.  If you want to delete everything in this directory, type \"knife delete --recurse .\"\n", :stdout => /USAGE/
-          knife('list -Rf /').should_succeed <<EOM
+        it 'ceth delete fails' do
+          ceth('delete').should_fail "FATAL: Must specify at least one argument.  If you want to delete everything in this directory, type \"ceth delete --recurse .\"\n", :stdout => /USAGE/
+          ceth('list -Rf /').should_succeed <<EOM
 clients
 clients/seth-validator.json
 clients/seth-webui.json
@@ -859,7 +859,7 @@ roles
 users
 users/admin.json
 EOM
-          knife('list -Rf --local /').should_succeed <<EOM
+          ceth('list -Rf --local /').should_succeed <<EOM
 clients
 clients/x.json
 cookbooks
@@ -892,10 +892,10 @@ EOM
       cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
       # TODO this seems wrong
-      it 'knife delete --both -r /cookbooks/x deletes the latest version on the server and the local version' do
-        knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('raw /cookbooks/x').should_succeed(/1.0.0/)
-        knife('list --local /cookbooks').should_succeed ''
+      it 'ceth delete --both -r /cookbooks/x deletes the latest version on the server and the local version' do
+        ceth('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('raw /cookbooks/x').should_succeed(/1.0.0/)
+        ceth('list --local /cookbooks').should_succeed ''
       end
     end
 
@@ -903,30 +903,30 @@ EOM
       cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => ''}
       cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
 
-      it 'knife delete --both /cookbooks/x deletes the latest version on the server and the local version' do
-        knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('raw /cookbooks/x').should_succeed(/0.9.9/)
-        knife('list --local /cookbooks').should_succeed ''
+      it 'ceth delete --both /cookbooks/x deletes the latest version on the server and the local version' do
+        ceth('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('raw /cookbooks/x').should_succeed(/0.9.9/)
+        ceth('list --local /cookbooks').should_succeed ''
       end
     end
 
     when_the_seth_server 'has a later version for the cookbook, and no current version' do
       cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => 'hi' }
 
-      it 'knife delete --both /cookbooks/x deletes the server and client version of the cookbook' do
-        knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('raw /cookbooks/x').should_fail(/404/)
-        knife('list --local /cookbooks').should_succeed ''
+      it 'ceth delete --both /cookbooks/x deletes the server and client version of the cookbook' do
+        ceth('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('raw /cookbooks/x').should_fail(/404/)
+        ceth('list --local /cookbooks').should_succeed ''
       end
     end
 
     when_the_seth_server 'has an earlier version for the cookbook, and no current version' do
       cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => 'hi' }
 
-      it 'knife delete --both /cookbooks/x deletes the server and client version of the cookbook' do
-        knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('raw /cookbooks/x').should_fail(/404/)
-        knife('list --local /cookbooks').should_succeed ''
+      it 'ceth delete --both /cookbooks/x deletes the server and client version of the cookbook' do
+        ceth('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('raw /cookbooks/x').should_fail(/404/)
+        ceth('list --local /cookbooks').should_succeed ''
       end
     end
   end
@@ -935,9 +935,9 @@ EOM
     when_the_seth_server 'has two versions of a cookbook' do
       cookbook 'x', '2.0.11', { 'metadata.rb' => 'version "2.0.11"' }
       cookbook 'x', '11.0.0', { 'metadata.rb' => 'version "11.0.0"' }
-      it 'knife delete deletes the latest version' do
-        knife('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
-        knife('raw /cookbooks/x').should_succeed /2.0.11/
+      it 'ceth delete deletes the latest version' do
+        ceth('delete --both -r /cookbooks/x').should_succeed "Deleted /cookbooks/x\n"
+        ceth('raw /cookbooks/x').should_succeed /2.0.11/
       end
     end
   end

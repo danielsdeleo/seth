@@ -18,73 +18,73 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::EnvironmentCreate do
+describe Seth::ceth::EnvironmentCreate do
   before(:each) do
-    @knife = Seth::Knife::EnvironmentCreate.new
-    @knife.stub(:msg).and_return true
-    @knife.stub(:output).and_return true
-    @knife.stub(:show_usage).and_return true
-    @knife.name_args = [ "production" ]
+    @ceth = Seth::ceth::EnvironmentCreate.new
+    @ceth.stub(:msg).and_return true
+    @ceth.stub(:output).and_return true
+    @ceth.stub(:show_usage).and_return true
+    @ceth.name_args = [ "production" ]
 
     @environment = Seth::Environment.new
     @environment.stub(:save)
 
     Seth::Environment.stub(:new).and_return @environment
-    @knife.stub(:edit_data).and_return @environment
+    @ceth.stub(:edit_data).and_return @environment
   end
 
   describe "run" do
     it "should create a new environment" do
       Seth::Environment.should_receive(:new)
-      @knife.run
+      @ceth.run
     end
 
     it "should set the environment name" do
       @environment.should_receive(:name).with("production")
-      @knife.run
+      @ceth.run
     end
 
     it "should not print the environment" do
-      @knife.should_not_receive(:output)
-      @knife.run
+      @ceth.should_not_receive(:output)
+      @ceth.run
     end
 
     it "should prompt you to edit the data" do
-      @knife.should_receive(:edit_data).with(@environment)
-      @knife.run
+      @ceth.should_receive(:edit_data).with(@environment)
+      @ceth.run
     end
 
     it "should save the environment" do
       @environment.should_receive(:save)
-      @knife.run
+      @ceth.run
     end
 
     it "should show usage and exit when no environment name is provided" do
-      @knife.name_args = [ ]
-      @knife.ui.should_receive(:fatal)
-      @knife.should_receive(:show_usage)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = [ ]
+      @ceth.ui.should_receive(:fatal)
+      @ceth.should_receive(:show_usage)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     describe "with --description" do
       before(:each) do
-        @knife.config[:description] = "This is production"
+        @ceth.config[:description] = "This is production"
       end
 
       it "should set the description" do
         @environment.should_receive(:description).with("This is production")
-        @knife.run
+        @ceth.run
       end
     end
 
     describe "with --print-after" do
       before(:each) do
-        @knife.config[:print_after] = true
+        @ceth.config[:print_after] = true
       end
 
       it "should pretty print the environment, formatted for display" do
-        @knife.should_receive(:output).with(@environment)
-        @knife.run
+        @ceth.should_receive(:output).with(@environment)
+        @ceth.run
       end
     end
   end

@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class ClientEdit < Knife
+  class ceth
+    class ClientEdit < ceth
 
       deps do
         require 'seth/api_client'
         require 'seth/json_compat'
       end
 
-      banner "knife client edit CLIENT (options)"
+      banner "ceth client edit CLIENT (options)"
 
       def run
         @client_name = @name_args[0]

@@ -1,26 +1,26 @@
 =====================================================
-knife xargs
+ceth xargs
 =====================================================
 
-.. include:: ../../includes_knife/includes_knife_xargs.rst
+.. include:: ../../includes_ceth/includes_ceth_xargs.rst
 
 Syntax
 =====================================================
-.. include:: ../../includes_knife/includes_knife_xargs_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_xargs_syntax.rst
 
 Options
 =====================================================
-.. note:: Review the list of :doc:`common options </knife_common_options>` available to this (and all) |knife| subcommands and plugins.
+.. note:: Review the list of :doc:`common options </ceth_common_options>` available to this (and all) |ceth| subcommands and plugins.
 
-.. include:: ../../includes_knife/includes_knife_xargs_options.rst
+.. include:: ../../includes_ceth/includes_ceth_xargs_options.rst
 
 Examples
 =====================================================
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
-**Use output of knife deps to pass command to knife xargs**
+**Use output of ceth deps to pass command to ceth xargs**
 
-.. include:: ../../step_knife/step_knife_xargs_pass_command_to.rst
+.. include:: ../../step_ceth/step_ceth_xargs_pass_command_to.rst
 
 
 

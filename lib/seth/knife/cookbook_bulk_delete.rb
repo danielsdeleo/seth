@@ -17,20 +17,20 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookBulkDelete < Knife
+  class ceth
+    class CookbookBulkDelete < ceth
 
       deps do
-        require 'seth/knife/cookbook_delete'
+        require 'seth/ceth/cookbook_delete'
         require 'seth/cookbook_version'
       end
 
       option :purge, :short => '-p', :long => '--purge', :boolean => true, :description => 'Permanently remove files from backing data store'
 
-      banner "knife cookbook bulk delete REGEX (options)"
+      banner "ceth cookbook bulk delete REGEX (options)"
 
       def run
         unless regex_str = @name_args.first

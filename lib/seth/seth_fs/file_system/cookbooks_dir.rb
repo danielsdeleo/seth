@@ -85,7 +85,7 @@ class Seth
           raise Seth::sethFS::FileSystem::CookbookFrozenError.new(:write, self, e), "Cookbook #{other.name} is frozen"
         end
 
-        # Knife currently does not understand versioned cookbooks
+        # ceth currently does not understand versioned cookbooks
         # Cookbook Version uploader also requires a lot of refactoring
         # to make this work. So instead, we make a temporary cookbook
         # symlinking back to real cookbook, and upload the proxy.

@@ -18,49 +18,49 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::RoleDelete do
+describe Seth::ceth::RoleDelete do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::RoleDelete.new
-    @knife.config = {
+    @ceth = Seth::ceth::RoleDelete.new
+    @ceth.config = {
       :print_after => nil
     }
-    @knife.name_args = [ "adam" ]
-    @knife.stub(:output).and_return(true)
-    @knife.stub(:confirm).and_return(true)
+    @ceth.name_args = [ "adam" ]
+    @ceth.stub(:output).and_return(true)
+    @ceth.stub(:confirm).and_return(true)
     @role = Seth::Role.new()
     @role.stub(:destroy).and_return(true)
     Seth::Role.stub(:load).and_return(@role)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   describe "run" do
     it "should confirm that you want to delete" do
-      @knife.should_receive(:confirm)
-      @knife.run
+      @ceth.should_receive(:confirm)
+      @ceth.run
     end
 
     it "should load the Role" do
       Seth::Role.should_receive(:load).with("adam").and_return(@role)
-      @knife.run
+      @ceth.run
     end
 
     it "should delete the Role" do
       @role.should_receive(:destroy).and_return(@role)
-      @knife.run
+      @ceth.run
     end
 
     it "should not print the Role" do
-      @knife.should_not_receive(:output)
-      @knife.run
+      @ceth.should_not_receive(:output)
+      @ceth.run
     end
 
     describe "with -p or --print-after" do
       it "should pretty print the Role, formatted for display" do
-        @knife.config[:print_after] = true
-        @knife.should_receive(:output)
-        @knife.run
+        @ceth.config[:print_after] = true
+        @ceth.should_receive(:output)
+        @ceth.run
       end
     end
   end

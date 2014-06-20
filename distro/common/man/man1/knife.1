@@ -1,6 +1,6 @@
-.TH "KNIFE" "1" "Seth 11.8.0" "" "knife"
+.TH "ceth" "1" "Seth 11.8.0" "" "ceth"
 .SH NAME
-knife \- The man page for the knife command line tool.
+ceth \- The man page for the ceth command line tool.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" Man page generated from reStructuredText.
 .
 .sp
-Knife is a command\-line tool that provides an interface between a local seth\-repo and the server. Knife helps users to manage:
+ceth is a command\-line tool that provides an interface between a local seth\-repo and the server. ceth helps users to manage:
 .INDENT 0.0
 .IP \(bu 2
 Nodes
@@ -51,74 +51,74 @@ The installation of the seth\-client on management workstations
 Searching of indexed data on the server
 .UNINDENT
 .sp
-Knife subcommands:
+ceth subcommands:
 .INDENT 0.0
 .IP \(bu 2
-knife bootstrap
+ceth bootstrap
 .IP \(bu 2
-knife client
+ceth client
 .IP \(bu 2
-knife configure
+ceth configure
 .IP \(bu 2
-knife cookbook
+ceth cookbook
 .IP \(bu 2
-knife cookbook site
+ceth cookbook site
 .IP \(bu 2
-knife data bag
+ceth data bag
 .IP \(bu 2
-knife delete
+ceth delete
 .IP \(bu 2
-knife deps
+ceth deps
 .IP \(bu 2
-knife diff
+ceth diff
 .IP \(bu 2
-knife download
+ceth download
 .IP \(bu 2
-knife edit
+ceth edit
 .IP \(bu 2
-knife environment
+ceth environment
 .IP \(bu 2
-knife exec
+ceth exec
 .IP \(bu 2
-knife list
+ceth list
 .IP \(bu 2
-knife node
+ceth node
 .IP \(bu 2
-knife raw
+ceth raw
 .IP \(bu 2
-knife recipe list
+ceth recipe list
 .IP \(bu 2
-knife role
+ceth role
 .IP \(bu 2
-knife search
+ceth search
 .IP \(bu 2
-knife show
+ceth show
 .IP \(bu 2
-knife ssh
+ceth ssh
 .IP \(bu 2
-knife status
+ceth status
 .IP \(bu 2
-knife tag
+ceth tag
 .IP \(bu 2
-knife upload
+ceth upload
 .IP \(bu 2
-knife user
+ceth user
 .IP \(bu 2
-knife xargs
+ceth xargs
 .UNINDENT
-.SH WORKING WITH KNIFE
+.SH WORKING WITH ceth
 .sp
-Knife runs from a management workstation and sits in\-between a server and an organization\(aqs infrastructure. Knife interacts with a server by using the same REST API that is used by a seth\-client. Role\-based authentication controls (RBAC) can be used to authorize changes when Knife is run with Hosted Seth or Private seth. Knife is configured during workstation setup, but subsequent modifications can be made using the knife.rb configuration file.
+ceth runs from a management workstation and sits in\-between a server and an organization\(aqs infrastructure. ceth interacts with a server by using the same REST API that is used by a seth\-client. Role\-based authentication controls (RBAC) can be used to authorize changes when ceth is run with Hosted Seth or Private seth. ceth is configured during workstation setup, but subsequent modifications can be made using the ceth.rb configuration file.
 .SS JSON Data Format
 .sp
 Most data is entered using a text editor in JSON format, unless the \fB\-\-disable\-editing\fP option is entered as part of a command. (Encrypted data bags use YAML, which is a superset of JSON.) JSON is a common, language\-independent data format that provides a simple text representation of arbitrary data structures. For more information about JSON, see \fI\%http://www.json.org/\fP or \fI\%http://en.wikipedia.org/wiki/JSON\fP.
 .SS Set the Text Editor
 .sp
-Some Knife commands, such as \fBknife data bag edit\fP, require that information be edited as JSON data using a text editor. For example, the following command:
+Some ceth commands, such as \fBceth data bag edit\fP, require that information be edited as JSON data using a text editor. For example, the following command:
 .sp
 .nf
 .ft C
-$ knife data bag edit admins admin_name
+$ ceth data bag edit admins admin_name
 .ft P
 .fi
 .sp
@@ -143,15 +143,15 @@ Changes to that file can then be made:
 .ft P
 .fi
 .sp
-The type of text editor that is used by Knife can be configured by adding an entry to the knife.rb file or by setting an \fBEDITOR\fP environment variable. For example, to configure the text editor to always open with vim, add the following to the knife.rb file:
+The type of text editor that is used by ceth can be configured by adding an entry to the ceth.rb file or by setting an \fBEDITOR\fP environment variable. For example, to configure the text editor to always open with vim, add the following to the ceth.rb file:
 .sp
 .nf
 .ft C
-knife[:editor] = "/usr/bin/vim"
+ceth[:editor] = "/usr/bin/vim"
 .ft P
 .fi
 .sp
-When a Microsoft Windows file path is enclosed in a double\-quoted string (" "), the same backslash character (\fB\e\fP) that is used to define the file path separator is also used in Ruby to define an escape character. The knife.rb file is a Ruby file; therefore, file path separators must be escaped. In addition, spaces in the file path must be replaced with \fB~1\fP so that the length of each section within the file path is not more than 8 characters. For example, if EditPad Pro is the text editor of choice and is located at the following path:
+When a Microsoft Windows file path is enclosed in a double\-quoted string (" "), the same backslash character (\fB\e\fP) that is used to define the file path separator is also used in Ruby to define an escape character. The ceth.rb file is a Ruby file; therefore, file path separators must be escaped. In addition, spaces in the file path must be replaced with \fB~1\fP so that the length of each section within the file path is not more than 8 characters. For example, if EditPad Pro is the text editor of choice and is located at the following path:
 .sp
 .nf
 .ft C
@@ -159,11 +159,11 @@ C:\e\eProgram Files (x86)\eEditPad Pro\eEditPad.exe
 .ft P
 .fi
 .sp
-the setting in the knife.rb file would be similar to:
+the setting in the ceth.rb file would be similar to:
 .sp
 .nf
 .ft C
-knife[:editor] = "C:\e\eProgra~1\e\eEditPa~1\e\eEditPad.exe"
+ceth[:editor] = "C:\e\eProgra~1\e\eEditPa~1\e\eEditPad.exe"
 .ft P
 .fi
 .sp
@@ -171,7 +171,7 @@ One approach to working around the double\- vs. single\-quote issue is to put th
 .sp
 .nf
 .ft C
-knife[:editor] = \(aq"C:\eProgram Files (x86)\eNotepad++\enotepad++.exe \-nosession \-multiInst"\(aq
+ceth[:editor] = \(aq"C:\eProgram Files (x86)\eNotepad++\enotepad++.exe \-nosession \-multiInst"\(aq
 .ft P
 .fi
 .sp
@@ -179,7 +179,7 @@ for Sublime Text:
 .sp
 .nf
 .ft C
-knife[:editor] = \(aq"C:\eProgram Files\eSublime Text 2\esublime_text.exe \-\-wait"\(aq
+ceth[:editor] = \(aq"C:\eProgram Files\eSublime Text 2\esublime_text.exe \-\-wait"\(aq
 .ft P
 .fi
 .sp
@@ -187,7 +187,7 @@ for TextPad:
 .sp
 .nf
 .ft C
-knife[:editor] = \(aq"C:\eProgram Files (x86)\eTextPad 7\eTextPad.exe"\(aq
+ceth[:editor] = \(aq"C:\eProgram Files (x86)\eTextPad 7\eTextPad.exe"\(aq
 .ft P
 .fi
 .sp
@@ -195,7 +195,7 @@ and for vim:
 .sp
 .nf
 .ft C
-knife[:editor] = \(aq"C:\eProgram Files (x86)\evim\evim74\egvim.exe"\(aq
+ceth[:editor] = \(aq"C:\eProgram Files (x86)\evim\evim74\egvim.exe"\(aq
 .ft P
 .fi
 .SS Using Quotes
@@ -203,18 +203,18 @@ knife[:editor] = \(aq"C:\eProgram Files (x86)\evim\evim74\egvim.exe"\(aq
 Values can be entered with double quotes (" ") or single quotes (\(aq \(aq), but this should be done consistently.
 .SS Sub\-commands
 .sp
-Knife comes with a collection of built in subcommands that work together to provide all of the functionality required to take specific actions against any object in an organization, including cookbooks, nodes, roles, data bags, environments, and users. A Knife plugin extends the functionality beyond built\-in subcommands.
+ceth comes with a collection of built in subcommands that work together to provide all of the functionality required to take specific actions against any object in an organization, including cookbooks, nodes, roles, data bags, environments, and users. A ceth plugin extends the functionality beyond built\-in subcommands.
 .sp
-Knife has the following subcommands: \fBbootstrap\fP, \fBclient\fP, \fBconfigure\fP, \fBcookbook\fP, \fBcookbook site\fP, \fBdata bag\fP, \fBdelete\fP, \fBdeps\fP, \fBdiff\fP, \fBdownload\fP, \fBedit\fP, \fBenvironment\fP, \fBexec\fP, \fBindex rebuild\fP, \fBlist\fP, \fBnode\fP, \fBrecipe list\fP, \fBrole\fP, \fBsearch\fP, \fBshow\fP, \fBssh\fP, \fBstatus\fP, \fBtag\fP, \fBupload\fP, \fBuser\fP, and \fBxargs\fP.
+ceth has the following subcommands: \fBbootstrap\fP, \fBclient\fP, \fBconfigure\fP, \fBcookbook\fP, \fBcookbook site\fP, \fBdata bag\fP, \fBdelete\fP, \fBdeps\fP, \fBdiff\fP, \fBdownload\fP, \fBedit\fP, \fBenvironment\fP, \fBexec\fP, \fBindex rebuild\fP, \fBlist\fP, \fBnode\fP, \fBrecipe list\fP, \fBrole\fP, \fBsearch\fP, \fBshow\fP, \fBssh\fP, \fBstatus\fP, \fBtag\fP, \fBupload\fP, \fBuser\fP, and \fBxargs\fP.
 .IP Note
 The following subcommands run only against the open source server: \fBindex rebuild\fP and \fBuser\fP.
 .RE
 .SS Syntax
 .sp
-All Knife subcommands have the following syntax:
+All ceth subcommands have the following syntax:
 .INDENT 0.0
 .INDENT 3.5
-knife subcommand [ARGUMENT] (options)
+ceth subcommand [ARGUMENT] (options)
 .UNINDENT
 .UNINDENT
 .sp

@@ -16,21 +16,21 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 require 'shellwords'
 
 class Seth
-  class Knife
+  class ceth
 
-    class CookbookSiteInstall < Knife
+    class CookbookSiteInstall < ceth
 
       deps do
         require 'seth/mixin/shell_out'
-        require 'seth/knife/core/cookbook_scm_repo'
+        require 'seth/ceth/core/cookbook_scm_repo'
         require 'seth/cookbook/metadata'
       end
 
-      banner "knife cookbook site install COOKBOOK [VERSION] (options)"
+      banner "ceth cookbook site install COOKBOOK [VERSION] (options)"
       category "cookbook site"
 
       option :no_deps,
@@ -135,7 +135,7 @@ class Seth
       end
 
       def download_cookbook_to(download_path)
-        downloader = Seth::Knife::CookbookSiteDownload.new
+        downloader = Seth::ceth::CookbookSiteDownload.new
         downloader.config[:file] = download_path
         downloader.name_args = name_args
         downloader.run

@@ -17,7 +17,7 @@
 #
 
 class Seth
-  class Knife
+  class ceth
     module Core
       class ObjectLoader
 

@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'seth/knife/core/text_formatter'
-require 'seth/knife/core/generic_presenter'
+require 'seth/ceth/core/text_formatter'
+require 'seth/ceth/core/generic_presenter'
 
 class Seth
-  class Knife
+  class ceth
     module Core
 
-      # This module may be included into a knife subcommand class to automatically
+      # This module may be included into a ceth subcommand class to automatically
       # add configuration options used by the NodePresenter
       module NodeFormattingOptions
         # :nodoc:
@@ -48,7 +48,7 @@ class Seth
         end
       end
 
-      #==Seth::Knife::Core::NodePresenter
+      #==Seth::ceth::Core::NodePresenter
       # A customized presenter for Seth::Node objects. Supports variable-length
       # output formats for displaying node data
       class NodePresenter < GenericPresenter

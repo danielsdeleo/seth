@@ -1,9 +1,9 @@
-require 'seth/seth_fs/knife'
+require 'seth/seth_fs/ceth'
 
 class Seth
-  class Knife
-    class Download < Seth::sethFS::Knife
-      banner "knife download PATTERNS"
+  class ceth
+    class Download < Seth::sethFS::ceth
+      banner "ceth download PATTERNS"
 
       category "path-based"
 
@@ -49,7 +49,7 @@ class Seth
       def run
         if name_args.length == 0
           show_usage
-          ui.fatal("Must specify at least one argument.  If you want to download everything in this directory, type \"knife download .\"")
+          ui.fatal("Must specify at least one argument.  If you want to download everything in this directory, type \"ceth download .\"")
           exit 1
         end
 

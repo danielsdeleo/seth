@@ -1,9 +1,9 @@
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class Raw < Seth::Knife
-      banner "knife raw REQUEST_PATH"
+  class ceth
+    class Raw < Seth::ceth
+      banner "ceth raw REQUEST_PATH"
 
       deps do
         require 'seth/json_compat'
@@ -52,7 +52,7 @@ class Seth
           exit(1)
         elsif name_args.length > 1
           show_usage
-          ui.fatal("Only one path accepted for knife raw")
+          ui.fatal("Only one path accepted for ceth raw")
           exit(1)
         end
 

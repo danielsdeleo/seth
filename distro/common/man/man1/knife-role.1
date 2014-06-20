@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-ROLE" "1" "Seth 11.12.0" "" "knife role"
+.TH "ceth-ROLE" "1" "Seth 11.12.0" "" "ceth role"
 .SH NAME
-knife-role \- The man page for the knife role subcommand.
+ceth-role \- The man page for the ceth role subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -33,10 +33,10 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .sp
 A role is a way to define certain patterns and processes that exist across nodes in an organization as belonging to a single job function. Each role consists of zero (or more) attributes and a run list. Each node can have zero (or more) roles assigned to it. When a role is run against a node, the configuration details of that node are compared against the attributes of the role, and then the contents of that role\(aqs run list are applied to the node\(aqs configuration details. When a seth\-client runs, it merges its own attributes and run lists with those contained within each assigned role.
 .sp
-The \fBknife role\fP subcommand is used to manage the roles that are associated with one or more nodes on a Seth server\&.
+The \fBceth role\fP subcommand is used to manage the roles that are associated with one or more nodes on a Seth server\&.
 .SH COMMON OPTIONS
 .sp
-The following options may be used with any of the arguments available to the \fBknife role\fP subcommand:
+The following options may be used with any of the arguments available to the \fBceth role\fP subcommand:
 .INDENT 0.0
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
@@ -49,7 +49,7 @@ The configuration file to use.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -64,7 +64,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -76,7 +76,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -85,7 +85,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -102,7 +102,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife role bulk delete REGEX
+$ ceth role bulk delete REGEX
 .ft P
 .fi
 .UNINDENT
@@ -120,7 +120,7 @@ Use a regular expression to define the pattern used to bulk delete roles:
 .sp
 .nf
 .ft C
-$ knife role bulk delete "^[0\-9]{3}$"
+$ ceth role bulk delete "^[0\-9]{3}$"
 .ft P
 .fi
 .UNINDENT
@@ -137,7 +137,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife role create ROLE_NAME (options)
+$ ceth role create ROLE_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -160,7 +160,7 @@ To add a role named "role1", enter:
 .sp
 .nf
 .ft C
-$ knife role create role1
+$ ceth role create role1
 .ft P
 .fi
 .UNINDENT
@@ -204,7 +204,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife role delete ROLE_NAME
+$ ceth role delete ROLE_NAME
 .ft P
 .fi
 .UNINDENT
@@ -220,7 +220,7 @@ This command does not have any specific options.
 .sp
 .nf
 .ft C
-$ knife role delete devops
+$ ceth role delete devops
 .ft P
 .fi
 .UNINDENT
@@ -239,7 +239,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife role edit ROLE_NAME
+$ ceth role edit ROLE_NAME
 .ft P
 .fi
 .UNINDENT
@@ -257,7 +257,7 @@ To edit the data for a role named "role1", enter:
 .sp
 .nf
 .ft C
-$ knife role edit role1
+$ ceth role edit role1
 .ft P
 .fi
 .UNINDENT
@@ -301,7 +301,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife role from file FILE
+$ ceth role from file FILE
 .ft P
 .fi
 .UNINDENT
@@ -319,7 +319,7 @@ To view role details based on the values contained in a JSON file:
 .sp
 .nf
 .ft C
-$ knife role from file "path to JSON file"
+$ ceth role from file "path to JSON file"
 .ft P
 .fi
 .UNINDENT
@@ -336,7 +336,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife role list
+$ ceth role list
 .ft P
 .fi
 .UNINDENT
@@ -359,7 +359,7 @@ To view a list of roles on the Seth server and display the URI for each role ret
 .sp
 .nf
 .ft C
-$ knife role list \-w
+$ ceth role list \-w
 .ft P
 .fi
 .UNINDENT
@@ -376,7 +376,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife role show ROLE_NAME
+$ ceth role show ROLE_NAME
 .ft P
 .fi
 .UNINDENT
@@ -399,7 +399,7 @@ To view information in JSON format, use the \fB\-F\fP common option as part of t
 .sp
 .nf
 .ft C
-$ knife role show devops \-F json
+$ ceth role show devops \-F json
 .ft P
 .fi
 .UNINDENT
@@ -413,7 +413,7 @@ To view information in JSON format, use the \fB\-F\fP common option as part of t
 .sp
 .nf
 .ft C
-$ knife role show devops \-F json
+$ ceth role show devops \-F json
 .ft P
 .fi
 .UNINDENT

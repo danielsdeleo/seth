@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class UserShow < Knife
+  class ceth
+    class UserShow < ceth
 
-      include Knife::Core::MultiAttributeReturnOption
+      include ceth::Core::MultiAttributeReturnOption
 
       deps do
         require 'seth/user'
         require 'seth/json_compat'
       end
 
-      banner "knife user show USER (options)"
+      banner "ceth user show USER (options)"
 
       def run
         @user_name = @name_args[0]

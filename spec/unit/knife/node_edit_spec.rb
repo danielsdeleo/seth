@@ -17,35 +17,35 @@
 #
 
 require 'spec_helper'
-Seth::Knife::NodeEdit.load_deps
+Seth::ceth::NodeEdit.load_deps
 
-describe Seth::Knife::NodeEdit do
+describe Seth::ceth::NodeEdit do
 
   # helper to convert the view from Seth objects into Ruby objects representing JSON
   def deserialized_json_view
-    actual = Seth::JSONCompat.from_json(seth::JSONCompat.to_json_pretty(@knife.node_editor.send(:view)))
+    actual = Seth::JSONCompat.from_json(seth::JSONCompat.to_json_pretty(@ceth.node_editor.send(:view)))
   end
 
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::NodeEdit.new
-    @knife.config = {
+    @ceth = Seth::ceth::NodeEdit.new
+    @ceth.config = {
       :editor => 'cat',
       :attribute => nil,
       :print_after => nil
     }
-    @knife.name_args = [ "adam" ]
+    @ceth.name_args = [ "adam" ]
     @node = Seth::Node.new()
   end
 
   it "should load the node" do
     Seth::Node.should_receive(:load).with("adam").and_return(@node)
-    @knife.node
+    @ceth.node
   end
 
   describe "after loading the node" do
     before do
-      @knife.stub(:node).and_return(@node)
+      @ceth.stub(:node).and_return(@node)
       @node.automatic_attrs = {:go => :away}
       @node.default_attrs = {:hide => :me}
       @node.override_attrs = {:dont => :show}
@@ -65,7 +65,7 @@ describe Seth::Knife::NodeEdit do
     end
 
     it "shows the extra attributes when given the --all option" do
-      @knife.config[:all_attributes] = true
+      @ceth.config[:all_attributes] = true
 
       actual = deserialized_json_view
       actual["automatic"].should == {"go" => "away"}
@@ -78,15 +78,15 @@ describe Seth::Knife::NodeEdit do
 
     it "does not consider unedited data updated" do
       view = deserialized_json_view
-      @knife.node_editor.send(:apply_updates, view)
-      @knife.node_editor.should_not be_updated
+      @ceth.node_editor.send(:apply_updates, view)
+      @ceth.node_editor.should_not be_updated
     end
 
     it "considers edited data updated" do
       view = deserialized_json_view
       view["run_list"] << "role[fuuu]"
-      @knife.node_editor.send(:apply_updates, view)
-      @knife.node_editor.should be_updated
+      @ceth.node_editor.send(:apply_updates, view)
+      @ceth.node_editor.should be_updated
     end
 
   end
@@ -94,18 +94,18 @@ describe Seth::Knife::NodeEdit do
   describe "edit_node" do
 
     before do
-      @knife.stub(:node).and_return(@node)
+      @ceth.stub(:node).and_return(@node)
     end
 
-    let(:subject) { @knife.node_editor.edit_node }
+    let(:subject) { @ceth.node_editor.edit_node }
 
     it "raises an exception when editing is disabled" do
-      @knife.config[:disable_editing] = true
+      @ceth.config[:disable_editing] = true
       expect{ subject }.to raise_error(SystemExit)
     end
 
     it "raises an exception when the editor is not set" do
-      @knife.config[:editor] = nil
+      @ceth.config[:editor] = nil
       expect{ subject }.to raise_error(SystemExit)
     end
 

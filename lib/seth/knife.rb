@@ -23,15 +23,15 @@ require 'mixlib/cli'
 require 'seth/config_fetcher'
 require 'seth/mixin/convert_to_class_name'
 require 'seth/mixin/path_sanity'
-require 'seth/knife/core/subcommand_loader'
-require 'seth/knife/core/ui'
+require 'seth/ceth/core/subcommand_loader'
+require 'seth/ceth/core/ui'
 require 'seth/rest'
 require 'pp'
 
 class Seth
-  class Knife
+  class ceth
 
-    Seth::REST::RESTRequest.user_agent = "seth Knife#{seth::REST::RESTRequest::UA_COMMON}"
+    Seth::REST::RESTRequest.user_agent = "seth ceth#{seth::REST::RESTRequest::UA_COMMON}"
 
     include Mixlib::CLI
     include Seth::Mixin::PathSanity
@@ -64,7 +64,7 @@ class Seth
     end
 
     def self.ui
-      @ui ||= Seth::Knife::UI.new(STDOUT, STDERR, STDIN, {})
+      @ui ||= Seth::ceth::UI.new(STDOUT, STDERR, STDIN, {})
     end
 
     def self.msg(msg="")
@@ -113,7 +113,7 @@ class Seth
     end
 
     def self.subcommand_loader
-      @subcommand_loader ||= Knife::SubcommandLoader.new(seth_config_dir)
+      @subcommand_loader ||= ceth::SubcommandLoader.new(seth_config_dir)
     end
 
     def self.load_commands
@@ -134,13 +134,13 @@ class Seth
       @subcommands_by_category
     end
 
-    # Print the list of subcommands knife knows about. If +preferred_category+
+    # Print the list of subcommands ceth knows about. If +preferred_category+
     # is given, only subcommands in that category are shown
     def self.list_commands(preferred_category=nil)
       load_commands
 
       category_desc = preferred_category ? preferred_category + " " : ''
-      msg "Available #{category_desc}subcommands: (for details, knife SUB-COMMAND --help)\n\n"
+      msg "Available #{category_desc}subcommands: (for details, ceth SUB-COMMAND --help)\n\n"
 
       if preferred_category && subcommands_by_category.key?(preferred_category)
         commands_to_show = {preferred_category => subcommands_by_category[preferred_category]}
@@ -158,12 +158,12 @@ class Seth
       end
     end
 
-    # Run knife for the given +args+ (ARGV), adding +options+ to the list of
+    # Run ceth for the given +args+ (ARGV), adding +options+ to the list of
     # CLI options that the subcommand knows how to handle.
     # ===Arguments
     # args::: usually ARGV
     # options::: A Mixlib::CLI option parser hash. These +options+ are how
-    # subcommands know about global knife CLI options
+    # subcommands know about global ceth CLI options
     def self.run(args, options={})
       load_commands
       subcommand_class = subcommand_class_from(args)
@@ -197,7 +197,7 @@ class Seth
           command_words.pop
         end
       end
-      # see if we got the command as e.g., knife node-list
+      # see if we got the command as e.g., ceth node-list
       subcommand_class ||= subcommands[args.first.gsub('-', '_')]
       subcommand_class || subcommand_not_found!(args)
     end
@@ -230,7 +230,7 @@ class Seth
         list_commands(category_commands)
       elsif missing_plugin = ( OFFICIAL_PLUGINS.find {|plugin| plugin == args[0]} )
         ui.info("The #{missing_plugin} commands were moved to plugins in Seth 0.10")
-        ui.info("You can install the plugin with `(sudo) gem install knife-#{missing_plugin}")
+        ui.info("You can install the plugin with `(sudo) gem install ceth-#{missing_plugin}")
       else
         list_commands
       end
@@ -278,7 +278,7 @@ class Seth
     # arguments and options
     def initialize(argv=[])
       super() # having to call super in initialize is the most annoying anti-pattern :(
-      @ui = Seth::Knife::UI.new(STDOUT, STDERR, STDIN, config)
+      @ui = Seth::ceth::UI.new(STDOUT, STDERR, STDIN, config)
 
       command_name_words = self.class.snake_case_name.split('_')
 
@@ -287,7 +287,7 @@ class Seth
       @name_args.delete(command_name_words.join('-'))
       @name_args.reject! { |name_arg| command_name_words.delete(name_arg) }
 
-      # knife node run_list add requires that we have extra logic to handle
+      # ceth node run_list add requires that we have extra logic to handle
       # the case that command name words could be joined by an underscore :/
       command_name_words = command_name_words.join('_')
       @name_args.reject! { |name_arg| command_name_words == name_arg }
@@ -297,7 +297,7 @@ class Seth
         exit 1
       end
 
-      # copy Mixlib::CLI over so that it cab be configured in knife.rb
+      # copy Mixlib::CLI over so that it cab be configured in ceth.rb
       # config file
       Seth::Config[:verbosity] = config[:verbosity]
     end
@@ -310,13 +310,13 @@ class Seth
       exit(1)
     end
 
-    # Returns a subset of the Seth::Config[:knife] Hash that is relevant to the
-    # currently executing knife command. This is used by #configure_seth to
-    # apply settings from knife.rb to the +config+ hash.
+    # Returns a subset of the Seth::Config[:ceth] Hash that is relevant to the
+    # currently executing ceth command. This is used by #configure_seth to
+    # apply settings from ceth.rb to the +config+ hash.
     def config_file_settings
       config_file_settings = {}
       self.class.options.keys.each do |key|
-        config_file_settings[key] = Seth::Config[:knife][key] if seth::Config[:knife].has_key?(key)
+        config_file_settings[key] = Seth::Config[:ceth][key] if seth::Config[:ceth].has_key?(key)
       end
       config_file_settings
     end
@@ -328,21 +328,21 @@ class Seth
     def self.locate_config_file
       candidate_configs = []
 
-      # Look for $KNIFE_HOME/knife.rb (allow multiple knives config on same machine)
-      if ENV['KNIFE_HOME']
-        candidate_configs << File.join(ENV['KNIFE_HOME'], 'knife.rb')
+      # Look for $ceth_HOME/ceth.rb (allow multiple knives config on same machine)
+      if ENV['ceth_HOME']
+        candidate_configs << File.join(ENV['ceth_HOME'], 'ceth.rb')
       end
-      # Look for $PWD/knife.rb
+      # Look for $PWD/ceth.rb
       if Dir.pwd
-        candidate_configs << File.join(Dir.pwd, 'knife.rb')
+        candidate_configs << File.join(Dir.pwd, 'ceth.rb')
       end
-      # Look for $UPWARD/.seth/knife.rb
+      # Look for $UPWARD/.seth/ceth.rb
       if seth_config_dir
-        candidate_configs << File.join(seth_config_dir, 'knife.rb')
+        candidate_configs << File.join(seth_config_dir, 'ceth.rb')
       end
-      # Look for $HOME/.seth/knife.rb
+      # Look for $HOME/.seth/ceth.rb
       if ENV['HOME']
-        candidate_configs << File.join(ENV['HOME'], '.seth', 'knife.rb')
+        candidate_configs << File.join(ENV['HOME'], '.seth', 'ceth.rb')
       end
 
       candidate_configs.each do | candidate_config |
@@ -356,7 +356,7 @@ class Seth
 
     # Apply Config in this order:
     # defaults from mixlib-cli
-    # settings from config file, via Seth::Config[:knife]
+    # settings from config file, via Seth::Config[:ceth]
     # config from command line
     def merge_configs
       # Apply config file settings on top of mixlib-cli defaults
@@ -420,7 +420,7 @@ class Seth
         config[:config_file] = located_config_file if located_config_file
       end
 
-      # Don't try to load a knife.rb if it wasn't specified.
+      # Don't try to load a ceth.rb if it wasn't specified.
       if config[:config_file]
         Seth::Config.config_file = config[:config_file]
         fetcher = Seth::ConfigFetcher.new(config[:config_file], seth::Config.config_file_jail)
@@ -433,7 +433,7 @@ class Seth
       else
         # ...but do log a message if no config was found.
         Seth::Config[:color] = config[:color]
-        ui.warn("No knife configuration file found")
+        ui.warn("No ceth configuration file found")
       end
 
       merge_configs
@@ -485,7 +485,7 @@ class Seth
 
     def run_with_pretty_exceptions(raise_exception = false)
       unless self.respond_to?(:run)
-        ui.error "You need to add a #run method to your knife command before you can use it"
+        ui.error "You need to add a #run method to your ceth command before you can use it"
       end
       enforce_path_sanity
       Seth::Application.setup_server_connectivity
@@ -508,10 +508,10 @@ class Seth
         humanize_http_exception(e)
       when Errno::ECONNREFUSED, Timeout::Error, Errno::ETIMEDOUT, SocketError
         ui.error "Network Error: #{e.message}"
-        ui.info "Check your knife configuration and network settings"
+        ui.info "Check your ceth configuration and network settings"
       when NameError, NoMethodError
-        ui.error "knife encountered an unexpected error"
-        ui.info  "This may be a bug in the '#{self.class.common_name}' knife command or plugin"
+        ui.error "ceth encountered an unexpected error"
+        ui.info  "This may be a bug in the '#{self.class.common_name}' ceth command or plugin"
         ui.info  "Please collect the output of this command with the `-VV` option before filing a bug report."
         ui.info  "Exception: #{e.class.name}: #{e.message}"
       when Seth::Exceptions::PrivateKeyMissing
@@ -519,7 +519,7 @@ class Seth
         ui.info  "Check your configuration file and ensure that your private key is readable"
       when Seth::Exceptions::InvalidRedirect
         ui.error "Invalid Redirect: #{e.message}"
-        ui.info  "Change your server location in knife.rb to the server's FQDN to avoid unwanted redirections."
+        ui.info  "Change your server location in ceth.rb to the server's FQDN to avoid unwanted redirections."
       else
         ui.error "#{e.class.name}: #{e.message}"
       end

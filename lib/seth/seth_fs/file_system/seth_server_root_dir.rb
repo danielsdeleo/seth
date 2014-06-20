@@ -42,7 +42,7 @@ class Seth
           @environment = seth_config[:environment]
           @repo_mode = seth_config[:repo_mode]
           @root_name = root_name
-          @cookbook_version = options[:cookbook_version] # Used in knife diff and download for server cookbook version
+          @cookbook_version = options[:cookbook_version] # Used in ceth diff and download for server cookbook version
         end
 
         attr_reader :seth_server_url

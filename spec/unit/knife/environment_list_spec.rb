@@ -18,12 +18,12 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::EnvironmentList do
+describe Seth::ceth::EnvironmentList do
   before(:each) do
-    @knife = Seth::Knife::EnvironmentList.new
-    @knife.stub(:msg).and_return true
-    @knife.stub(:output).and_return true
-    @knife.stub(:show_usage).and_return true
+    @ceth = Seth::ceth::EnvironmentList.new
+    @ceth.stub(:msg).and_return true
+    @ceth.stub(:output).and_return true
+    @ceth.stub(:show_usage).and_return true
 
     @environments = {
       "production" => "http://localhost:4000/environments/production",
@@ -35,20 +35,20 @@ describe Seth::Knife::EnvironmentList do
 
   it "should make an api call to list the environments" do
     Seth::Environment.should_receive(:list)
-    @knife.run
+    @ceth.run
   end
 
   it "should print the environment names in a sorted list" do
     names = @environments.keys.sort { |a,b| a <=> b }
-    @knife.should_receive(:output).with(names)
-    @knife.run
+    @ceth.should_receive(:output).with(names)
+    @ceth.run
   end
 
   describe "with --with-uri" do
     it "should print and unsorted list of the environments and their URIs" do
-      @knife.config[:with_uri] = true
-      @knife.should_receive(:output).with(@environments)
-      @knife.run
+      @ceth.config[:with_uri] = true
+      @ceth.should_receive(:output).with(@environments)
+      @ceth.run
     end
   end
 end

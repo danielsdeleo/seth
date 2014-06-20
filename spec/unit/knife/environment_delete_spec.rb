@@ -18,14 +18,14 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::EnvironmentDelete do
+describe Seth::ceth::EnvironmentDelete do
   before(:each) do
-    @knife = Seth::Knife::EnvironmentDelete.new
-    @knife.stub(:msg).and_return true
-    @knife.stub(:output).and_return true
-    @knife.stub(:show_usage).and_return true
-    @knife.stub(:confirm).and_return true
-    @knife.name_args = [ "production" ]
+    @ceth = Seth::ceth::EnvironmentDelete.new
+    @ceth.stub(:msg).and_return true
+    @ceth.stub(:output).and_return true
+    @ceth.stub(:show_usage).and_return true
+    @ceth.stub(:confirm).and_return true
+    @ceth.name_args = [ "production" ]
 
     @environment = Seth::Environment.new
     @environment.name("production")
@@ -35,37 +35,37 @@ describe Seth::Knife::EnvironmentDelete do
   end
 
   it "should confirm that you want to delete" do
-    @knife.should_receive(:confirm)
-    @knife.run
+    @ceth.should_receive(:confirm)
+    @ceth.run
   end
 
   it "should load the environment" do
     Seth::Environment.should_receive(:load).with("production")
-    @knife.run
+    @ceth.run
   end
 
   it "should delete the environment" do
     @environment.should_receive(:destroy)
-    @knife.run
+    @ceth.run
   end
 
   it "should not print the environment" do
-    @knife.should_not_receive(:output)
-    @knife.run
+    @ceth.should_not_receive(:output)
+    @ceth.run
   end
 
   it "should show usage and exit when no environment name is provided" do
-    @knife.name_args = []
-    @knife.ui.should_receive(:fatal)
-    @knife.should_receive(:show_usage)
-    lambda { @knife.run }.should raise_error(SystemExit)
+    @ceth.name_args = []
+    @ceth.ui.should_receive(:fatal)
+    @ceth.should_receive(:show_usage)
+    lambda { @ceth.run }.should raise_error(SystemExit)
   end
 
   describe "with --print-after" do
     it "should pretty print the environment, formatted for display" do
-      @knife.config[:print_after] = true
-      @knife.should_receive(:output).with(@environment)
-      @knife.run
+      @ceth.config[:print_after] = true
+      @ceth.should_receive(:output).with(@environment)
+      @ceth.run
     end
   end
 end

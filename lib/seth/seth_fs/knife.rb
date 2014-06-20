@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
   module SethFS
-    class Knife < Seth::Knife
+    class ceth < Seth::ceth
       # Workaround for seth-3932
       def self.deps
         super do

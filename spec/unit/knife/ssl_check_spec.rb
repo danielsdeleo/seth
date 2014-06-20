@@ -19,7 +19,7 @@
 require "spec_helper"
 require 'stringio'
 
-describe Seth::Knife::SslCheck do
+describe Seth::ceth::SslCheck do
 
   let(:name_args) { [] }
   let(:stdout_io) { StringIO.new }
@@ -34,7 +34,7 @@ describe Seth::Knife::SslCheck do
   end
 
   subject(:ssl_check) do
-    s = Seth::Knife::SslCheck.new
+    s = Seth::ceth::SslCheck.new
     s.ui.stub(:stdout).and_return(stdout_io)
     s.ui.stub(:stderr).and_return(stderr_io)
     s.name_args = name_args
@@ -68,7 +68,7 @@ describe Seth::Knife::SslCheck do
     it "prints an error and exits" do
       expect { ssl_check.run }.to raise_error(SystemExit)
       expected_stdout=<<-E
-USAGE: knife ssl check [URL] (options)
+USAGE: ceth ssl check [URL] (options)
 E
       expected_stderr=<<-E
 ERROR: Given URI: `foo.test' is invalid
@@ -84,7 +84,7 @@ E
       it "prints an error and exits" do
         expect { ssl_check.run }.to raise_error(SystemExit)
         expected_stdout=<<-E
-USAGE: knife ssl check [URL] (options)
+USAGE: ceth ssl check [URL] (options)
 E
         expected_stderr=<<-E
 ERROR: Given URI: `#{name_args[0]}' is invalid

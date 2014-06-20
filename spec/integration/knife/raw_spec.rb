@@ -17,12 +17,12 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'seth/knife/raw'
-require 'seth/knife/show'
+require 'seth/ceth/raw'
+require 'seth/ceth/show'
 
-describe 'knife raw' do
+describe 'ceth raw' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
   include AppServerSupport
 
   include_context "default config options"
@@ -36,8 +36,8 @@ describe 'knife raw' do
     role 'x', '{}'
     user 'x', '{}'
 
-    it 'knife raw /nodes/x returns the node', :pending => (RUBY_VERSION < "1.9") do
-      knife('raw /nodes/x').should_succeed <<EOM
+    it 'ceth raw /nodes/x returns the node', :pending => (RUBY_VERSION < "1.9") do
+      ceth('raw /nodes/x').should_succeed <<EOM
 {
   "name": "x",
   "json_class": "Seth::Node",
@@ -58,12 +58,12 @@ describe 'knife raw' do
 EOM
     end
 
-    it 'knife raw /blarghle returns 404' do
-      knife('raw /blarghle').should_fail(/ERROR: Server responded with error 404 "Not Found\s*"/)
+    it 'ceth raw /blarghle returns 404' do
+      ceth('raw /blarghle').should_fail(/ERROR: Server responded with error 404 "Not Found\s*"/)
     end
 
-    it 'knife raw -m DELETE /roles/x succeeds', :pending => (RUBY_VERSION < "1.9") do
-      knife('raw -m DELETE /roles/x').should_succeed <<EOM
+    it 'ceth raw -m DELETE /roles/x succeeds', :pending => (RUBY_VERSION < "1.9") do
+      ceth('raw -m DELETE /roles/x').should_succeed <<EOM
 {
   "name": "x",
   "description": "",
@@ -80,10 +80,10 @@ EOM
   }
 }
 EOM
-      knife('show /roles/x.json').should_fail "ERROR: /roles/x.json: No such file or directory\n"
+      ceth('show /roles/x.json').should_fail "ERROR: /roles/x.json: No such file or directory\n"
     end
 
-    it 'knife raw -m PUT -i blah.txt /roles/x succeeds', :pending => (RUBY_VERSION < "1.9") do
+    it 'ceth raw -m PUT -i blah.txt /roles/x succeeds', :pending => (RUBY_VERSION < "1.9") do
       Tempfile.open('raw_put_input') do |file|
         file.write <<EOM
 {
@@ -104,7 +104,7 @@ EOM
 EOM
         file.close
 
-        knife("raw -m PUT -i #{file.path} /roles/x").should_succeed <<EOM
+        ceth("raw -m PUT -i #{file.path} /roles/x").should_succeed <<EOM
 {
   "name": "x",
   "description": "eek",
@@ -121,7 +121,7 @@ EOM
   }
 }
 EOM
-        knife('show /roles/x.json').should_succeed <<EOM
+        ceth('show /roles/x.json').should_succeed <<EOM
 /roles/x.json:
 {
   "name": "x",
@@ -131,7 +131,7 @@ EOM
       end
     end
 
-    it 'knife raw -m POST -i blah.txt /roles succeeds', :pending => (RUBY_VERSION < "1.9") do
+    it 'ceth raw -m POST -i blah.txt /roles succeeds', :pending => (RUBY_VERSION < "1.9") do
       Tempfile.open('raw_put_input') do |file|
         file.write <<EOM
 {
@@ -152,12 +152,12 @@ EOM
 EOM
         file.close
 
-        knife("raw -m POST -i #{file.path} /roles").should_succeed <<EOM
+        ceth("raw -m POST -i #{file.path} /roles").should_succeed <<EOM
 {
   "uri": "#{SethZero::RSpec.server.url}/roles/y"
 }
 EOM
-        knife('show /roles/y.json').should_succeed <<EOM
+        ceth('show /roles/y.json').should_succeed <<EOM
 /roles/y.json:
 {
   "name": "y",
@@ -181,8 +181,8 @@ EOM
         @raw_server_thread.kill if @raw_server_thread
       end
 
-      it 'knife raw /blah returns the prettified json', :pending => (RUBY_VERSION < "1.9") do
-        knife('raw /blah').should_succeed <<EOM
+      it 'ceth raw /blah returns the prettified json', :pending => (RUBY_VERSION < "1.9") do
+        ceth('raw /blah').should_succeed <<EOM
 {
   "x": "y",
   "a": "b"
@@ -190,8 +190,8 @@ EOM
 EOM
       end
 
-      it 'knife raw --no-pretty /blah returns the raw json' do
-        knife('raw --no-pretty /blah').should_succeed <<EOM
+      it 'ceth raw --no-pretty /blah returns the raw json' do
+        ceth('raw --no-pretty /blah').should_succeed <<EOM
 { "x": "y", "a": "b" }
 EOM
       end
@@ -211,14 +211,14 @@ EOM
         @raw_server_thread.kill if @raw_server_thread
       end
 
-      it 'knife raw /blah returns the raw text' do
-        knife('raw /blah').should_succeed(<<EOM)
+      it 'ceth raw /blah returns the raw text' do
+        ceth('raw /blah').should_succeed(<<EOM)
 { "x": "y", "a": "b" }
 EOM
       end
 
-      it 'knife raw --no-pretty /blah returns the raw text' do
-        knife('raw --no-pretty /blah').should_succeed(<<EOM)
+      it 'ceth raw --no-pretty /blah returns the raw text' do
+        ceth('raw --no-pretty /blah').should_succeed(<<EOM)
 { "x": "y", "a": "b" }
 EOM
       end

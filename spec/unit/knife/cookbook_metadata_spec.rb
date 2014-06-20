@@ -18,39 +18,39 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::CookbookMetadata do
+describe Seth::ceth::CookbookMetadata do
   before(:each) do
-    @knife = Seth::Knife::CookbookMetadata.new
-    @knife.name_args = ['foobar']
+    @ceth = Seth::ceth::CookbookMetadata.new
+    @ceth.name_args = ['foobar']
     @cookbook_dir = Dir.mktmpdir
     @json_data = '{ "version": "1.0.0" }'
     @stdout = StringIO.new
     @stderr = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
-    @knife.ui.stub(:stderr).and_return(@stderr)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stderr).and_return(@stderr)
   end
 
   describe 'run' do
     it 'should print an error and exit if a cookbook name was not provided' do
-      @knife.name_args = []
-      @knife.ui.should_receive(:error).with(/you must specify the cookbook.+use the --all/i)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = []
+      @ceth.ui.should_receive(:error).with(/you must specify the cookbook.+use the --all/i)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     it 'should print an error and exit if an empty cookbook name was provided' do
-      @knife.name_args = ['']
-      @knife.ui.should_receive(:error).with(/you must specify the cookbook.+use the --all/i)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = ['']
+      @ceth.ui.should_receive(:error).with(/you must specify the cookbook.+use the --all/i)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     it 'should generate the metadata for the cookbook' do
-      @knife.should_receive(:generate_metadata).with('foobar')
-      @knife.run
+      @ceth.should_receive(:generate_metadata).with('foobar')
+      @ceth.run
     end
 
     describe 'with -a or --all' do
       before(:each) do
-        @knife.config[:all] = true
+        @ceth.config[:all] = true
         @foo = Seth::CookbookVersion.new('foo', '/tmp/blah')
         @foo.version = '1.0.0'
         @bar = Seth::CookbookVersion.new('bar', '/tmp/blah')
@@ -60,21 +60,21 @@ describe Seth::Knife::CookbookMetadata do
           "bar" => @bar
         }
         @cookbook_loader.should_receive(:load_cookbooks).and_return(@cookbook_loader)
-        @knife.should_receive(:generate_metadata).with('foo')
-        @knife.should_receive(:generate_metadata).with('bar')
+        @ceth.should_receive(:generate_metadata).with('foo')
+        @ceth.should_receive(:generate_metadata).with('bar')
       end
 
       it 'should generate the metadata for each cookbook' do
         Seth::Config[:cookbook_path] = @cookbook_dir
         Seth::CookbookLoader.should_receive(:new).with(@cookbook_dir).and_return(@cookbook_loader)
-        @knife.run
+        @ceth.run
       end
 
       describe 'and with -o or --cookbook-path' do
         it 'should look in the provided path and generate cookbook metadata' do
-          @knife.config[:cookbook_path] = '/opt/seth/cookbooks'
+          @ceth.config[:cookbook_path] = '/opt/seth/cookbooks'
           Seth::CookbookLoader.should_receive(:new).with('/opt/seth/cookbooks').and_return(@cookbook_loader)
-          @knife.run
+          @ceth.run
         end
       end
     end
@@ -83,7 +83,7 @@ describe Seth::Knife::CookbookMetadata do
 
   describe 'generate_metadata' do
     before(:each) do
-      @knife.config[:cookbook_path] = @cookbook_dir
+      @ceth.config[:cookbook_path] = @cookbook_dir
       File.stub(:expand_path).with("#{@cookbook_dir}/foobar/metadata.rb").
                                     and_return("#{@cookbook_dir}/foobar/metadata.rb")
     end
@@ -91,15 +91,15 @@ describe Seth::Knife::CookbookMetadata do
     it 'should generate the metadata from metadata.rb if it exists' do
       File.should_receive(:exists?).with("#{@cookbook_dir}/foobar/metadata.rb").
                                     and_return(true)
-      @knife.should_receive(:generate_metadata_from_file).with('foobar', "#{@cookbook_dir}/foobar/metadata.rb")
-      @knife.run
+      @ceth.should_receive(:generate_metadata_from_file).with('foobar', "#{@cookbook_dir}/foobar/metadata.rb")
+      @ceth.run
     end
 
     it 'should validate the metadata json if metadata.rb does not exist' do
       File.should_receive(:exists?).with("#{@cookbook_dir}/foobar/metadata.rb").
                                     and_return(false)
-      @knife.should_receive(:validate_metadata_json).with(@cookbook_dir, 'foobar')
-      @knife.run
+      @ceth.should_receive(:validate_metadata_json).with(@cookbook_dir, 'foobar')
+      @ceth.run
     end
   end
 
@@ -118,7 +118,7 @@ describe Seth::Knife::CookbookMetadata do
       @json_file_mock.should_receive(:write).with(@json_data)
       Seth::JSONCompat.should_receive(:to_json_pretty).with(@metadata_mock).
                                                        and_return(@json_data)
-      @knife.generate_metadata_from_file('foobar', "#{@cookbook_dir}/foobar/metadata.rb")
+      @ceth.generate_metadata_from_file('foobar', "#{@cookbook_dir}/foobar/metadata.rb")
       @stdout.string.should match /generating metadata for foobar from #{@cookbook_dir}\/foobar\/metadata\.rb/im
     end
 
@@ -129,7 +129,7 @@ describe Seth::Knife::CookbookMetadata do
         exception = klass.new("#{description} blah")
         Seth::Cookbook::Metadata.stub(:new).and_raise(exception)
         lambda {
-          @knife.generate_metadata_from_file('foobar', "#{@cookbook_dir}/foobar/metadata.rb")
+          @ceth.generate_metadata_from_file('foobar', "#{@cookbook_dir}/foobar/metadata.rb")
         }.should raise_error(SystemExit)
         @stderr.string.should match /error: the cookbook 'foobar' contains invalid or obsolete metadata syntax/im
         @stderr.string.should match /in #{@cookbook_dir}\/foobar\/metadata\.rb/im
@@ -145,7 +145,7 @@ describe Seth::Knife::CookbookMetadata do
       IO.should_receive(:read).with("#{@cookbook_dir}/foobar/metadata.json").
                                and_return(@json_data)
       Seth::Cookbook::Metadata.should_receive(:validate_json).with(@json_data)
-      @knife.validate_metadata_json(@cookbook_dir, 'foobar')
+      @ceth.validate_metadata_json(@cookbook_dir, 'foobar')
     end
 
     it 'should not try to validate the metadata json if the file does not exist' do
@@ -153,7 +153,7 @@ describe Seth::Knife::CookbookMetadata do
                                    and_return(false)
       IO.should_not_receive(:read)
       Seth::Cookbook::Metadata.should_not_receive(:validate_json)
-      @knife.validate_metadata_json(@cookbook_dir, 'foobar')
+      @ceth.validate_metadata_json(@cookbook_dir, 'foobar')
     end
 
     { Seth::Exceptions::ObsoleteDependencySyntax => 'obsolote dependency',
@@ -167,7 +167,7 @@ describe Seth::Knife::CookbookMetadata do
         exception = klass.new("#{description} blah")
         Seth::Cookbook::Metadata.stub(:validate_json).and_raise(exception)
         lambda {
-          @knife.validate_metadata_json(@cookbook_dir, 'foobar')
+          @ceth.validate_metadata_json(@cookbook_dir, 'foobar')
         }.should raise_error(SystemExit)
         @stderr.string.should match /error: the cookbook 'foobar' contains invalid or obsolete metadata syntax/im
         @stderr.string.should match /in #{@cookbook_dir}\/foobar\/metadata\.json/im

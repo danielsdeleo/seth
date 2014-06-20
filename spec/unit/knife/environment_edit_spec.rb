@@ -18,62 +18,62 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::EnvironmentEdit do
+describe Seth::ceth::EnvironmentEdit do
   before(:each) do
-    @knife = Seth::Knife::EnvironmentEdit.new
-    @knife.ui.stub(:msg).and_return true
-    @knife.ui.stub(:output).and_return true
-    @knife.ui.stub(:show_usage).and_return true
-    @knife.name_args = [ "production" ]
+    @ceth = Seth::ceth::EnvironmentEdit.new
+    @ceth.ui.stub(:msg).and_return true
+    @ceth.ui.stub(:output).and_return true
+    @ceth.ui.stub(:show_usage).and_return true
+    @ceth.name_args = [ "production" ]
 
     @environment = Seth::Environment.new
     @environment.name("production")
     @environment.description("Please edit me")
     @environment.stub(:save).and_return true
     Seth::Environment.stub(:load).and_return @environment
-    @knife.ui.stub(:edit_data).and_return @environment
+    @ceth.ui.stub(:edit_data).and_return @environment
   end
 
   it "should load the environment" do
     Seth::Environment.should_receive(:load).with("production")
-    @knife.run
+    @ceth.run
   end
 
   it "should let you edit the environment" do
-    @knife.ui.should_receive(:edit_data).with(@environment)
-    @knife.run
+    @ceth.ui.should_receive(:edit_data).with(@environment)
+    @ceth.run
   end
 
   it "should save the edited environment data" do
     pansy = Seth::Environment.new
 
     @environment.name("new_environment_name")
-    @knife.ui.should_receive(:edit_data).with(@environment).and_return(pansy)
+    @ceth.ui.should_receive(:edit_data).with(@environment).and_return(pansy)
     pansy.should_receive(:save)
-    @knife.run
+    @ceth.run
   end
 
   it "should not save the unedited environment data" do
     @environment.should_not_receive(:save)
-    @knife.run
+    @ceth.run
   end
 
   it "should not print the environment" do
-    @knife.should_not_receive(:output)
-    @knife.run
+    @ceth.should_not_receive(:output)
+    @ceth.run
   end
 
   it "shoud show usage and exit when no environment name is provided" do
-    @knife.name_args = []
-    @knife.should_receive(:show_usage)
-    lambda { @knife.run }.should raise_error(SystemExit)
+    @ceth.name_args = []
+    @ceth.should_receive(:show_usage)
+    lambda { @ceth.run }.should raise_error(SystemExit)
   end
 
   describe "with --print-after" do
     it "should pretty print the environment, formatted for display" do
-      @knife.config[:print_after] = true
-      @knife.ui.should_receive(:output).with(@environment)
-      @knife.run
+      @ceth.config[:print_after] = true
+      @ceth.ui.should_receive(:output).with(@environment)
+      @ceth.run
     end
   end
 end

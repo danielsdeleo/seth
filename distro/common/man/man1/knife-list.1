@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-LIST" "1" "Seth 11.12.0" "" "knife list"
+.TH "ceth-LIST" "1" "Seth 11.12.0" "" "ceth list"
 .SH NAME
-knife-list \- The man page for the knife list subcommand.
+ceth-list \- The man page for the ceth list subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife list\fP subcommand is used to view a list of objects on the Seth server\&. This subcommand works similar to \fBknife cookbook list\fP, \fBknife data bag list\fP, \fBknife environment list\fP, \fBknife node list\fP, and \fBknife role list\fP, but with a single verb (and a single action).
+The \fBceth list\fP subcommand is used to view a list of objects on the Seth server\&. This subcommand works similar to \fBceth cookbook list\fP, \fBceth data bag list\fP, \fBceth environment list\fP, \fBceth node list\fP, and \fBceth role list\fP, but with a single verb (and a single action).
 .sp
 \fBSyntax\fP
 .sp
@@ -41,7 +41,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife list [PATTERN...] (options)
+$ ceth list [PATTERN...] (options)
 .ft P
 .fi
 .UNINDENT
@@ -74,7 +74,7 @@ The number of allowed concurrent connections. Default: \fB10\fP\&.
 Indicates that a directory\(aqs children will not be shown when a directory matches a pattern. Default value: \fBfalse\fP\&.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-\-disable\-editing\fP
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
@@ -95,7 +95,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-local\fP
 Indicates that only contents of the local directory will be returned. Default: \fBfalse\fP\&.
@@ -116,7 +116,7 @@ The layout of the local seth\-repo\&. Possible values: \fBstatic\fP, \fBeverythi
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -125,7 +125,7 @@ The version of the seth\-client\&.
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -139,7 +139,7 @@ For example, to view a list of roles on the Seth server:
 .sp
 .nf
 .ft C
-$ knife list roles/
+$ ceth list roles/
 .ft P
 .fi
 .UNINDENT
@@ -151,7 +151,7 @@ To view a list of roles and environments on the Seth server:
 .sp
 .nf
 .ft C
-$ knife list roles/ environments/
+$ ceth list roles/ environments/
 .ft P
 .fi
 .UNINDENT
@@ -163,7 +163,7 @@ To view a list of absolutely everything on the Seth server:
 .sp
 .nf
 .ft C
-$ knife list \-R /
+$ ceth list \-R /
 .ft P
 .fi
 .UNINDENT

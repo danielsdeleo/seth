@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookDelete < Knife
+  class ceth
+    class CookbookDelete < ceth
 
       attr_accessor :cookbook_name, :version
 
@@ -32,7 +32,7 @@ class Seth
 
       option :purge, :short => '-p', :long => '--purge', :boolean => true, :description => 'Permanently remove files from backing data store'
 
-      banner "knife cookbook delete COOKBOOK VERSION (options)"
+      banner "ceth cookbook delete COOKBOOK VERSION (options)"
 
       def run
         confirm("Files that are common to multiple cookbooks are shared, so purging the files may disable other cookbooks. Are you sure you want to purge files instead of just deleting the cookbook") if config[:purge]

@@ -1,61 +1,61 @@
 =====================================================
-knife environment 
+ceth environment
 =====================================================
 
 .. include:: ../../includes_environment/includes_environment.rst
 
-.. include:: ../../includes_knife/includes_knife_environment.rst
+.. include:: ../../includes_ceth/includes_ceth_environment.rst
 
-.. note:: Review the list of :doc:`common options </knife_common_options>` available to this (and all) |knife| subcommands and plugins.
+.. note:: Review the list of :doc:`common options </ceth_common_options>` available to this (and all) |ceth| subcommands and plugins.
 
 compare
 =====================================================
-.. include:: ../../includes_knife/includes_knife_environment_compare.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_compare.rst
 
 **Syntax**
 
-.. include:: ../../includes_knife/includes_knife_environment_compare_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_compare_syntax.rst
 
 **Options**
 
-.. include:: ../../includes_knife/includes_knife_environment_compare_options.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_compare_options.rst
 
 **Example**
 
-.. include:: ../../step_knife/step_knife_environment_compare_single.rst
+.. include:: ../../step_ceth/step_ceth_environment_compare_single.rst
 
-.. include:: ../../step_knife/step_knife_environment_compare_multiple.rst
+.. include:: ../../step_ceth/step_ceth_environment_compare_multiple.rst
 
-.. include:: ../../step_knife/step_knife_environment_compare_all.rst
+.. include:: ../../step_ceth/step_ceth_environment_compare_all.rst
 
 create
 =====================================================
-.. include:: ../../includes_knife/includes_knife_environment_create.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_create.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_create_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_create_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_create_options.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_create_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Create an environment**
 
-.. include:: ../../step_knife/step_knife_environment_create.rst
+.. include:: ../../step_ceth/step_ceth_environment_create.rst
 
 
 delete
 =====================================================
-.. include:: ../../includes_knife/includes_knife_environment_delete.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_delete.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_delete_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_delete_syntax.rst
 
 Options
 -----------------------------------------------------
@@ -63,20 +63,20 @@ Options
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Delete an environment**
 
-.. include:: ../../step_knife/step_knife_environment_delete.rst
+.. include:: ../../step_ceth/step_ceth_environment_delete.rst
 
 
 edit
 =====================================================
-.. include:: ../../includes_knife/includes_knife_environment_edit.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_edit.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_edit_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_edit_syntax.rst
 
 Options
 -----------------------------------------------------
@@ -84,75 +84,75 @@ Options
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Edit an environment**
 
-.. include:: ../../step_knife/step_knife_environment_edit.rst
+.. include:: ../../step_ceth/step_ceth_environment_edit.rst
 
 
 from file
 =====================================================
-.. include:: ../../includes_knife/includes_knife_environment_from_file.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_from_file.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_from_file_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_from_file_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_from_file_options.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_from_file_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Create an environment from a JSON file**
 
-.. include:: ../../step_knife/step_knife_environment_from_file.rst
+.. include:: ../../step_ceth/step_ceth_environment_from_file.rst
 
 
 list
 =====================================================
-.. include:: ../../includes_knife/includes_knife_environment_list.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_list.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_list_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_list_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_list_options.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_list_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **View a list of environments**
 
-.. include:: ../../step_knife/step_knife_environment_list.rst
+.. include:: ../../step_ceth/step_ceth_environment_list.rst
 
 
 show
 =====================================================
-.. include:: ../../includes_knife/includes_knife_environment_show.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_show.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_show_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_show_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_environment_show_options.rst
+.. include:: ../../includes_ceth/includes_ceth_environment_show_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Show environments**
 
-.. include:: ../../step_knife/step_knife_environment_show.rst
+.. include:: ../../step_ceth/step_ceth_environment_show.rst
 
 **Show environments as JSON**
 
-.. include:: ../../step_knife/step_knife_common_view_json.rst
+.. include:: ../../step_ceth/step_ceth_common_view_json.rst

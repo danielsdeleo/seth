@@ -18,66 +18,66 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::ClientDelete do
+describe Seth::ceth::ClientDelete do
   before(:each) do
-    @knife = Seth::Knife::ClientDelete.new
+    @ceth = Seth::ceth::ClientDelete.new
     # defaults
-    @knife.config = {
+    @ceth.config = {
       :delete_validators => false
     }
-    @knife.name_args = [ 'adam' ]
+    @ceth.name_args = [ 'adam' ]
   end
 
   describe 'run' do
     it 'should delete the client' do
-      @knife.should_receive(:delete_object).with(Seth::ApiClient, 'adam', 'client')
-      @knife.run
+      @ceth.should_receive(:delete_object).with(Seth::ApiClient, 'adam', 'client')
+      @ceth.run
     end
 
     it 'should print usage and exit when a client name is not provided' do
-      @knife.name_args = []
-      @knife.should_receive(:show_usage)
-      @knife.ui.should_receive(:fatal)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = []
+      @ceth.should_receive(:show_usage)
+      @ceth.ui.should_receive(:fatal)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
   end
 
   describe 'with a validator' do
     before(:each) do
-      Seth::Knife::UI.stub(:confirm).and_return(true)
-      @knife.stub(:confirm).and_return(true)
+      Seth::ceth::UI.stub(:confirm).and_return(true)
+      @ceth.stub(:confirm).and_return(true)
       @client = Seth::ApiClient.new
       Seth::ApiClient.should_receive(:load).and_return(@client)
     end
 
     it 'should delete non-validator client if --force is not set' do
-      @knife.config[:delete_validators] = false
+      @ceth.config[:delete_validators] = false
       @client.should_receive(:destroy).and_return(@client)
-      @knife.should_receive(:msg)
+      @ceth.should_receive(:msg)
 
-      @knife.run
+      @ceth.run
     end
 
     it 'should delete non-validator client if --force is set' do
-      @knife.config[:delete_validators] = true
+      @ceth.config[:delete_validators] = true
       @client.should_receive(:destroy).and_return(@client)
-      @knife.should_receive(:msg)
+      @ceth.should_receive(:msg)
 
-      @knife.run
+      @ceth.run
     end
 
     it 'should not delete validator client if --force is not set' do
       @client.validator(true)
-      @knife.ui.should_receive(:fatal)
-      lambda { @knife.run}.should raise_error(SystemExit)
+      @ceth.ui.should_receive(:fatal)
+      lambda { @ceth.run}.should raise_error(SystemExit)
     end
 
     it 'should delete validator client if --force is set' do
-      @knife.config[:delete_validators] = true
+      @ceth.config[:delete_validators] = true
       @client.should_receive(:destroy).and_return(@client)
-      @knife.should_receive(:msg)
+      @ceth.should_receive(:msg)
 
-      @knife.run
+      @ceth.run
     end
   end
 end

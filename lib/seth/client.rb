@@ -512,10 +512,10 @@ To fix this issue add an entry like this to your configuration file:
 ```
 
 To check your SSL configuration, or troubleshoot errors, you can use the
-`knife ssl check` command like so:
+`ceth ssl check` command like so:
 
 ```
-  knife ssl check -c #{Seth::Config.config_file}
+  ceth ssl check -c #{Seth::Config.config_file}
 ```
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

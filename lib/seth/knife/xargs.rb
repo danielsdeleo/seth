@@ -1,9 +1,9 @@
-require 'seth/seth_fs/knife'
+require 'seth/seth_fs/ceth'
 
 class Seth
-  class Knife
-    class Xargs < Seth::sethFS::Knife
-      banner "knife xargs [COMMAND]"
+  class ceth
+    class Xargs < Seth::sethFS::ceth
+      banner "ceth xargs [COMMAND]"
 
       category "path-based"
 

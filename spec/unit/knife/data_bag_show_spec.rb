@@ -24,20 +24,20 @@ require 'seth/encrypted_data_bag_item'
 require 'seth/json_compat'
 require 'tempfile'
 
-describe Seth::Knife::DataBagShow do
+describe Seth::ceth::DataBagShow do
   before do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::DataBagShow.new
-    @knife.config[:format] = 'json'
+    @ceth = Seth::ceth::DataBagShow.new
+    @ceth.config[:format] = 'json'
     @rest = double("Seth::REST")
-    @knife.stub(:rest).and_return(@rest)
+    @ceth.stub(:rest).and_return(@rest)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
 
   it "prints the ids of the data bag items when given a bag name" do
-    @knife.instance_variable_set(:@name_args, ['bag_o_data'])
+    @ceth.instance_variable_set(:@name_args, ['bag_o_data'])
     data_bag_contents = { "baz"=>"http://localhost:4000/data/bag_o_data/baz",
       "qux"=>"http://localhost:4000/data/bag_o_data/qux"}
     Seth::DataBag.should_receive(:load).and_return(data_bag_contents)
@@ -45,17 +45,17 @@ describe Seth::Knife::DataBagShow do
   "baz",
   "qux"
 ]|
-    @knife.run
+    @ceth.run
     @stdout.string.strip.should == expected
   end
 
   it "prints the contents of the data bag item when given a bag and item name" do
-    @knife.instance_variable_set(:@name_args, ['bag_o_data', 'an_item'])
+    @ceth.instance_variable_set(:@name_args, ['bag_o_data', 'an_item'])
     data_item = Seth::DataBagItem.new.tap {|item| item.raw_data = {"id" => "an_item", "zsh" => "victory_through_tabbing"}}
 
     Seth::DataBagItem.should_receive(:load).with('bag_o_data', 'an_item').and_return(data_item)
 
-    @knife.run
+    @ceth.run
     Seth::JSONCompat.from_json(@stdout.string).should == data_item.raw_data
 
   end
@@ -70,7 +70,7 @@ describe Seth::Knife::DataBagShow do
       }
       @enc_data = Seth::EncryptedDataBagItem.encrypt_data_bag_item(@plain_data,
                                                                    @secret)
-      @knife.instance_variable_set(:@name_args, ['bag_name', 'item_name'])
+      @ceth.instance_variable_set(:@name_args, ['bag_name', 'item_name'])
 
       @secret_file = Tempfile.new("encrypted_data_bag_secret_file_test")
       @secret_file.puts(@secret)
@@ -83,29 +83,29 @@ describe Seth::Knife::DataBagShow do
     end
 
     it "prints the decrypted contents of an item when given --secret" do
-      @knife.stub(:config).and_return({:secret => @secret})
+      @ceth.stub(:config).and_return({:secret => @secret})
       Seth::EncryptedDataBagItem.should_receive(:load).
         with('bag_name', 'item_name', @secret).
         and_return(Seth::EncryptedDataBagItem.new(@enc_data, @secret))
-      @knife.run
+      @ceth.run
       Seth::JSONCompat.from_json(@stdout.string).should == @plain_data
     end
 
     it "prints the decrypted contents of an item when given --secret_file" do
-      @knife.stub(:config).and_return({:secret_file => @secret_file.path})
+      @ceth.stub(:config).and_return({:secret_file => @secret_file.path})
       Seth::EncryptedDataBagItem.should_receive(:load).
         with('bag_name', 'item_name', @secret).
         and_return(Seth::EncryptedDataBagItem.new(@enc_data, @secret))
-      @knife.run
+      @ceth.run
       Seth::JSONCompat.from_json(@stdout.string).should == @plain_data
     end
   end
 
   describe "command line parsing" do
     it "prints help if given no arguments" do
-      @knife.instance_variable_set(:@name_args, [])
-      lambda { @knife.run }.should raise_error(SystemExit)
-      @stdout.string.should match(/^knife data bag show BAG \[ITEM\] \(options\)/)
+      @ceth.instance_variable_set(:@name_args, [])
+      lambda { @ceth.run }.should raise_error(SystemExit)
+      @stdout.string.should match(/^ceth data bag show BAG \[ITEM\] \(options\)/)
     end
   end
 

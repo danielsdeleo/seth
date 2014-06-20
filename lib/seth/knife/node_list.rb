@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class NodeList < Knife
+  class ceth
+    class NodeList < ceth
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
       end
 
-      banner "knife node list (options)"
+      banner "ceth node list (options)"
 
       option :with_uri,
         :short => "-w",

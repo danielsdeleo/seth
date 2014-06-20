@@ -18,17 +18,17 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class TagCreate < Knife
+  class ceth
+    class TagCreate < ceth
 
       deps do
         require 'seth/node'
       end
 
-      banner "knife tag create NODE TAG ..."
+      banner "ceth tag create NODE TAG ..."
 
       def run
         name = @name_args[0]

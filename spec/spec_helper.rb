@@ -48,14 +48,14 @@ if ENV["COVERAGE"]
     add_group "Remote File", "remote_file"
     add_group "Resources", "/resource/"
     add_group "Providers", "/provider/"
-    add_group "Knife", "knife"
+    add_group "ceth", "ceth"
   end
 end
 
 require 'seth'
-require 'seth/knife'
+require 'seth/ceth'
 
-Dir['lib/seth/knife/**/*.rb'].
+Dir['lib/seth/ceth/**/*.rb'].
   map {|f| f.gsub('lib/', '') }.
   map {|f| f.gsub(%r[\.rb$], '') }.
   each {|f| require f }

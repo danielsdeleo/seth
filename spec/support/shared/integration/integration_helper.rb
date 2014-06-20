@@ -22,7 +22,7 @@ require 'fileutils'
 require 'seth/config'
 require 'seth_zero/rspec'
 require 'json'
-require 'support/shared/integration/knife_support'
+require 'support/shared/integration/ceth_support'
 require 'support/shared/integration/app_server_support'
 require 'spec_helper'
 

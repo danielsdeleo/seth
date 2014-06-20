@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-XARGS" "1" "Seth 11.12.0" "" "knife xargs"
+.TH "ceth-XARGS" "1" "Seth 11.12.0" "" "ceth xargs"
 .SH NAME
-knife-xargs \- The man page for the knife xargs subcommand.
+ceth-xargs \- The man page for the ceth xargs subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife xargs\fP subcommand is used to build and execute command lines against objects on a Seth server using standard input.
+The \fBceth xargs\fP subcommand is used to build and execute command lines against objects on a Seth server using standard input.
 .sp
 \fBSyntax\fP
 .sp
@@ -41,7 +41,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife xargs [PATTERN...] (options)
+$ ceth xargs [PATTERN...] (options)
 .ft P
 .fi
 .UNINDENT
@@ -104,7 +104,7 @@ The port on which seth\-zero will listen.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -119,7 +119,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -131,7 +131,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -140,7 +140,7 @@ The version of the seth\-client\&.
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -152,7 +152,7 @@ Indicates that the seth\-client will be run in local mode, which allows all comm
 .sp
 .nf
 .ft C
-$ knife deps nodes/*.json | xargs knife upload
+$ ceth deps nodes/*.json | xargs ceth upload
 .ft P
 .fi
 .UNINDENT

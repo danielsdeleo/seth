@@ -18,83 +18,83 @@
 
 require 'spec_helper'
 
-Seth::Knife::ClientCreate.load_deps
+Seth::ceth::ClientCreate.load_deps
 
-describe Seth::Knife::ClientCreate do
+describe Seth::ceth::ClientCreate do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::ClientCreate.new
-    @knife.config = {
+    @ceth = Seth::ceth::ClientCreate.new
+    @ceth.config = {
       :file => nil,
       :admin => false,
       :validator => false
     }
-    @knife.name_args = [ "adam" ]
+    @ceth.name_args = [ "adam" ]
     @client = Seth::ApiClient.new
     @client.stub(:save).and_return({ 'private_key' => '' })
-    @knife.stub(:edit_data).and_return(@client)
-    @knife.stub(:puts)
+    @ceth.stub(:edit_data).and_return(@client)
+    @ceth.stub(:puts)
     Seth::ApiClient.stub(:new).and_return(@client)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   describe "run" do
     it "should create a new Client" do
       Seth::ApiClient.should_receive(:new).and_return(@client)
-      @knife.run
+      @ceth.run
       @stdout.string.should match /created client.+adam/i
     end
 
     it "should set the Client name" do
       @client.should_receive(:name).with("adam")
-      @knife.run
+      @ceth.run
     end
 
     it "by default it is not an admin" do
       @client.should_receive(:admin).with(false)
-      @knife.run
+      @ceth.run
     end
 
     it "by default it is not a validator" do
       @client.should_receive(:validator).with(false)
-      @knife.run
+      @ceth.run
     end
 
     it "should allow you to edit the data" do
-      @knife.should_receive(:edit_data).with(@client)
-      @knife.run
+      @ceth.should_receive(:edit_data).with(@client)
+      @ceth.run
     end
 
     it "should save the Client" do
       @client.should_receive(:save)
-      @knife.run
+      @ceth.run
     end
 
     describe "with -f or --file" do
       it "should write the private key to a file" do
-        @knife.config[:file] = "/tmp/monkeypants"
+        @ceth.config[:file] = "/tmp/monkeypants"
         @client.stub(:save).and_return({ 'private_key' => "woot" })
         filehandle = double("Filehandle")
         filehandle.should_receive(:print).with('woot')
         File.should_receive(:open).with("/tmp/monkeypants", "w").and_yield(filehandle)
-        @knife.run
+        @ceth.run
       end
     end
 
     describe "with -a or --admin" do
       it "should create an admin client" do
-        @knife.config[:admin] = true
+        @ceth.config[:admin] = true
         @client.should_receive(:admin).with(true)
-        @knife.run
+        @ceth.run
       end
     end
 
     describe "with --validator" do
       it "should create an validator client" do
-        @knife.config[:validator] = true
+        @ceth.config[:validator] = true
         @client.should_receive(:validator).with(true)
-        @knife.run
+        @ceth.run
       end
     end
 

@@ -6,14 +6,14 @@ Example Doc Change:
 Description of the required change.
 -->
 
-### New knife command: knife serve
+### New ceth command: ceth serve
 You can now run a persistent seth-zero against your local repository:
 
 ```
-knife serve
+ceth serve
 ```
 
-knife serve takes --seth-zero-host=HOST, --seth-zero-port=PORT and --seth-repo-path=PATH variables. By default, it will do exactly the same thing as the local mode argument to knife and seth-client (-z), locating your seth-repo-path automatically and binding to port 8900.  It will print the URL it is bound to so that you can add it to your knife.rb files.
+ceth serve takes --seth-zero-host=HOST, --seth-zero-port=PORT and --seth-repo-path=PATH variables. By default, it will do exactly the same thing as the local mode argument to ceth and seth-client (-z), locating your seth-repo-path automatically and binding to port 8900.  It will print the URL it is bound to so that you can add it to your ceth.rb files.
 
 ### --run-lock-timeout for seth-client and seth-solo
 You can now add a timeout for the maximum time a client run waits on another client run to finish.
@@ -30,14 +30,14 @@ Or via the command line:
 seth-client --run-lock-timeout SECONDS
 ```
 
-#### New knife command: knife node environment set
+#### New ceth command: ceth node environment set
 You can now easily set the environment for an existing node without editing the node object:
 
 ```
-knife node environment set NODE ENVIRONMENT
+ceth node environment set NODE ENVIRONMENT
 ```
-### New configurable knife bootstrap options for seth-full template
-You can now modify the seth-full template with the following options in `knife bootstrap`:
+### New configurable ceth bootstrap options for seth-full template
+You can now modify the seth-full template with the following options in `ceth bootstrap`:
 
 * `--bootstrap-install-sh URL` fetches and executes an installation bash script from the provided URL.
 * `--bootstrap-wget-options OPTIONS` and `--bootstrap-curl-options OPTIONS` allow arbitrary options to be added to wget and curl.
@@ -94,8 +94,8 @@ http_proxy_pass "Password1"
 
 then Seth will set `ENV['http_proxy'] = "http://myself:Password1@proxy.example.org:8080"`
 
-### -E is not respected by knife ssh [search]
-knife now includes a warning in the -E/--environment option that this setting is ignored by knife searches.
+### -E is not respected by ceth ssh [search]
+ceth now includes a warning in the -E/--environment option that this setting is ignored by ceth searches.
 
 ### New configurable option :yum-lock-timeout
 You can now set the timeout for receiving the yum lock in `config.rb` by adding `yum-lock-timeout SECONDS` (default is 30 seconds).

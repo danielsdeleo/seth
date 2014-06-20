@@ -17,15 +17,15 @@
 #
 
 class Seth
-  class Knife
-    class EnvironmentFromFile < Knife
+  class ceth
+    class EnvironmentFromFile < ceth
 
       deps do
         require 'seth/environment'
-        require 'seth/knife/core/object_loader'
+        require 'seth/ceth/core/object_loader'
       end
 
-      banner "knife environment from file FILE [FILE..] (options)"
+      banner "ceth environment from file FILE [FILE..] (options)"
 
       option :all,
       :short => "-a",
@@ -33,7 +33,7 @@ class Seth
       :description => "Upload all environments"
 
       def loader
-        @loader ||= Knife::Core::ObjectLoader.new(Seth::Environment, ui)
+        @loader ||= ceth::Core::ObjectLoader.new(Seth::Environment, ui)
       end
 
       def environments_path

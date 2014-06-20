@@ -1,14 +1,14 @@
-knife(1) -- Seth Server API client utility
+ceth(1) -- Seth Server API client utility
 ========================================
 
 ## SYNOPSIS
 
-__knife__ _sub-command_ [_argument_...] _(options)_
+__ceth__ _sub-command_ [_argument_...] _(options)_
 
 ## DESCRIPTION
 
-Knife is a command-line utility used to manage data on a Seth server
-through the HTTP(S) API. Knife is organized into groups of subcommands
+ceth is a command-line utility used to manage data on a Seth server
+through the HTTP(S) API. ceth is organized into groups of subcommands
 centered around the various object types in Seth. Each category of
 subcommand is documented in its own manual page. Available topics are:
 
@@ -29,9 +29,9 @@ subcommand is documented in its own manual page. Available topics are:
   * status
   * tag
 
-If the knife manuals are in your `MANPATH`, you can access help for the
-above topics using `man knife-TOPIC`; otherwise, you can view the
-documentation using `knife help TOPIC`.
+If the ceth manuals are in your `MANPATH`, you can access help for the
+above topics using `man ceth-TOPIC`; otherwise, you can view the
+documentation using `ceth help TOPIC`.
 
 ## OPTIONS
   * `-s`, `--server-url` URL:
@@ -76,18 +76,18 @@ are available:
 * edit (update)
 * delete (destroy)
 
-Knife also includes commands that take actions other than displaying or
-modifying data on the Seth Server, such as __knife-ssh(1)__.
+ceth also includes commands that take actions other than displaying or
+modifying data on the Seth Server, such as __ceth-ssh(1)__.
 
 ## CONFIGURATION
 
-The knife configuration file is a Ruby DSL to set configuration
-parameters for Knife's __GENERAL OPTIONS__. The default location for the
-config file is `~/.seth/knife.rb`. If managing multiple Seth
+The ceth configuration file is a Ruby DSL to set configuration
+parameters for ceth's __GENERAL OPTIONS__. The default location for the
+config file is `~/.seth/ceth.rb`. If managing multiple Seth
 repositories, per-repository config files can be created. The file must
-be `.seth/knife.rb` in the current directory of the repository.
+be `.seth/ceth.rb` in the current directory of the repository.
 
-If the config file exists, knife uses these settings for __GENERAL OPTIONS__ defaults.
+If the config file exists, ceth uses these settings for __GENERAL OPTIONS__ defaults.
 
   * `node_name`:
     User or client identity (i.e., _name_) to use for authenticating
@@ -99,16 +99,16 @@ If the config file exists, knife uses these settings for __GENERAL OPTIONS__ def
     URL of the Seth server. Corresponds to the `-s` or `--server-url`
     option. This is requested from the user when running this sub-command.
   * `syntax_check_cache_path`:
-    Specifies the path to a directory where knife caches information
+    Specifies the path to a directory where ceth caches information
     about files that it has syntax checked.
   * `validation_client_name`:
     Specifies the name of the client used to validate new clients.
   * `validation_key`:
     Specifies the private key file to use when bootstrapping new hosts.
-    See knife-client(1) for more information about the validation
+    See ceth-client(1) for more information about the validation
     client.
   * `cookbook_copyright`, `cookbook_email`, `cookbook_license`, `readme_format`
-    Used by `knife cookbook create` sub-command to specify the copyright
+    Used by `ceth cookbook create` sub-command to specify the copyright
     holder, maintainer email, license and readme format (respectively) for new cookbooks.
     The copyright holder is listed as the maintainer in the cookbook's
     metadata and as the Copyright in the comments of the default recipe. The
@@ -123,9 +123,9 @@ If the config file exists, knife uses these settings for __GENERAL OPTIONS__ def
 
 ## FILES
 
-_~/.seth/knife.rb_
+_~/.seth/ceth.rb_
 
-Ruby DSL configuration file for knife. See __CONFIGURATION__.
+Ruby DSL configuration file for ceth. See __CONFIGURATION__.
 
 ## FORMATS
 
@@ -151,10 +151,10 @@ example, -Fj will produce JSON format output.
 
 ## seth WORKFLOW
 
-When working with Seth and Knife in the local repository, the recommended workflow outline looks like:
+When working with Seth and ceth in the local repository, the recommended workflow outline looks like:
 
 * Create repository. A skeleton sample is provided at _http://github.com/opscode/seth-repo/_.
-* Configure knife, see __CONFIGURATION__.
+* Configure ceth, see __CONFIGURATION__.
 * Download cookbooks from the Opscode cookbooks site, see __COOKBOOK SITE SUB-COMMANDS__.
 * Or, create new cookbooks, see `cookbook create` sub-command.
 * Commit changes to the version control system. See your tool's documentation.
@@ -180,11 +180,11 @@ recommended though, and git fits with a lot of the workflow paradigms.
 ## SEE ALSO
   __seth-client(8)__ __seth-server(8)__ __seth-shell(1)__
 
-  __knife-bootstrap(1)__ __knife-client(1)__ __knife-configure(1)__
-  __knife-cookbook-site(1)__ __knife-cookbook(1)__ __knife-data-bag(1)__
-  __knife-environment(1)__ __knife-exec(1)__ __knife-index(1)__
-  __knife-node(1)__ __knife-recipe(1)__ __knife-role(1)__
-  __knife-search(1)__ __knife-ssh(1)__ __knife-tag(1)__
+  __ceth-bootstrap(1)__ __ceth-client(1)__ __ceth-configure(1)__
+  __ceth-cookbook-site(1)__ __ceth-cookbook(1)__ __ceth-data-bag(1)__
+  __ceth-environment(1)__ __ceth-exec(1)__ __ceth-index(1)__
+  __ceth-node(1)__ __ceth-recipe(1)__ __ceth-role(1)__
+  __ceth-search(1)__ __ceth-ssh(1)__ __ceth-tag(1)__
 
   Complete Seth documentation is available online: <http://wiki.opscode.com/display/seth/Home/>
 
@@ -209,5 +209,5 @@ recommended though, and git fits with a lot of the workflow paradigms.
    On some systems, the complete text of the Apache 2.0 License may be found in `/usr/share/common-licenses/Apache-2.0`.
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

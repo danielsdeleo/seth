@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class NodeDelete < Knife
+  class ceth
+    class NodeDelete < ceth
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
       end
 
-      banner "knife node delete NODE (options)"
+      banner "ceth node delete NODE (options)"
 
       def run
         @node_name = @name_args[0]

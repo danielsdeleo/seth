@@ -97,14 +97,14 @@ node configuration in Seth. By default, the service is started on port 4000
 as a Merb application slice running with the thin server adapter.
 
 The two methods of interaction with the API for humans are the command-line
-tool Knife and the Management Console. The Seth Client library is used for
+tool ceth and the Management Console. The Seth Client library is used for
 interacting with the API for client nodes.
 
 ## SEE ALSO
 
 __seth-client__(8)
 __seth-server-webui__(8)
-__knife__(1)
+__ceth__(1)
 
 Full documentation for Seth and seth-server is located on the seth
 wiki, http://wiki.opscode.com/display/seth/Home.

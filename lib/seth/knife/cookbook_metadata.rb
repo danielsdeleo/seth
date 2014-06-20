@@ -17,18 +17,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookMetadata < Knife
+  class ceth
+    class CookbookMetadata < ceth
 
       deps do
         require 'seth/cookbook_loader'
         require 'seth/cookbook/metadata'
       end
 
-      banner "knife cookbook metadata COOKBOOK (options)"
+      banner "ceth cookbook metadata COOKBOOK (options)"
 
       option :cookbook_path,
         :short => "-o PATH:PATH",

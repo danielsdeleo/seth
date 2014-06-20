@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 require 'seth/config'
 
 class Seth
-  class Knife
-    class SslCheck < Seth::Knife
+  class ceth
+    class SslCheck < Seth::ceth
 
       deps do
         require 'pp'
@@ -31,7 +31,7 @@ class Seth
         require 'openssl'
       end
 
-      banner "knife ssl check [URL] (options)"
+      banner "ceth ssl check [URL] (options)"
 
       def initialize(*args)
         @host = nil

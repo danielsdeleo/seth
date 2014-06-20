@@ -90,7 +90,7 @@ class Seth
         # children to fulfill this request, unless absolutely necessary here; it
         # is intended as a quick way to traverse a hierarchy.
         #
-        # For example, knife show /data_bags/x/y.json will call
+        # For example, ceth show /data_bags/x/y.json will call
         # root.child('data_bags').child('x').child('y.json'), which can then
         # directly perform a network request to retrieve the y.json data bag.  No
         # network request was necessary to retrieve
@@ -115,7 +115,7 @@ class Seth
         #
         # NOTE: create_child_from is an optional method that can also be added to
         # your entry class, and will be called without actually reading the
-        # file_contents.  This is used for knife upload /cookbooks/cookbookname.
+        # file_contents.  This is used for ceth upload /cookbooks/cookbookname.
         def create_child(name, file_contents)
           raise NotFoundError.new(self) if !exists?
           raise OperationNotAllowedError.new(:create_child, self)

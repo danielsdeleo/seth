@@ -2,7 +2,7 @@
 require 'set'
 require 'rest_client'
 require 'seth/exceptions'
-require 'seth/knife/cookbook_metadata'
+require 'seth/ceth/cookbook_metadata'
 require 'seth/digester'
 require 'seth/cookbook_version'
 require 'seth/cookbook/syntax_check'
@@ -139,7 +139,7 @@ class Seth
         rescue Net::HTTPServerException, Net::HTTPFatalError, Errno::ECONNREFUSED, Timeout::Error, Errno::ETIMEDOUT, SocketError => e
           error_message = "Failed to upload #{file} (#{checksum}) to #{url} : #{e.message}"
           error_message << "\n#{e.response.body}" if e.respond_to?(:response)
-          Seth::Knife.ui.error(error_message)
+          Seth::ceth.ui.error(error_message)
           raise
         end
       end

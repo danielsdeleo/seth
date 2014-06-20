@@ -1,9 +1,9 @@
-knife-ssh(1) -- Run a command or interactive session on multiple remote hosts
+ceth-ssh(1) -- Run a command or interactive session on multiple remote hosts
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __ssh QUERY COMMAND__ _(options)_
+__ceth__ __ssh QUERY COMMAND__ _(options)_
 
   * `-a`, `--attribute ATTR       `:
     The attribute to use for opening the connection - default is fqdn
@@ -32,9 +32,9 @@ packages. They can also be installed as RubyGems (net-ssh-multi and
 highline, respectively).
 
 ## TERMINAL MULTIPLEXING AND TERMINAL TAB SUPPORT
-`knife ssh` integrates with several terminal multiplexer programs to
+`ceth ssh` integrates with several terminal multiplexer programs to
 provide a more convenient means of managing multiple ssh sessions. When
-the _COMMAND_ option matches one of these, `knife ssh` will create
+the _COMMAND_ option matches one of these, `ceth ssh` will create
 multiple interactive ssh sessions running locally in the terminal
 multiplexer instead of invoking the command on the remote host.
 
@@ -54,7 +54,7 @@ The available multiplexers are:
     option.
 
 ## SEE ALSO
-   __knife-search__(1)
+   __ceth-search__(1)
 
 ## AUTHOR
    Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
@@ -64,6 +64,6 @@ The available multiplexers are:
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 
 

@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookShow < Knife
+  class ceth
+    class CookbookShow < ceth
 
       deps do
         require 'seth/json_compat'
@@ -28,7 +28,7 @@ class Seth
         require 'seth/cookbook_version'
       end
 
-      banner "knife cookbook show COOKBOOK [VERSION] [PART] [FILENAME] (options)"
+      banner "ceth cookbook show COOKBOOK [VERSION] [PART] [FILENAME] (options)"
 
       option :fqdn,
        :short => "-f FQDN",

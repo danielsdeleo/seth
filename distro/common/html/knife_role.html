@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>knife role &mdash; seth-client Man Pages</title>
+    <title>ceth role &mdash; seth-client Man Pages</title>
 
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,17 +40,17 @@
 
           <div class="body">
 
-  <div class="section" id="knife-role">
-<h1>knife role<a class="headerlink" href="#knife-role" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ceth-role">
+<h1>ceth role<a class="headerlink" href="#ceth-role" title="Permalink to this headline">¶</a></h1>
 <p>A role is a way to define certain patterns and processes that exist across nodes in an organization as belonging to a single job function. Each role consists of zero (or more) attributes and a run list. Each node can have zero (or more) roles assigned to it. When a role is run against a node, the configuration details of that node are compared against the attributes of the role, and then the contents of that role&#8217;s run list are applied to the node&#8217;s configuration details. When a seth-client runs, it merges its own attributes and run lists with those contained within each assigned role.</p>
-<p>The <strong>knife role</strong> subcommand is used to manage the roles that are associated with one or more nodes on a Seth server.</p>
+<p>The <strong>ceth role</strong> subcommand is used to manage the roles that are associated with one or more nodes on a Seth server.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">To add a role to a node and then build out the run-list for that node, use the <a class="reference internal" href="knife_node.html"><em>knife node</em></a> sub-command and its <tt class="docutils literal"><span class="pre">run_list</span> <span class="pre">add</span></tt> argument.</p>
+<p class="last">To add a role to a node and then build out the run-list for that node, use the <a class="reference internal" href="ceth_node.html"><em>ceth node</em></a> sub-command and its <tt class="docutils literal"><span class="pre">run_list</span> <span class="pre">add</span></tt> argument.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
+<p class="last">Review the list of <a class="reference internal" href="ceth_common_options.html"><em>common options</em></a> available to this (and all) ceth subcommands and plugins.</p>
 </div>
 <div class="section" id="bulk-delete">
 <h2>bulk delete<a class="headerlink" href="#bulk-delete" title="Permalink to this headline">¶</a></h2>
@@ -58,7 +58,7 @@
 <div class="section" id="syntax">
 <h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role bulk delete REGEX
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role bulk delete REGEX
 </pre></div>
 </div>
 </div>
@@ -68,10 +68,10 @@
 </div>
 <div class="section" id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Bulk delete roles</strong></p>
 <p>Use a regular expression to define the pattern used to bulk delete roles:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role bulk delete <span class="s2">&quot;^[0-9]{3}$&quot;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role bulk delete <span class="s2">&quot;^[0-9]{3}$&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -82,7 +82,7 @@
 <div class="section" id="id1">
 <h3>Syntax<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role create ROLE_NAME <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role create ROLE_NAME <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -96,10 +96,10 @@
 </div>
 <div class="section" id="id3">
 <h3>Examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Create a role</strong></p>
 <p>To add a role named &#8220;role1&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role create role1
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role create role1
 </pre></div>
 </div>
 <p>In the $EDITOR enter the role data in JSON:</p>
@@ -128,7 +128,7 @@
 <div class="section" id="id4">
 <h3>Syntax<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role delete ROLE_NAME
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role delete ROLE_NAME
 </pre></div>
 </div>
 </div>
@@ -138,9 +138,9 @@
 </div>
 <div class="section" id="id6">
 <h3>Examples<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Delete a role</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role delete devops
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role delete devops
 </pre></div>
 </div>
 <p>Type <tt class="docutils literal"><span class="pre">Y</span></tt> to confirm a deletion.</p>
@@ -152,7 +152,7 @@
 <div class="section" id="id7">
 <h3>Syntax<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role edit ROLE_NAME
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role edit ROLE_NAME
 </pre></div>
 </div>
 </div>
@@ -162,10 +162,10 @@
 </div>
 <div class="section" id="id9">
 <h3>Examples<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Edit a role</strong></p>
 <p>To edit the data for a role named &#8220;role1&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role edit role1
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role edit role1
 </pre></div>
 </div>
 <p>Update the role data in JSON:</p>
@@ -194,7 +194,7 @@
 <div class="section" id="id10">
 <h3>Syntax<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role from file FILE
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role from file FILE
 </pre></div>
 </div>
 </div>
@@ -204,10 +204,10 @@
 </div>
 <div class="section" id="id12">
 <h3>Examples<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Create a role using JSON data</strong></p>
 <p>To view role details based on the values contained in a JSON file:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role from file <span class="s2">&quot;path to JSON file&quot;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role from file <span class="s2">&quot;path to JSON file&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -218,7 +218,7 @@
 <div class="section" id="id13">
 <h3>Syntax<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role list
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role list
 </pre></div>
 </div>
 </div>
@@ -232,10 +232,10 @@
 </div>
 <div class="section" id="id15">
 <h3>Examples<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>View a list of roles</strong></p>
 <p>To view a list of roles on the Seth server and display the URI for each role returned, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role list -w
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role list -w
 </pre></div>
 </div>
 </div>
@@ -246,7 +246,7 @@
 <div class="section" id="id16">
 <h3>Syntax<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role show ROLE_NAME
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role show ROLE_NAME
 </pre></div>
 </div>
 </div>
@@ -260,20 +260,20 @@
 </div>
 <div class="section" id="id18">
 <h3>Examples<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Show as JSON data</strong></p>
 <p>To view information in JSON format, use the <tt class="docutils literal"><span class="pre">-F</span></tt> common option as part of the command like this:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role show devops -F json
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role show devops -F json
 </pre></div>
 </div>
 <p>Other formats available include <tt class="docutils literal"><span class="pre">text</span></tt>, <tt class="docutils literal"><span class="pre">yaml</span></tt>, and <tt class="docutils literal"><span class="pre">pp</span></tt>.</p>
 <p><strong>Show as raw JSON data</strong></p>
 <p>To view node information in raw JSON, use the <tt class="docutils literal"><span class="pre">-l</span></tt> or <tt class="docutils literal"><span class="pre">--long</span></tt> option:</p>
-<div class="highlight-bash"><div class="highlight"><pre>knife node show -l -F json &lt;node_name&gt;
+<div class="highlight-bash"><div class="highlight"><pre>ceth node show -l -F json &lt;node_name&gt;
 </pre></div>
 </div>
 <p>and/or:</p>
-<div class="highlight-bash"><div class="highlight"><pre>knife node show -l --format<span class="o">=</span>json &lt;node_name&gt;
+<div class="highlight-bash"><div class="highlight"><pre>ceth node show -l --format<span class="o">=</span>json &lt;node_name&gt;
 </pre></div>
 </div>
 </div>

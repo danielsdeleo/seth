@@ -16,12 +16,12 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'seth/knife/list'
-require 'seth/knife/show'
+require 'seth/ceth/list'
+require 'seth/ceth/show'
 
 describe 'sethignore tests' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
 
   when_the_repository "has lots of stuff in it" do
     file 'roles/x.json', {}
@@ -41,7 +41,7 @@ describe 'sethignore tests' do
       it 'matching files and directories get ignored' do
         # NOTE: many of the "sethignore" files should probably not show up
         # themselves, but we have other tests that talk about that
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/sethignore
@@ -63,7 +63,7 @@ EOM
     file 'cookbooks/sethignore', "libraries/x.rb\ntemplates/default/x.rb\n"
 
     it 'the cookbook is not listed' do
-      knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.seth_repo_path}/cookbooks/cookbook1\n")
+      ceth('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.seth_repo_path}/cookbooks/cookbook1\n")
 /cookbooks/
 EOM
     end
@@ -79,7 +79,7 @@ EOM
       file 'cookbooks/sethignore', "x.json\n"
 
       it 'matching files and directories get ignored in all cookbooks' do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/y.json
@@ -94,7 +94,7 @@ EOM
       file 'cookbooks/cookbook1/x.rb', ''
 
       it 'matching files and directories get ignored in all cookbooks' do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/y.json
@@ -110,7 +110,7 @@ EOM
       file 'cookbooks/sethignore', "recipes/x.rb\n"
 
       it 'matching directories get ignored' do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/x.json
@@ -129,7 +129,7 @@ EOM
       file 'cookbooks/sethignore', "recipes\nrecipes/\n"
 
       it 'matching directories do NOT get ignored' do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/recipes/
@@ -149,7 +149,7 @@ EOM
       file 'cookbooks/sethignore', "libraries/x.rb\ntemplates/default/x.rb\n"
 
       it 'ignores the subdirectory entirely' do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/x.json
@@ -165,7 +165,7 @@ EOM
       file 'cookbooks/sethignore', "\n"
 
       it 'nothing is ignored' do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/x.json
@@ -181,7 +181,7 @@ EOM
       file 'cookbooks/sethignore', "\n\n # blah\n#\nx.json\n\n"
 
       it 'matching files and directories get ignored in all cookbooks' do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/y.json
@@ -209,7 +209,7 @@ EOM
       file 'cookbooks1/sethignore', "metadata.rb\n"
       file 'cookbooks2/sethignore', "x.json\n"
       it "sethignores apply only to the directories they are in" do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/mycookbook/
 /cookbooks/mycookbook/x.json
@@ -225,7 +225,7 @@ EOM
         file 'cookbooks2/yourcookbook/onlyincookbooks2.rb', ''
 
         it "sethignores apply only to the winning cookbook" do
-          knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Child with name 'yourcookbook' found in multiple directories: #{Seth::Config.seth_repo_path}/cookbooks1/yourcookbook and #{seth::Config.seth_repo_path}/cookbooks2/yourcookbook\n")
+          ceth('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Child with name 'yourcookbook' found in multiple directories: #{Seth::Config.seth_repo_path}/cookbooks1/yourcookbook and #{seth::Config.seth_repo_path}/cookbooks2/yourcookbook\n")
 /cookbooks/
 /cookbooks/mycookbook/
 /cookbooks/mycookbook/x.json
@@ -240,8 +240,8 @@ EOM
 
   when_the_repository 'has a cookbook named sethignore' do
     file 'cookbooks/sethignore/metadata.rb', {}
-    it 'knife list -Rfp /cookbooks shows it' do
-      knife('list --local -Rfp /cookbooks').should_succeed <<EOM
+    it 'ceth list -Rfp /cookbooks shows it' do
+      ceth('list --local -Rfp /cookbooks').should_succeed <<EOM
 /cookbooks/sethignore/
 /cookbooks/sethignore/metadata.rb
 EOM
@@ -258,8 +258,8 @@ EOM
         File.join(Seth::Config.seth_repo_path, 'cookbooks2')
       ]
     end
-    it 'knife list -Rfp /cookbooks shows the sethignore cookbook' do
-      knife('list --local -Rfp /cookbooks').should_succeed <<EOM
+    it 'ceth list -Rfp /cookbooks shows the sethignore cookbook' do
+      ceth('list --local -Rfp /cookbooks').should_succeed <<EOM
 /cookbooks/blah/
 /cookbooks/blah/metadata.rb
 /cookbooks/sethignore/

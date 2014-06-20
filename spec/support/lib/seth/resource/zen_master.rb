@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 require 'seth/json_compat'
 
 class Seth

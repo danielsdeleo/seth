@@ -18,12 +18,12 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 require 'seth/cookbook_uploader'
 
 class Seth
-  class Knife
-    class CookbookUpload < Knife
+  class ceth
+    class CookbookUpload < ceth
 
       CHECKSUM = "checksum"
       MATCH_CHECKSUM = /[0-9a-f]{32,}/
@@ -34,7 +34,7 @@ class Seth
         require 'seth/cookbook_uploader'
       end
 
-      banner "knife cookbook upload [COOKBOOKS...] (options)"
+      banner "ceth cookbook upload [COOKBOOKS...] (options)"
 
       option :cookbook_path,
         :short => "-o PATH:PATH",

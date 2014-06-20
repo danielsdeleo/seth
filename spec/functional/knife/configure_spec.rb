@@ -18,10 +18,10 @@
 
 require 'spec_helper'
 
-require 'seth/knife/configure'
+require 'seth/ceth/configure'
 require 'ohai'
 
-describe "knife configure" do
+describe "ceth configure" do
   let (:ohai) do
     o = Ohai::System.new
     o.load_plugins
@@ -31,8 +31,8 @@ describe "knife configure" do
   end
 
   it "loads the fqdn from Ohai" do
-    knife_configure = Seth::Knife::Configure.new
+    ceth_configure = Seth::ceth::Configure.new
     hostname_guess = ohai[:fqdn] || ohai[:machinename] || ohai[:hostname] || 'localhost'
-    expect(knife_configure.guess_servername).to eql(hostname_guess)
+    expect(ceth_configure.guess_servername).to eql(hostname_guess)
   end
 end

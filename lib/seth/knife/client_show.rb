@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class ClientShow < Knife
+  class ceth
+    class ClientShow < ceth
 
-      include Knife::Core::MultiAttributeReturnOption
+      include ceth::Core::MultiAttributeReturnOption
 
       deps do
         require 'seth/api_client'
         require 'seth/json_compat'
       end
 
-      banner "knife client show CLIENT (options)"
+      banner "ceth client show CLIENT (options)"
 
       def run
         @client_name = @name_args[0]

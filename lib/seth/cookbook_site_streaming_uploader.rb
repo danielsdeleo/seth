@@ -55,7 +55,7 @@ class Seth
 
         # First, generate metadata
         Seth::Log.debug("Generating metadata")
-        kcm = Seth::Knife::CookbookMetadata.new
+        kcm = Seth::ceth::CookbookMetadata.new
         kcm.config[:cookbook_path] = [ tmp_cookbook_dir ]
         kcm.name_args = [ cookbook.name.to_s ]
         kcm.run

@@ -1,9 +1,9 @@
-require 'seth/seth_fs/knife'
+require 'seth/seth_fs/ceth'
 
 class Seth
-  class Knife
-    class Upload < Seth::sethFS::Knife
-      banner "knife upload PATTERNS"
+  class ceth
+    class Upload < Seth::sethFS::ceth
+      banner "ceth upload PATTERNS"
 
       category "path-based"
 
@@ -51,7 +51,7 @@ class Seth
       def run
         if name_args.length == 0
           show_usage
-          ui.fatal("Must specify at least one argument.  If you want to upload everything in this directory, type \"knife upload .\"")
+          ui.fatal("Must specify at least one argument.  If you want to upload everything in this directory, type \"ceth upload .\"")
           exit 1
         end
 

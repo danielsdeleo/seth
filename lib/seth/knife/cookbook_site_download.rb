@@ -15,17 +15,17 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookSiteDownload < Knife
+  class ceth
+    class CookbookSiteDownload < ceth
 
       deps do
         require 'fileutils'
       end
 
-      banner "knife cookbook site download COOKBOOK [VERSION] (options)"
+      banner "ceth cookbook site download COOKBOOK [VERSION] (options)"
       category "cookbook site"
 
       option :file,

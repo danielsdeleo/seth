@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 module SpecHelpers
-  module Knife
+  module ceth
     def redefine_argv(value)
       Object.send(:remove_const, :ARGV)
       Object.send(:const_set, :ARGV, value)

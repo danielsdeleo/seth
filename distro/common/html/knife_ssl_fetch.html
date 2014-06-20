@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>knife ssl fetch &mdash; seth-client Man Pages</title>
+    <title>ceth ssl fetch &mdash; seth-client Man Pages</title>
 
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,16 +40,16 @@
 
           <div class="body">
 
-  <div class="section" id="knife-ssl-fetch">
-<h1>knife ssl fetch<a class="headerlink" href="#knife-ssl-fetch" title="Permalink to this headline">¶</a></h1>
-<p>The <strong>knife ssl fetch</strong> subcommand is used to copy SSL certificates from an HTTPS server to the <tt class="docutils literal"><span class="pre">trusted_certs_dir</span></tt> directory that is used by Knife and the seth-client to store trusted SSL certificates. When these certificates match the hostname of the remote server, running <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">ssl</span> <span class="pre">fetch</span></tt> is the only step required to verify a remote server that is accessed by either Knife or the seth-client.</p>
+  <div class="section" id="ceth-ssl-fetch">
+<h1>ceth ssl fetch<a class="headerlink" href="#ceth-ssl-fetch" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>ceth ssl fetch</strong> subcommand is used to copy SSL certificates from an HTTPS server to the <tt class="docutils literal"><span class="pre">trusted_certs_dir</span></tt> directory that is used by ceth and the seth-client to store trusted SSL certificates. When these certificates match the hostname of the remote server, running <tt class="docutils literal"><span class="pre">ceth</span> <span class="pre">ssl</span> <span class="pre">fetch</span></tt> is the only step required to verify a remote server that is accessed by either ceth or the seth-client.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">It is the user&#8217;s responsibility to verify the authenticity of every SSL certificate before downloading it to the <tt class="docutils literal"><span class="pre">trusted_certs_dir</span></tt> directory. Knife will use any certificate in that directory as if it is a 100% trusted and authentic SSL certificate. Knife will not be able to determine if any certificate in this directory has been tampered with, is forged, malicious, or otherwise harmful. Therefore it is essential that users take the proper steps before downloading certificates into this directory.</p>
+<p class="last">It is the user&#8217;s responsibility to verify the authenticity of every SSL certificate before downloading it to the <tt class="docutils literal"><span class="pre">trusted_certs_dir</span></tt> directory. ceth will use any certificate in that directory as if it is a 100% trusted and authentic SSL certificate. ceth will not be able to determine if any certificate in this directory has been tampered with, is forged, malicious, or otherwise harmful. Therefore it is essential that users take the proper steps before downloading certificates into this directory.</p>
 </div>
 <p><strong>Syntax</strong></p>
 <p>This subcommand has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife ssh SEARCH_QUERY SSH_COMMAND <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth ssh SEARCH_QUERY SSH_COMMAND <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 <p><strong>Options</strong></p>
@@ -70,7 +70,7 @@
 <dt><tt class="docutils literal"><span class="pre">-d</span></tt>, <tt class="docutils literal"><span class="pre">--disable-editing</span></tt></dt>
 <dd>Indicates that $EDITOR will not be opened; data will be accepted as-is.</dd>
 <dt><tt class="docutils literal"><span class="pre">--defaults</span></tt></dt>
-<dd>Indicates that Knife will use the default value, instead of asking a user to provide one.</dd>
+<dd>Indicates that ceth will use the default value, instead of asking a user to provide one.</dd>
 <dt><tt class="docutils literal"><span class="pre">-e</span> <span class="pre">EDITOR</span></tt>, <tt class="docutils literal"><span class="pre">--editor</span> <span class="pre">EDITOR</span></tt></dt>
 <dd>The $EDITOR that is used for all interactive commands.</dd>
 <dt><tt class="docutils literal"><span class="pre">-E</span> <span class="pre">ENVIRONMENT</span></tt>, <tt class="docutils literal"><span class="pre">--environment</span> <span class="pre">ENVIRONMENT</span></tt></dt>
@@ -84,7 +84,7 @@
 <dt><tt class="docutils literal"><span class="pre">-i</span> <span class="pre">IDENTITY_FILE</span></tt>, <tt class="docutils literal"><span class="pre">--identity-file</span> <span class="pre">IDENTIFY_FILE</span></tt></dt>
 <dd>The SSH identity file used for authentication. Key-based authentication is recommended.</dd>
 <dt><tt class="docutils literal"><span class="pre">-k</span> <span class="pre">KEY</span></tt>, <tt class="docutils literal"><span class="pre">--key</span> <span class="pre">KEY</span></tt></dt>
-<dd>The private key that Knife will use to sign requests made by the API client to the Seth server.</dd>
+<dd>The private key that ceth will use to sign requests made by the API client to the Seth server.</dd>
 <dt><tt class="docutils literal"><span class="pre">-m</span></tt>, <tt class="docutils literal"><span class="pre">--manual-list</span></tt></dt>
 <dd>Indicates that a search query is a space-separated list of servers. If there is more than one item in the list, put quotes around the entire list. For example: <tt class="docutils literal"><span class="pre">--manual-list</span> <span class="pre">&quot;server01</span> <span class="pre">server</span> <span class="pre">02</span> <span class="pre">server</span> <span class="pre">03&quot;</span></tt></dd>
 <dt><tt class="docutils literal"><span class="pre">--[no-]host-key-verify</span></tt></dt>
@@ -94,7 +94,7 @@
 <dt><tt class="docutils literal"><span class="pre">-p</span> <span class="pre">PORT</span></tt>, <tt class="docutils literal"><span class="pre">--ssh-port</span> <span class="pre">PORT</span></tt></dt>
 <dd>The SSH port.</dd>
 <dt><tt class="docutils literal"><span class="pre">-P</span> <span class="pre">PASSWORD</span></tt>, <tt class="docutils literal"><span class="pre">--ssh-password</span> <span class="pre">PASSWORD</span></tt></dt>
-<dd>The SSH password. This can be used to pass the password directly on the command line. If this option is not specified (and a password is required) Knife will prompt for the password.</dd>
+<dd>The SSH password. This can be used to pass the password directly on the command line. If this option is not specified (and a password is required) ceth will prompt for the password.</dd>
 <dt><tt class="docutils literal"><span class="pre">--print-after</span></tt></dt>
 <dd>Indicates that data will be shown after a destructive operation.</dd>
 <dt><tt class="docutils literal"><span class="pre">-s</span> <span class="pre">URL</span></tt>, <tt class="docutils literal"><span class="pre">--server-url</span> <span class="pre">URL</span></tt></dt>
@@ -104,7 +104,7 @@
 <dt><tt class="docutils literal"><span class="pre">SSH_COMMAND</span></tt></dt>
 <dd>The command that will be run against the results of a search query.</dd>
 <dt><tt class="docutils literal"><span class="pre">-u</span> <span class="pre">USER</span></tt>, <tt class="docutils literal"><span class="pre">--user</span> <span class="pre">USER</span></tt></dt>
-<dd>The user name used by Knife to sign requests made by the API client to the Seth server. Authentication will fail if the user name does not match the private key.</dd>
+<dd>The user name used by ceth to sign requests made by the API client to the Seth server. Authentication will fail if the user name does not match the private key.</dd>
 <dt><tt class="docutils literal"><span class="pre">-v</span></tt>, <tt class="docutils literal"><span class="pre">--version</span></tt></dt>
 <dd>The version of the seth-client.</dd>
 <dt><tt class="docutils literal"><span class="pre">-V</span></tt>, <tt class="docutils literal"><span class="pre">--verbose</span></tt></dt>
@@ -112,26 +112,26 @@
 <dt><tt class="docutils literal"><span class="pre">-x</span> <span class="pre">USER_NAME</span></tt>, <tt class="docutils literal"><span class="pre">--ssh-user</span> <span class="pre">USER_NAME</span></tt></dt>
 <dd>The SSH user name.</dd>
 <dt><tt class="docutils literal"><span class="pre">-y</span></tt>, <tt class="docutils literal"><span class="pre">--yes</span></tt></dt>
-<dd>Indicates that the response to all confirmation prompts will be &#8220;Yes&#8221; (and that Knife will not ask for confirmation).</dd>
+<dd>Indicates that the response to all confirmation prompts will be &#8220;Yes&#8221; (and that ceth will not ask for confirmation).</dd>
 <dt><tt class="docutils literal"><span class="pre">-z</span></tt>, <tt class="docutils literal"><span class="pre">--local-mode</span></tt></dt>
 <dd>Indicates that the seth-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth-repo.</dd>
 </dl>
 <p><strong>Examples</strong></p>
-<p>The following examples show how to use this Knife subcommand:</p>
-<p><strong>Fetch the SSL certificates used by Knife from the Seth server</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife ssl fetch
+<p>The following examples show how to use this ceth subcommand:</p>
+<p><strong>Fetch the SSL certificates used by ceth from the Seth server</strong></p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth ssl fetch
 </pre></div>
 </div>
 <p><strong>Fetch the SSL certificates used by the seth-client from the Seth server</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife ssl fetch -c /etc/seth/client.rb
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth ssl fetch -c /etc/seth/client.rb
 </pre></div>
 </div>
 <p><strong>Fetch SSL certificates from a URL or URI</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife ssl fetch URL_or_URI
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth ssl fetch URL_or_URI
 </pre></div>
 </div>
 <p>for example:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife ssl fetch https://www.getseth.com
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth ssl fetch https://www.getseth.com
 </pre></div>
 </div>
 </div>

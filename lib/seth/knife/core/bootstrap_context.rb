@@ -18,12 +18,12 @@
 
 require 'seth/run_list'
 class Seth
-  class Knife
+  class ceth
     module Core
       # Instances of BootstrapContext are the context objects (i.e., +self+) for
       # bootstrap templates. For backwards compatability, they +must+ set the
       # following instance variables:
-      # * @config   - a hash of knife's config values
+      # * @config   - a hash of ceth's config values
       # * @run_list - the run list for the node to boostrap
       #
       class BootstrapContext
@@ -51,9 +51,9 @@ class Seth
         end
 
         def encrypted_data_bag_secret
-          knife_config[:secret] || begin
-            if knife_config[:secret_file] && File.exist?(knife_config[:secret_file])
-              IO.read(File.expand_path(knife_config[:secret_file]))
+          ceth_config[:secret] || begin
+            if ceth_config[:secret_file] && File.exist?(ceth_config[:secret_file])
+              IO.read(File.expand_path(ceth_config[:secret_file]))
             elsif @seth_config[:encrypted_data_bag_secret] && File.exist?(@seth_config[:encrypted_data_bag_secret])
               IO.read(File.expand_path(@seth_config[:encrypted_data_bag_secret]))
             end
@@ -72,13 +72,13 @@ CONFIG
             client_rb << "# Using default node name (fqdn)\n"
           end
 
-          if knife_config[:bootstrap_proxy]
-            client_rb << %Q{http_proxy        "#{knife_config[:bootstrap_proxy]}"\n}
-            client_rb << %Q{https_proxy       "#{knife_config[:bootstrap_proxy]}"\n}
+          if ceth_config[:bootstrap_proxy]
+            client_rb << %Q{http_proxy        "#{ceth_config[:bootstrap_proxy]}"\n}
+            client_rb << %Q{https_proxy       "#{ceth_config[:bootstrap_proxy]}"\n}
           end
 
-          if knife_config[:bootstrap_no_proxy]
-            client_rb << %Q{no_proxy       "#{knife_config[:bootstrap_no_proxy]}"\n}
+          if ceth_config[:bootstrap_no_proxy]
+            client_rb << %Q{no_proxy       "#{ceth_config[:bootstrap_no_proxy]}"\n}
           end
 
           if encrypted_data_bag_secret
@@ -97,8 +97,8 @@ CONFIG
           s
         end
 
-        def knife_config
-          @seth_config.key?(:knife) ? @seth_config[:knife] : {}
+        def ceth_config
+          @seth_config.key?(:ceth) ? @seth_config[:ceth] : {}
         end
 
         #
@@ -106,7 +106,7 @@ CONFIG
         # and potentially by custom templates as well hence it's logic needs to be
         # preserved for backwards compatibility reasons until we hit Seth 12.
         def seth_version
-          knife_config[:bootstrap_version] || Seth::VERSION
+          ceth_config[:bootstrap_version] || Seth::VERSION
         end
 
         #
@@ -114,8 +114,8 @@ CONFIG
         # If user is on X.Y.Z bootstrap will use the latest X release
         # X here can be 10 or 11
         def latest_current_seth_version_string
-          seth_version_string = if knife_config[:bootstrap_version]
-            knife_config[:bootstrap_version]
+          seth_version_string = if ceth_config[:bootstrap_version]
+            ceth_config[:bootstrap_version]
           else
             Seth::VERSION.split(".").first
           end

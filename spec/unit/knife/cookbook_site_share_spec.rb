@@ -21,11 +21,11 @@ require 'spec_helper'
 require 'seth/cookbook_uploader'
 require 'seth/cookbook_site_streaming_uploader'
 
-describe Seth::Knife::CookbookSiteShare do
+describe Seth::ceth::CookbookSiteShare do
 
   before(:each) do
-    @knife = Seth::Knife::CookbookSiteShare.new
-    @knife.name_args = ['cookbook_name', 'AwesomeSausage']
+    @ceth = Seth::ceth::CookbookSiteShare.new
+    @ceth.name_args = ['cookbook_name', 'AwesomeSausage']
 
     @cookbook = Seth::CookbookVersion.new('cookbook_name')
 
@@ -41,57 +41,57 @@ describe Seth::Knife::CookbookSiteShare do
 
     Seth::Mixin::Command.stub(:run_command).and_return(true)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   describe 'run' do
 
     before(:each) do
-      @knife.stub(:do_upload).and_return(true)
+      @ceth.stub(:do_upload).and_return(true)
     end
 
     it 'should should print usage and exit when given no arguments' do
-      @knife.name_args = []
-      @knife.should_receive(:show_usage)
-      @knife.ui.should_receive(:fatal)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = []
+      @ceth.should_receive(:show_usage)
+      @ceth.ui.should_receive(:fatal)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     it 'should print usage and exit when given only 1 argument' do
-      @knife.name_args = ['cookbook_name']
-      @knife.should_receive(:show_usage)
-      @knife.ui.should_receive(:fatal)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = ['cookbook_name']
+      @ceth.should_receive(:show_usage)
+      @ceth.ui.should_receive(:fatal)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     it 'should check if the cookbook exists' do
       @cookbook_loader.should_receive(:cookbook_exists?)
-      @knife.run
+      @ceth.run
     end
 
     it "should exit and log to error if the cookbook doesn't exist" do
       @cookbook_loader.stub(:cookbook_exists?).and_return(false)
-      @knife.ui.should_receive(:error)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.ui.should_receive(:error)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     it 'should make a tarball of the cookbook' do
       Seth::Mixin::Command.should_receive(:run_command) { |args|
         args[:command].should match /tar -czf/
       }
-      @knife.run
+      @ceth.run
     end
 
     it 'should exit and log to error when the tarball creation fails' do
       Seth::Mixin::Command.stub(:run_command).and_raise(seth::Exceptions::Exec)
-      @knife.ui.should_receive(:error)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.ui.should_receive(:error)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     it 'should upload the cookbook and clean up the tarball' do
-      @knife.should_receive(:do_upload)
+      @ceth.should_receive(:do_upload)
       FileUtils.should_receive(:rm_rf)
-      @knife.run
+      @ceth.run
     end
   end
 
@@ -103,8 +103,8 @@ describe Seth::Knife::CookbookSiteShare do
 
       @stdout = StringIO.new
       @stderr = StringIO.new
-      @knife.ui.stub(:stdout).and_return(@stdout)
-      @knife.ui.stub(:stderr).and_return(@stderr)
+      @ceth.ui.stub(:stdout).and_return(@stdout)
+      @ceth.ui.stub(:stderr).and_return(@stderr)
       File.stub(:open).and_return(true)
     end
 
@@ -113,14 +113,14 @@ describe Seth::Knife::CookbookSiteShare do
       @upload_response.stub(:body).and_return(response_text)
       @upload_response.stub(:code).and_return(201)
       Seth::CookbookSiteStreamingUploader.should_receive(:post).with(/cookbooks\.opscode\.com/, anything(), anything(), anything())
-      @knife.run
+      @ceth.run
     end
 
     it 'should alert the user when a version already exists' do
       response_text = {:error_messages => ['Version already exists']}.to_json
       @upload_response.stub(:body).and_return(response_text)
       @upload_response.stub(:code).and_return(409)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      lambda { @ceth.run }.should raise_error(SystemExit)
       @stderr.string.should match(/ERROR(.+)cookbook already exists/)
     end
 
@@ -128,7 +128,7 @@ describe Seth::Knife::CookbookSiteShare do
       response_text = {:error_messages => ["You're holding it wrong"]}.to_json
       @upload_response.stub(:body).and_return(response_text)
       @upload_response.stub(:code).and_return(403)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      lambda { @ceth.run }.should raise_error(SystemExit)
       @stderr.string.should match("ERROR(.*)You're holding it wrong")
     end
 
@@ -136,9 +136,9 @@ describe Seth::Knife::CookbookSiteShare do
       response_text = {:system_error => "Your call was dropped", :reason => "There's a map for that"}.to_json
       @upload_response.stub(:body).and_return(response_text)
       @upload_response.stub(:code).and_return(500)
-      @knife.ui.should_receive(:error).with(/#{Regexp.escape(response_text)}/)#.ordered
-      @knife.ui.should_receive(:error).with(/Unknown error/)#.ordered
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.ui.should_receive(:error).with(/#{Regexp.escape(response_text)}/)#.ordered
+      @ceth.ui.should_receive(:error).with(/Unknown error/)#.ordered
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
   end

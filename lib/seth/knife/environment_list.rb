@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class EnvironmentList < Knife
+  class ceth
+    class EnvironmentList < ceth
 
       deps do
         require 'seth/environment'
         require 'seth/json_compat'
       end
 
-      banner "knife environment list (options)"
+      banner "ceth environment list (options)"
 
       option :with_uri,
         :short => "-w",

@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
+  class ceth
 
-    class NodeEdit < Knife
+    class NodeEdit < ceth
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
-        require 'seth/knife/core/node_editor'
+        require 'seth/ceth/core/node_editor'
       end
 
-      banner "knife node edit NODE (options)"
+      banner "ceth node edit NODE (options)"
 
       option :all_attributes,
         :short => "-a",
@@ -58,7 +58,7 @@ class Seth
       end
 
       def node_editor
-        @node_editor ||= Knife::NodeEditor.new(node, ui, config)
+        @node_editor ||= ceth::NodeEditor.new(node, ui, config)
       end
 
       def node

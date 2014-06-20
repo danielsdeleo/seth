@@ -265,7 +265,7 @@ class Seth
       def self.copy_entries(src_entry, dest_entry, new_dest_parent, recurse_depth, options, ui, format_path)
         # A NOTE about this algorithm:
         # There are cases where this algorithm does too many network requests.
-        # knife upload with a specific filename will first check if the file
+        # ceth upload with a specific filename will first check if the file
         # exists (a "dir" in the parent) before deciding whether to POST or
         # PUT it.  If we just tried PUT (or POST) and then tried the other if
         # the conflict failed, we wouldn't need to check existence.

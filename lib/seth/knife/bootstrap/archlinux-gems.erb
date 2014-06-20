@@ -1,5 +1,5 @@
 bash -c '
-<%= "export http_proxy=\"#{knife_config[:bootstrap_proxy]}\"" if knife_config[:bootstrap_proxy] -%>
+<%= "export http_proxy=\"#{ceth_config[:bootstrap_proxy]}\"" if ceth_config[:bootstrap_proxy] -%>
 
 if [ ! -f /usr/bin/seth-client ]; then
   pacman -Syy
@@ -24,10 +24,10 @@ chmod 0600 /etc/seth/encrypted_data_bag_secret
 <% end -%>
 
 <%# Generate Ohai Hints -%>
-<% unless @seth_config[:knife][:hints].nil? || @seth_config[:knife][:hints].empty? -%>
+<% unless @seth_config[:ceth][:hints].nil? || @seth_config[:ceth][:hints].empty? -%>
 mkdir -p /etc/seth/ohai/hints
 
-<% @seth_config[:knife][:hints].each do |name, hash| -%>
+<% @seth_config[:ceth][:hints].each do |name, hash| -%>
 cat > /etc/seth/ohai/hints/<%= name %>.json <<'EOP'
 <%= hash.to_json %>
 EOP
@@ -49,9 +49,9 @@ file_cache_path    "/var/cache/seth"
 file_backup_path   "/var/lib/seth/backup"
 pid_file           "/var/run/seth/client.pid"
 cache_options({ :path => "/var/cache/seth/checksums", :skip_expires => true})
-<% if knife_config[:bootstrap_proxy] %>
-http_proxy         "<%= knife_config[:bootstrap_proxy] %>"
-https_proxy        "<%= knife_config[:bootstrap_proxy] %>"
+<% if ceth_config[:bootstrap_proxy] %>
+http_proxy         "<%= ceth_config[:bootstrap_proxy] %>"
+https_proxy        "<%= ceth_config[:bootstrap_proxy] %>"
 <% end -%>
 EOP
 

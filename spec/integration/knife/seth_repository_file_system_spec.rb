@@ -16,12 +16,12 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'seth/knife/list'
-require 'seth/knife/show'
+require 'seth/ceth/list'
+require 'seth/ceth/show'
 
 describe 'General seth_repo file system checks' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
 
   context 'directories and files that should/should not be ignored' do
     when_the_repository "has empty roles, environments and data bag item directories" do
@@ -29,8 +29,8 @@ describe 'General seth_repo file system checks' do
       directory "environments"
       directory "data_bags/bag1"
 
-      it "knife list --local -Rfp / returns them" do
-        knife('list --local -Rfp /').should_succeed <<EOM
+      it "ceth list --local -Rfp / returns them" do
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /data_bags/
 /data_bags/bag1/
 /environments/
@@ -42,16 +42,16 @@ EOM
     when_the_repository "has an empty data_bags directory" do
       directory "data_bags"
 
-      it "knife list --local / returns it" do
-        knife('list --local /').should_succeed "/data_bags\n"
+      it "ceth list --local / returns it" do
+        ceth('list --local /').should_succeed "/data_bags\n"
       end
     end
 
     when_the_repository "has an empty cookbook directory" do
       directory 'cookbooks/cookbook1'
 
-      it "knife list --local -Rfp / does not return it" do
-        knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.seth_repo_path}/cookbooks/cookbook1\n")
+      it "ceth list --local -Rfp / does not return it" do
+        ceth('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.seth_repo_path}/cookbooks/cookbook1\n")
 /cookbooks/
 EOM
       end
@@ -60,8 +60,8 @@ EOM
     when_the_repository "has only empty cookbook subdirectories" do
       directory 'cookbooks/cookbook1/recipes'
 
-      it "knife list --local -Rfp / does not return it" do
-        knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.seth_repo_path}/cookbooks/cookbook1\n")
+      it "ceth list --local -Rfp / does not return it" do
+        ceth('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.seth_repo_path}/cookbooks/cookbook1\n")
 /cookbooks/
 EOM
       end
@@ -71,8 +71,8 @@ EOM
       directory 'cookbooks/cookbook1/recipes'
       file 'cookbooks/cookbook1/templates/default/x.txt', ''
 
-      it "knife list --local -Rfp / does not return the empty ones" do
-        knife('list --local -Rfp /').should_succeed <<EOM
+      it "ceth list --local -Rfp / does not return the empty ones" do
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/templates/
@@ -85,8 +85,8 @@ EOM
     when_the_repository "has only empty cookbook sub-sub-directories" do
       directory 'cookbooks/cookbook1/templates/default'
 
-      it "knife list --local -Rfp / does not return it" do
-        knife('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.seth_repo_path}/cookbooks/cookbook1\n")
+      it "ceth list --local -Rfp / does not return it" do
+        ceth('list --local -Rfp /').should_succeed(<<EOM, :stderr => "WARN: Cookbook 'cookbook1' is empty or entirely sethignored at #{Seth::Config.seth_repo_path}/cookbooks/cookbook1\n")
 /cookbooks/
 EOM
       end
@@ -97,8 +97,8 @@ EOM
       directory 'cookbooks/cookbook1/templates/rhel'
       directory 'cookbooks/cookbook1/files/default'
 
-      it "knife list --local -Rfp / does not return the empty ones" do
-        knife('list --local -Rfp /').should_succeed <<EOM
+      it "ceth list --local -Rfp / does not return the empty ones" do
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/templates/
@@ -113,8 +113,8 @@ EOM
         file "_default.json", {}
       end
 
-      it "knife list --local -Rfp / should NOT return it" do
-        knife('list --local -Rfp /').should_succeed ""
+      it "ceth list --local -Rfp / should NOT return it" do
+        ceth('list --local -Rfp /').should_succeed ""
       end
     end
 
@@ -135,8 +135,8 @@ EOM
         file "subdir/environment.json", {}
       end
 
-      it "knife list --local -Rfp / should NOT return them" do
-        knife('list --local -Rfp /').should_succeed <<EOM
+      it "ceth list --local -Rfp / should NOT return them" do
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /data_bags/
 /data_bags/bag1/
 /data_bags/bag1/item1.json
@@ -202,8 +202,8 @@ EOM
         end
       end
 
-      it "knife list --local -Rfp / should NOT return them" do
-        knife('list --local -Rfp /').should_succeed <<EOM
+      it "ceth list --local -Rfp / should NOT return them" do
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 /cookbooks/cookbook1/
 /cookbooks/cookbook1/a.rb
@@ -242,7 +242,7 @@ EOM
     when_the_repository "has a file in cookbooks/" do
       file 'cookbooks/file', ''
       it 'does not show up in list -Rfp' do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /cookbooks/
 EOM
       end
@@ -251,7 +251,7 @@ EOM
     when_the_repository "has a file in data_bags/" do
       file 'data_bags/file', ''
       it 'does not show up in list -Rfp' do
-        knife('list --local -Rfp /').should_succeed <<EOM
+        ceth('list --local -Rfp /').should_succeed <<EOM
 /data_bags/
 EOM
       end
@@ -261,16 +261,16 @@ EOM
   when_the_repository 'has a cookbook starting with .' do
     file 'cookbooks/.svn/metadata.rb', ''
     file 'cookbooks/a.b/metadata.rb', ''
-    it 'knife list does not show it' do
-      knife('list --local -fp /cookbooks').should_succeed "/cookbooks/a.b/\n"
+    it 'ceth list does not show it' do
+      ceth('list --local -fp /cookbooks').should_succeed "/cookbooks/a.b/\n"
     end
   end
 
   when_the_repository 'has a data bag starting with .' do
     file 'data_bags/.svn/x.json', {}
     file 'data_bags/a.b/x.json', {}
-    it 'knife list does not show it' do
-      knife('list --local -fp /data_bags').should_succeed "/data_bags/a.b/\n"
+    it 'ceth list does not show it' do
+      ceth('list --local -fp /data_bags').should_succeed "/data_bags/a.b/\n"
     end
   end
 end

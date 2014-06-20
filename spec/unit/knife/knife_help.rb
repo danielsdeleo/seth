@@ -18,75 +18,75 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::Help do
+describe Seth::ceth::Help do
   before(:each) do
     # Perilously use the build in list even though it is dynamic so we don't get warnings about the constant
-    # HELP_TOPICS = [ "foo", "bar", "knife-kittens", "ceiling-cat", "shell" ]
-    @knife = Seth::Knife::Help.new
+    # HELP_TOPICS = [ "foo", "bar", "ceth-kittens", "ceiling-cat", "shell" ]
+    @ceth = Seth::ceth::Help.new
   end
 
   it "should return a list of help topics" do
-    @knife.help_topics.should include("knife-status")
+    @ceth.help_topics.should include("ceth-status")
   end
 
   it "should run man for you" do
-    @knife.name_args = [ "shell" ]
-    @knife.should_receive(:exec).with(/^man \/.*\/shell.1$/)
-    @knife.run
+    @ceth.name_args = [ "shell" ]
+    @ceth.should_receive(:exec).with(/^man \/.*\/shell.1$/)
+    @ceth.run
   end
 
   it "should suggest topics" do
-    @knife.name_args = [ "list" ]
-    @knife.ui.stub(:msg)
-    @knife.ui.should_receive(:info).with("Available help topics are: ")
-    @knife.ui.should_receive(:msg).with(/knife/)
-    @knife.stub(:exec)
-    @knife.should_receive(:exit).with(1)
-    @knife.run
+    @ceth.name_args = [ "list" ]
+    @ceth.ui.stub(:msg)
+    @ceth.ui.should_receive(:info).with("Available help topics are: ")
+    @ceth.ui.should_receive(:msg).with(/ceth/)
+    @ceth.stub(:exec)
+    @ceth.should_receive(:exit).with(1)
+    @ceth.run
   end
 
   describe "find_manpage_path" do
     it "should find the man page in the gem" do
-      @knife.find_manpage_path("shell").should =~ /distro\/common\/man\/man1\/seth-shell.1$/
+      @ceth.find_manpage_path("shell").should =~ /distro\/common\/man\/man1\/seth-shell.1$/
     end
 
     it "should provide the man page name if not in the gem" do
-      @knife.find_manpage_path("foo").should == "foo"
+      @ceth.find_manpage_path("foo").should == "foo"
     end
   end
 
   describe "find_manpages_for_query" do
     it "should error if it does not find a match" do
-      @knife.ui.stub(:error)
-      @knife.ui.stub(:info)
-      @knife.ui.stub(:msg)
-      @knife.should_receive(:exit).with(1)
-      @knife.ui.should_receive(:error).with("No help found for 'chickens'")
-      @knife.ui.should_receive(:msg).with(/knife/)
-      @knife.find_manpages_for_query("chickens")
+      @ceth.ui.stub(:error)
+      @ceth.ui.stub(:info)
+      @ceth.ui.stub(:msg)
+      @ceth.should_receive(:exit).with(1)
+      @ceth.ui.should_receive(:error).with("No help found for 'chickens'")
+      @ceth.ui.should_receive(:msg).with(/ceth/)
+      @ceth.find_manpages_for_query("chickens")
     end
   end
 
   describe "print_help_topics" do
     it "should print the known help topics" do
-      @knife.ui.stub(:msg)
-      @knife.ui.stub(:info)
-      @knife.ui.should_receive(:msg).with(/knife/)
-      @knife.print_help_topics
+      @ceth.ui.stub(:msg)
+      @ceth.ui.stub(:info)
+      @ceth.ui.should_receive(:msg).with(/ceth/)
+      @ceth.print_help_topics
     end
 
-    it "should shorten topics prefixed by knife-" do
-      @knife.ui.stub(:msg)
-      @knife.ui.stub(:info)
-      @knife.ui.should_receive(:msg).with(/node/)
-      @knife.print_help_topics
+    it "should shorten topics prefixed by ceth-" do
+      @ceth.ui.stub(:msg)
+      @ceth.ui.stub(:info)
+      @ceth.ui.should_receive(:msg).with(/node/)
+      @ceth.print_help_topics
     end
 
-    it "should not leave topics prefixed by knife-" do
-      @knife.ui.stub(:msg)
-      @knife.ui.stub(:info)
-      @knife.ui.should_not_receive(:msg).with(/knife-node/)
-      @knife.print_help_topics
+    it "should not leave topics prefixed by ceth-" do
+      @ceth.ui.stub(:msg)
+      @ceth.ui.stub(:info)
+      @ceth.ui.should_not_receive(:msg).with(/ceth-node/)
+      @ceth.print_help_topics
     end
   end
 end

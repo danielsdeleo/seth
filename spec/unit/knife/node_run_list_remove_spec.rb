@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::NodeRunListRemove do
+describe Seth::ceth::NodeRunListRemove do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::NodeRunListRemove.new
-    @knife.config[:print_after] = nil
-    @knife.name_args = [ "adam", "role[monkey]" ]
+    @ceth = Seth::ceth::NodeRunListRemove.new
+    @ceth.config[:print_after] = nil
+    @ceth.name_args = [ "adam", "role[monkey]" ]
     @node = Seth::Node.new()
-    @node.name("knifetest-node")
+    @node.name("cethtest-node")
     @node.run_list << "role[monkey]"
     @node.stub(:save).and_return(true)
 
-    @knife.ui.stub(:output).and_return(true)
-    @knife.ui.stub(:confirm).and_return(true)
+    @ceth.ui.stub(:output).and_return(true)
+    @ceth.ui.stub(:confirm).and_return(true)
 
     Seth::Node.stub(:load).and_return(@node)
   end
@@ -38,31 +38,31 @@ describe Seth::Knife::NodeRunListRemove do
   describe "run" do
     it "should load the node" do
       Seth::Node.should_receive(:load).with("adam").and_return(@node)
-      @knife.run
+      @ceth.run
     end
 
     it "should remove the item from the run list" do
-      @knife.run
+      @ceth.run
       @node.run_list[0].should_not == 'role[monkey]'
     end
 
     it "should save the node" do
       @node.should_receive(:save).and_return(true)
-      @knife.run
+      @ceth.run
     end
 
     it "should print the run list" do
-      @knife.config[:print_after] = true
-      @knife.ui.should_receive(:output).with({ "knifetest-node" => { 'run_list' => [] } })
-      @knife.run
+      @ceth.config[:print_after] = true
+      @ceth.ui.should_receive(:output).with({ "cethtest-node" => { 'run_list' => [] } })
+      @ceth.run
     end
 
     describe "run with a list of roles and recipes" do
       it "should remove the items from the run list" do
         @node.run_list << 'role[monkey]'
         @node.run_list << 'recipe[duck::type]'
-        @knife.name_args = [ 'adam', 'role[monkey],recipe[duck::type]' ]
-        @knife.run
+        @ceth.name_args = [ 'adam', 'role[monkey],recipe[duck::type]' ]
+        @ceth.run
         @node.run_list.should_not include('role[monkey]')
         @node.run_list.should_not include('recipe[duck::type]')
       end

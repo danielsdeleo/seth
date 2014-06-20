@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class DataBagList < Knife
+  class ceth
+    class DataBagList < ceth
 
       deps do
         require 'seth/data_bag'
       end
 
-      banner "knife data bag list (options)"
+      banner "ceth data bag list (options)"
       category "data bag"
 
       option :with_uri,

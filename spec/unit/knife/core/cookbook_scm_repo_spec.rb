@@ -17,14 +17,14 @@
 #
 
 require 'spec_helper'
-require 'seth/knife/core/cookbook_scm_repo'
+require 'seth/ceth/core/cookbook_scm_repo'
 
-describe Seth::Knife::CookbookSCMRepo do
+describe Seth::ceth::CookbookSCMRepo do
   before do
     @repo_path = File.join(seth_SPEC_DATA, 'cookbooks')
     @stdout, @stderr, @stdin = StringIO.new, StringIO.new, StringIO.new
-    @ui = Seth::Knife::UI.new(@stdout, @stderr, @stdin, {})
-    @cookbook_repo = Seth::Knife::CookbookSCMRepo.new(@repo_path, @ui, :default_branch => 'master')
+    @ui = Seth::ceth::UI.new(@stdout, @stderr, @stdin, {})
+    @cookbook_repo = Seth::ceth::CookbookSCMRepo.new(@repo_path, @ui, :default_branch => 'master')
 
     @branch_list = Mixlib::ShellOut.new
     @branch_list.stdout.replace(<<-BRANCHES)
@@ -83,7 +83,7 @@ BRANCHES
           it "exits when the git repo is dirty" do
             @dirty_status = Mixlib::ShellOut.new
             @dirty_status.stdout.replace(<<-DIRTY)
- M seth/lib/seth/knife/cookbook_site_vendor.rb
+ M seth/lib/seth/ceth/cookbook_site_vendor.rb
 DIRTY
             @cookbook_repo.should_receive(:shell_out!).with('git status --porcelain', :cwd => @repo_path).and_return(@dirty_status)
             lambda {@cookbook_repo.sanity_check}.should raise_error(SystemExit)
@@ -176,7 +176,7 @@ DIRTY
 
   describe "when a custom default branch is specified" do
     before do
-      @cookbook_repo = Seth::Knife::CookbookSCMRepo.new(@repo_path, @ui, :default_branch => 'develop')
+      @cookbook_repo = Seth::ceth::CookbookSCMRepo.new(@repo_path, @ui, :default_branch => 'develop')
     end
 
     it "resets to default state by checking out the default branch" do

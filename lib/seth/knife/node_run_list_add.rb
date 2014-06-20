@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class NodeRunListAdd < Knife
+  class ceth
+    class NodeRunListAdd < ceth
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
       end
 
-      banner "knife node run_list add [NODE] [ENTRY[,ENTRY]] (options)"
+      banner "ceth node run_list add [NODE] [ENTRY[,ENTRY]] (options)"
 
       option :after,
         :short => "-a ITEM",

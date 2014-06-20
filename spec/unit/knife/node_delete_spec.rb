@@ -18,50 +18,50 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::NodeDelete do
+describe Seth::ceth::NodeDelete do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::NodeDelete.new
-    @knife.config = {
+    @ceth = Seth::ceth::NodeDelete.new
+    @ceth.config = {
       :print_after => nil
     }
-    @knife.name_args = [ "adam" ]
-    @knife.stub(:output).and_return(true)
-    @knife.stub(:confirm).and_return(true)
+    @ceth.name_args = [ "adam" ]
+    @ceth.stub(:output).and_return(true)
+    @ceth.stub(:confirm).and_return(true)
     @node = Seth::Node.new()
     @node.stub(:destroy).and_return(true)
     Seth::Node.stub(:load).and_return(@node)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   describe "run" do
     it "should confirm that you want to delete" do
-      @knife.should_receive(:confirm)
-      @knife.run
+      @ceth.should_receive(:confirm)
+      @ceth.run
     end
 
     it "should load the node" do
       Seth::Node.should_receive(:load).with("adam").and_return(@node)
-      @knife.run
+      @ceth.run
     end
 
     it "should delete the node" do
       @node.should_receive(:destroy).and_return(@node)
-      @knife.run
+      @ceth.run
     end
 
     it "should not print the node" do
-      @knife.should_not_receive(:output).with("poop")
-      @knife.run
+      @ceth.should_not_receive(:output).with("poop")
+      @ceth.run
     end
 
     describe "with -p or --print-after" do
       it "should pretty print the node, formatted for display" do
-        @knife.config[:print_after] = true
-        @knife.should_receive(:format_for_display).with(@node).and_return("poop")
-        @knife.should_receive(:output).with("poop")
-        @knife.run
+        @ceth.config[:print_after] = true
+        @ceth.should_receive(:format_for_display).with(@node).and_return("poop")
+        @ceth.should_receive(:output).with("poop")
+        @ceth.run
       end
     end
   end

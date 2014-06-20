@@ -19,7 +19,7 @@
 require 'spec_helper'
 require 'highline'
 
-describe Seth::Knife::Status do
+describe Seth::ceth::Status do
   before(:each) do
     node = Seth::Node.new.tap do |n|
       n.automatic_attrs["fqdn"] = "foobar"
@@ -28,14 +28,14 @@ describe Seth::Knife::Status do
     query = double("Seth::Search::Query")
     query.stub(:search).and_yield(node)
     Seth::Search::Query.stub(:new).and_return(query)
-    @knife  = Seth::Knife::Status.new
+    @ceth  = Seth::ceth::Status.new
     @stdout = StringIO.new
-    @knife.stub(:highline).and_return(HighLine.new(StringIO.new, @stdout))
+    @ceth.stub(:highline).and_return(HighLine.new(StringIO.new, @stdout))
   end
 
   describe "run" do
     it "should not colorize output unless it's writing to a tty" do
-      @knife.run
+      @ceth.run
       @stdout.string.match(/foobar/).should_not be_nil
       @stdout.string.match(/\e.*ago/).should be_nil
     end

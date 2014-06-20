@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>knife list &mdash; seth-client Man Pages</title>
+    <title>ceth list &mdash; seth-client Man Pages</title>
 
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,13 +40,13 @@
 
           <div class="body">
 
-  <div class="section" id="knife-list">
-<h1>knife list<a class="headerlink" href="#knife-list" title="Permalink to this headline">¶</a></h1>
-<p>The <strong>knife list</strong> subcommand is used to view a list of objects on the Seth server. This subcommand works similar to <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">cookbook</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">data</span> <span class="pre">bag</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">environment</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">node</span> <span class="pre">list</span></tt>, and <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">role</span> <span class="pre">list</span></tt>, but with a single verb (and a single action).</p>
+  <div class="section" id="ceth-list">
+<h1>ceth list<a class="headerlink" href="#ceth-list" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>ceth list</strong> subcommand is used to view a list of objects on the Seth server. This subcommand works similar to <tt class="docutils literal"><span class="pre">ceth</span> <span class="pre">cookbook</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">ceth</span> <span class="pre">data</span> <span class="pre">bag</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">ceth</span> <span class="pre">environment</span> <span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">ceth</span> <span class="pre">node</span> <span class="pre">list</span></tt>, and <tt class="docutils literal"><span class="pre">ceth</span> <span class="pre">role</span> <span class="pre">list</span></tt>, but with a single verb (and a single action).</p>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <p>This subcommand has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife list <span class="o">[</span>PATTERN...<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth list <span class="o">[</span>PATTERN...<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -54,7 +54,7 @@
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
+<p class="last">Review the list of <a class="reference internal" href="ceth_common_options.html"><em>common options</em></a> available to this (and all) ceth subcommands and plugins.</p>
 </div>
 <p>This subcommand has the following options:</p>
 <dl class="docutils">
@@ -80,20 +80,20 @@
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>List roles</strong></p>
 <p>For example, to view a list of roles on the Seth server:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife list roles/
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth list roles/
 </pre></div>
 </div>
 <p><strong>List roles and environments</strong></p>
 <p>To view a list of roles and environments on the Seth server:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife list roles/ environments/
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth list roles/ environments/
 </pre></div>
 </div>
 <p><strong>List everything</strong></p>
 <p>To view a list of absolutely everything on the Seth server:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife list -R /
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth list -R /
 </pre></div>
 </div>
 </div>

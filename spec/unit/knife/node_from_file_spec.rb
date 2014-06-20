@@ -18,41 +18,41 @@
 
 require 'spec_helper'
 
-Seth::Knife::NodeFromFile.load_deps
+Seth::ceth::NodeFromFile.load_deps
 
-describe Seth::Knife::NodeFromFile do
+describe Seth::ceth::NodeFromFile do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::NodeFromFile.new
-    @knife.config = {
+    @ceth = Seth::ceth::NodeFromFile.new
+    @ceth.config = {
       :print_after => nil
     }
-    @knife.name_args = [ "adam.rb" ]
-    @knife.stub(:output).and_return(true)
-    @knife.stub(:confirm).and_return(true)
+    @ceth.name_args = [ "adam.rb" ]
+    @ceth.stub(:output).and_return(true)
+    @ceth.stub(:confirm).and_return(true)
     @node = Seth::Node.new()
     @node.stub(:save)
-    @knife.loader.stub(:load_from).and_return(@node)
+    @ceth.loader.stub(:load_from).and_return(@node)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   describe "run" do
     it "should load from a file" do
-      @knife.loader.should_receive(:load_from).with('nodes', 'adam.rb').and_return(@node)
-      @knife.run
+      @ceth.loader.should_receive(:load_from).with('nodes', 'adam.rb').and_return(@node)
+      @ceth.run
     end
 
     it "should not print the Node" do
-      @knife.should_not_receive(:output)
-      @knife.run
+      @ceth.should_not_receive(:output)
+      @ceth.run
     end
 
     describe "with -p or --print-after" do
       it "should print the Node" do
-        @knife.config[:print_after] = true
-        @knife.should_receive(:output)
-        @knife.run
+        @ceth.config[:print_after] = true
+        @ceth.should_receive(:output)
+        @ceth.run
       end
     end
   end

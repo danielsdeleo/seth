@@ -15,13 +15,13 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookSiteSearch < Knife
+  class ceth
+    class CookbookSiteSearch < ceth
 
-      banner "knife cookbook site search QUERY (options)"
+      banner "ceth cookbook site search QUERY (options)"
       category "cookbook site"
 
       def run

@@ -1,9 +1,9 @@
-require 'seth/seth_fs/knife'
+require 'seth/seth_fs/ceth'
 
 class Seth
-  class Knife
-    class Diff < Seth::sethFS::Knife
-      banner "knife diff PATTERNS"
+  class ceth
+    class Diff < Seth::sethFS::ceth
+      banner "ceth diff PATTERNS"
 
       category "path-based"
 

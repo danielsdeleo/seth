@@ -1,16 +1,16 @@
-knife-environment(1) -- Define cookbook policies for the environments in your infrastructure
+ceth-environment(1) -- Define cookbook policies for the environments in your infrastructure
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __environment__ _sub-command_ _(options)_
+__ceth__ __environment__ _sub-command_ _(options)_
 
 ## SUBCOMMANDS
 Environment subcommands follow a basic create, read, update, delete
 (CRUD) pattern. The following subcommands are available:
 
 ## CREATE
-__knife environment create__ _environment_ _(options)_
+__ceth environment create__ _environment_ _(options)_
 
   * `-d`, `--description DESCRIPTION`:
     The value of the description field.
@@ -20,31 +20,31 @@ be opened in the text editor for editing prior to creation if the -n
 option is not present.
 
 ## DELETE
-__knife environment delete__ _environment_ _(options)_
+__ceth environment delete__ _environment_ _(options)_
 
 Destroy an environment on the Seth Server. A prompt for confirmation
 will be displayed if the -y options is not given.
 
 ## EDIT
-__knife environment edit__ _environment_ _(options)_
+__ceth environment edit__ _environment_ _(options)_
 
 Fetch _environment_ and display it in the text editor for editing. The
 environment will be saved to the Seth Server when the editing session
 exits.
 
 ## FROM FILE
-__knife environment from file__ _file_ _(options)_
+__ceth environment from file__ _file_ _(options)_
 
 Create or update an environment from the JSON or Ruby format _file_. See
 __format__ for the proper format of this file.
 
 ## LIST
-__knife environment list__ _(options)_
+__ceth environment list__ _(options)_
   * `-w`, `--with-uri`:
     Show the resource URI for each environment
 
 ## SHOW
-__knife environment show__ _environment_ _(options)_
+__ceth environment show__ _environment_ _(options)_
 
 ## DESCRIPTION
 Environments provide a means to apply policies to hosts in your
@@ -136,7 +136,7 @@ The Ruby format of an environment is as follows:
 
 
 ## SEE ALSO
-   __knife-node(1)__ __knife-cookbook(1)__ __knife-role(1)__
+   __ceth-node(1)__ __ceth-cookbook(1)__ __ceth-role(1)__
   <http://wiki.opscode.com/display/seth/Environments>
   <http://wiki.opscode.com/display/seth/Version+Constraints>
 
@@ -148,4 +148,4 @@ The Ruby format of an environment is as follows:
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>

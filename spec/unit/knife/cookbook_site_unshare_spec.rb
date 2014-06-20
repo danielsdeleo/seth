@@ -19,57 +19,57 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::CookbookSiteUnshare do
+describe Seth::ceth::CookbookSiteUnshare do
 
   before(:each) do
-    @knife = Seth::Knife::CookbookSiteUnshare.new
-    @knife.name_args = ['cookbook_name']
-    @knife.stub(:confirm).and_return(true)
+    @ceth = Seth::ceth::CookbookSiteUnshare.new
+    @ceth.name_args = ['cookbook_name']
+    @ceth.stub(:confirm).and_return(true)
 
     @rest = double('Seth::REST')
     @rest.stub(:delete_rest).and_return(true)
-    @knife.stub(:rest).and_return(@rest)
+    @ceth.stub(:rest).and_return(@rest)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   describe 'run' do
 
     describe 'with no cookbook argument' do
       it 'should print the usage and exit' do
-        @knife.name_args = []
-        @knife.ui.should_receive(:fatal)
-        @knife.should_receive(:show_usage)
-        lambda { @knife.run }.should raise_error(SystemExit)
+        @ceth.name_args = []
+        @ceth.ui.should_receive(:fatal)
+        @ceth.should_receive(:show_usage)
+        lambda { @ceth.run }.should raise_error(SystemExit)
       end
     end
 
     it 'should confirm you want to unshare the cookbook' do
-      @knife.should_receive(:confirm)
-      @knife.run
+      @ceth.should_receive(:confirm)
+      @ceth.run
     end
 
     it 'should send a delete request to the cookbook site' do
       @rest.should_receive(:delete_rest)
-      @knife.run
+      @ceth.run
     end
 
     it 'should log an error and exit when forbidden' do
       exception = double('403 "Forbidden"', :code => '403')
       @rest.stub(:delete_rest).and_raise(Net::HTTPServerException.new('403 "Forbidden"', exception))
-      @knife.ui.should_receive(:error)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.ui.should_receive(:error)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     it 'should re-raise any non-forbidden errors on delete_rest' do
       exception = double('500 "Application Error"', :code => '500')
       @rest.stub(:delete_rest).and_raise(Net::HTTPServerException.new('500 "Application Error"', exception))
-      lambda { @knife.run }.should raise_error(Net::HTTPServerException)
+      lambda { @ceth.run }.should raise_error(Net::HTTPServerException)
     end
 
     it 'should log a success message' do
-      @knife.ui.should_receive(:info)
-      @knife.run
+      @ceth.ui.should_receive(:info)
+      @ceth.run
     end
 
   end

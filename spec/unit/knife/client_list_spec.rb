@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::ClientList do
+describe Seth::ceth::ClientList do
   before(:each) do
-    @knife = Seth::Knife::ClientList.new
-    @knife.name_args = [ 'adam' ]
+    @ceth = Seth::ceth::ClientList.new
+    @ceth.name_args = [ 'adam' ]
   end
 
   describe 'run' do
     it 'should list the clients' do
       Seth::ApiClient.should_receive(:list)
-      @knife.should_receive(:format_list_for_display)
-      @knife.run
+      @ceth.should_receive(:format_list_for_display)
+      @ceth.run
     end
   end
 end

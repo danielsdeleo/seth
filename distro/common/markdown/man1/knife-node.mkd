@@ -1,9 +1,9 @@
-knife-node(1) -- Manage the hosts in your infrastructure
+ceth-node(1) -- Manage the hosts in your infrastructure
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __node__ _sub-command_ _(options)_
+__ceth__ __node__ _sub-command_ _(options)_
 
 ## DESCRIPTION
 Nodes are data structures that represent hosts configured with Seth.
@@ -31,7 +31,7 @@ settings.
 The following `node` subcommands are available:
 
 ## BULK DELETE
-__knife node bulk delete__ _regex_ _(options)_
+__ceth node bulk delete__ _regex_ _(options)_
 
 Deletes nodes for which the name matches the regular expression _regex_
 on the Seth Server. The regular expression should be given in quotes,
@@ -39,7 +39,7 @@ and should not be surrounded with forward slashes (as is typical of
 regular expression literals in scripting languages).
 
 ## CREATE
-__knife node create__ _name_ _(options)_
+__ceth node create__ _name_ _(options)_
 
 Create a new node. Unless the --disable-editing option is given, an empty node
 object will be created and displayed in your text editor. If the editor
@@ -47,27 +47,27 @@ exits with a successful exit status, the node data will be posted to the
 Seth Server to create the node.
 
 ## DELETE
-__knife node delete__ _name_ _(options)_
+__ceth node delete__ _name_ _(options)_
 
 Deletes the node identified by _name_ on the Seth Server.
 
 ## EDIT
-__knife node edit__ _name_ _(options)_
+__ceth node edit__ _name_ _(options)_
 
   * `-a`, `--all`:
     Display all node data in the editor. By default, default, override,
     and automatic attributes are not shown.
 
-Edit the node identified by _name_. Like __knife node create__, the node
+Edit the node identified by _name_. Like __ceth node create__, the node
 will be displayed in your text editor unless the -n option is present.
 
 ## FROM FILE
-__knife node from file__ _file_ _(options)_
+__ceth node from file__ _file_ _(options)_
 
 Create a node from a JSON format _file_.
 
 ## LIST
-__knife node list__ _(options)_
+__ceth node list__ _(options)_
 
   * `-w`, `--with-uri`:
     Show corresponding URIs
@@ -75,7 +75,7 @@ __knife node list__ _(options)_
 List all nodes.
 
 ## RUN\_LIST ADD
-__knife node run_list add__ _name_ _run list item_ _(options)_
+__ceth node run_list add__ _name_ _run list item_ _(options)_
 
   * `-a`, `--after ITEM`:
     Place the ENTRY in the run list after ITEM
@@ -83,12 +83,12 @@ __knife node run_list add__ _name_ _run list item_ _(options)_
 Add the _run list item_ to the node's `run_list`. See Run list
 
 ## RUN\_LIST REMOVE
-__knife node run_list remove__ _node name_ _run list item_ _(options)_
+__ceth node run_list remove__ _node name_ _run list item_ _(options)_
 
 Remove the _run list item_ from the node's `run_list`.
 
 ## SHOW
-__knife node show__ _node name_ _(options)_
+__ceth node show__ _node name_ _(options)_
 
   * `-a`, `--attribute [ATTR]`:
     Show only one attribute
@@ -116,7 +116,7 @@ When adding a recipe to a run list, there are several valid formats:
     When adding the default recipe of a cookbook to a run list, the recipe name may be omitted as well, e.g., "seth::default" may be written as just "seth"
 
 ## SEE ALSO
-  __knife-client__(1) __knife-search__(1) __knife-role__(1)
+  __ceth-client__(1) __ceth-search__(1) __ceth-role__(1)
 
 ## AUTHOR
    Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
@@ -126,5 +126,5 @@ When adding a recipe to a run list, there are several valid formats:
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

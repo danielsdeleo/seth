@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-DOWNLOAD" "1" "Seth 11.12.0" "" "knife download"
+.TH "ceth-DOWNLOAD" "1" "Seth 11.12.0" "" "ceth download"
 .SH NAME
-knife-download \- The man page for the knife download subcommand.
+ceth-download \- The man page for the ceth download subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife download\fP subcommand is used to download roles, cookbooks, environments, nodes, and data bags from the Seth server to the current working directory. It can be used to back up data on the seth server, inspect the state of one or more files, or to extract out\-of\-process changes users may have made to files on the seth server, such as if a user made a change that bypassed version source control. This subcommand is often used in conjunction with \fBknife diff\fP, which can be used to see exactly what changes will be downloaded, and then \fBknife upload\fP, which does the opposite of \fBknife download\fP\&.
+The \fBceth download\fP subcommand is used to download roles, cookbooks, environments, nodes, and data bags from the Seth server to the current working directory. It can be used to back up data on the seth server, inspect the state of one or more files, or to extract out\-of\-process changes users may have made to files on the seth server, such as if a user made a change that bypassed version source control. This subcommand is often used in conjunction with \fBceth diff\fP, which can be used to see exactly what changes will be downloaded, and then \fBceth upload\fP, which does the opposite of \fBceth download\fP\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -41,7 +41,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife download [PATTERN...] (options)
+$ ceth download [PATTERN...] (options)
 .ft P
 .fi
 .UNINDENT
@@ -74,7 +74,7 @@ The version of a cookbook to be downloaded.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-\-[no\-]diff\fP
 Indicates that only new and modified files will be downloaded. Set to \fBfalse\fP to download all files. Default: \fB\-\-diff\fP\&.
@@ -95,7 +95,7 @@ Use \fB\-\-force\fP to download files even when the file on the hard drive is id
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-n\fP, \fB\-\-dry\-run\fP
 Indicates that no action is taken and that results are only printed out. Default: \fBfalse\fP\&.
@@ -116,7 +116,7 @@ The layout of the local seth\-repo\&. Possible values: \fBstatic\fP, \fBeverythi
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -125,7 +125,7 @@ The version of the seth\-client\&.
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -139,7 +139,7 @@ To download the entire seth\-repo from the Seth server, browse to the top level 
 .sp
 .nf
 .ft C
-$ knife download /
+$ ceth download /
 .ft P
 .fi
 .UNINDENT
@@ -151,7 +151,7 @@ To download the \fBcookbooks/\fP directory from the Seth server, browse to the t
 .sp
 .nf
 .ft C
-$ knife download cookbooks
+$ ceth download cookbooks
 .ft P
 .fi
 .UNINDENT
@@ -163,7 +163,7 @@ or from anywhere in the seth\-repo, enter:
 .sp
 .nf
 .ft C
-$ knife download /cookbooks
+$ ceth download /cookbooks
 .ft P
 .fi
 .UNINDENT
@@ -175,7 +175,7 @@ To download the \fBenvironments/\fP directory from the Seth server, browse to th
 .sp
 .nf
 .ft C
-$ knife download environments
+$ ceth download environments
 .ft P
 .fi
 .UNINDENT
@@ -187,7 +187,7 @@ or from anywhere in the seth\-repo, enter:
 .sp
 .nf
 .ft C
-$ knife download /environments
+$ ceth download /environments
 .ft P
 .fi
 .UNINDENT
@@ -199,7 +199,7 @@ To download an environment named "production" from the Seth server, browse to th
 .sp
 .nf
 .ft C
-$ knife download environments/production.json
+$ ceth download environments/production.json
 .ft P
 .fi
 .UNINDENT
@@ -211,7 +211,7 @@ or from the \fBenvironments/\fP directory, enter:
 .sp
 .nf
 .ft C
-$ knife download production.json
+$ ceth download production.json
 .ft P
 .fi
 .UNINDENT
@@ -223,7 +223,7 @@ To download the \fBroles/\fP directory from the Seth server, browse to the top l
 .sp
 .nf
 .ft C
-$ knife download roles
+$ ceth download roles
 .ft P
 .fi
 .UNINDENT
@@ -235,7 +235,7 @@ or from anywhere in the seth\-repo, enter:
 .sp
 .nf
 .ft C
-$ knife download /roles
+$ ceth download /roles
 .ft P
 .fi
 .UNINDENT
@@ -247,7 +247,7 @@ To download all cookbooks that start with "apache" and belong to the "webserver"
 .sp
 .nf
 .ft C
-$  knife download cookbooks/apache\e* roles/webserver.json
+$  ceth download cookbooks/apache\e* roles/webserver.json
 .ft P
 .fi
 .UNINDENT

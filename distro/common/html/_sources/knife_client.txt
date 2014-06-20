@@ -1,18 +1,18 @@
 =====================================================
-knife client 
+ceth client
 =====================================================
 
-.. include:: ../../includes_knife/includes_knife_client.rst
+.. include:: ../../includes_ceth/includes_ceth_client.rst
 
-.. note:: Review the list of :doc:`common options </knife_common_options>` available to this (and all) |knife| subcommands and plugins.
-   
+.. note:: Review the list of :doc:`common options </ceth_common_options>` available to this (and all) |ceth| subcommands and plugins.
+
 bulk delete
 =====================================================
-.. include:: ../../includes_knife/includes_knife_client_bulk_delete.rst
+.. include:: ../../includes_ceth/includes_ceth_client_bulk_delete.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_bulk_delete_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_client_bulk_delete_syntax.rst
 
 Options
 -----------------------------------------------------
@@ -24,35 +24,35 @@ None.
 
 create
 =====================================================
-.. include:: ../../includes_knife/includes_knife_client_create.rst
+.. include:: ../../includes_ceth/includes_ceth_client_create.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_create_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_client_create_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_create_options.rst
+.. include:: ../../includes_ceth/includes_ceth_client_create_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Create an admin client**
 
-.. include:: ../../step_knife/step_knife_client_create_admin.rst
+.. include:: ../../step_ceth/step_ceth_client_create_admin.rst
 
 **Create an admin client for Enterprise Seth**
 
-.. include:: ../../step_knife/step_knife_client_create_hosted_and_private.rst
+.. include:: ../../step_ceth/step_ceth_client_create_hosted_and_private.rst
 
 delete
 =====================================================
-.. include:: ../../includes_knife/includes_knife_client_delete.rst
+.. include:: ../../includes_ceth/includes_ceth_client_delete.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_delete_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_client_delete_syntax.rst
 
 Options
 -----------------------------------------------------
@@ -60,19 +60,19 @@ Options
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Delete a client**
 
-.. include:: ../../step_knife/step_knife_client_delete.rst
+.. include:: ../../step_ceth/step_ceth_client_delete.rst
 
 edit
 =====================================================
-.. include:: ../../includes_knife/includes_knife_client_edit.rst
+.. include:: ../../includes_ceth/includes_ceth_client_edit.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_edit_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_client_edit_syntax.rst
 
 Options
 -----------------------------------------------------
@@ -80,72 +80,72 @@ Options
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Edit a client**
 
-.. include:: ../../step_knife/step_knife_client_edit.rst
+.. include:: ../../step_ceth/step_ceth_client_edit.rst
 
 list
 =====================================================
-.. include:: ../../includes_knife/includes_knife_client_list.rst
+.. include:: ../../includes_ceth/includes_ceth_client_list.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_list_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_client_list_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_list_options.rst
+.. include:: ../../includes_ceth/includes_ceth_client_list_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **View a list of clients**
 
-.. include:: ../../step_knife/step_knife_client_list_all.rst
+.. include:: ../../step_ceth/step_ceth_client_list_all.rst
 
-.. include:: ../../step_knife/step_knife_client_list_authenticate.rst
+.. include:: ../../step_ceth/step_ceth_client_list_authenticate.rst
 
 reregister
 =====================================================
-.. include:: ../../includes_knife/includes_knife_client_reregister.rst
+.. include:: ../../includes_ceth/includes_ceth_client_reregister.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_reregister_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_client_reregister_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_reregister_options.rst
+.. include:: ../../includes_ceth/includes_ceth_client_reregister_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Reregister clients**
 
-.. include:: ../../step_knife/step_knife_client_reregister.rst
+.. include:: ../../step_ceth/step_ceth_client_reregister.rst
 
 show
 =====================================================
-.. include:: ../../includes_knife/includes_knife_client_show.rst
+.. include:: ../../includes_ceth/includes_ceth_client_show.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_show_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_client_show_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_client_show_options.rst
+.. include:: ../../includes_ceth/includes_ceth_client_show_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Show clients**
 
-.. include:: ../../step_knife/step_knife_client_show.rst
+.. include:: ../../step_ceth/step_ceth_client_show.rst
 
-.. include:: ../../step_knife/step_knife_common_view_json.rst
+.. include:: ../../step_ceth/step_ceth_common_view_json.rst

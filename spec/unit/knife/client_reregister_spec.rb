@@ -18,31 +18,31 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::ClientReregister do
+describe Seth::ceth::ClientReregister do
   before(:each) do
-    @knife = Seth::Knife::ClientReregister.new
-    @knife.name_args = [ 'adam' ]
+    @ceth = Seth::ceth::ClientReregister.new
+    @ceth.name_args = [ 'adam' ]
     @client_mock = double('client_mock', :private_key => "foo_key")
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   context "when no client name is given on the command line" do
     before do
-      @knife.name_args = []
+      @ceth.name_args = []
     end
 
     it 'should print usage and exit when a client name is not provided' do
-      @knife.should_receive(:show_usage)
-      @knife.ui.should_receive(:fatal)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.should_receive(:show_usage)
+      @ceth.ui.should_receive(:fatal)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
   end
 
   context 'when not configured for file output' do
     it 'reregisters the client and prints the key' do
       Seth::ApiClient.should_receive(:reregister).with('adam').and_return(@client_mock)
-      @knife.run
+      @ceth.run
       @stdout.string.should match( /foo_key/ )
     end
   end
@@ -51,10 +51,10 @@ describe Seth::Knife::ClientReregister do
     it 'should write the private key to a file' do
       Seth::ApiClient.should_receive(:reregister).with('adam').and_return(@client_mock)
 
-      @knife.config[:file] = '/tmp/monkeypants'
+      @ceth.config[:file] = '/tmp/monkeypants'
       filehandle = StringIO.new
       File.should_receive(:open).with('/tmp/monkeypants', 'w').and_yield(filehandle)
-      @knife.run
+      @ceth.run
       filehandle.string.should == "foo_key"
     end
   end

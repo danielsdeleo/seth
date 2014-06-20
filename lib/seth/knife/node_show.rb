@@ -16,22 +16,22 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
-require 'seth/knife/core/node_presenter'
+require 'seth/ceth'
+require 'seth/ceth/core/node_presenter'
 
 class Seth
-  class Knife
-    class NodeShow < Knife
+  class ceth
+    class NodeShow < ceth
 
-      include Knife::Core::NodeFormattingOptions
-      include Knife::Core::MultiAttributeReturnOption
+      include ceth::Core::NodeFormattingOptions
+      include ceth::Core::MultiAttributeReturnOption
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
       end
 
-      banner "knife node show NODE (options)"
+      banner "ceth node show NODE (options)"
 
       option :run_list,
         :short => "-r",
@@ -44,7 +44,7 @@ class Seth
         :description  => "Show only the Seth environment"
 
       def run
-        ui.use_presenter Knife::Core::NodePresenter
+        ui.use_presenter ceth::Core::NodePresenter
         @node_name = @name_args[0]
 
         if @node_name.nil?

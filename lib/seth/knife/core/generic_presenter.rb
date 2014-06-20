@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'seth/knife/core/text_formatter'
+require 'seth/ceth/core/text_formatter'
 
 class Seth
-  class Knife
+  class ceth
     module Core
 
-      # Allows includer knife commands to  return multiple attributes
-      # @brief knife node show NAME -a ATTR1 -a ATTR2
+      # Allows includer ceth commands to  return multiple attributes
+      # @brief ceth node show NAME -a ATTR1 -a ATTR2
       module MultiAttributeReturnOption
         # :nodoc:
         def self.included(includer)
@@ -38,17 +38,17 @@ class Seth
         end
       end
 
-      #==Seth::Knife::Core::GenericPresenter
-      # The base presenter class for displaying structured data in knife commands.
+      #==Seth::ceth::Core::GenericPresenter
+      # The base presenter class for displaying structured data in ceth commands.
       # This is not an abstract base class, and it is suitable for displaying
-      # most kinds of objects that knife needs to display.
+      # most kinds of objects that ceth needs to display.
       class GenericPresenter
 
         attr_reader :ui
         attr_reader :config
 
         # Instaniates a new GenericPresenter. This is generally handled by the
-        # Seth::Knife::UI object, though you need to match the signature of this
+        # Seth::ceth::UI object, though you need to match the signature of this
         # method if you intend to use your own presenter instead.
         def initialize(ui, config)
           @ui, @config = ui, config
@@ -56,7 +56,7 @@ class Seth
 
         # Is the selected output format a data interchange format?
         # Returns true if the selected output format is json or yaml, false
-        # otherwise. Knife search uses this to adjust its data output so as not
+        # otherwise. ceth search uses this to adjust its data output so as not
         # to produce invalid JSON output.
         def interchange?
           case parse_format_option
@@ -127,7 +127,7 @@ class Seth
         end
 
         # Converts the +data+ to a String in the text format. Uses
-        # Seth::Knife::Core::TextFormatter
+        # Seth::ceth::Core::TextFormatter
         def text_format(data)
           TextFormatter.new(data, ui).formatted_data
         end

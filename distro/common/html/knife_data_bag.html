@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>knife data bag &mdash; seth-client Man Pages</title>
+    <title>ceth data bag &mdash; seth-client Man Pages</title>
 
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,14 +40,14 @@
 
           <div class="body">
 
-  <div class="section" id="knife-data-bag">
-<h1>knife data bag<a class="headerlink" href="#knife-data-bag" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ceth-data-bag">
+<h1>ceth data bag<a class="headerlink" href="#ceth-data-bag" title="Permalink to this headline">¶</a></h1>
 <p>A data bag is a global variable that is stored as JSON data and is accessible from a Seth server. A data bag is indexed for searching and can be loaded by a recipe or accessed during a search.</p>
 <p>A data bag item may be encrypted using <a class="reference external" href="https://en.wikipedia.org/wiki/Symmetric-key_algorithm">shared secret encryption</a>. This allows each data bag item to store confidential information (such as a database password) or to be managed in a source control system (without plain-text data appearing in revision history). Each data bag item may be encrypted individually; if a data bag contains multiple encrypted data bag items, these data bag items are not required to share the same encryption keys.</p>
-<p>The <strong>knife data bag</strong> subcommand is used to manage arbitrary stores of globally available JSON data.</p>
+<p>The <strong>ceth data bag</strong> subcommand is used to manage arbitrary stores of globally available JSON data.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
+<p class="last">Review the list of <a class="reference internal" href="ceth_common_options.html"><em>common options</em></a> available to this (and all) ceth subcommands and plugins.</p>
 </div>
 <div class="section" id="create">
 <h2>create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
@@ -55,7 +55,7 @@
 <div class="section" id="syntax">
 <h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag create DATA_BAG_NAME <span class="o">[</span>DATA_BAG_ITEM<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag create DATA_BAG_NAME <span class="o">[</span>DATA_BAG_ITEM<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -77,10 +77,10 @@
 </div>
 <div class="section" id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Create a data bag</strong></p>
 <p>To create a data bag named &#8220;admins&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag create admins
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag create admins
 </pre></div>
 </div>
 <p>to return:</p>
@@ -95,7 +95,7 @@
 <div class="section" id="id1">
 <h3>Syntax<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag delete DATA_BAG_NAME <span class="o">[</span>DATA_BAG_ITEM<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag delete DATA_BAG_NAME <span class="o">[</span>DATA_BAG_ITEM<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -109,14 +109,14 @@
 </div>
 <div class="section" id="id3">
 <h3>Examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Delete a data bag</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag delete data_bag_name
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag delete data_bag_name
 </pre></div>
 </div>
 <p><strong>Delete a data bag item</strong></p>
 <p>To delete an item named &#8220;charlie&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag delete admins charlie
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag delete admins charlie
 </pre></div>
 </div>
 <p>Type <tt class="docutils literal"><span class="pre">Y</span></tt> to confirm a deletion.</p>
@@ -128,7 +128,7 @@
 <div class="section" id="id4">
 <h3>Syntax<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag edit DATA_BAG_NAME <span class="o">[</span>DATA_BAG_ITEM<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag edit DATA_BAG_NAME <span class="o">[</span>DATA_BAG_ITEM<span class="o">]</span> <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -150,15 +150,15 @@
 </div>
 <div class="section" id="id6">
 <h3>Examples<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Edit a data bag</strong></p>
 <p>To edit the contents of a data bag, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag edit admins
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag edit admins
 </pre></div>
 </div>
 <p><strong>Edit a data bag item</strong></p>
 <p>To edit an item named &#8220;charlie&#8221; that is contained in a data bag named &#8220;admins&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag edit admins charlie
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag edit admins charlie
 </pre></div>
 </div>
 <p>to open the $EDITOR. Once opened, you can update the data before saving it to the Seth server. For example, by changing:</p>
@@ -186,15 +186,15 @@
 <li>the name of a data bag</li>
 <li>a relative or absolute path to a file</li>
 </ul>
-<p>If the name of a data bag is specified, Knife will search for the data bag in <tt class="docutils literal"><span class="pre">./data_bags/bag_name/file</span></tt>. Once opened, the JSON file should be a hash that contains at least an ID key which represents the name of the data bag item.</p>
+<p>If the name of a data bag is specified, ceth will search for the data bag in <tt class="docutils literal"><span class="pre">./data_bags/bag_name/file</span></tt>. Once opened, the JSON file should be a hash that contains at least an ID key which represents the name of the data bag item.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">A seth-client must be version 11.6 (or higher) when using the <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">data</span> <span class="pre">bag</span> <span class="pre">from</span> <span class="pre">file</span></tt> argument with the Enterprise Seth or Open Source seth version 11 servers.</p>
+<p class="last">A seth-client must be version 11.6 (or higher) when using the <tt class="docutils literal"><span class="pre">ceth</span> <span class="pre">data</span> <span class="pre">bag</span> <span class="pre">from</span> <span class="pre">file</span></tt> argument with the Enterprise Seth or Open Source seth version 11 servers.</p>
 </div>
 <div class="section" id="id7">
 <h3>Syntax<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag from file DATA_BAG_NAME_or_PATH
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag from file DATA_BAG_NAME_or_PATH
 </pre></div>
 </div>
 </div>
@@ -216,15 +216,15 @@
 </div>
 <div class="section" id="id9">
 <h3>Examples<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Create a data bag from a file</strong></p>
 <p>To create a data bag on the Seth server from a file:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag from file <span class="s2">&quot;path to JSON file&quot;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag from file <span class="s2">&quot;path to JSON file&quot;</span>
 </pre></div>
 </div>
 <p><strong>Create an encrypted data bag from a file</strong></p>
 <p>To create a data bag named &#8220;devops_data&#8221; that contains encrypted data, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag from file devops_data --secret-file <span class="s2">&quot;path to decryption file&quot;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag from file devops_data --secret-file <span class="s2">&quot;path to decryption file&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -235,7 +235,7 @@
 <div class="section" id="id10">
 <h3>Syntax<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag list
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag list
 </pre></div>
 </div>
 </div>
@@ -249,9 +249,9 @@
 </div>
 <div class="section" id="id12">
 <h3>Examples<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>View a list of data bags</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag list
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag list
 </pre></div>
 </div>
 </div>
@@ -262,7 +262,7 @@
 <div class="section" id="id13">
 <h3>Syntax<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag show DATA_BAG_NAME <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag show DATA_BAG_NAME <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -284,9 +284,9 @@
 </div>
 <div class="section" id="id15">
 <h3>Examples<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Show a data bag</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag show admins
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag show admins
 </pre></div>
 </div>
 <p>to return something like:</p>
@@ -295,7 +295,7 @@
 </div>
 <p><strong>Show a data bag item</strong></p>
 <p>To show the contents of a specific item within data bag, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag show admins charlie
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag show admins charlie
 </pre></div>
 </div>
 <p>to return:</p>
@@ -308,7 +308,7 @@ uid:      1005
 </div>
 <p><strong>Show a data bag, encrypted</strong></p>
 <p>To show the contents of a data bag named &#8220;passwords&#8221; with an item that contains encrypted data named &#8220;mysql&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag show passwords mysql
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag show passwords mysql
 </pre></div>
 </div>
 <p>to return:</p>
@@ -322,7 +322,7 @@ uid:      1005
 </div>
 <p><strong>Show a data bag, decrypted</strong></p>
 <p>To show the decrypted contents of the same data bag, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag show --secret-file /path/to/decryption/file passwords mysql
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag show --secret-file /path/to/decryption/file passwords mysql
 </pre></div>
 </div>
 <p>to return:</p>
@@ -336,7 +336,7 @@ uid:      1005
 </div>
 <p><strong>Show a data bag as JSON</strong></p>
 <p>To view information in JSON format, use the <tt class="docutils literal"><span class="pre">-F</span></tt> common option as part of the command like this:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife data bag show admins -F json
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth data bag show admins -F json
 </pre></div>
 </div>
 <p>Other formats available include <tt class="docutils literal"><span class="pre">text</span></tt>, <tt class="docutils literal"><span class="pre">yaml</span></tt>, and <tt class="docutils literal"><span class="pre">pp</span></tt>.</p>

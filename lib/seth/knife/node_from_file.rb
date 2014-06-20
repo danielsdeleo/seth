@@ -16,22 +16,22 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class NodeFromFile < Knife
+  class ceth
+    class NodeFromFile < ceth
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
-        require 'seth/knife/core/object_loader'
+        require 'seth/ceth/core/object_loader'
       end
 
-      banner "knife node from file FILE (options)"
+      banner "ceth node from file FILE (options)"
 
       def loader
-        @loader ||= Knife::Core::ObjectLoader.new(Seth::Node, ui)
+        @loader ||= ceth::Core::ObjectLoader.new(Seth::Node, ui)
       end
 
       def run

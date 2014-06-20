@@ -1,8 +1,8 @@
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class Serve < Knife
+  class ceth
+    class Serve < ceth
       option :repo_mode,
         :long => '--repo-mode MODE',
         :description => "Specifies the local repository layout.  Values: static (only environments/roles/data_bags/cookbooks), everything (includes nodes/clients/users), hosted_everything (includes acls/groups/etc. for Enterprise/Hosted Seth).  Default: everything/hosted_everything"
