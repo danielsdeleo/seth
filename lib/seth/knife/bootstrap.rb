@@ -16,25 +16,25 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 require 'erubis'
 
 class Seth
-  class Knife
-    class Bootstrap < Knife
+  class ceth
+    class Bootstrap < ceth
 
       deps do
-        require 'seth/knife/core/bootstrap_context'
+        require 'seth/ceth/core/bootstrap_context'
         require 'seth/json_compat'
         require 'tempfile'
         require 'highline'
         require 'net/ssh'
         require 'net/ssh/multi'
-        require 'seth/knife/ssh'
-        Seth::Knife::Ssh.load_deps
+        require 'seth/ceth/ssh'
+        Seth::ceth::Ssh.load_deps
       end
 
-      banner "knife bootstrap FQDN (options)"
+      banner "ceth bootstrap FQDN (options)"
 
       option :ssh_user,
         :short => "-x USERNAME",
@@ -51,13 +51,13 @@ class Seth
         :short => "-p PORT",
         :long => "--ssh-port PORT",
         :description => "The ssh port",
-        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_port] = key }
+        :proc => Proc.new { |key| Seth::Config[:ceth][:ssh_port] = key }
 
       option :ssh_gateway,
         :short => "-G GATEWAY",
         :long => "--ssh-gateway GATEWAY",
         :description => "The ssh gateway",
-        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_gateway] = key }
+        :proc => Proc.new { |key| Seth::Config[:ceth][:ssh_gateway] = key }
 
       option :forward_agent,
         :short => "-A",
@@ -82,17 +82,17 @@ class Seth
       option :bootstrap_version,
         :long => "--bootstrap-version VERSION",
         :description => "The version of Seth to install",
-        :proc => lambda { |v| Seth::Config[:knife][:bootstrap_version] = v }
+        :proc => lambda { |v| Seth::Config[:ceth][:bootstrap_version] = v }
 
       option :bootstrap_proxy,
         :long => "--bootstrap-proxy PROXY_URL",
         :description => "The proxy server for the node being bootstrapped",
-        :proc => Proc.new { |p| Seth::Config[:knife][:bootstrap_proxy] = p }
+        :proc => Proc.new { |p| Seth::Config[:ceth][:bootstrap_proxy] = p }
 
       option :bootstrap_no_proxy,
         :long => "--bootstrap-no-proxy [NO_PROXY_URL|NO_PROXY_IP]",
         :description => "Do not proxy locations for the node being bootstrapped; this option is used internally by Opscode",
-        :proc => Proc.new { |np| Seth::Config[:knife][:bootstrap_no_proxy] = np }
+        :proc => Proc.new { |np| Seth::Config[:ceth][:bootstrap_no_proxy] = np }
 
       option :distro,
         :short => "-d DISTRO",
@@ -139,40 +139,40 @@ class Seth
         :long => "--hint HINT_NAME[=HINT_FILE]",
         :description => "Specify Ohai Hint to be set on the bootstrap target.  Use multiple --hint options to specify multiple hints.",
         :proc => Proc.new { |h|
-          Seth::Config[:knife][:hints] ||= Hash.new
+          Seth::Config[:ceth][:hints] ||= Hash.new
           name, path = h.split("=")
-          Seth::Config[:knife][:hints][name] = path ? JSON.parse(::File.read(path)) : Hash.new  }
+          Seth::Config[:ceth][:hints][name] = path ? JSON.parse(::File.read(path)) : Hash.new  }
 
       option :secret,
         :short => "-s SECRET",
         :long  => "--secret ",
         :description => "The secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |s| Seth::Config[:knife][:secret] = s }
+        :proc => Proc.new { |s| Seth::Config[:ceth][:secret] = s }
 
       option :secret_file,
         :long => "--secret-file SECRET_FILE",
         :description => "A file containing the secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |sf| Seth::Config[:knife][:secret_file] = sf }
+        :proc => Proc.new { |sf| Seth::Config[:ceth][:secret_file] = sf }
 
       option :bootstrap_url,
         :long        => "--bootstrap-url URL",
         :description => "URL to a custom installation script",
-        :proc        => Proc.new { |u| Seth::Config[:knife][:bootstrap_url] = u }
+        :proc        => Proc.new { |u| Seth::Config[:ceth][:bootstrap_url] = u }
 
       option :bootstrap_install_command,
         :long        => "--bootstrap-install-command COMMANDS",
         :description => "Custom command to install seth-client",
-        :proc        => Proc.new { |ic| Seth::Config[:knife][:bootstrap_install_command] = ic }
+        :proc        => Proc.new { |ic| Seth::Config[:ceth][:bootstrap_install_command] = ic }
 
       option :bootstrap_wget_options,
         :long        => "--bootstrap-wget-options OPTIONS",
         :description => "Add options to wget when installing seth-client",
-        :proc        => Proc.new { |wo| Seth::Config[:knife][:bootstrap_wget_options] = wo }
+        :proc        => Proc.new { |wo| Seth::Config[:ceth][:bootstrap_wget_options] = wo }
 
       option :bootstrap_curl_options,
         :long        => "--bootstrap-curl-options OPTIONS",
         :description => "Add options to curl when install seth-client",
-        :proc        => Proc.new { |co| Seth::Config[:knife][:bootstrap_curl_options] = co }
+        :proc        => Proc.new { |co| Seth::Config[:ceth][:bootstrap_curl_options] = co }
 
       def find_template(template=nil)
         # Are we bootstrapping using an already shipped template?
@@ -181,9 +181,9 @@ class Seth
         else
           bootstrap_files = []
           bootstrap_files << File.join(File.dirname(__FILE__), 'bootstrap', "#{config[:distro]}.erb")
-          bootstrap_files << File.join(Knife.seth_config_dir, "bootstrap", "#{config[:distro]}.erb") if Knife.seth_config_dir
+          bootstrap_files << File.join(ceth.seth_config_dir, "bootstrap", "#{config[:distro]}.erb") if ceth.seth_config_dir
           bootstrap_files << File.join(ENV['HOME'], '.seth', 'bootstrap', "#{config[:distro]}.erb") if ENV['HOME']
-          bootstrap_files << Gem.find_files(File.join("seth","knife","bootstrap","#{config[:distro]}.erb"))
+          bootstrap_files << Gem.find_files(File.join("seth","ceth","bootstrap","#{config[:distro]}.erb"))
           bootstrap_files.flatten!
         end
 
@@ -203,7 +203,7 @@ class Seth
       end
 
       def render_template(template=nil)
-        context = Knife::Core::BootstrapContext.new(config, config[:run_list], Seth::Config)
+        context = ceth::Core::BootstrapContext.new(config, config[:run_list], Seth::Config)
         Erubis::Eruby.new(template).evaluate(context)
       end
 
@@ -224,13 +224,13 @@ class Seth
         ui.info("Connecting to #{ui.color(@node_name, :bold)}")
 
         begin
-          knife_ssh.run
+          ceth_ssh.run
         rescue Net::SSH::AuthenticationFailed
           if config[:ssh_password]
             raise
           else
             ui.info("Failed to authenticate #{config[:ssh_user]} - trying password auth")
-            knife_ssh_with_password_auth.run
+            ceth_ssh_with_password_auth.run
           end
         end
       end
@@ -240,7 +240,7 @@ class Seth
           ui.error("Must pass an FQDN or ip to bootstrap")
           exit 1
         elsif Array(@name_args).first == "windows"
-          ui.warn("Hostname containing 'windows' specified. Please install 'knife-windows' if you are attempting to bootstrap a Windows node via WinRM.")
+          ui.warn("Hostname containing 'windows' specified. Please install 'ceth-windows' if you are attempting to bootstrap a Windows node via WinRM.")
         end
       end
 
@@ -248,24 +248,24 @@ class Seth
         Array(@name_args).first
       end
 
-      def knife_ssh
-        ssh = Seth::Knife::Ssh.new
+      def ceth_ssh
+        ssh = Seth::ceth::Ssh.new
         ssh.ui = ui
         ssh.name_args = [ server_name, ssh_command ]
-        ssh.config[:ssh_user] = Seth::Config[:knife][:ssh_user] || config[:ssh_user]
+        ssh.config[:ssh_user] = Seth::Config[:ceth][:ssh_user] || config[:ssh_user]
         ssh.config[:ssh_password] = config[:ssh_password]
-        ssh.config[:ssh_port] = Seth::Config[:knife][:ssh_port] || config[:ssh_port]
-        ssh.config[:ssh_gateway] = Seth::Config[:knife][:ssh_gateway] || config[:ssh_gateway]
-        ssh.config[:forward_agent] = Seth::Config[:knife][:forward_agent] || config[:forward_agent]
-        ssh.config[:identity_file] = Seth::Config[:knife][:identity_file] || config[:identity_file]
+        ssh.config[:ssh_port] = Seth::Config[:ceth][:ssh_port] || config[:ssh_port]
+        ssh.config[:ssh_gateway] = Seth::Config[:ceth][:ssh_gateway] || config[:ssh_gateway]
+        ssh.config[:forward_agent] = Seth::Config[:ceth][:forward_agent] || config[:forward_agent]
+        ssh.config[:identity_file] = Seth::Config[:ceth][:identity_file] || config[:identity_file]
         ssh.config[:manual] = true
-        ssh.config[:host_key_verify] = Seth::Config[:knife][:host_key_verify] || config[:host_key_verify]
+        ssh.config[:host_key_verify] = Seth::Config[:ceth][:host_key_verify] || config[:host_key_verify]
         ssh.config[:on_error] = :raise
         ssh
       end
 
-      def knife_ssh_with_password_auth
-        ssh = knife_ssh
+      def ceth_ssh_with_password_auth
+        ssh = ceth_ssh
         ssh.config[:identity_file] = nil
         ssh.config[:ssh_password] = ssh.get_password
         ssh
@@ -286,18 +286,18 @@ class Seth
           ui.warn "* " * 40
           ui.warn(<<-WARNING)
 Specifying the encrypted data bag secret key using an 'encrypted_data_bag_secret'
-entry in 'knife.rb' is deprecated. Please see seth-4011 for more details. You
+entry in 'ceth.rb' is deprecated. Please see seth-4011 for more details. You
 can supress this warning and still distribute the secret key to all bootstrapped
-machines by adding the following to your 'knife.rb' file:
+machines by adding the following to your 'ceth.rb' file:
 
-  knife[:secret_file] = "/path/to/your/secret"
+  ceth[:secret_file] = "/path/to/your/secret"
 
 If you would like to selectively distribute a secret key during bootstrap
 please use the '--secret' or '--secret-file' options of this command instead.
 
 #{ui.color('IMPORTANT:', :red, :bold)} In a future version of Seth, this
 behavior will be removed and any 'encrypted_data_bag_secret' entries in
-'knife.rb' will be ignored completely.
+'ceth.rb' will be ignored completely.
 WARNING
           ui.warn "* " * 40
         end

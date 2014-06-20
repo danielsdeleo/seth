@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class Status < Knife
+  class ceth
+    class Status < ceth
 
       deps do
         require 'highline'
         require 'seth/search/query'
       end
 
-      banner "knife status QUERY (options)"
+      banner "ceth status QUERY (options)"
 
       option :run_list,
         :short => "-r",
@@ -56,7 +56,7 @@ class Seth
           all_nodes << node
         end
         all_nodes.sort { |n1, n2|
-          if (config[:sort_reverse] || Seth::Config[:knife][:sort_status_reverse])
+          if (config[:sort_reverse] || Seth::Config[:ceth][:sort_status_reverse])
             (n2["ohai_time"] or 0) <=> (n1["ohai_time"] or 0)
           else
             (n1["ohai_time"] or 0) <=> (n2["ohai_time"] or 0)

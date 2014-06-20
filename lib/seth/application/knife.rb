@@ -15,18 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'seth/knife'
+require 'seth/ceth'
 require 'seth/application'
 require 'mixlib/log'
 require 'ohai/config'
 require 'seth/monkey_patches/net_http.rb'
 require 'seth/monkey_patches/uri.rb'
 
-class Seth::Application::Knife < seth::Application
+class Seth::Application::ceth < seth::Application
 
-  NO_COMMAND_GIVEN = "You need to pass a sub-command (e.g., knife SUB-COMMAND)\n"
+  NO_COMMAND_GIVEN = "You need to pass a sub-command (e.g., ceth SUB-COMMAND)\n"
 
-  banner "Usage: knife sub-command (options)"
+  banner "Usage: ceth sub-command (options)"
 
   option :config_file,
     :short => "-c CONFIG",
@@ -111,7 +111,7 @@ class Seth::Application::Knife < seth::Application
   option :local_mode,
     :short        => "-z",
     :long         => "--local-mode",
-    :description  => "Point knife commands at local repository instead of server",
+    :description  => "Point ceth commands at local repository instead of server",
     :boolean      => true
 
   option :seth_zero_host,
@@ -131,12 +131,12 @@ class Seth::Application::Knife < seth::Application
     :exit         => 0
 
 
-  # Run knife
+  # Run ceth
   def run
     Mixlib::Log::Formatter.show_time = false
     validate_and_parse_options
     quiet_traps
-    Seth::Knife.run(ARGV, options)
+    Seth::ceth.run(ARGV, options)
     exit 0
   end
 
@@ -192,7 +192,7 @@ class Seth::Application::Knife < seth::Application
     end
     puts self.opt_parser
     puts
-    Seth::Knife.list_commands
+    Seth::ceth.list_commands
     exit exitcode
   end
 

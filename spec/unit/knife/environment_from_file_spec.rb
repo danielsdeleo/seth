@@ -19,70 +19,70 @@
 
 require 'spec_helper'
 
-Seth::Knife::EnvironmentFromFile.load_deps
+Seth::ceth::EnvironmentFromFile.load_deps
 
-describe Seth::Knife::EnvironmentFromFile do
+describe Seth::ceth::EnvironmentFromFile do
   before(:each) do
-    @knife = Seth::Knife::EnvironmentFromFile.new
+    @ceth = Seth::ceth::EnvironmentFromFile.new
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
-    @knife.name_args = [ "spec.rb" ]
+    @ceth.ui.stub(:stdout).and_return(@stdout)
+    @ceth.name_args = [ "spec.rb" ]
 
     @environment = Seth::Environment.new
     @environment.name("spec")
     @environment.description("runs the unit tests")
     @environment.cookbook_versions({"apt" => "= 1.2.3"})
     @environment.stub(:save).and_return true
-    @knife.loader.stub(:load_from).and_return @environment
+    @ceth.loader.stub(:load_from).and_return @environment
   end
 
   describe "run" do
     it "loads the environment data from a file and saves it" do
-      @knife.loader.should_receive(:load_from).with('environments', 'spec.rb').and_return(@environment)
+      @ceth.loader.should_receive(:load_from).with('environments', 'spec.rb').and_return(@environment)
       @environment.should_receive(:save)
-      @knife.run
+      @ceth.run
     end
 
     context "when handling multiple environments" do
       before(:each) do
         @env_apple = @environment.dup
         @env_apple.name("apple")
-        @knife.loader.stub(:load_from).with("apple.rb").and_return @env_apple
+        @ceth.loader.stub(:load_from).with("apple.rb").and_return @env_apple
       end
 
       it "loads multiple environments if given" do
-        @knife.name_args = [ "spec.rb", "apple.rb" ]
+        @ceth.name_args = [ "spec.rb", "apple.rb" ]
         @environment.should_receive(:save).twice
-        @knife.run
+        @ceth.run
       end
 
       it "loads all environments with -a" do
         File.stub(:expand_path).with("./environments/*.{json,rb}").and_return("/tmp/environments")
         Dir.stub(:glob).with("/tmp/environments").and_return(["spec.rb", "apple.rb"])
-        @knife.name_args = []
-        @knife.stub(:config).and_return({:all => true})
+        @ceth.name_args = []
+        @ceth.stub(:config).and_return({:all => true})
         @environment.should_receive(:save).twice
-        @knife.run
+        @ceth.run
       end
     end
 
     it "should not print the environment" do
-      @knife.should_not_receive(:output)
-      @knife.run
+      @ceth.should_not_receive(:output)
+      @ceth.run
     end
 
     it "should show usage and exit if not filename is provided" do
-      @knife.name_args = []
-      @knife.ui.should_receive(:fatal)
-      @knife.should_receive(:show_usage)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = []
+      @ceth.ui.should_receive(:fatal)
+      @ceth.should_receive(:show_usage)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     describe "with --print-after" do
       it "should pretty print the environment, formatted for display" do
-        @knife.config[:print_after] = true
-        @knife.should_receive(:output)
-        @knife.run
+        @ceth.config[:print_after] = true
+        @ceth.should_receive(:output)
+        @ceth.run
       end
     end
   end

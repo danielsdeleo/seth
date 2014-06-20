@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class EnvironmentEdit < Knife
+  class ceth
+    class EnvironmentEdit < ceth
 
       deps do
         require 'seth/environment'
         require 'seth/json_compat'
       end
 
-      banner "knife environment edit ENVIRONMENT (options)"
+      banner "ceth environment edit ENVIRONMENT (options)"
 
       def run
         env_name = @name_args[0]

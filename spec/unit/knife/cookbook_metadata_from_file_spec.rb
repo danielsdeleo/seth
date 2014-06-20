@@ -20,14 +20,14 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::CookbookMetadataFromFile do
+describe Seth::ceth::CookbookMetadataFromFile do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
     @src = File.expand_path(File.join(seth_SPEC_DATA, "metadata", "quick_start", "metadata.rb"))
     @tgt = File.expand_path(File.join(seth_SPEC_DATA, "metadata", "quick_start", "metadata.json"))
-    @knife = Seth::Knife::CookbookMetadataFromFile.new
-    @knife.name_args = [ @src ]
-    @knife.stub(:to_json_pretty).and_return(true)
+    @ceth = Seth::ceth::CookbookMetadataFromFile.new
+    @ceth.name_args = [ @src ]
+    @ceth.stub(:to_json_pretty).and_return(true)
     @md = Seth::Cookbook::Metadata.new
     Seth::Cookbook::Metadata.stub(:new).and_return(@md)
     $stdout.stub(:write)
@@ -43,22 +43,22 @@ describe Seth::Knife::CookbookMetadataFromFile do
     it "should determine cookbook name from path" do
       @md.should_receive(:name).with()
       @md.should_receive(:name).with("quick_start")
-      @knife.run
+      @ceth.run
     end
 
     it "should load the metadata source" do
       @md.should_receive(:from_file).with(@src)
-      @knife.run
+      @ceth.run
     end
 
     it "should write out the metadata to the correct location" do
       File.should_receive(:open).with(@tgt, "w")
-      @knife.run
+      @ceth.run
     end
 
     it "should generate json from the metadata" do
       Seth::JSONCompat.should_receive(:to_json_pretty).with(@md)
-      @knife.run
+      @ceth.run
     end
 
   end

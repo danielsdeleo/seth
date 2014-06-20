@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::RoleBulkDelete do
+describe Seth::ceth::RoleBulkDelete do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::RoleBulkDelete.new
-    @knife.config = {
+    @ceth = Seth::ceth::RoleBulkDelete.new
+    @ceth.config = {
       :print_after => nil
     }
-    @knife.name_args = ["."]
+    @ceth.name_args = ["."]
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
-    @knife.ui.stub(:confirm).and_return(true)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:confirm).and_return(true)
     @roles = Hash.new
     %w{dev staging production}.each do |role_name|
       role = Seth::Role.new()
@@ -43,37 +43,37 @@ describe Seth::Knife::RoleBulkDelete do
 
     it "should get the list of the roles" do
       Seth::Role.should_receive(:list).and_return(@roles)
-      @knife.run
+      @ceth.run
     end
 
     it "should print the roles you are about to delete" do
-      @knife.run
-      @stdout.string.should match(/#{@knife.ui.list(@roles.keys.sort, :columns_down)}/)
+      @ceth.run
+      @stdout.string.should match(/#{@ceth.ui.list(@roles.keys.sort, :columns_down)}/)
     end
 
     it "should confirm you really want to delete them" do
-      @knife.ui.should_receive(:confirm)
-      @knife.run
+      @ceth.ui.should_receive(:confirm)
+      @ceth.run
     end
 
     it "should delete each role" do
       @roles.each_value do |r|
         r.should_receive(:destroy)
       end
-      @knife.run
+      @ceth.run
     end
 
     it "should only delete roles that match the regex" do
-      @knife.name_args = ["dev"]
+      @ceth.name_args = ["dev"]
       @roles["dev"].should_receive(:destroy)
       @roles["staging"].should_not_receive(:destroy)
       @roles["production"].should_not_receive(:destroy)
-      @knife.run
+      @ceth.run
     end
 
     it "should exit if the regex is not provided" do
-      @knife.name_args = []
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = []
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
   end

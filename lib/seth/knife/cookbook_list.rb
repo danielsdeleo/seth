@@ -17,13 +17,13 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookList < Knife
+  class ceth
+    class CookbookList < ceth
 
-      banner "knife cookbook list (options)"
+      banner "ceth cookbook list (options)"
 
       option :with_uri,
         :short => "-w",

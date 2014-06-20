@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-SHOW" "1" "Seth 11.12.0" "" "knife show"
+.TH "ceth-SHOW" "1" "Seth 11.12.0" "" "ceth show"
 .SH NAME
-knife-show \- The man page for the knife show subcommand.
+ceth-show \- The man page for the ceth show subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife show\fP subcommand is used to view the details of one (or more) objects on the Seth server\&. This subcommand works similar to \fBknife cookbook show\fP, \fBknife data bag show\fP, \fBknife environment show\fP, \fBknife node show\fP, and \fBknife role show\fP, but with a single verb (and a single action).
+The \fBceth show\fP subcommand is used to view the details of one (or more) objects on the Seth server\&. This subcommand works similar to \fBceth cookbook show\fP, \fBceth data bag show\fP, \fBceth environment show\fP, \fBceth node show\fP, and \fBceth role show\fP, but with a single verb (and a single action).
 .sp
 \fBSyntax\fP
 .sp
@@ -41,7 +41,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife show [PATTERN...] (options)
+$ ceth show [PATTERN...] (options)
 .ft P
 .fi
 .UNINDENT
@@ -74,7 +74,7 @@ The number of allowed concurrent connections. Default: \fB10\fP\&.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -89,7 +89,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-local\fP
 Indicates that instead of remote files, local files will be shown.
@@ -104,7 +104,7 @@ The layout of the local seth\-repo\&. Possible values: \fBstatic\fP, \fBeverythi
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -113,7 +113,7 @@ The version of the seth\-client\&.
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -127,7 +127,7 @@ To show all cookbooks in the \fBcookbooks/\fP directory:
 .sp
 .nf
 .ft C
-$ knife show cookbooks/
+$ ceth show cookbooks/
 .ft P
 .fi
 .UNINDENT
@@ -139,7 +139,7 @@ or, (if already in the \fBcookbooks/\fP directory in the local seth\-repo):
 .sp
 .nf
 .ft C
-$ knife show
+$ ceth show
 .ft P
 .fi
 .UNINDENT
@@ -149,7 +149,7 @@ $ knife show
 .sp
 .nf
 .ft C
-$ knife show roles/ environments/
+$ ceth show roles/ environments/
 .ft P
 .fi
 .UNINDENT

@@ -17,17 +17,17 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'seth/knife/list'
+require 'seth/ceth/list'
 
-describe 'knife list' do
+describe 'ceth list' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
 
   include_context "default config options"
 
   when_the_seth_server "is empty" do
-    it "knife list / returns all top level directories" do
-      knife('list /').should_succeed <<EOM
+    it "ceth list / returns all top level directories" do
+      ceth('list /').should_succeed <<EOM
 /clients
 /cookbooks
 /data_bags
@@ -38,8 +38,8 @@ describe 'knife list' do
 EOM
     end
 
-    it "knife list -R / returns everything" do
-      knife('list -R /').should_succeed <<EOM
+    it "ceth list -R / returns everything" do
+      ceth('list -R /').should_succeed <<EOM
 /:
 clients
 cookbooks
@@ -86,8 +86,8 @@ EOM
     user 'user1', {}
     user 'user2', {}
 
-    it "knife list / returns all top level directories" do
-      knife('list /').should_succeed <<EOM
+    it "ceth list / returns all top level directories" do
+      ceth('list /').should_succeed <<EOM
 /clients
 /cookbooks
 /data_bags
@@ -98,8 +98,8 @@ EOM
 EOM
     end
 
-    it "knife list -R / returns everything" do
-      knife('list -R /').should_succeed <<EOM
+    it "ceth list -R / returns everything" do
+      ceth('list -R /').should_succeed <<EOM
 /:
 clients
 cookbooks
@@ -161,8 +161,8 @@ user2.json
 EOM
     end
 
-    it "knife list -R --flat / returns everything" do
-      knife('list -R --flat /').should_succeed <<EOM
+    it "ceth list -R --flat / returns everything" do
+      ceth('list -R --flat /').should_succeed <<EOM
 /clients
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -199,8 +199,8 @@ EOM
 EOM
     end
 
-    it "knife list -Rfp / returns everything" do
-      knife('list -Rfp /').should_succeed <<EOM
+    it "ceth list -Rfp / returns everything" do
+      ceth('list -Rfp /').should_succeed <<EOM
 /clients/
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -237,35 +237,35 @@ EOM
 EOM
     end
 
-    it "knife list /cookbooks returns the list of cookbooks" do
-      knife('list /cookbooks').should_succeed <<EOM
+    it "ceth list /cookbooks returns the list of cookbooks" do
+      ceth('list /cookbooks').should_succeed <<EOM
 /cookbooks/cookbook1
 /cookbooks/cookbook2
 EOM
     end
 
-    it "knife list /cookbooks/*2/*/*.rb returns the one file" do
-      knife('list /cookbooks/*2/*/*.rb').should_succeed "/cookbooks/cookbook2/recipes/default.rb\n"
+    it "ceth list /cookbooks/*2/*/*.rb returns the one file" do
+      ceth('list /cookbooks/*2/*/*.rb').should_succeed "/cookbooks/cookbook2/recipes/default.rb\n"
     end
 
-    it "knife list /**.rb returns all ruby files" do
-      knife('list /**.rb').should_succeed <<EOM
+    it "ceth list /**.rb returns all ruby files" do
+      ceth('list /**.rb').should_succeed <<EOM
 /cookbooks/cookbook1/metadata.rb
 /cookbooks/cookbook2/metadata.rb
 /cookbooks/cookbook2/recipes/default.rb
 EOM
     end
 
-    it "knife list /cookbooks/**.rb returns all ruby files" do
-      knife('list /cookbooks/**.rb').should_succeed <<EOM
+    it "ceth list /cookbooks/**.rb returns all ruby files" do
+      ceth('list /cookbooks/**.rb').should_succeed <<EOM
 /cookbooks/cookbook1/metadata.rb
 /cookbooks/cookbook2/metadata.rb
 /cookbooks/cookbook2/recipes/default.rb
 EOM
     end
 
-    it "knife list /**.json returns all json files" do
-      knife('list /**.json').should_succeed <<EOM
+    it "ceth list /**.json returns all json files" do
+      ceth('list /**.json').should_succeed <<EOM
 /clients/seth-validator.json
 /clients/seth-webui.json
 /clients/client1.json
@@ -287,8 +287,8 @@ EOM
 EOM
     end
 
-    it "knife list /data**.json returns all data bag json files" do
-      knife('list /data**.json').should_succeed <<EOM
+    it "ceth list /data**.json returns all data bag json files" do
+      ceth('list /data**.json').should_succeed <<EOM
 /data_bags/bag1/item1.json
 /data_bags/bag1/item2.json
 /data_bags/bag2/item1.json
@@ -296,21 +296,21 @@ EOM
 EOM
     end
 
-    it "knife list /environments/missing_file.json reports missing file" do
-      knife('list /environments/missing_file.json').should_fail "ERROR: /environments/missing_file.json: No such file or directory\n"
+    it "ceth list /environments/missing_file.json reports missing file" do
+      ceth('list /environments/missing_file.json').should_fail "ERROR: /environments/missing_file.json: No such file or directory\n"
     end
 
     context "missing file/directory exact match tests" do
-      it "knife list /blarghle reports missing directory" do
-        knife('list /blarghle').should_fail "ERROR: /blarghle: No such file or directory\n"
+      it "ceth list /blarghle reports missing directory" do
+        ceth('list /blarghle').should_fail "ERROR: /blarghle: No such file or directory\n"
       end
 
-      it "knife list /roles/blarghle reports missing directory" do
-        knife('list /roles/blarghle').should_fail "ERROR: /roles/blarghle: No such file or directory\n"
+      it "ceth list /roles/blarghle reports missing directory" do
+        ceth('list /roles/blarghle').should_fail "ERROR: /roles/blarghle: No such file or directory\n"
       end
 
-      it "knife list /roles/blarghle/blorghle reports missing directory" do
-        knife('list /roles/blarghle/blorghle').should_fail "ERROR: /roles/blarghle/blorghle: No such file or directory\n"
+      it "ceth list /roles/blarghle/blorghle reports missing directory" do
+        ceth('list /roles/blarghle/blorghle').should_fail "ERROR: /roles/blarghle/blorghle: No such file or directory\n"
       end
     end
 
@@ -319,8 +319,8 @@ EOM
         context 'when cwd is at the top of the repository' do
           cwd '.'
 
-          it "knife list -Rfp returns everything" do
-            knife('list -Rfp').should_succeed <<EOM
+          it "ceth list -Rfp returns everything" do
+            ceth('list -Rfp').should_succeed <<EOM
 clients/
 clients/seth-validator.json
 clients/seth-webui.json
@@ -364,8 +364,8 @@ EOM
         context 'when cwd is in cookbooks/' do
           cwd 'cookbooks'
 
-          it "knife list -Rfp / returns everything" do
-            knife('list -Rfp /').should_succeed <<EOM
+          it "ceth list -Rfp / returns everything" do
+            ceth('list -Rfp /').should_succeed <<EOM
 /clients/
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -402,8 +402,8 @@ cookbook2/recipes/default.rb
 EOM
           end
 
-          it "knife list -Rfp .. returns everything" do
-            knife('list -Rfp ..').should_succeed <<EOM
+          it "ceth list -Rfp .. returns everything" do
+            ceth('list -Rfp ..').should_succeed <<EOM
 /clients/
 /clients/seth-validator.json
 /clients/seth-webui.json
@@ -440,8 +440,8 @@ cookbook2/recipes/default.rb
 EOM
           end
 
-          it "knife list -Rfp returns cookbooks" do
-            knife('list -Rfp').should_succeed <<EOM
+          it "ceth list -Rfp returns cookbooks" do
+            ceth('list -Rfp').should_succeed <<EOM
 cookbook1/
 cookbook1/metadata.rb
 cookbook2/
@@ -459,8 +459,8 @@ EOM
         context 'when cwd is in cookbooks/cookbook2' do
           cwd 'cookbooks/cookbook2'
 
-          it "knife list -Rfp returns cookbooks" do
-            knife('list -Rfp').should_succeed <<EOM
+          it "ceth list -Rfp returns cookbooks" do
+            ceth('list -Rfp').should_succeed <<EOM
 metadata.rb
 recipes/
 recipes/default.rb
@@ -476,8 +476,8 @@ EOM
         context 'when cwd is in cookbooks/' do
           cwd 'cookbooks'
 
-          it "knife list -Rfp returns cookbooks" do
-            knife('list -Rfp').should_succeed <<EOM
+          it "ceth list -Rfp returns cookbooks" do
+            ceth('list -Rfp').should_succeed <<EOM
 cookbook1/
 cookbook1/metadata.rb
 cookbook2/
@@ -491,8 +491,8 @@ EOM
         context 'when cwd is in symlinked/' do
           cwd 'symlinked'
 
-          it "knife list -Rfp returns cookbooks" do
-            knife('list -Rfp').should_succeed <<EOM
+          it "ceth list -Rfp returns cookbooks" do
+            ceth('list -Rfp').should_succeed <<EOM
 cookbook1/
 cookbook1/metadata.rb
 cookbook2/
@@ -511,8 +511,8 @@ EOM
         context 'when cwd is in real_cookbooks/' do
           cwd 'real_cookbooks'
 
-          it "knife list -Rfp returns cookbooks" do
-            knife('list -Rfp').should_succeed <<EOM
+          it "ceth list -Rfp returns cookbooks" do
+            ceth('list -Rfp').should_succeed <<EOM
 cookbook1/
 cookbook1/metadata.rb
 cookbook2/
@@ -526,8 +526,8 @@ EOM
         context 'when cwd is in cookbooks/' do
           cwd 'cookbooks'
 
-          it "knife list -Rfp returns cookbooks" do
-            knife('list -Rfp').should_succeed <<EOM
+          it "ceth list -Rfp returns cookbooks" do
+            ceth('list -Rfp').should_succeed <<EOM
 cookbook1/
 cookbook1/metadata.rb
 cookbook2/
@@ -543,12 +543,12 @@ EOM
 
   context "--local" do
     when_the_repository "is empty" do
-      it "knife list --local / returns nothing" do
-        knife('list --local /').should_succeed ""
+      it "ceth list --local / returns nothing" do
+        ceth('list --local /').should_succeed ""
       end
 
-      it "knife list /roles returns nothing" do
-        knife('list --local /roles').should_fail "ERROR: /roles: No such file or directory\n"
+      it "ceth list /roles returns nothing" do
+        ceth('list --local /roles').should_fail "ERROR: /roles: No such file or directory\n"
       end
     end
 
@@ -584,8 +584,8 @@ EOM
       file 'users/user1.json', {}
       file 'users/user2.json', {}
 
-      it "knife list -Rfp / returns everything" do
-        knife('list -Rp --local --flat /').should_succeed <<EOM
+      it "ceth list -Rfp / returns everything" do
+        ceth('list -Rp --local --flat /').should_succeed <<EOM
 /clients/
 /clients/client1.json
 /clients/client2.json
@@ -619,16 +619,16 @@ EOM
       end
 
       context "missing file/directory tests" do
-        it "knife list --local /blarghle reports missing directory" do
-          knife('list --local /blarghle').should_fail "ERROR: /blarghle: No such file or directory\n"
+        it "ceth list --local /blarghle reports missing directory" do
+          ceth('list --local /blarghle').should_fail "ERROR: /blarghle: No such file or directory\n"
         end
 
-        it "knife list /roles/blarghle reports missing directory" do
-          knife('list --local /roles/blarghle').should_fail "ERROR: /roles/blarghle: No such file or directory\n"
+        it "ceth list /roles/blarghle reports missing directory" do
+          ceth('list --local /roles/blarghle').should_fail "ERROR: /roles/blarghle: No such file or directory\n"
         end
 
-        it "knife list /roles/blarghle/blorghle reports missing directory" do
-          knife('list --local /roles/blarghle/blorghle').should_fail "ERROR: /roles/blarghle/blorghle: No such file or directory\n"
+        it "ceth list /roles/blarghle/blorghle reports missing directory" do
+          ceth('list --local /roles/blarghle/blorghle').should_fail "ERROR: /roles/blarghle/blorghle: No such file or directory\n"
         end
       end
     end

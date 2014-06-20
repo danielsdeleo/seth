@@ -23,16 +23,16 @@ require 'seth/encrypted_data_bag_item'
 require 'tempfile'
 require 'json'
 
-Seth::Knife::DataBagFromFile.load_deps
+Seth::ceth::DataBagFromFile.load_deps
 
-describe Seth::Knife::DataBagFromFile do
+describe Seth::ceth::DataBagFromFile do
   before :each do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::DataBagFromFile.new
+    @ceth = Seth::ceth::DataBagFromFile.new
     @rest = double("Seth::REST")
-    @knife.stub(:rest).and_return(@rest)
+    @ceth.stub(:rest).and_return(@rest)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
     @tmp_dir = Dir.mktmpdir
     @db_folder = File.join(@tmp_dir, 'data_bags', 'bag_name')
     FileUtils.mkdir_p(@db_folder)
@@ -48,7 +48,7 @@ describe Seth::Knife::DataBagFromFile do
     }
     @db_file.write(@plain_data.to_json)
     @db_file.flush
-    @knife.instance_variable_set(:@name_args, ['bag_name', @db_file.path])
+    @ceth.instance_variable_set(:@name_args, ['bag_name', @db_file.path])
   end
 
   # We have to explicitly clean up Tempfile on Windows because it said so.
@@ -62,24 +62,24 @@ describe Seth::Knife::DataBagFromFile do
   end
 
   it "loads from a file and saves" do
-    @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
+    @ceth.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
     dbag = Seth::DataBagItem.new
     Seth::DataBagItem.stub(:new).and_return(dbag)
     dbag.should_receive(:save)
-    @knife.run
+    @ceth.run
 
     dbag.data_bag.should == 'bag_name'
     dbag.raw_data.should == @plain_data
   end
 
   it "loads all from a mutiple files and saves" do
-    @knife.name_args = [ 'bag_name', @db_file.path, @db_file2.path ]
-    @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
-    @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file2.path).and_return(@plain_data)
+    @ceth.name_args = [ 'bag_name', @db_file.path, @db_file2.path ]
+    @ceth.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
+    @ceth.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file2.path).and_return(@plain_data)
     dbag = Seth::DataBagItem.new
     Seth::DataBagItem.stub(:new).and_return(dbag)
     dbag.should_receive(:save).twice
-    @knife.run
+    @ceth.run
 
     dbag.data_bag.should == 'bag_name'
     dbag.raw_data.should == @plain_data
@@ -87,13 +87,13 @@ describe Seth::Knife::DataBagFromFile do
 
   it "loads all from a folder and saves" do
     dir = File.dirname(@db_file.path)
-    @knife.name_args = [ 'bag_name', @db_folder ]
-    @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
-    @knife.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file2.path).and_return(@plain_data)
+    @ceth.name_args = [ 'bag_name', @db_folder ]
+    @ceth.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
+    @ceth.loader.should_receive(:load_from).with("data_bags", 'bag_name', @db_file2.path).and_return(@plain_data)
     dbag = Seth::DataBagItem.new
     Seth::DataBagItem.stub(:new).and_return(dbag)
     dbag.should_receive(:save).twice
-    @knife.run
+    @ceth.run
   end
 
   describe "loading all data bags" do
@@ -108,29 +108,29 @@ describe Seth::Knife::DataBagFromFile do
     end
 
     it "loads all data bags when -a or --all options is provided" do
-      @knife.name_args = []
-      @knife.stub(:config).and_return({:all => true})
-      @knife.loader.should_receive(:load_from).with("data_bags", "bag_name", File.basename(@db_file.path)).
+      @ceth.name_args = []
+      @ceth.stub(:config).and_return({:all => true})
+      @ceth.loader.should_receive(:load_from).with("data_bags", "bag_name", File.basename(@db_file.path)).
         and_return(@plain_data)
-      @knife.loader.should_receive(:load_from).with("data_bags", "bag_name", File.basename(@db_file2.path)).
+      @ceth.loader.should_receive(:load_from).with("data_bags", "bag_name", File.basename(@db_file2.path)).
         and_return(@plain_data)
-      @knife.loader.should_receive(:load_from).with("data_bags", "bag_name2", File.basename(@db_file3.path)).
+      @ceth.loader.should_receive(:load_from).with("data_bags", "bag_name2", File.basename(@db_file3.path)).
         and_return(@plain_data)
       dbag = Seth::DataBagItem.new
       Seth::DataBagItem.stub(:new).and_return(dbag)
       dbag.should_receive(:save).exactly(3).times
-      @knife.run
+      @ceth.run
     end
 
     it "loads all data bags items when -a or --all options is provided" do
-      @knife.name_args = ["bag_name2"]
-      @knife.stub(:config).and_return({:all => true})
-      @knife.loader.should_receive(:load_from).with("data_bags", "bag_name2", File.basename(@db_file3.path)).
+      @ceth.name_args = ["bag_name2"]
+      @ceth.stub(:config).and_return({:all => true})
+      @ceth.loader.should_receive(:load_from).with("data_bags", "bag_name2", File.basename(@db_file3.path)).
         and_return(@plain_data)
       dbag = Seth::DataBagItem.new
       Seth::DataBagItem.stub(:new).and_return(dbag)
       dbag.should_receive(:save)
-      @knife.run
+      @ceth.run
       dbag.data_bag.should == 'bag_name2'
       dbag.raw_data.should == @plain_data
     end
@@ -158,25 +158,25 @@ describe Seth::Knife::DataBagFromFile do
     end
 
     it "encrypts values when given --secret" do
-      @knife.stub(:config).and_return({:secret => @secret})
+      @ceth.stub(:config).and_return({:secret => @secret})
 
-      @knife.loader.should_receive(:load_from).with("data_bags", "bag_name", @db_file.path).and_return(@plain_data)
+      @ceth.loader.should_receive(:load_from).with("data_bags", "bag_name", @db_file.path).and_return(@plain_data)
       dbag = Seth::DataBagItem.new
       Seth::DataBagItem.stub(:new).and_return(dbag)
       dbag.should_receive(:save)
-      @knife.run
+      @ceth.run
       dbag.data_bag.should == 'bag_name'
       dbag.raw_data.should == @enc_data
     end
 
     it "encrypts values when given --secret_file" do
-      @knife.stub(:config).and_return({:secret_file => @secret_file.path})
+      @ceth.stub(:config).and_return({:secret_file => @secret_file.path})
 
-      @knife.loader.stub(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
+      @ceth.loader.stub(:load_from).with("data_bags", 'bag_name', @db_file.path).and_return(@plain_data)
       dbag = Seth::DataBagItem.new
       Seth::DataBagItem.stub(:new).and_return(dbag)
       dbag.should_receive(:save)
-      @knife.run
+      @ceth.run
       dbag.data_bag.should == 'bag_name'
       dbag.raw_data.should == @enc_data
     end
@@ -185,9 +185,9 @@ describe Seth::Knife::DataBagFromFile do
 
   describe "command line parsing" do
     it "prints help if given no arguments" do
-      @knife.instance_variable_set(:@name_args, [])
-      lambda { @knife.run }.should raise_error(SystemExit)
-      help_text = "knife data bag from file BAG FILE|FOLDER [FILE|FOLDER..] (options)"
+      @ceth.instance_variable_set(:@name_args, [])
+      lambda { @ceth.run }.should raise_error(SystemExit)
+      help_text = "ceth data bag from file BAG FILE|FOLDER [FILE|FOLDER..] (options)"
       help_text_regex = Regexp.new("^#{Regexp.escape(help_text)}")
       @stdout.string.should match(help_text_regex)
     end

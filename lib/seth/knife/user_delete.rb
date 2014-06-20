@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class UserDelete < Knife
+  class ceth
+    class UserDelete < ceth
 
       deps do
         require 'seth/user'
         require 'seth/json_compat'
       end
 
-      banner "knife user delete USER (options)"
+      banner "ceth user delete USER (options)"
 
       def run
         @user_name = @name_args[0]

@@ -16,20 +16,20 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class RoleShow < Knife
+  class ceth
+    class RoleShow < ceth
 
-      include Knife::Core::MultiAttributeReturnOption
+      include ceth::Core::MultiAttributeReturnOption
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
       end
 
-      banner "knife role show ROLE (options)"
+      banner "ceth role show ROLE (options)"
 
 
       def run

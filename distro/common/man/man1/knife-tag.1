@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-TAG" "1" "Seth 11.12.0" "" "knife tag"
+.TH "ceth-TAG" "1" "Seth 11.12.0" "" "ceth tag"
 .SH NAME
-knife-tag \- The man page for the knife tag subcommand.
+ceth-tag \- The man page for the ceth tag subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,12 +31,12 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-A tag is a custom description that is applied to a node. A tag, once applied, can be helpful when managing nodes using Knife or when building recipes by providing alternate methods of grouping similar types of information.
+A tag is a custom description that is applied to a node. A tag, once applied, can be helpful when managing nodes using ceth or when building recipes by providing alternate methods of grouping similar types of information.
 .sp
-The \fBknife tag\fP subcommand is used to apply tags to nodes on a Seth server\&.
+The \fBceth tag\fP subcommand is used to apply tags to nodes on a Seth server\&.
 .SH COMMON OPTIONS
 .sp
-The following options may be used with any of the arguments available to the \fBknife tag\fP subcommand:
+The following options may be used with any of the arguments available to the \fBceth tag\fP subcommand:
 .INDENT 0.0
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
@@ -49,7 +49,7 @@ The configuration file to use.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -64,7 +64,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -76,7 +76,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -85,7 +85,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -102,7 +102,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife tag create NODE_NAME [TAG...]
+$ ceth tag create NODE_NAME [TAG...]
 .ft P
 .fi
 .UNINDENT
@@ -120,7 +120,7 @@ To create tags named "seattle", "portland", and "vancouver", enter:
 .sp
 .nf
 .ft C
-$ knife tag create node seattle portland vancouver
+$ ceth tag create node seattle portland vancouver
 .ft P
 .fi
 .UNINDENT
@@ -137,7 +137,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife tag delete NODE_NAME [TAG...]
+$ ceth tag delete NODE_NAME [TAG...]
 .ft P
 .fi
 .UNINDENT
@@ -155,7 +155,7 @@ To delete tags named "denver" and "phoenix", enter:
 .sp
 .nf
 .ft C
-$ knife tag delete node denver phoenix
+$ ceth tag delete node denver phoenix
 .ft P
 .fi
 .UNINDENT
@@ -174,7 +174,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife tag list [NODE_NAME...]
+$ ceth tag list [NODE_NAME...]
 .ft P
 .fi
 .UNINDENT

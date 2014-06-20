@@ -1,15 +1,15 @@
-knife-role(1) -- Group common configuration settings
+ceth-role(1) -- Group common configuration settings
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __role__ _sub-command_ _(options)_
+__ceth__ __role__ _sub-command_ _(options)_
 
 ## ROLE SUB-COMMANDS
 The following `role` subcommands are available:
 
 ## LIST
-__knife role list__ _(options)_
+__ceth role list__ _(options)_
 
   * `-w`, `--with-uri`:
     Show corresponding URIs
@@ -17,7 +17,7 @@ __knife role list__ _(options)_
 List roles.
 
 ## SHOW
-__knife role show ROLE__ _(options)_
+__ceth role show ROLE__ _(options)_
 
   * `-a`, `--attribute ATTR`:
     Show only one attribute
@@ -25,7 +25,7 @@ __knife role show ROLE__ _(options)_
 Show a specific role.
 
 ## CREATE
-__knife role create ROLE__ _(options)_
+__ceth role create ROLE__ _(options)_
 
   * `-d`, `--description`:
     The role description
@@ -33,22 +33,22 @@ __knife role create ROLE__ _(options)_
 Create a new role.
 
 ## EDIT
-__knife role edit ROLE__ _(options)_
+__ceth role edit ROLE__ _(options)_
 
 Edit a role.
 
 ## FROM FILE
-__knife role from file FILE__ _(options)_
+__ceth role from file FILE__ _(options)_
 
 Create or update a role from a role Ruby DSL (`.rb`) or JSON file.
 
 ## DELETE
-__knife role delete ROLE__ _(options)_
+__ceth role delete ROLE__ _(options)_
 
 Delete a role.
 
 ## BULK DELETE
-__knife role bulk delete REGEX__ _(options)_
+__ceth role bulk delete REGEX__ _(options)_
 
 Delete roles on the Seth Server based on a regular expression. The regular expression (_REGEX_) should be in quotes, not in //'s.
 
@@ -69,7 +69,7 @@ will recursively replace any roles in the run\_list with that role's
 run\_list.
 
 ## SEE ALSO
-   __knife-node(1)__ __knife-environment(1)__
+   __ceth-node(1)__ __ceth-environment(1)__
    <http://wiki.opscode.com/display/seth/Roles>
    <http://wiki.opscode.com/display/seth/Attributes>
 
@@ -81,5 +81,5 @@ run\_list.
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

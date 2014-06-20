@@ -22,7 +22,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_hel
 require 'seth/cookbook_uploader'
 require 'timeout'
 
-describe Seth::Knife::CookbookUpload do
+describe Seth::ceth::CookbookUpload do
   let(:cookbook) { Seth::CookbookVersion.new('test_cookbook', '/tmp/blah.txt') }
 
   let(:cookbooks_by_name) do
@@ -42,8 +42,8 @@ describe Seth::Knife::CookbookUpload do
 
   let(:name_args) { ['test_cookbook'] }
 
-  let(:knife) do
-    k = Seth::Knife::CookbookUpload.new
+  let(:ceth) do
+    k = Seth::ceth::CookbookUpload.new
     k.name_args = name_args
     k.ui.stub(:stdout).and_return(output)
     k.ui.stub(:stderr).and_return(output)
@@ -57,13 +57,13 @@ describe Seth::Knife::CookbookUpload do
   describe 'with --concurrency' do
     it 'should upload cookbooks with predefined concurrency' do
       Seth::CookbookVersion.stub(:list_all_versions).and_return({})
-      knife.config[:concurrency] = 3
+      ceth.config[:concurrency] = 3
       test_cookbook = Seth::CookbookVersion.new('test_cookbook', '/tmp/blah')
       cookbook_loader.stub(:each).and_yield("test_cookbook", test_cookbook)
       cookbook_loader.stub(:cookbook_names).and_return(["test_cookbook"])
       Seth::CookbookUploader.should_receive(:new).with( kind_of(Array),  kind_of(Array),
         {:force=>nil, :concurrency => 3}).and_return(double("Seth::CookbookUploader", :upload_cookbooks=> true))
-      knife.run
+      ceth.run
     end
   end
 
@@ -74,30 +74,30 @@ describe Seth::Knife::CookbookUpload do
     end
 
     it 'should print usage and exit when a cookbook name is not provided' do
-      knife.name_args = []
-      knife.should_receive(:show_usage)
-      knife.ui.should_receive(:fatal)
-      lambda { knife.run }.should raise_error(SystemExit)
+      ceth.name_args = []
+      ceth.should_receive(:show_usage)
+      ceth.ui.should_receive(:fatal)
+      lambda { ceth.run }.should raise_error(SystemExit)
     end
 
     describe 'when specifying a cookbook name' do
       it 'should upload the cookbook' do
-        knife.should_receive(:upload).once
-        knife.run
+        ceth.should_receive(:upload).once
+        ceth.run
       end
 
       it 'should report on success' do
-        knife.should_receive(:upload).once
-        knife.ui.should_receive(:info).with(/Uploaded 1 cookbook/)
-        knife.run
+        ceth.should_receive(:upload).once
+        ceth.ui.should_receive(:info).with(/Uploaded 1 cookbook/)
+        ceth.run
       end
     end
 
     describe 'when specifying the same cookbook name twice' do
       it 'should upload the cookbook only once' do
-        knife.name_args = ['test_cookbook', 'test_cookbook']
-        knife.should_receive(:upload).once
-        knife.run
+        ceth.name_args = ['test_cookbook', 'test_cookbook']
+        ceth.should_receive(:upload).once
+        ceth.run
       end
     end
 
@@ -110,7 +110,7 @@ describe Seth::Knife::CookbookUpload do
       end
 
       it "emits a warning" do
-        knife.run
+        ceth.run
         expected_message=<<-E
 WARNING: The cookbooks: test_cookbook exist in multiple places in your cookbook_path.
 A composite version of these cookbooks has been compiled for uploading.
@@ -139,17 +139,17 @@ E
 
       it "should read only one cookbook" do
         cookbook_loader.should_receive(:[]).once.with('test_cookbook1').and_call_original
-        knife.run
+        ceth.run
       end
 
       it "should not read all cookbooks" do
         cookbook_loader.should_not_receive(:load_cookbooks)
-        knife.run
+        ceth.run
       end
 
       it "should upload only one cookbook" do
-        knife.should_receive(:upload).exactly(1).times
-        knife.run
+        ceth.should_receive(:upload).exactly(1).times
+        ceth.run
       end
     end
 
@@ -179,12 +179,12 @@ E
       end
 
       it "should upload all dependencies once" do
-        knife.config[:depends] = true
-        knife.stub(:cookbook_names).and_return(["test_cookbook1", "test_cookbook2", "test_cookbook3"])
-        knife.should_receive(:upload).exactly(3).times
+        ceth.config[:depends] = true
+        ceth.stub(:cookbook_names).and_return(["test_cookbook1", "test_cookbook2", "test_cookbook3"])
+        ceth.should_receive(:upload).exactly(3).times
         lambda do
           Timeout::timeout(5) do
-            knife.run
+            ceth.run
           end
         end.should_not raise_error
       end
@@ -199,20 +199,20 @@ E
           { "test_cookbook" =>  cookbook,
             "dependency" => cookbook_dependency}[ckbk]
         end
-        knife.stub(:cookbook_names).and_return(["cookbook_dependency", "test_cookbook"])
+        ceth.stub(:cookbook_names).and_return(["cookbook_dependency", "test_cookbook"])
         @stdout, @stderr, @stdin = StringIO.new, StringIO.new, StringIO.new
-        knife.ui = Seth::Knife::UI.new(@stdout, @stderr, @stdin, {})
+        ceth.ui = Seth::ceth::UI.new(@stdout, @stderr, @stdin, {})
       end
 
       it 'should exit and not upload the cookbook' do
         cookbook_loader.should_receive(:[]).once.with('test_cookbook')
         cookbook_loader.should_not_receive(:load_cookbooks)
         cookbook_uploader.should_not_receive(:upload_cookbooks)
-        expect {knife.run}.to raise_error(SystemExit)
+        expect {ceth.run}.to raise_error(SystemExit)
       end
 
       it 'should output a message for a single missing dependency' do
-        expect {knife.run}.to raise_error(SystemExit)
+        expect {ceth.run}.to raise_error(SystemExit)
         @stderr.string.should include('Cookbook test_cookbook depends on cookbooks which are not currently')
         @stderr.string.should include('being uploaded and cannot be found on the server.')
         @stderr.string.should include("The missing cookbook(s) are: 'dependency' version '>= 0.0.0'")
@@ -226,8 +226,8 @@ E
             "dependency" => cookbook_dependency,
             "dependency2" => cookbook_dependency2}[ckbk]
         end
-        knife.stub(:cookbook_names).and_return(["dependency", "dependency2", "test_cookbook"])
-        expect {knife.run}.to raise_error(SystemExit)
+        ceth.stub(:cookbook_names).and_return(["dependency", "dependency2", "test_cookbook"])
+        expect {ceth.run}.to raise_error(SystemExit)
         @stderr.string.should include('Cookbook test_cookbook depends on cookbooks which are not currently')
         @stderr.string.should include('being uploaded and cannot be found on the server.')
         @stderr.string.should include("The missing cookbook(s) are:")
@@ -237,14 +237,14 @@ E
     end
 
     it "should freeze the version of the cookbooks if --freeze is specified" do
-      knife.config[:freeze] = true
+      ceth.config[:freeze] = true
       cookbook.should_receive(:freeze_version).once
-      knife.run
+      ceth.run
     end
 
     describe 'with -a or --all' do
       before(:each) do
-        knife.config[:all] = true
+        ceth.config[:all] = true
         @test_cookbook1 = Seth::CookbookVersion.new('test_cookbook1', '/tmp/blah')
         @test_cookbook2 = Seth::CookbookVersion.new('test_cookbook2', '/tmp/blah')
         cookbook_loader.stub(:each).and_yield("test_cookbook1", @test_cookbook1).and_yield("test_cookbook2", @test_cookbook2)
@@ -252,21 +252,21 @@ E
       end
 
       it 'should upload all cookbooks' do
-        knife.should_receive(:upload).once
-        knife.run
+        ceth.should_receive(:upload).once
+        ceth.run
       end
 
       it 'should report on success' do
-        knife.should_receive(:upload).once
-        knife.ui.should_receive(:info).with(/Uploaded all cookbooks/)
-        knife.run
+        ceth.should_receive(:upload).once
+        ceth.ui.should_receive(:info).with(/Uploaded all cookbooks/)
+        ceth.run
       end
 
       it 'should update the version constraints for an environment' do
-        knife.stub(:assert_environment_valid!).and_return(true)
-        knife.config[:environment] = "production"
-        knife.should_receive(:update_version_constraints).once
-        knife.run
+        ceth.stub(:assert_environment_valid!).and_return(true)
+        ceth.config[:environment] = "production"
+        ceth.should_receive(:update_version_constraints).once
+        ceth.run
       end
     end
 
@@ -275,19 +275,19 @@ E
         exception = Seth::Exceptions::CookbookFrozen.new
         cookbook_uploader.should_receive(:upload_cookbooks).
           and_raise(exception)
-        knife.ui.stub(:error)
-        knife.ui.should_receive(:error).with(exception)
-        lambda { knife.run }.should raise_error(SystemExit)
+        ceth.ui.stub(:error)
+        ceth.ui.should_receive(:error).with(exception)
+        lambda { ceth.run }.should raise_error(SystemExit)
       end
 
       it 'should not update the version constraints for an environment' do
-        knife.stub(:assert_environment_valid!).and_return(true)
-        knife.config[:environment] = "production"
-        knife.stub(:upload).and_raise(Seth::Exceptions::CookbookFrozen)
-        knife.ui.should_receive(:error).with(/Failed to upload 1 cookbook/)
-        knife.ui.should_receive(:warn).with(/Not updating version constraints/)
-        knife.should_not_receive(:update_version_constraints)
-        lambda { knife.run }.should raise_error(SystemExit)
+        ceth.stub(:assert_environment_valid!).and_return(true)
+        ceth.config[:environment] = "production"
+        ceth.stub(:upload).and_raise(Seth::Exceptions::CookbookFrozen)
+        ceth.ui.should_receive(:error).with(/Failed to upload 1 cookbook/)
+        ceth.ui.should_receive(:warn).with(/Not updating version constraints/)
+        ceth.should_not_receive(:update_version_constraints)
+        lambda { ceth.run }.should raise_error(SystemExit)
       end
     end
   end # run

@@ -17,33 +17,33 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class DataBagFromFile < Knife
+  class ceth
+    class DataBagFromFile < ceth
 
       deps do
         require 'seth/data_bag'
         require 'seth/data_bag_item'
-        require 'seth/knife/core/object_loader'
+        require 'seth/ceth/core/object_loader'
         require 'seth/json_compat'
         require 'seth/encrypted_data_bag_item'
       end
 
-      banner "knife data bag from file BAG FILE|FOLDER [FILE|FOLDER..] (options)"
+      banner "ceth data bag from file BAG FILE|FOLDER [FILE|FOLDER..] (options)"
       category "data bag"
 
       option :secret,
         :short => "-s SECRET",
         :long  => "--secret ",
         :description => "The secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |s| Seth::Config[:knife][:secret] = s }
+        :proc => Proc.new { |s| Seth::Config[:ceth][:secret] = s }
 
       option :secret_file,
         :long => "--secret-file SECRET_FILE",
         :description => "A file containing the secret key to use to encrypt data bag item values",
-        :proc => Proc.new { |sf| Seth::Config[:knife][:secret_file] = sf }
+        :proc => Proc.new { |sf| Seth::Config[:ceth][:secret_file] = sf }
 
       option :all,
         :short => "-a",
@@ -67,7 +67,7 @@ class Seth
       end
 
       def loader
-        @loader ||= Knife::Core::ObjectLoader.new(DataBagItem, ui)
+        @loader ||= ceth::Core::ObjectLoader.new(DataBagItem, ui)
       end
 
       def run

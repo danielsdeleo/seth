@@ -16,18 +16,18 @@
 # limitations under the License.
 
 require 'seth/config'
-require 'seth/knife'
-require 'seth/application/knife'
+require 'seth/ceth'
+require 'seth/application/ceth'
 require 'logger'
 require 'seth/log'
 
-module KnifeSupport
+module cethSupport
   DEBUG = ENV['DEBUG']
-  def knife(*args, &block)
-    # Allow knife('role from file roles/blah.json') rather than requiring the
-    # arguments to be split like knife('role', 'from', 'file', 'roles/blah.json')
+  def ceth(*args, &block)
+    # Allow ceth('role from file roles/blah.json') rather than requiring the
+    # arguments to be split like ceth('role', 'from', 'file', 'roles/blah.json')
     # If any argument will have actual spaces in it, the long form is required.
-    # (Since knife commands always start with the command name, and command
+    # (Since ceth commands always start with the command name, and command
     # names with spaces are always multiple args, this is safe.)
     if args.length == 1
       args = args[0].split(/\s+/)
@@ -43,37 +43,37 @@ module KnifeSupport
         :skip_expires => true
       }
 
-      # This is Seth::Knife.run without load_commands--we'll load stuff
+      # This is Seth::ceth.run without load_commands--we'll load stuff
       # ourselves, thank you very much
       stdout = StringIO.new
       stderr = StringIO.new
       old_loggers = Seth::Log.loggers
       old_log_level = Seth::Log.level
       begin
-        puts "knife: #{args.join(' ')}" if DEBUG
-        subcommand_class = Seth::Knife.subcommand_class_from(args)
-        subcommand_class.options = Seth::Application::Knife.options.merge(subcommand_class.options)
+        puts "ceth: #{args.join(' ')}" if DEBUG
+        subcommand_class = Seth::ceth.subcommand_class_from(args)
+        subcommand_class.options = Seth::Application::ceth.options.merge(subcommand_class.options)
         subcommand_class.load_deps
         instance = subcommand_class.new(args)
 
         # Capture stdout/stderr
-        instance.ui = Seth::Knife::UI.new(stdout, stderr, STDIN, {})
+        instance.ui = Seth::ceth::UI.new(stdout, stderr, STDIN, {})
 
         # Don't print stuff
         Seth::Config[:verbosity] = ( DEBUG ? 2 : 0 )
         instance.config[:config_file] = File.join(seth_SPEC_DATA, "null_config.rb")
 
 
-        # Configure seth with a (mostly) blank knife.rb
-        # We set a global and then mutate it in our stub knife.rb so we can be
-        # extra sure that we're not loading someone's real knife.rb and then
+        # Configure seth with a (mostly) blank ceth.rb
+        # We set a global and then mutate it in our stub ceth.rb so we can be
+        # extra sure that we're not loading someone's real ceth.rb and then
         # running test scenarios against a real seth server. If things don't
         # smell right, abort.
 
-        $__KNIFE_INTEGRATION_FAILSAFE_CHECK = "ole"
+        $__ceth_INTEGRATION_FAILSAFE_CHECK = "ole"
         instance.configure_seth
 
-        unless $__KNIFE_INTEGRATION_FAILSAFE_CHECK == "ole ole"
+        unless $__ceth_INTEGRATION_FAILSAFE_CHECK == "ole ole"
           raise Exception, "Potential misconfiguration of integration tests detected. Aborting test."
         end
 
@@ -97,13 +97,13 @@ module KnifeSupport
         Seth::Config.delete(:concurrency)
       end
 
-      KnifeResult.new(stdout.string, stderr.string, exit_code)
+      cethResult.new(stdout.string, stderr.string, exit_code)
     end
   end
 
   private
 
-  class KnifeResult
+  class cethResult
     def initialize(stdout, stderr, exit_code)
       @stdout = stdout
       @stderr = stderr
@@ -148,7 +148,7 @@ module KnifeSupport
       expected[:stderr] = '' if !expected[:stderr]
       expected[:exit_code] = 0 if !expected[:exit_code]
       # TODO make this go away
-      stderr_actual = @stderr.sub(/^WARNING: No knife configuration file found\n/, '')
+      stderr_actual = @stderr.sub(/^WARNING: No ceth configuration file found\n/, '')
 
       if expected[:stderr].is_a?(Regexp)
         stderr_actual.should =~ expected[:stderr]

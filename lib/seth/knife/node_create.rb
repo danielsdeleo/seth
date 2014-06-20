@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class NodeCreate < Knife
+  class ceth
+    class NodeCreate < ceth
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
       end
 
-      banner "knife node create NODE (options)"
+      banner "ceth node create NODE (options)"
 
       def run
         @node_name = @name_args[0]

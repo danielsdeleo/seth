@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-DATA-BAG" "1" "Seth 11.12.0" "" "knife data bag"
+.TH "ceth-DATA-BAG" "1" "Seth 11.12.0" "" "ceth data bag"
 .SH NAME
-knife-data-bag \- The man page for the knife data bag subcommand.
+ceth-data-bag \- The man page for the ceth data bag subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -35,10 +35,10 @@ A data bag is a global variable that is stored as JSON data and is accessible fr
 .sp
 A data bag item may be encrypted using \fI\%shared secret encryption\fP\&. This allows each data bag item to store confidential information (such as a database password) or to be managed in a source control system (without plain\-text data appearing in revision history). Each data bag item may be encrypted individually; if a data bag contains multiple encrypted data bag items, these data bag items are not required to share the same encryption keys.
 .sp
-The \fBknife data bag\fP subcommand is used to manage arbitrary stores of globally available JSON data.
+The \fBceth data bag\fP subcommand is used to manage arbitrary stores of globally available JSON data.
 .SH COMMON OPTIONS
 .sp
-The following options may be used with any of the arguments available to the \fBknife data bag\fP subcommand:
+The following options may be used with any of the arguments available to the \fBceth data bag\fP subcommand:
 .INDENT 0.0
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
@@ -51,7 +51,7 @@ The configuration file to use.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -66,7 +66,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -78,7 +78,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -87,7 +87,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -104,7 +104,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife data bag create DATA_BAG_NAME [DATA_BAG_ITEM] (options)
+$ ceth data bag create DATA_BAG_NAME [DATA_BAG_ITEM] (options)
 .ft P
 .fi
 .UNINDENT
@@ -140,7 +140,7 @@ To create a data bag named "admins", enter:
 .sp
 .nf
 .ft C
-$ knife data bag create admins
+$ ceth data bag create admins
 .ft P
 .fi
 .UNINDENT
@@ -169,7 +169,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife data bag delete DATA_BAG_NAME [DATA_BAG_ITEM] (options)
+$ ceth data bag delete DATA_BAG_NAME [DATA_BAG_ITEM] (options)
 .ft P
 .fi
 .UNINDENT
@@ -190,7 +190,7 @@ The name of a specific item within a data bag.
 .sp
 .nf
 .ft C
-$ knife data bag delete data_bag_name
+$ ceth data bag delete data_bag_name
 .ft P
 .fi
 .UNINDENT
@@ -202,7 +202,7 @@ To delete an item named "charlie", enter:
 .sp
 .nf
 .ft C
-$ knife data bag delete admins charlie
+$ ceth data bag delete admins charlie
 .ft P
 .fi
 .UNINDENT
@@ -221,7 +221,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife data bag edit DATA_BAG_NAME [DATA_BAG_ITEM] (options)
+$ ceth data bag edit DATA_BAG_NAME [DATA_BAG_ITEM] (options)
 .ft P
 .fi
 .UNINDENT
@@ -257,7 +257,7 @@ To edit the contents of a data bag, enter:
 .sp
 .nf
 .ft C
-$ knife data bag edit admins
+$ ceth data bag edit admins
 .ft P
 .fi
 .UNINDENT
@@ -269,7 +269,7 @@ To edit an item named "charlie" that is contained in a data bag named "admins", 
 .sp
 .nf
 .ft C
-$ knife data bag edit admins charlie
+$ ceth data bag edit admins charlie
 .ft P
 .fi
 .UNINDENT
@@ -316,12 +316,12 @@ the name of a data bag
 a relative or absolute path to a file
 .UNINDENT
 .sp
-If the name of a data bag is specified, Knife will search for the data bag in \fB\&./data_bags/bag_name/file\fP\&. Once opened, the JSON file should be a hash that contains at least an ID key which represents the name of the data bag item.
+If the name of a data bag is specified, ceth will search for the data bag in \fB\&./data_bags/bag_name/file\fP\&. Once opened, the JSON file should be a hash that contains at least an ID key which represents the name of the data bag item.
 .sp
 \fBWARNING:\fP
 .INDENT 0.0
 .INDENT 3.5
-A seth\-client must be version 11.6 (or higher) when using the \fBknife data bag from file\fP argument with the Enterprise Seth or Open Source seth version 11 servers.
+A seth\-client must be version 11.6 (or higher) when using the \fBceth data bag from file\fP argument with the Enterprise Seth or Open Source seth version 11 servers.
 .UNINDENT
 .UNINDENT
 .sp
@@ -333,7 +333,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife data bag from file DATA_BAG_NAME_or_PATH
+$ ceth data bag from file DATA_BAG_NAME_or_PATH
 .ft P
 .fi
 .UNINDENT
@@ -369,7 +369,7 @@ To create a data bag on the Seth server from a file:
 .sp
 .nf
 .ft C
-$ knife data bag from file "path to JSON file"
+$ ceth data bag from file "path to JSON file"
 .ft P
 .fi
 .UNINDENT
@@ -381,7 +381,7 @@ To create a data bag named "devops_data" that contains encrypted data, enter:
 .sp
 .nf
 .ft C
-$ knife data bag from file devops_data \-\-secret\-file "path to decryption file"
+$ ceth data bag from file devops_data \-\-secret\-file "path to decryption file"
 .ft P
 .fi
 .UNINDENT
@@ -398,7 +398,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife data bag list
+$ ceth data bag list
 .ft P
 .fi
 .UNINDENT
@@ -419,7 +419,7 @@ Indicates that the corresponding URIs will be shown.
 .sp
 .nf
 .ft C
-$ knife data bag list
+$ ceth data bag list
 .ft P
 .fi
 .UNINDENT
@@ -436,7 +436,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife data bag show DATA_BAG_NAME (options)
+$ ceth data bag show DATA_BAG_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -470,7 +470,7 @@ For encrypted data bag items, use \fIeither\fP \fB\-\-secret\fP or \fB\-\-secret
 .sp
 .nf
 .ft C
-$ knife data bag show admins
+$ ceth data bag show admins
 .ft P
 .fi
 .UNINDENT
@@ -494,7 +494,7 @@ To show the contents of a specific item within data bag, enter:
 .sp
 .nf
 .ft C
-$ knife data bag show admins charlie
+$ ceth data bag show admins charlie
 .ft P
 .fi
 .UNINDENT
@@ -522,7 +522,7 @@ To show the contents of a data bag named "passwords" with an item that contains 
 .sp
 .nf
 .ft C
-$ knife data bag show passwords mysql
+$ ceth data bag show passwords mysql
 .ft P
 .fi
 .UNINDENT
@@ -551,7 +551,7 @@ To show the decrypted contents of the same data bag, enter:
 .sp
 .nf
 .ft C
-$ knife data bag show \-\-secret\-file /path/to/decryption/file passwords mysql
+$ ceth data bag show \-\-secret\-file /path/to/decryption/file passwords mysql
 .ft P
 .fi
 .UNINDENT
@@ -580,7 +580,7 @@ To view information in JSON format, use the \fB\-F\fP common option as part of t
 .sp
 .nf
 .ft C
-$ knife data bag show admins \-F json
+$ ceth data bag show admins \-F json
 .ft P
 .fi
 .UNINDENT

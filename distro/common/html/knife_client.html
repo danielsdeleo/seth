@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>knife client &mdash; seth-client Man Pages</title>
+    <title>ceth client &mdash; seth-client Man Pages</title>
 
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,12 +40,12 @@
 
           <div class="body">
 
-  <div class="section" id="knife-client">
-<h1>knife client<a class="headerlink" href="#knife-client" title="Permalink to this headline">¶</a></h1>
-<p>The <strong>knife client</strong> subcommand is used to manage an API client list and their associated RSA public key-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the seth Server API, such as the seth-client and Knife.</p>
+  <div class="section" id="ceth-client">
+<h1>ceth client<a class="headerlink" href="#ceth-client" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>ceth client</strong> subcommand is used to manage an API client list and their associated RSA public key-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the seth Server API, such as the seth-client and ceth.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
+<p class="last">Review the list of <a class="reference internal" href="ceth_common_options.html"><em>common options</em></a> available to this (and all) ceth subcommands and plugins.</p>
 </div>
 <div class="section" id="bulk-delete">
 <h2>bulk delete<a class="headerlink" href="#bulk-delete" title="Permalink to this headline">¶</a></h2>
@@ -53,7 +53,7 @@
 <div class="section" id="syntax">
 <h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client bulk delete REGEX
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client bulk delete REGEX
 </pre></div>
 </div>
 </div>
@@ -71,12 +71,12 @@
 <p>The <tt class="docutils literal"><span class="pre">create</span></tt> argument is used to create a new API client. This process will generate an RSA key pair for the named API client. The public key will be stored on the Seth server and the private key will be displayed on <tt class="docutils literal"><span class="pre">STDOUT</span></tt> or written to a named file.</p>
 <ul class="simple">
 <li>For the seth-client, the private key should be copied to the system as <tt class="docutils literal"><span class="pre">/etc/seth/client.pem</span></tt>.</li>
-<li>For Knife, the private key is typically copied to <tt class="docutils literal"><span class="pre">~/.seth/client_name.pem</span></tt> and referenced in the knife.rb configuration file.</li>
+<li>For ceth, the private key is typically copied to <tt class="docutils literal"><span class="pre">~/.seth/client_name.pem</span></tt> and referenced in the ceth.rb configuration file.</li>
 </ul>
 <div class="section" id="id1">
 <h3>Syntax<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client create CLIENT_NAME <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client create CLIENT_NAME <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -90,15 +90,15 @@
 </div>
 <div class="section" id="id3">
 <h3>Examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Create an admin client</strong></p>
 <p>To create a Seth Admin client with the name &#8220;exampleorg&#8221; and save its private key to a file, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client create exampleorg -a -f <span class="s2">&quot;/etc/seth/client.pem&quot;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client create exampleorg -a -f <span class="s2">&quot;/etc/seth/client.pem&quot;</span>
 </pre></div>
 </div>
 <p><strong>Create an admin client for Enterprise Seth</strong></p>
 <p>When running the <tt class="docutils literal"><span class="pre">create</span></tt> argument on Enterprise Seth, be sure to omit the <tt class="docutils literal"><span class="pre">-a</span></tt> option:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client create exampleorg -f <span class="s2">&quot;/etc/seth/client.pem&quot;</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client create exampleorg -f <span class="s2">&quot;/etc/seth/client.pem&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -109,7 +109,7 @@
 <div class="section" id="id4">
 <h3>Syntax<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client delete CLIENT_NAME
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client delete CLIENT_NAME
 </pre></div>
 </div>
 </div>
@@ -119,10 +119,10 @@
 </div>
 <div class="section" id="id6">
 <h3>Examples<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Delete a client</strong></p>
 <p>To delete a client with the name &#8220;client_foo&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client delete client_foo
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client delete client_foo
 </pre></div>
 </div>
 <p>Type <tt class="docutils literal"><span class="pre">Y</span></tt> to confirm a deletion.</p>
@@ -130,11 +130,11 @@
 </div>
 <div class="section" id="edit">
 <h2>edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h2>
-<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit the details of a registered API client. When this argument is run, Knife will open $EDITOR to enable editing of the <tt class="docutils literal"><span class="pre">admin</span></tt> attribute. (None of the other attributes should be changed using this argument.) When finished, Knife will update the Seth server with those changes.</p>
+<p>The <tt class="docutils literal"><span class="pre">edit</span></tt> argument is used to edit the details of a registered API client. When this argument is run, ceth will open $EDITOR to enable editing of the <tt class="docutils literal"><span class="pre">admin</span></tt> attribute. (None of the other attributes should be changed using this argument.) When finished, ceth will update the Seth server with those changes.</p>
 <div class="section" id="id7">
 <h3>Syntax<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client edit CLIENT_NAME
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client edit CLIENT_NAME
 </pre></div>
 </div>
 </div>
@@ -144,10 +144,10 @@
 </div>
 <div class="section" id="id9">
 <h3>Examples<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Edit a client</strong></p>
 <p>To edit a client with the name &#8220;exampleorg&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client edit exampleorg
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client edit exampleorg
 </pre></div>
 </div>
 </div>
@@ -158,7 +158,7 @@
 <div class="section" id="id10">
 <h3>Syntax<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client list <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client list <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -172,10 +172,10 @@
 </div>
 <div class="section" id="id12">
 <h3>Examples<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>View a list of clients</strong></p>
 <p>To verify the API client list for the Seth server, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client list
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client list
 </pre></div>
 </div>
 <p>to return something similar to:</p>
@@ -186,7 +186,7 @@ rs-123456
 </div>
 <p>To verify that an API client can authenticate to the
 Seth server correctly, try getting a list of clients using <tt class="docutils literal"><span class="pre">-u</span></tt> and <tt class="docutils literal"><span class="pre">-k</span></tt> options to specify its name and private key:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client list -u ORGNAME -k .seth/ORGNAME.pem
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client list -u ORGNAME -k .seth/ORGNAME.pem
 </pre></div>
 </div>
 </div>
@@ -201,7 +201,7 @@ Seth server correctly, try getting a list of clients using <tt class="docutils l
 <div class="section" id="id13">
 <h3>Syntax<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client reregister CLIENT_NAME <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client reregister CLIENT_NAME <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -215,10 +215,10 @@ Seth server correctly, try getting a list of clients using <tt class="docutils l
 </div>
 <div class="section" id="id15">
 <h3>Examples<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Reregister clients</strong></p>
 <p>To regenerate the RSA key pair for a client named &#8220;testclient&#8221; and save it to a file named &#8220;rsa_key&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client regenerate testclient -f rsa_key
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client regenerate testclient -f rsa_key
 </pre></div>
 </div>
 </div>
@@ -229,7 +229,7 @@ Seth server correctly, try getting a list of clients using <tt class="docutils l
 <div class="section" id="id16">
 <h3>Syntax<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client show CLIENT_NAME <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client show CLIENT_NAME <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -243,10 +243,10 @@ Seth server correctly, try getting a list of clients using <tt class="docutils l
 </div>
 <div class="section" id="id18">
 <h3>Examples<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Show clients</strong></p>
 <p>To view a client named &#8220;testclient&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife client show testclient
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth client show testclient
 </pre></div>
 </div>
 <p>to return something like:</p>
@@ -258,7 +258,7 @@ public_key:
 </pre></div>
 </div>
 <p>To view information in JSON format, use the <tt class="docutils literal"><span class="pre">-F</span></tt> common option as part of the command like this:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife role show devops -F json
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth role show devops -F json
 </pre></div>
 </div>
 <p>Other formats available include <tt class="docutils literal"><span class="pre">text</span></tt>, <tt class="docutils literal"><span class="pre">yaml</span></tt>, and <tt class="docutils literal"><span class="pre">pp</span></tt>.</p>

@@ -17,11 +17,11 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'seth/knife/list'
+require 'seth/ceth/list'
 
 describe 'redirection' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
   include AppServerSupport
 
   include_context "default config options"
@@ -44,8 +44,8 @@ describe 'redirection' do
         @redirector_thread.kill if @redirector_thread
       end
 
-      it 'knife list /roles returns the role' do
-        knife('list /roles').should_succeed "/roles/x.json\n"
+      it 'ceth list /roles returns the role' do
+        ceth('list /roles').should_succeed "/roles/x.json\n"
       end
     end
   end

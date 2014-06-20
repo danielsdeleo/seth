@@ -18,27 +18,27 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::ClientBulkDelete do
+describe Seth::ceth::ClientBulkDelete do
   let(:stdout_io) { StringIO.new }
   let(:stdout) {stdout_io.string}
   let(:stderr_io) { StringIO.new }
   let(:stderr) { stderr_io.string }
 
-  let(:knife) {
-    k = Seth::Knife::ClientBulkDelete.new
+  let(:ceth) {
+    k = Seth::ceth::ClientBulkDelete.new
     k.name_args = name_args
     k.config = option_args
     k.ui.stub(:stdout).and_return(stdout_io)
     k.ui.stub(:stderr).and_return(stderr_io)
-    k.ui.stub(:confirm).and_return(knife_confirm)
-    k.ui.stub(:confirm_without_exit).and_return(knife_confirm)
+    k.ui.stub(:confirm).and_return(ceth_confirm)
+    k.ui.stub(:confirm_without_exit).and_return(ceth_confirm)
     k
   }
 
   let(:name_args) { [ "." ] }
   let(:option_args) { {} }
 
-  let(:knife_confirm) { true }
+  let(:ceth_confirm) { true }
 
   let(:nonvalidator_client_names) { %w{tim dan stephen} }
   let(:nonvalidator_clients) {
@@ -83,31 +83,31 @@ describe Seth::Knife::ClientBulkDelete do
       let(:name_args) { [ ] }
 
       it "should exit if the regex is not provided" do
-        lambda { knife.run }.should raise_error(SystemExit)
+        lambda { ceth.run }.should raise_error(SystemExit)
       end
     end
 
     describe "with any clients" do
       it "should get the list of the clients" do
         Seth::ApiClient.should_receive(:list)
-        knife.run
+        ceth.run
       end
 
       it "should print the name of the clients" do
-        knife.run
+        ceth.run
         client_names.each do |client_name|
           stdout.should include(client_name)
         end
       end
 
       it "should confirm you really want to delete them" do
-        knife.ui.should_receive(:confirm)
-        knife.run
+        ceth.ui.should_receive(:confirm)
+        ceth.run
       end
 
       describe "without --delete-validators" do
         it "should mention that validator clients wont be deleted" do
-          knife.run
+          ceth.run
           stdout.should include("Following clients are validators and will not be deleted.")
           info = stdout.index "Following clients are validators and will not be deleted."
           val = stdout.index "myorg-validator"
@@ -123,7 +123,7 @@ describe Seth::Knife::ClientBulkDelete do
             c.should_not_receive(:destroy)
           end
 
-          knife.run
+          ceth.run
         end
       end
 
@@ -131,14 +131,14 @@ describe Seth::Knife::ClientBulkDelete do
         let(:option_args) { {:delete_validators => true} }
 
         it "should mention that validator clients will be deleted" do
-          knife.run
+          ceth.run
           stdout.should include("The following validators will be deleted")
         end
 
         it "should confirm twice" do
-          knife.ui.should_receive(:confirm).once
-          knife.ui.should_receive(:confirm_without_exit).once
-          knife.run
+          ceth.ui.should_receive(:confirm).once
+          ceth.ui.should_receive(:confirm_without_exit).once
+          ceth.run
         end
 
         it "should delete all clients" do
@@ -146,7 +146,7 @@ describe Seth::Knife::ClientBulkDelete do
             c.should_receive(:destroy)
           end
 
-          knife.run
+          ceth.run
         end
       end
     end
@@ -159,7 +159,7 @@ describe Seth::Knife::ClientBulkDelete do
         clients["stephen"].should_not_receive(:destroy)
         clients["dan"].should_not_receive(:destroy)
         clients["myorg-validator"].should_not_receive(:destroy)
-        knife.run
+        ceth.run
       end
     end
   end

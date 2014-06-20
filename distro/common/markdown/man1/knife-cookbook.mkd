@@ -1,15 +1,15 @@
-knife-cookbook(1) -- upload and manage seth cookbooks
+ceth-cookbook(1) -- upload and manage seth cookbooks
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __cookbook__ _sub-command_ _(options)_
+__ceth__ __cookbook__ _sub-command_ _(options)_
 
 ## SUB-COMMANDS
-`knife cookbook` supports the following sub commands:
+`ceth cookbook` supports the following sub commands:
 
 ## LIST
-__knife cookbook list__ _(options)_
+__ceth cookbook list__ _(options)_
 
   * `-a`, `--all`:
     show all versions of a cookbook instead of just the most recent
@@ -19,7 +19,7 @@ __knife cookbook list__ _(options)_
 Lists the cookbooks available on the Seth server.
 
 ## SHOW
-__knife cookbook show cookbook [version] [part] [filename]__ _(options)_
+__ceth cookbook show cookbook [version] [part] [filename]__ _(options)_
 
   * `-f`, `--fqdn fqdn               `:
     the fqdn of the host to see the file for
@@ -42,7 +42,7 @@ show a particular part of a _cookbook_ for the specified _version_. _part_ can b
   * _templates_
 
 ## UPLOAD
-__knife cookbook upload [cookbooks...]__ _(options)_
+__ceth cookbook upload [cookbooks...]__ _(options)_
 
   * `-a`, `--all`:
     upload all cookbooks, rather than just a single cookbook
@@ -53,7 +53,7 @@ __knife cookbook upload [cookbooks...]__ _(options)_
     dependencies in its metadata.
   * `-E`, `--environment ENVIRONMENT`:
     An _ENVIRONMENT_ to apply the uploaded cookbooks to. Specifying this
-    option will cause knife to edit the _ENVIRONMENT_ to place a strict
+    option will cause ceth to edit the _ENVIRONMENT_ to place a strict
     version constraint on the cookbook version(s) uploaded.
   * `--freeze`:
     Sets the frozen flag on the uploaded cookbook(s) Any future attempt
@@ -69,11 +69,11 @@ to the Seth Server. Only files that don't yet exist on the server will
 be uploaded.
 
 As the command parses the name args as 1..n cookbook names:
-    `knife cookbook upload COOKBOOK COOKBOOK ...`
+    `ceth cookbook upload COOKBOOK COOKBOOK ...`
 works for one to many cookbooks.
 
 ## DOWNLOAD
-__knife cookbook download cookbook [version]__ _(options)_
+__ceth cookbook download cookbook [version]__ _(options)_
 
   * `-d`, `--dir download_directory`:
     the directory to download the cookbook into
@@ -88,7 +88,7 @@ if no version is specified and multiple versions are available on the
 server, you will be prompted for a version to download.
 
 ## DELETE
-__knife cookbook delete cookbook [version]__ _(options)_
+__ceth cookbook delete cookbook [version]__ _(options)_
 
   * `-a`, `--all`:
     delete all versions
@@ -101,7 +101,7 @@ be deleted. if multiple versions are available on the server, you will
 be prompted for a version to delete.
 
 ## BULK DELETE
-__knife cookbook bulk delete regex__ _(options)_
+__ceth cookbook bulk delete regex__ _(options)_
 
   * `-p`, `--purge`:
     purge files from backing store. this will disable any cookbook that
@@ -111,7 +111,7 @@ delete cookbooks on the seth server based on a regular expression. the
 regular expression (_regex_) should be in quotes, not in //'s.
 
 ## COOKBOOK CREATE
-__knife cookbook create cookbook__ _(options)_
+__ceth cookbook create cookbook__ _(options)_
 
   * `-o`, `--cookbook-path path`:
     the directory where the cookbook will be created
@@ -161,7 +161,7 @@ maintainer. if this value is not specified, an all-caps string
 `your_email` is used which can easily be changed with find/replace.
 
 the cookbook copyright, license, email and readme_format settings can be filled in the
-`knife.rb`, for example with default values:
+`ceth.rb`, for example with default values:
 
     cookbook_copyright "your_company_name"
     cookbook_license "none"
@@ -170,7 +170,7 @@ the cookbook copyright, license, email and readme_format settings can be filled 
 
 
 ## METADATA
-__knife cookbook metadata cookbook__ _(options)_
+__ceth cookbook metadata cookbook__ _(options)_
 
   * `-a`, `--all`:
     generate metadata for all cookbooks, rather than just a single cookbook
@@ -180,12 +180,12 @@ __knife cookbook metadata cookbook__ _(options)_
 generate cookbook metadata for the named _cookbook_. the _path_ used here specifies where the cookbooks directory is located and corresponds to the `cookbook_path` configuration option.
 
 ## METADATA FROM FILE
-__knife cookbook metadata from file__ _(options)_
+__ceth cookbook metadata from file__ _(options)_
 
 load the cookbook metadata from a specified file.
 
 ## TEST
-__knife cookbook test [cookbooks...]__ _(options)_
+__ceth cookbook test [cookbooks...]__ _(options)_
 
   * `-a`, `--all`:
     test all cookbooks, rather than just a single cookbook
@@ -197,7 +197,7 @@ ruby syntax checking option for files in the cookbook ending in `.rb`,
 and the erb syntax check for files ending in `.erb` (templates).
 
 ## RECIPE LIST
-__knife recipe list [PATTERN]__
+__ceth recipe list [PATTERN]__
 
 List available recipes from the server. Specify _PATTERN_ as a regular
 expression to limit the results.
@@ -247,7 +247,7 @@ cookbooks must be distributed to a given host when it requires a
 cookbook.
 
 ## SEE ALSO
-   __knife-environment(1)__ __knife-cookbook-site(1)__
+   __ceth-environment(1)__ __ceth-cookbook-site(1)__
    <http://wiki.opscode.com/display/seth/Cookbooks>
    <http://wiki.opscode.com/display/seth/Metadata>
 
@@ -260,4 +260,4 @@ cookbook.
 
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>

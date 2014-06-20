@@ -1,9 +1,9 @@
 <%# Generate Ohai Hints -%>
-<% unless @seth_config[:knife][:hints].nil? || @seth_config[:knife][:hints].empty? -%>
+<% unless @seth_config[:ceth][:hints].nil? || @seth_config[:ceth][:hints].empty? -%>
 mkdir -p /etc/seth/ohai/hints
 <% end -%>
 
-<% @seth_config[:knife][:hints].each do |name, hash| -%>
+<% @seth_config[:ceth][:hints].each do |name, hash| -%>
 (
 cat <<'EOP'
 <%= hash.to_json %>

@@ -16,11 +16,11 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'seth/knife/raw'
+require 'seth/ceth/raw'
 
-describe 'knife common options' do
+describe 'ceth common options' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
 
   when_the_repository "has a node" do
     file 'nodes/x.json', {}
@@ -37,24 +37,24 @@ describe 'knife common options' do
         Seth::Config.seth_zero.enabled = true
       end
 
-      it 'knife raw /nodes/x should retrieve the node' do
-        knife('raw /nodes/x').should_succeed /"name": "x"/
+      it 'ceth raw /nodes/x should retrieve the node' do
+        ceth('raw /nodes/x').should_succeed /"name": "x"/
       end
 
       context 'And seth_zero.port is 9999' do
         before(:each) { Seth::Config.seth_zero.port = 9999 }
 
-        it 'knife raw /nodes/x should retrieve the node' do
-          knife('raw /nodes/x').should_succeed /"name": "x"/
+        it 'ceth raw /nodes/x should retrieve the node' do
+          ceth('raw /nodes/x').should_succeed /"name": "x"/
           Seth::Config.seth_server_url.should == 'http://localhost:9999'
         end
       end
 
       context 'And seth_zero.host is 0.0.0.0' do
         before(:each) { Seth::Config.seth_zero.host = '0.0.0.0' }
- 
-        it 'knife raw /nodes/x should retrieve the role' do
-          knife('raw /nodes/x').should_succeed /"name": "x"/
+
+        it 'ceth raw /nodes/x should retrieve the role' do
+          ceth('raw /nodes/x').should_succeed /"name": "x"/
           Seth::Config.seth_server_url.should == 'http://0.0.0.0:8889'
         end
       end
@@ -90,22 +90,22 @@ syHLXYFNy0OxMtH/bBAXBGNHd9gf5uOnqh0pYcbe/uRAxumC7Rl0cL509eURiA2T
 -----END RSA PRIVATE KEY-----
 EOM
 
-        it 'knife raw /nodes/x should retrieve the node' do
-          knife('raw /nodes/x').should_succeed /"name": "x"/
+        it 'ceth raw /nodes/x should retrieve the node' do
+          ceth('raw /nodes/x').should_succeed /"name": "x"/
         end
       end
     end
 
-    it 'knife raw -z /nodes/x retrieves the node' do
-      knife('raw -z /nodes/x').should_succeed /"name": "x"/
+    it 'ceth raw -z /nodes/x retrieves the node' do
+      ceth('raw -z /nodes/x').should_succeed /"name": "x"/
     end
 
-    it 'knife raw --local-mode /nodes/x retrieves the node' do
-      knife('raw --local-mode /nodes/x').should_succeed /"name": "x"/
+    it 'ceth raw --local-mode /nodes/x retrieves the node' do
+      ceth('raw --local-mode /nodes/x').should_succeed /"name": "x"/
     end
 
-    it 'knife raw -z --seth-zero-port=9999 /nodes/x retrieves the node' do
-      knife('raw -z --seth-zero-port=9999 /nodes/x').should_succeed /"name": "x"/
+    it 'ceth raw -z --seth-zero-port=9999 /nodes/x retrieves the node' do
+      ceth('raw -z --seth-zero-port=9999 /nodes/x').should_succeed /"name": "x"/
       Seth::Config.seth_server_url.should == 'http://localhost:9999'
     end
   end

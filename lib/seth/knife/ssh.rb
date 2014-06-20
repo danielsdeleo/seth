@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class Ssh < Knife
+  class ceth
+    class Ssh < ceth
 
       deps do
         require 'net/ssh'
@@ -38,7 +38,7 @@ class Seth
 
       attr_writer :password
 
-      banner "knife ssh QUERY COMMAND (options)"
+      banner "ceth ssh QUERY COMMAND (options)"
 
       option :concurrency,
         :short => "-C NUM",
@@ -51,7 +51,7 @@ class Seth
         :short => "-a ATTR",
         :long => "--attribute ATTR",
         :description => "The attribute to use for opening the connection - default depends on the context",
-        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_attribute] = key.strip }
+        :proc => Proc.new { |key| Seth::Config[:ceth][:ssh_attribute] = key.strip }
 
       option :manual,
         :short => "-m",
@@ -78,13 +78,13 @@ class Seth
         :short => "-p PORT",
         :long => "--ssh-port PORT",
         :description => "The ssh port",
-        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_port] = key.strip }
+        :proc => Proc.new { |key| Seth::Config[:ceth][:ssh_port] = key.strip }
 
       option :ssh_gateway,
         :short => "-G GATEWAY",
         :long => "--ssh-gateway GATEWAY",
         :description => "The ssh gateway",
-        :proc => Proc.new { |key| Seth::Config[:knife][:ssh_gateway] = key.strip }
+        :proc => Proc.new { |key| Seth::Config[:ceth][:ssh_gateway] = key.strip }
 
       option :forward_agent,
         :short => "-A",
@@ -127,7 +127,7 @@ class Seth
       end
 
       def configure_gateway
-        config[:ssh_gateway] ||= Seth::Config[:knife][:ssh_gateway]
+        config[:ssh_gateway] ||= Seth::Config[:ceth][:ssh_gateway]
         if config[:ssh_gateway]
           gw_host, gw_user = config[:ssh_gateway].split('@').reverse
           gw_host, gw_port = gw_host.split(':')
@@ -196,7 +196,7 @@ class Seth
 
           ssh_config = Net::SSH.configuration_for(host)
 
-          # Seth::Config[:knife][:ssh_user] is parsed in #configure_user and written to config[:ssh_user]
+          # Seth::Config[:ceth][:ssh_user] is parsed in #configure_user and written to config[:ssh_user]
           user = config[:ssh_user] || ssh_config[:user]
           hostspec = user ? "#{user}@#{host}" : host
           session_opts[:keys] = File.expand_path(config[:identity_file]) if config[:identity_file]
@@ -205,7 +205,7 @@ class Seth
           session_opts[:forward_agent] = config[:forward_agent]
           session_opts[:port] = config[:ssh_port] ||
                                 ssh_port || # Use cloud port if available
-                                Seth::Config[:knife][:ssh_port] ||
+                                Seth::Config[:ceth][:ssh_port] ||
                                 ssh_config[:port]
           session_opts[:logger] = Seth::Log.logger if seth::Log.level == :debug
 
@@ -223,7 +223,7 @@ class Seth
       end
 
       def fixup_sudo(command)
-        command.sub(/^sudo/, 'sudo -p \'knife sudo password: \'')
+        command.sub(/^sudo/, 'sudo -p \'ceth sudo password: \'')
       end
 
       def print_data(host, data)
@@ -260,7 +260,7 @@ class Seth
             raise ArgumentError, "Cannot execute #{command}" unless success
             ch.on_data do |ichannel, data|
               print_data(ichannel[:host], data)
-              if data =~ /^knife sudo password: /
+              if data =~ /^ceth sudo password: /
                 print_data(ichannel[:host], "\n")
                 ichannel.send_data("#{get_password}\n")
               end
@@ -288,7 +288,7 @@ class Seth
       # line is input.
       def read_line
         loop do
-          command = reader.readline("#{ui.color('knife-ssh>', :bold)} ", true)
+          command = reader.readline("#{ui.color('ceth-ssh>', :bold)} ", true)
 
           if command.nil?
             command = "exit"
@@ -337,12 +337,12 @@ class Seth
       end
 
       def screen
-        tf = Tempfile.new("knife-ssh-screen")
+        tf = Tempfile.new("ceth-ssh-screen")
         if File.exist? "#{ENV["HOME"]}/.screenrc"
           tf.puts("source #{ENV["HOME"]}/.screenrc")
         end
         tf.puts("caption always '%-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%<'")
-        tf.puts("hardstatus alwayslastline 'knife ssh #{@name_args[0]}'")
+        tf.puts("hardstatus alwayslastline 'ceth ssh #{@name_args[0]}'")
         window = 0
         session.servers_for.each do |server|
           tf.print("screen -t \"#{server.host}\" #{window} ssh ")
@@ -371,7 +371,7 @@ class Seth
           end.join(" \\; ")
         end
 
-        tmux_name = "'knife ssh #{@name_args[0].gsub(/:/,'=')}'"
+        tmux_name = "'ceth ssh #{@name_args[0].gsub(/:/,'=')}'"
         begin
           server = session.servers_for.first
           cmd = ["tmux new-session -d -s #{tmux_name}",
@@ -387,7 +387,7 @@ class Seth
         begin
           require 'appscript'
         rescue LoadError
-          STDERR.puts "you need the rb-appscript gem to use knife ssh macterm. `(sudo) gem install rb-appscript` to install"
+          STDERR.puts "you need the rb-appscript gem to use ceth ssh macterm. `(sudo) gem install rb-appscript` to install"
           raise
         end
 
@@ -408,13 +408,13 @@ class Seth
       end
 
       def configure_attribute
-        # Setting 'knife[:ssh_attribute] = "foo"' in knife.rb => Seth::Config[:knife][:ssh_attribute] == 'foo'
-        # Running 'knife ssh -a foo' => both Seth::Config[:knife][:ssh_attribute] && config[:attribute] == foo
+        # Setting 'ceth[:ssh_attribute] = "foo"' in ceth.rb => Seth::Config[:ceth][:ssh_attribute] == 'foo'
+        # Running 'ceth ssh -a foo' => both Seth::Config[:ceth][:ssh_attribute] && config[:attribute] == foo
         # Thus we can differentiate between a config file value and a command line override at this point by checking config[:attribute]
         # We can tell here if fqdn was passed from the command line, rather than being the default, by checking config[:attribute]
         # However, after here, we cannot tell these things, so we must preserve config[:attribute]
-        config[:override_attribute] = config[:attribute] || Seth::Config[:knife][:ssh_attribute]
-        config[:attribute] = (Seth::Config[:knife][:ssh_attribute] ||
+        config[:override_attribute] = config[:attribute] || Seth::Config[:ceth][:ssh_attribute]
+        config[:attribute] = (Seth::Config[:ceth][:ssh_attribute] ||
                               config[:attribute] ||
                               "fqdn").strip
       end
@@ -445,14 +445,14 @@ class Seth
 
       def configure_user
         config[:ssh_user] = get_stripped_unfrozen_value(config[:ssh_user] ||
-                             Seth::Config[:knife][:ssh_user])
+                             Seth::Config[:ceth][:ssh_user])
       end
 
-      # This is a bit overly complicated because of the way we want knife ssh to work with -P causing a password prompt for
-      # the user, but we have to be conscious that this code gets included in knife bootstrap and knife * server create as
+      # This is a bit overly complicated because of the way we want ceth ssh to work with -P causing a password prompt for
+      # the user, but we have to be conscious that this code gets included in ceth bootstrap and ceth * server create as
       # well.  We want to change the semantics so that the default is false and 'nil' means -P without an argument on the
       # command line.  But the other utilities expect nil to be the default and we can't prompt in that case. So we effectively
-      # use ssh_password_ng to determine if we're coming from knife ssh or from the other utilities.  The other utilties can
+      # use ssh_password_ng to determine if we're coming from ceth ssh or from the other utilities.  The other utilties can
       # also be patched to use ssh_password_ng easily as long they follow the convention that the default is false.
       def configure_password
         if config.has_key?(:ssh_password_ng) && config[:ssh_password_ng].nil?
@@ -461,21 +461,21 @@ class Seth
           # This is where we want to trigger a prompt for password
           config[:ssh_password] = get_password
         else
-          # if ssh_password_ng is false then it has not been set at all, and we may be in knife ec2 and still
-          # using an old config[:ssh_password].  this is backwards compatibility.  all knife cloud plugins should
+          # if ssh_password_ng is false then it has not been set at all, and we may be in ceth ec2 and still
+          # using an old config[:ssh_password].  this is backwards compatibility.  all ceth cloud plugins should
           # be updated to use ssh_password_ng with a default of false and ssh_password should be retired, (but
-          # we'll still need to use the ssh_password out of knife.rb if we find that).
+          # we'll still need to use the ssh_password out of ceth.rb if we find that).
           ssh_password = config.has_key?(:ssh_password_ng) ? config[:ssh_password_ng] : config[:ssh_password]
           # Otherwise, the password has either been specified on the command line,
-          # in knife.rb, or key based auth will be attempted
+          # in ceth.rb, or key based auth will be attempted
           config[:ssh_password] = get_stripped_unfrozen_value(ssh_password ||
-                             Seth::Config[:knife][:ssh_password])
+                             Seth::Config[:ceth][:ssh_password])
         end
       end
 
       def configure_identity_file
         config[:identity_file] = get_stripped_unfrozen_value(config[:identity_file] ||
-                             Seth::Config[:knife][:ssh_identity_file])
+                             Seth::Config[:ceth][:ssh_identity_file])
       end
 
       def extract_nested_value(data_structure, path_spec)
@@ -507,8 +507,8 @@ class Seth
         when "cssh"
           cssh
         when "csshx"
-          Seth::Log.warn("knife ssh csshx will be deprecated in a future release")
-          Seth::Log.warn("please use knife ssh cssh instead")
+          Seth::Log.warn("ceth ssh csshx will be deprecated in a future release")
+          Seth::Log.warn("please use ceth ssh cssh instead")
           cssh
         else
           ssh_command(@name_args[1..-1].join(" "))

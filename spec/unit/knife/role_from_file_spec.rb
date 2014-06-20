@@ -18,51 +18,51 @@
 
 require 'spec_helper'
 
-Seth::Knife::RoleFromFile.load_deps
+Seth::ceth::RoleFromFile.load_deps
 
-describe Seth::Knife::RoleFromFile do
+describe Seth::ceth::RoleFromFile do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::RoleFromFile.new
-    @knife.config = {
+    @ceth = Seth::ceth::RoleFromFile.new
+    @ceth.config = {
       :print_after => nil
     }
-    @knife.name_args = [ "adam.rb" ]
-    @knife.stub(:output).and_return(true)
-    @knife.stub(:confirm).and_return(true)
+    @ceth.name_args = [ "adam.rb" ]
+    @ceth.stub(:output).and_return(true)
+    @ceth.stub(:confirm).and_return(true)
     @role = Seth::Role.new()
     @role.stub(:save)
-    @knife.loader.stub(:load_from).and_return(@role)
+    @ceth.loader.stub(:load_from).and_return(@role)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   describe "run" do
     it "should load from a file" do
-      @knife.loader.should_receive(:load_from).with('roles', 'adam.rb').and_return(@role)
-      @knife.run
+      @ceth.loader.should_receive(:load_from).with('roles', 'adam.rb').and_return(@role)
+      @ceth.run
     end
 
     it "should not print the role" do
-      @knife.should_not_receive(:output)
-      @knife.run
+      @ceth.should_not_receive(:output)
+      @ceth.run
     end
 
     describe "with -p or --print-after" do
       it "should print the role" do
-        @knife.config[:print_after] = true
-        @knife.should_receive(:output)
-        @knife.run
+        @ceth.config[:print_after] = true
+        @ceth.should_receive(:output)
+        @ceth.run
       end
     end
   end
 
   describe "run with multiple arguments" do
     it "should load each file" do
-      @knife.name_args = [ "adam.rb", "caleb.rb" ]
-      @knife.loader.should_receive(:load_from).with('roles', 'adam.rb').and_return(@role)
-      @knife.loader.should_receive(:load_from).with('roles', 'caleb.rb').and_return(@role)
-      @knife.run
+      @ceth.name_args = [ "adam.rb", "caleb.rb" ]
+      @ceth.loader.should_receive(:load_from).with('roles', 'adam.rb').and_return(@role)
+      @ceth.loader.should_receive(:load_from).with('roles', 'caleb.rb').and_return(@role)
+      @ceth.run
     end
   end
 

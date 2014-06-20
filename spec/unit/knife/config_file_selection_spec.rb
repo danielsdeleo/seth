@@ -19,7 +19,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 require 'tmpdir'
 
-describe Seth::Knife do
+describe Seth::ceth do
 
   let(:missing_config_fetcher) do
     double(Seth::ConfigFetcher, :config_missing? => true)
@@ -49,87 +49,87 @@ describe Seth::Knife do
     Seth::ConfigFetcher.stub(:new).and_return(missing_config_fetcher)
   end
 
-  it "configure knife from KNIFE_HOME env variable" do
-    env_config = File.expand_path(File.join(Dir.tmpdir, 'knife.rb'))
+  it "configure ceth from ceth_HOME env variable" do
+    env_config = File.expand_path(File.join(Dir.tmpdir, 'ceth.rb'))
     have_config_file(env_config)
 
-    ENV['KNIFE_HOME'] = Dir.tmpdir
-    @knife = Seth::Knife.new
-    @knife.configure_seth
-    @knife.config[:config_file].should == env_config
+    ENV['ceth_HOME'] = Dir.tmpdir
+    @ceth = Seth::ceth.new
+    @ceth.configure_seth
+    @ceth.config[:config_file].should == env_config
   end
 
-   it "configure knife from PWD" do
-    pwd_config = "#{Dir.pwd}/knife.rb"
+   it "configure ceth from PWD" do
+    pwd_config = "#{Dir.pwd}/ceth.rb"
     have_config_file(pwd_config)
 
-    @knife = Seth::Knife.new
-    @knife.configure_seth
-    @knife.config[:config_file].should == pwd_config
+    @ceth = Seth::ceth.new
+    @ceth.configure_seth
+    @ceth.config[:config_file].should == pwd_config
   end
 
-  it "configure knife from UPWARD" do
+  it "configure ceth from UPWARD" do
     upward_dir = File.expand_path "#{Dir.pwd}/.seth"
-    upward_config = File.expand_path "#{upward_dir}/knife.rb"
+    upward_config = File.expand_path "#{upward_dir}/ceth.rb"
     have_config_file(upward_config)
-    Seth::Knife.stub(:seth_config_dir).and_return(upward_dir)
+    Seth::ceth.stub(:seth_config_dir).and_return(upward_dir)
 
-    @knife = Seth::Knife.new
-    @knife.configure_seth
-    @knife.config[:config_file].should == upward_config
+    @ceth = Seth::ceth.new
+    @ceth.configure_seth
+    @ceth.config[:config_file].should == upward_config
   end
 
-  it "configure knife from HOME" do
-    home_config = File.expand_path(File.join("#{ENV['HOME']}", "/.seth/knife.rb"))
+  it "configure ceth from HOME" do
+    home_config = File.expand_path(File.join("#{ENV['HOME']}", "/.seth/ceth.rb"))
     have_config_file(home_config)
 
-    @knife = Seth::Knife.new
-    @knife.configure_seth
-    @knife.config[:config_file].should == home_config
+    @ceth = Seth::ceth.new
+    @ceth.configure_seth
+    @ceth.config[:config_file].should == home_config
   end
 
-  it "configure knife from nothing" do
+  it "configure ceth from nothing" do
     ::File.stub(:exist?).and_return(false)
-    @knife = Seth::Knife.new
-    @knife.ui.should_receive(:warn).with("No knife configuration file found")
-    @knife.configure_seth
-    @knife.config[:config_file].should be_nil
+    @ceth = Seth::ceth.new
+    @ceth.ui.should_receive(:warn).with("No ceth configuration file found")
+    @ceth.configure_seth
+    @ceth.config[:config_file].should be_nil
   end
 
-  it "configure knife precedence" do
-    env_config = File.join(Dir.tmpdir, 'knife.rb')
-    pwd_config = "#{Dir.pwd}/knife.rb"
+  it "configure ceth precedence" do
+    env_config = File.join(Dir.tmpdir, 'ceth.rb')
+    pwd_config = "#{Dir.pwd}/ceth.rb"
     upward_dir = File.expand_path "#{Dir.pwd}/.seth"
-    upward_config = File.expand_path "#{upward_dir}/knife.rb"
-    home_config = File.expand_path(File.join("#{ENV['HOME']}", "/.seth/knife.rb"))
+    upward_config = File.expand_path "#{upward_dir}/ceth.rb"
+    home_config = File.expand_path(File.join("#{ENV['HOME']}", "/.seth/ceth.rb"))
     configs = [ env_config, pwd_config, upward_config, home_config ]
 
-    Seth::Knife.stub(:seth_config_dir).and_return(upward_dir)
-    ENV['KNIFE_HOME'] = Dir.tmpdir
+    Seth::ceth.stub(:seth_config_dir).and_return(upward_dir)
+    ENV['ceth_HOME'] = Dir.tmpdir
 
-    @knife = Seth::Knife.new
+    @ceth = Seth::ceth.new
 
-    @knife.configure_seth
-    @knife.config[:config_file].should be_nil
+    @ceth.configure_seth
+    @ceth.config[:config_file].should be_nil
 
     have_config_file(home_config)
-    @knife = Seth::Knife.new
-    @knife.configure_seth
-    @knife.config[:config_file].should == home_config
+    @ceth = Seth::ceth.new
+    @ceth.configure_seth
+    @ceth.config[:config_file].should == home_config
 
     have_config_file(upward_config)
-    @knife = Seth::Knife.new
-    @knife.configure_seth
-    @knife.config[:config_file].should == upward_config
+    @ceth = Seth::ceth.new
+    @ceth.configure_seth
+    @ceth.config[:config_file].should == upward_config
 
     have_config_file(pwd_config)
-    @knife = Seth::Knife.new
-    @knife.configure_seth
-    @knife.config[:config_file].should == pwd_config
+    @ceth = Seth::ceth.new
+    @ceth.configure_seth
+    @ceth.config[:config_file].should == pwd_config
 
     have_config_file(env_config)
-    @knife = Seth::Knife.new
-    @knife.configure_seth
-    @knife.config[:config_file].should == env_config
+    @ceth = Seth::ceth.new
+    @ceth.configure_seth
+    @ceth.config[:config_file].should == env_config
   end
 end

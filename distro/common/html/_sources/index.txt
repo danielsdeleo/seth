@@ -8,18 +8,18 @@ The following command line interfaces are available in the |seth client|:
 * :doc:`ctl_seth_server`
 * :doc:`ctl_seth_shell`
 * :doc:`ctl_seth_solo`
-* :doc:`knife`
+* :doc:`ceth`
 
-knife
+ceth
 =====================================================
-.. include:: ../../includes_knife/includes_knife.rst
+.. include:: ../../includes_ceth/includes_ceth.rst
 
-The following sections describe functionality common to all |knife| subcommands:
+The following sections describe functionality common to all |ceth| subcommands:
 
-* :doc:`knife_using`
-* :doc:`knife_common_options`
+* :doc:`ceth_using`
+* :doc:`ceth_common_options`
 
-|knife| includes the following sub-commands: 
+|ceth| includes the following sub-commands:
 
 .. list-table::
    :widths: 150 450
@@ -27,64 +27,64 @@ The following sections describe functionality common to all |knife| subcommands:
 
    * - Sub-command
      - Description
-   * - :doc:`knife_bootstrap`
-     - .. include:: ../../includes_knife/includes_knife_bootstrap.rst
-   * - :doc:`knife_client`
-     - .. include:: ../../includes_knife/includes_knife_client.rst
-   * - :doc:`knife_configure`
-     - .. include:: ../../includes_knife/includes_knife_configure.rst
-   * - :doc:`knife_cookbook`
-     - .. include:: ../../includes_knife/includes_knife_cookbook.rst
-   * - :doc:`knife_cookbook_site`
-     - .. include:: ../../includes_knife/includes_knife_site_cookbook.rst
-   * - :doc:`knife_data_bag`
-     - .. include:: ../../includes_knife/includes_knife_data_bag.rst
-   * - :doc:`knife_delete`
-     - .. include:: ../../includes_knife/includes_knife_delete.rst
-   * - :doc:`knife_deps`
-     - .. include:: ../../includes_knife/includes_knife_deps.rst
-   * - :doc:`knife_diff`
-     - .. include:: ../../includes_knife/includes_knife_diff.rst
-   * - :doc:`knife_download`
-     - .. include:: ../../includes_knife/includes_knife_download.rst
-   * - :doc:`knife_edit`
-     - .. include:: ../../includes_knife/includes_knife_edit.rst
-   * - :doc:`knife_environment`
-     - .. include:: ../../includes_knife/includes_knife_environment.rst
-   * - :doc:`knife_exec`
-     - .. include:: ../../includes_knife/includes_knife_exec.rst
-   * - :doc:`knife_index_rebuild`
-     - .. include:: ../../includes_knife/includes_knife_index_rebuild.rst
-   * - :doc:`knife_list`
-     - .. include:: ../../includes_knife/includes_knife_list.rst
-   * - :doc:`knife_node`
-     - .. include:: ../../includes_knife/includes_knife_node.rst
-   * - :doc:`knife_raw`
-     - .. include:: ../../includes_knife/includes_knife_raw.rst
-   * - :doc:`knife_recipe_list`
-     - .. include:: ../../includes_knife/includes_knife_recipe_list.rst
-   * - :doc:`knife_role`
-     - .. include:: ../../includes_knife/includes_knife_role.rst
-   * - :doc:`knife_search`
-     - .. include:: ../../includes_knife/includes_knife_search.rst
-   * - :doc:`knife_show`
-     - .. include:: ../../includes_knife/includes_knife_show.rst
-   * - :doc:`knife_ssh`
-     - .. include:: ../../includes_knife/includes_knife_ssh.rst
-   * - :doc:`knife_ssl_check`
-     - .. include:: ../../release_seth_11-12/includes_knife_ssl_check.rst
-   * - :doc:`knife_ssl_fetch`
-     - .. include:: ../../release_seth_11-12/includes_knife_ssl_fetch.rst
-   * - :doc:`knife_status`
-     - .. include:: ../../includes_knife/includes_knife_status.rst
-   * - :doc:`knife_tag`
-     - .. include:: ../../includes_knife/includes_knife_tag.rst
-   * - :doc:`knife_upload`
-     - .. include:: ../../includes_knife/includes_knife_upload.rst
-   * - :doc:`knife_user`
-     - .. include:: ../../includes_knife/includes_knife_user.rst
-   * - :doc:`knife_xargs`
-     - .. include:: ../../includes_knife/includes_knife_xargs.rst
+   * - :doc:`ceth_bootstrap`
+     - .. include:: ../../includes_ceth/includes_ceth_bootstrap.rst
+   * - :doc:`ceth_client`
+     - .. include:: ../../includes_ceth/includes_ceth_client.rst
+   * - :doc:`ceth_configure`
+     - .. include:: ../../includes_ceth/includes_ceth_configure.rst
+   * - :doc:`ceth_cookbook`
+     - .. include:: ../../includes_ceth/includes_ceth_cookbook.rst
+   * - :doc:`ceth_cookbook_site`
+     - .. include:: ../../includes_ceth/includes_ceth_site_cookbook.rst
+   * - :doc:`ceth_data_bag`
+     - .. include:: ../../includes_ceth/includes_ceth_data_bag.rst
+   * - :doc:`ceth_delete`
+     - .. include:: ../../includes_ceth/includes_ceth_delete.rst
+   * - :doc:`ceth_deps`
+     - .. include:: ../../includes_ceth/includes_ceth_deps.rst
+   * - :doc:`ceth_diff`
+     - .. include:: ../../includes_ceth/includes_ceth_diff.rst
+   * - :doc:`ceth_download`
+     - .. include:: ../../includes_ceth/includes_ceth_download.rst
+   * - :doc:`ceth_edit`
+     - .. include:: ../../includes_ceth/includes_ceth_edit.rst
+   * - :doc:`ceth_environment`
+     - .. include:: ../../includes_ceth/includes_ceth_environment.rst
+   * - :doc:`ceth_exec`
+     - .. include:: ../../includes_ceth/includes_ceth_exec.rst
+   * - :doc:`ceth_index_rebuild`
+     - .. include:: ../../includes_ceth/includes_ceth_index_rebuild.rst
+   * - :doc:`ceth_list`
+     - .. include:: ../../includes_ceth/includes_ceth_list.rst
+   * - :doc:`ceth_node`
+     - .. include:: ../../includes_ceth/includes_ceth_node.rst
+   * - :doc:`ceth_raw`
+     - .. include:: ../../includes_ceth/includes_ceth_raw.rst
+   * - :doc:`ceth_recipe_list`
+     - .. include:: ../../includes_ceth/includes_ceth_recipe_list.rst
+   * - :doc:`ceth_role`
+     - .. include:: ../../includes_ceth/includes_ceth_role.rst
+   * - :doc:`ceth_search`
+     - .. include:: ../../includes_ceth/includes_ceth_search.rst
+   * - :doc:`ceth_show`
+     - .. include:: ../../includes_ceth/includes_ceth_show.rst
+   * - :doc:`ceth_ssh`
+     - .. include:: ../../includes_ceth/includes_ceth_ssh.rst
+   * - :doc:`ceth_ssl_check`
+     - .. include:: ../../release_seth_11-12/includes_ceth_ssl_check.rst
+   * - :doc:`ceth_ssl_fetch`
+     - .. include:: ../../release_seth_11-12/includes_ceth_ssl_fetch.rst
+   * - :doc:`ceth_status`
+     - .. include:: ../../includes_ceth/includes_ceth_status.rst
+   * - :doc:`ceth_tag`
+     - .. include:: ../../includes_ceth/includes_ceth_tag.rst
+   * - :doc:`ceth_upload`
+     - .. include:: ../../includes_ceth/includes_ceth_upload.rst
+   * - :doc:`ceth_user`
+     - .. include:: ../../includes_ceth/includes_ceth_user.rst
+   * - :doc:`ceth_xargs`
+     - .. include:: ../../includes_ceth/includes_ceth_xargs.rst
 
 
 .. Hide the TOC from this file.
@@ -96,37 +96,37 @@ The following sections describe functionality common to all |knife| subcommands:
    ctl_seth_server
    ctl_seth_shell
    ctl_seth_solo
-   knife
-   knife_common_options
-   knife_bootstrap
-   knife_client
-   knife_configure
-   knife_cookbook
-   knife_cookbook_site
-   knife_data_bag
-   knife_delete
-   knife_deps
-   knife_diff
-   knife_download
-   knife_edit
-   knife_environment
-   knife_exec
-   knife_index_rebuild
-   knife_list
-   knife_node
-   knife_raw
-   knife_recipe_list
-   knife_role
-   knife_search
-   knife_show
-   knife_ssh
-   knife_ssl_check
-   knife_ssl_fetch
-   knife_status
-   knife_tag
-   knife_upload
-   knife_user
-   knife_using
-   knife_xargs
+   ceth
+   ceth_common_options
+   ceth_bootstrap
+   ceth_client
+   ceth_configure
+   ceth_cookbook
+   ceth_cookbook_site
+   ceth_data_bag
+   ceth_delete
+   ceth_deps
+   ceth_diff
+   ceth_download
+   ceth_edit
+   ceth_environment
+   ceth_exec
+   ceth_index_rebuild
+   ceth_list
+   ceth_node
+   ceth_raw
+   ceth_recipe_list
+   ceth_role
+   ceth_search
+   ceth_show
+   ceth_ssh
+   ceth_ssl_check
+   ceth_ssl_fetch
+   ceth_status
+   ceth_tag
+   ceth_upload
+   ceth_user
+   ceth_using
+   ceth_xargs
 
 

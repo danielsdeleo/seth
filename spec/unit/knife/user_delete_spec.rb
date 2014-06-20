@@ -18,22 +18,22 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::UserDelete do
+describe Seth::ceth::UserDelete do
   before(:each) do
-    Seth::Knife::UserDelete.load_deps
-    @knife = Seth::Knife::UserDelete.new
-    @knife.name_args = [ 'my_user' ]
+    Seth::ceth::UserDelete.load_deps
+    @ceth = Seth::ceth::UserDelete.new
+    @ceth.name_args = [ 'my_user' ]
   end
 
   it 'deletes the user' do
-    @knife.should_receive(:delete_object).with(Seth::User, 'my_user')
-    @knife.run
+    @ceth.should_receive(:delete_object).with(Seth::User, 'my_user')
+    @ceth.run
   end
 
   it 'prints usage and exits when a user name is not provided' do
-    @knife.name_args = []
-    @knife.should_receive(:show_usage)
-    @knife.ui.should_receive(:fatal)
-    lambda { @knife.run }.should raise_error(SystemExit)
+    @ceth.name_args = []
+    @ceth.should_receive(:show_usage)
+    @ceth.ui.should_receive(:fatal)
+    lambda { @ceth.run }.should raise_error(SystemExit)
   end
 end

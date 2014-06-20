@@ -18,11 +18,11 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::CookbookList do
+describe Seth::ceth::CookbookList do
   before do
-    @knife = Seth::Knife::CookbookList.new
+    @ceth = Seth::ceth::CookbookList.new
     @rest_mock = double('rest')
-    @knife.stub(:rest).and_return(@rest_mock)
+    @ceth.stub(:rest).and_return(@rest_mock)
     @cookbook_names = ['apache2', 'mysql']
     @base_url = 'https://server.example.com/cookbooks'
     @cookbook_data = {}
@@ -32,32 +32,32 @@ describe Seth::Knife::CookbookList do
                                               'url' => "#{@base_url}/#{item}/1.0.1"}]}
     end
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   describe 'run' do
     it 'should display the latest version of the cookbooks' do
       @rest_mock.should_receive(:get_rest).with('/cookbooks?num_versions=1').
                                            and_return(@cookbook_data)
-      @knife.run
+      @ceth.run
       @cookbook_names.each do |item|
         @stdout.string.should match /#{item}\s+1\.0\.1/
       end
     end
 
     it 'should query cookbooks for the configured environment' do
-      @knife.config[:environment] = 'production'
+      @ceth.config[:environment] = 'production'
       @rest_mock.should_receive(:get_rest).
                  with('/environments/production/cookbooks?num_versions=1').
                  and_return(@cookbook_data)
-      @knife.run
+      @ceth.run
     end
 
     describe 'with -w or --with-uri' do
       it 'should display the cookbook uris' do
-        @knife.config[:with_uri] = true
+        @ceth.config[:with_uri] = true
         @rest_mock.stub(:get_rest).and_return(@cookbook_data)
-        @knife.run
+        @ceth.run
         @cookbook_names.each do |item|
           pattern = /#{Regexp.escape(@cookbook_data[item]['versions'].first['url'])}/
           @stdout.string.should match pattern
@@ -74,10 +74,10 @@ describe Seth::Knife::CookbookList do
       end
 
       it 'should display all versions of the cookbooks' do
-        @knife.config[:all_versions] = true
+        @ceth.config[:all_versions] = true
         @rest_mock.should_receive(:get_rest).with('/cookbooks?num_versions=all').
                                              and_return(@cookbook_data)
-        @knife.run
+        @ceth.run
         @cookbook_names.each do |item|
           @stdout.string.should match /#{item}\s+1\.0\.1\s+1\.0\.0/
         end

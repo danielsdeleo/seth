@@ -19,14 +19,14 @@
 require 'spec_helper'
 require 'tiny_server'
 
-describe Seth::Knife::Exec do
+describe Seth::ceth::Exec do
   before(:all) do
     @server = TinyServer::Manager.new#(:debug => true)
     @server.start
   end
 
   before(:each) do
-    @knife = Seth::Knife::Exec.new
+    @ceth = Seth::ceth::Exec.new
     @api = TinyServer::API.instance
     @api.clear
 
@@ -49,8 +49,8 @@ describe Seth::Knife::Exec do
     response = {"rows" => [@node],"start" => 0,"total" => 1}
     @api.get(%r{^/search/node}, 200, response.to_json)
     code = "$output.puts nodes.all"
-    @knife.config[:exec] = code
-    @knife.run
+    @ceth.config[:exec] = code
+    @ceth.run
     $output.string.should match(%r{node\[ohai-world\]})
   end
 

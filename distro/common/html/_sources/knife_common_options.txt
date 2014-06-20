@@ -2,5 +2,5 @@
 Common Options
 =====================================================
 
-.. include:: ../../includes_knife/includes_knife_common_options.rst
+.. include:: ../../includes_ceth/includes_ceth_common_options.rst
 

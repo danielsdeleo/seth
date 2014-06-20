@@ -17,9 +17,9 @@
 #
 
 require 'spec_helper'
-require 'seth/knife/ssl_fetch'
+require 'seth/ceth/ssl_fetch'
 
-describe Seth::Knife::SslFetch do
+describe Seth::ceth::SslFetch do
 
   let(:name_args) { [] }
   let(:stdout_io) { StringIO.new }
@@ -34,7 +34,7 @@ describe Seth::Knife::SslFetch do
   end
 
   subject(:ssl_fetch) do
-    s = Seth::Knife::SslFetch.new
+    s = Seth::ceth::SslFetch.new
     s.name_args = name_args
     s.ui.stub(:stdout).and_return(stdout_io)
     s.ui.stub(:stderr).and_return(stderr_io)
@@ -69,7 +69,7 @@ describe Seth::Knife::SslFetch do
     it "prints an error and exits" do
       expect { ssl_fetch.run }.to raise_error(SystemExit)
       expected_stdout=<<-E
-USAGE: knife ssl fetch [URL] (options)
+USAGE: ceth ssl fetch [URL] (options)
 E
       expected_stderr=<<-E
 ERROR: Given URI: `foo.test' is invalid
@@ -85,7 +85,7 @@ E
       it "prints an error and exits" do
         expect { ssl_fetch.run }.to raise_error(SystemExit)
         expected_stdout=<<-E
-USAGE: knife ssl fetch [URL] (options)
+USAGE: ceth ssl fetch [URL] (options)
 E
         expected_stderr=<<-E
 ERROR: Given URI: `#{name_args[0]}' is invalid

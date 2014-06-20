@@ -72,7 +72,7 @@ session:
     Turns irb's function tracing feature on or off. Tracing is extremely
     verbose and expected to be of interest primarily to developers.
   * `node`:
-    Returns the _node_ object for the current host. See knife-node(1)
+    Returns the _node_ object for the current host. See ceth-node(1)
     for more information about nodes.
   * `ohai`:
     Prints the attributes of _node_
@@ -175,7 +175,7 @@ libraries.
 
 ## SEE ALSO
 
-  seth-client(8) knife(1)
+  seth-client(8) ceth(1)
   <http://wiki.opscode.com/display/seth/Seth+Shell>
 
 ## AUTHOR

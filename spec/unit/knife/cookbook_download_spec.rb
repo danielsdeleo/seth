@@ -18,34 +18,34 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::CookbookDownload do
+describe Seth::ceth::CookbookDownload do
   before(:each) do
-    @knife = Seth::Knife::CookbookDownload.new
+    @ceth = Seth::ceth::CookbookDownload.new
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   describe 'run' do
     it 'should print usage and exit when a cookbook name is not provided' do
-      @knife.name_args = []
-      @knife.should_receive(:show_usage)
-      @knife.ui.should_receive(:fatal).with(/must specify a cookbook name/)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = []
+      @ceth.should_receive(:show_usage)
+      @ceth.ui.should_receive(:fatal).with(/must specify a cookbook name/)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     it 'should exit with a fatal error when there is no cookbook on the server' do
-      @knife.name_args = ['foobar', nil]
-      @knife.should_receive(:determine_version).and_return(nil)
-      @knife.ui.should_receive(:fatal).with('No such cookbook found')
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = ['foobar', nil]
+      @ceth.should_receive(:determine_version).and_return(nil)
+      @ceth.ui.should_receive(:fatal).with('No such cookbook found')
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
     describe 'with a cookbook name' do
       before(:each) do
-        @knife.name_args = ['foobar']
-        @knife.config[:download_directory] = '/var/tmp/seth'
+        @ceth.name_args = ['foobar']
+        @ceth.config[:download_directory] = '/var/tmp/seth'
         @rest_mock = double('rest')
-        @knife.stub(:rest).and_return(@rest_mock)
+        @ceth.stub(:rest).and_return(@rest_mock)
 
         @manifest_data = {
           :recipes => [
@@ -75,15 +75,15 @@ describe Seth::Knife::CookbookDownload do
 
       it 'should determine which version if one was not explicitly specified'do
         @cookbook_mock.stub(:manifest).and_return({})
-        @knife.should_receive(:determine_version).and_return('1.0.0')
+        @ceth.should_receive(:determine_version).and_return('1.0.0')
         File.should_receive(:exists?).with('/var/tmp/seth/foobar-1.0.0').and_return(false)
         Seth::CookbookVersion.stub(:COOKBOOK_SEGEMENTS).and_return([])
-        @knife.run
+        @ceth.run
       end
 
       describe 'and a version' do
         before(:each) do
-          @knife.name_args << '1.0.0'
+          @ceth.name_args << '1.0.0'
           @files = @manifest_data.values.map { |v| v.map { |i| i['path'] } }.flatten.uniq
           @files_mocks = {}
           @files.map { |f| File.basename(f) }.flatten.uniq.each do |f|
@@ -94,8 +94,8 @@ describe Seth::Knife::CookbookDownload do
 
         it 'should print an error and exit if the cookbook download directory already exists' do
           File.should_receive(:exists?).with('/var/tmp/seth/foobar-1.0.0').and_return(true)
-          @knife.ui.should_receive(:fatal).with(/\/var\/tmp\/seth\/foobar-1\.0\.0 exists/i)
-          lambda { @knife.run }.should raise_error(SystemExit)
+          @ceth.ui.should_receive(:fatal).with(/\/var\/tmp\/seth\/foobar-1\.0\.0 exists/i)
+          lambda { @ceth.run }.should raise_error(SystemExit)
         end
 
         describe 'when downloading the cookbook' do
@@ -119,7 +119,7 @@ describe Seth::Knife::CookbookDownload do
 
           it "should download the cookbook when the cookbook download directory doesn't exist" do
             File.should_receive(:exists?).with('/var/tmp/seth/foobar-1.0.0').and_return(false)
-            @knife.run
+            @ceth.run
             ['attributes', 'recipes', 'templates'].each do |segment|
               @stdout.string.should match /downloading #{segment}/im
             end
@@ -129,10 +129,10 @@ describe Seth::Knife::CookbookDownload do
 
           describe 'with -f or --force' do
             it 'should remove the existing the cookbook download directory if it exists' do
-              @knife.config[:force] = true
+              @ceth.config[:force] = true
               File.should_receive(:exists?).with('/var/tmp/seth/foobar-1.0.0').and_return(true)
               FileUtils.should_receive(:rm_rf).with('/var/tmp/seth/foobar-1.0.0')
-              @knife.run
+              @ceth.run
             end
           end
         end
@@ -145,51 +145,51 @@ describe Seth::Knife::CookbookDownload do
   describe 'determine_version' do
 
     it 'should return nil if there are no versions' do
-      @knife.should_receive(:available_versions).and_return(nil)
-      @knife.determine_version.should == nil
-      @knife.version.should == nil
+      @ceth.should_receive(:available_versions).and_return(nil)
+      @ceth.determine_version.should == nil
+      @ceth.version.should == nil
     end
 
     it 'should return and set the version if there is only one version' do
-      @knife.should_receive(:available_versions).at_least(:once).and_return(['1.0.0'])
-      @knife.determine_version.should == '1.0.0'
-      @knife.version.should == '1.0.0'
+      @ceth.should_receive(:available_versions).at_least(:once).and_return(['1.0.0'])
+      @ceth.determine_version.should == '1.0.0'
+      @ceth.version.should == '1.0.0'
     end
 
     it 'should ask which version to download and return it if there is more than one' do
-      @knife.should_receive(:available_versions).at_least(:once).and_return(['1.0.0', '2.0.0'])
-      @knife.should_receive(:ask_which_version).and_return('1.0.0')
-      @knife.determine_version.should == '1.0.0'
+      @ceth.should_receive(:available_versions).at_least(:once).and_return(['1.0.0', '2.0.0'])
+      @ceth.should_receive(:ask_which_version).and_return('1.0.0')
+      @ceth.determine_version.should == '1.0.0'
     end
 
     describe 'with -N or --latest' do
       it 'should return and set the version to the latest version' do
-        @knife.config[:latest] = true
-        @knife.should_receive(:available_versions).at_least(:once).
+        @ceth.config[:latest] = true
+        @ceth.should_receive(:available_versions).at_least(:once).
                                                    and_return(['1.0.0', '1.1.0', '2.0.0'])
-        @knife.determine_version
-        @knife.version.to_s.should == '2.0.0'
+        @ceth.determine_version
+        @ceth.version.to_s.should == '2.0.0'
       end
     end
   end
 
   describe 'available_versions' do
     before(:each) do
-      @knife.cookbook_name = 'foobar'
+      @ceth.cookbook_name = 'foobar'
     end
 
     it 'should return nil if there are no versions' do
       Seth::CookbookVersion.should_receive(:available_versions).
                             with('foobar').
                             and_return(nil)
-      @knife.available_versions.should == nil
+      @ceth.available_versions.should == nil
     end
 
     it 'should return the available versions' do
       Seth::CookbookVersion.should_receive(:available_versions).
                             with('foobar').
                             and_return(['1.1.0', '2.0.0', '1.0.0'])
-      @knife.available_versions.should == [Seth::Version.new('1.0.0'),
+      @ceth.available_versions.should == [Seth::Version.new('1.0.0'),
                                            Seth::Version.new('1.1.0'),
                                            Seth::Version.new('2.0.0')]
     end
@@ -199,39 +199,39 @@ describe Seth::Knife::CookbookDownload do
                             once.
                             with('foobar').
                             and_return(['1.1.0', '2.0.0', '1.0.0'])
-      @knife.available_versions
-      @knife.available_versions
+      @ceth.available_versions
+      @ceth.available_versions
     end
   end
 
   describe 'ask_which_version' do
     before(:each) do
-      @knife.cookbook_name = 'foobar'
-      @knife.stub(:available_versions).and_return(['1.0.0', '1.1.0', '2.0.0'])
+      @ceth.cookbook_name = 'foobar'
+      @ceth.stub(:available_versions).and_return(['1.0.0', '1.1.0', '2.0.0'])
     end
 
     it 'should prompt the user to select a version' do
       prompt = /Which version do you want to download\?.+1\. foobar 1\.0\.0.+2\. foobar 1\.1\.0.+3\. foobar 2\.0\.0.+/m
-      @knife.should_receive(:ask_question).with(prompt).and_return('1')
-      @knife.ask_which_version
+      @ceth.should_receive(:ask_question).with(prompt).and_return('1')
+      @ceth.ask_which_version
     end
 
     it "should set the version to the user's selection" do
-      @knife.should_receive(:ask_question).and_return('1')
-      @knife.ask_which_version
-      @knife.version.should == '1.0.0'
+      @ceth.should_receive(:ask_question).and_return('1')
+      @ceth.ask_which_version
+      @ceth.version.should == '1.0.0'
     end
 
     it "should print an error and exit if a version wasn't specified" do
-      @knife.should_receive(:ask_question).and_return('')
-      @knife.ui.should_receive(:error).with(/is not a valid value/i)
-      lambda { @knife.ask_which_version }.should raise_error(SystemExit)
+      @ceth.should_receive(:ask_question).and_return('')
+      @ceth.ui.should_receive(:error).with(/is not a valid value/i)
+      lambda { @ceth.ask_which_version }.should raise_error(SystemExit)
     end
 
     it 'should print an error if an invalid choice was selected' do
-      @knife.should_receive(:ask_question).and_return('100')
-      @knife.ui.should_receive(:error).with(/'100' is not a valid value/i)
-      lambda { @knife.ask_which_version }.should raise_error(SystemExit)
+      @ceth.should_receive(:ask_question).and_return('100')
+      @ceth.ui.should_receive(:error).with(/'100' is not a valid value/i)
+      lambda { @ceth.ask_which_version }.should raise_error(SystemExit)
     end
   end
 

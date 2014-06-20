@@ -1,14 +1,14 @@
-knife-data-bag(1) -- Store arbitrary data on a Seth Server
+ceth-data-bag(1) -- Store arbitrary data on a Seth Server
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __data bag__ _sub-command_ _(options)_
+__ceth__ __data bag__ _sub-command_ _(options)_
 
 ## DESCRIPTION
 Data bags are stores of arbitrary JSON data. Each data bag is a
 collection that may contain many items. Data Bag Items are indexed by
-the Seth Server and can be searched via __knife-search__(1).
+the Seth Server and can be searched via __ceth-search__(1).
 
 Data bags are available to all nodes configured by __seth-client__(8),
 and are therefore a convenient mechanism to store global information,
@@ -18,7 +18,7 @@ all hosts.
 ## DATA BAG SUB-COMMANDS
 
 ## CREATE
-__knife data bag create__ _bag name_ [item id] _(options)_
+__ceth data bag create__ _bag name_ [item id] _(options)_
 
   * `-s`, `--secret SECRET`:
    A secret key used to encrypt the data bag item. See __encryption support__ below.
@@ -33,12 +33,12 @@ exist.
 If _item id_ is not given, the data bag will be created.
 
 ## DELETE
-__knife data bag delete__ _bag name_ [item id] _(options)_
+__ceth data bag delete__ _bag name_ [item id] _(options)_
 
 Delete a data bag, or an item from a data bag.
 
 ## EDIT
-__knife data bag edit__ _bag name_ _item id_ _(options)_
+__ceth data bag edit__ _bag name_ _item id_ _(options)_
 
   * `-s`, `--secret SECRET`:
    A secret key used to encrypt the data bag item. See __encryption support__ below.
@@ -49,11 +49,11 @@ __knife data bag edit__ _bag name_ _item id_ _(options)_
 Edit an item in a data bag.
 
 ## FROM FILE
-__knife data bag from file__ _bag name_ _file_ _(options)_
+__ceth data bag from file__ _bag name_ _file_ _(options)_
 
-__knife data bag from file__ _bag name_ _file1_ _file2_ _file3_ _(options)_
+__ceth data bag from file__ _bag name_ _file1_ _file2_ _file3_ _(options)_
 
-__knife data bag from file__ _bag name_ _folder_ _(options)_
+__ceth data bag from file__ _bag name_ _folder_ _(options)_
 
   * `-s`, `--secret SECRET`:
    A secret key used to encrypt the data bag item. See __encryption support__ below.
@@ -64,12 +64,12 @@ __knife data bag from file__ _bag name_ _folder_ _(options)_
 Load a data bag item from a JSON file. If _file_ is a relative or
 absolute path to the file, that file will be used. Otherwise, the _file_
 parameter is treated as the base name of a data bag file in a Seth
-repository, and `knife` will search for the file in
-`./data_bags/bag_name/file`. For example `knife data bag from file users
+repository, and `ceth` will search for the file in
+`./data_bags/bag_name/file`. For example `ceth data bag from file users
 dan.json` would attempt to load the file `./data_bags/users/dan.json`.
 
 ## LIST
-__knife data bag list__ _(options)_
+__ceth data bag list__ _(options)_
 
   * `-w`, `--with-uri`:
     Show corresponding URIs
@@ -77,7 +77,7 @@ __knife data bag list__ _(options)_
 Lists the data bags that exist on the Seth Server.
 
 ## SHOW
-__knife data bag show BAG [ITEM]__ _(options)_
+__ceth data bag show BAG [ITEM]__ _(options)_
 
   * `-s`, `--secret SECRET`:
    A secret key used to encrypt the data bag item. See __encryption support__ below.
@@ -107,7 +107,7 @@ Seth Server does not provide a secure mechanism for distributing
 encryption keys.
 
 ## SEE ALSO
-   __knife-search__(1)
+   __ceth-search__(1)
 
 ## AUTHOR
    Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
@@ -117,5 +117,5 @@ encryption keys.
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## seth
-   Knife is distributed with Seth. http://wiki.opscode.com/display/seth/Home
+   ceth is distributed with Seth. http://wiki.opscode.com/display/seth/Home
 

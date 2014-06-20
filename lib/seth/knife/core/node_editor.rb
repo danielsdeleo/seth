@@ -21,7 +21,7 @@ require 'seth/node'
 require 'tempfile'
 
 class Seth
-  class Knife
+  class ceth
     class NodeEditor
 
       attr_reader :node
@@ -100,7 +100,7 @@ class Seth
 
       def assert_editor_set!
         unless config[:editor]
-          abort "You must set your EDITOR environment variable or configure your editor via knife.rb"
+          abort "You must set your EDITOR environment variable or configure your editor via ceth.rb"
         end
       end
 

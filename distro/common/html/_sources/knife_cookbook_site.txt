@@ -1,80 +1,80 @@
 =====================================================
-knife cookbook site 
+ceth cookbook site
 =====================================================
 
 .. include:: ../../includes_api_cookbooks_site/includes_api_cookbooks_site.rst
 
-.. include:: ../../includes_knife/includes_knife_site_cookbook.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook.rst
 
-.. note:: Review the list of :doc:`common options </knife_common_options>` available to this (and all) |knife| subcommands and plugins.
+.. note:: Review the list of :doc:`common options </ceth_common_options>` available to this (and all) |ceth| subcommands and plugins.
 
 download
 =====================================================
-.. include:: ../../includes_knife/includes_knife_site_cookbook_download.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_download.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_download_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_download_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_download_options.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_download_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Download a cookbook**
 
-.. include:: ../../step_knife/step_knife_site_cookbook_download.rst
+.. include:: ../../step_ceth/step_ceth_site_cookbook_download.rst
 
 install
 =====================================================
-.. include:: ../../includes_knife/includes_knife_site_cookbook_install.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_install.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_install_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_install_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_install_options.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_install_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Install a cookbook**
 
-.. include:: ../../step_knife/step_knife_site_cookbook_install.rst
+.. include:: ../../step_ceth/step_ceth_site_cookbook_install.rst
 
 list
 =====================================================
-.. include:: ../../includes_knife/includes_knife_site_cookbook_list.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_list.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_list_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_list_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_list_options.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_list_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **View a list of cookbooks**
 
-.. include:: ../../step_knife/step_knife_site_cookbook_list.rst
+.. include:: ../../step_ceth/step_ceth_site_cookbook_list.rst
 
 search
 =====================================================
-.. include:: ../../includes_knife/includes_knife_site_cookbook_search.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_search.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_search_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_search_syntax.rst
 
 Options
 -----------------------------------------------------
@@ -82,65 +82,65 @@ Options
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Search for cookbooks**
 
-.. include:: ../../step_knife/step_knife_site_cookbook_search.rst
+.. include:: ../../step_ceth/step_ceth_site_cookbook_search.rst
 
 share
 =====================================================
-.. include:: ../../includes_knife/includes_knife_site_cookbook_share.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_share.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_share_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_share_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_share_options.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_share_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Share a cookbook**
 
-.. include:: ../../step_knife/step_knife_site_cookbook_share.rst
+.. include:: ../../step_ceth/step_ceth_site_cookbook_share.rst
 
 
 show
 =====================================================
-.. include:: ../../includes_knife/includes_knife_site_cookbook_show.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_show.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_show_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_show_syntax.rst
 
 Options
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_show_options.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_show_options.rst
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Show cookbook data**
 
-.. include:: ../../step_knife/step_knife_site_cookbook_show.rst
+.. include:: ../../step_ceth/step_ceth_site_cookbook_show.rst
 
 **Show cookbook data as JSON**
 
-.. include:: ../../step_knife/step_knife_common_view_json.rst
+.. include:: ../../step_ceth/step_ceth_common_view_json.rst
 
 
 unshare
 =====================================================
-.. include:: ../../includes_knife/includes_knife_site_cookbook_unshare.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_unshare.rst
 
 Syntax
 -----------------------------------------------------
-.. include:: ../../includes_knife/includes_knife_site_cookbook_unshare_syntax.rst
+.. include:: ../../includes_ceth/includes_ceth_site_cookbook_unshare_syntax.rst
 
 Options
 -----------------------------------------------------
@@ -148,10 +148,10 @@ Options
 
 Examples
 -----------------------------------------------------
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
 **Unshare a cookbook**
 
-.. include:: ../../step_knife/step_knife_site_cookbook_unshare.rst
+.. include:: ../../step_ceth/step_ceth_site_cookbook_unshare.rst
 
 

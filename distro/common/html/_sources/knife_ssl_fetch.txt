@@ -1,41 +1,41 @@
 =====================================================
-knife ssl fetch
+ceth ssl fetch
 =====================================================
 
-.. include:: ../../release_seth_11-12/includes_knife_ssl_fetch.rst
+.. include:: ../../release_seth_11-12/includes_ceth_ssl_fetch.rst
 
 **Syntax**
 
-.. include:: ../../release_seth_11-12/includes_knife_ssl_fetch_syntax.rst
+.. include:: ../../release_seth_11-12/includes_ceth_ssl_fetch_syntax.rst
 
 **Options**
 
-.. include:: ../../includes_knife_manpage_options/includes_knife_ssl_fetch_options.rst
+.. include:: ../../includes_ceth_manpage_options/includes_ceth_ssl_fetch_options.rst
 
 **Examples**
 
-The following examples show how to use this |knife| subcommand:
+The following examples show how to use this |ceth| subcommand:
 
-**Fetch the SSL certificates used by Knife from the Seth server**
+**Fetch the SSL certificates used by ceth from the Seth server**
 
 .. code-block:: bash
 
-   $ knife ssl fetch
+   $ ceth ssl fetch
 
 **Fetch the SSL certificates used by the seth-client from the Seth server**
 
 .. code-block:: bash
 
-   $ knife ssl fetch -c /etc/seth/client.rb
+   $ ceth ssl fetch -c /etc/seth/client.rb
 
 **Fetch SSL certificates from a URL or URI**
 
 .. code-block:: bash
 
-   $ knife ssl fetch URL_or_URI
+   $ ceth ssl fetch URL_or_URI
 
 for example:
 
 .. code-block:: bash
 
-   $ knife ssl fetch https://www.getseth.com
+   $ ceth ssl fetch https://www.getseth.com

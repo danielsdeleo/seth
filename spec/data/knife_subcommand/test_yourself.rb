@@ -1,5 +1,5 @@
-module KnifeSpecs
-  class TestYourself < Seth::Knife
+module cethSpecs
+  class TestYourself < Seth::ceth
 
     class << self
       attr_reader :test_deps_loaded

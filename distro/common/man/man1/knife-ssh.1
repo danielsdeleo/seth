@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-SSH" "1" "Seth 11.12.0" "" "knife ssh"
+.TH "ceth-SSH" "1" "Seth 11.12.0" "" "ceth ssh"
 .SH NAME
-knife-ssh \- The man page for the knife ssh subcommand.
+ceth-ssh \- The man page for the ceth ssh subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife ssh\fP subcommand is used to invoke SSH commands (in parallel) on a subset of nodes within an organization, based on the results of a search query.
+The \fBceth ssh\fP subcommand is used to invoke SSH commands (in parallel) on a subset of nodes within an organization, based on the results of a search query.
 .sp
 \fBSyntax\fP
 .sp
@@ -41,7 +41,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife ssh SEARCH_QUERY SSH_COMMAND (options)
+$ ceth ssh SEARCH_QUERY SSH_COMMAND (options)
 .ft P
 .fi
 .UNINDENT
@@ -74,7 +74,7 @@ Indicates whether colored output will be used.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -95,7 +95,7 @@ Shows help for the command.
 The SSH identity file used for authentication. Key\-based authentication is recommended.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-m\fP, \fB\-\-manual\-list\fP
 Indicates that a search query is a space\-separated list of servers. If there is more than one item in the list, put quotes around the entire list. For example: \fB\-\-manual\-list "server01 server 02 server 03"\fP
@@ -110,7 +110,7 @@ The shell type. Possible values: \fBinteractive\fP, \fBscreen\fP, \fBtmux\fP, \f
 The SSH port.
 .TP
 .B \fB\-P PASSWORD\fP, \fB\-\-ssh\-password PASSWORD\fP
-The SSH password. This can be used to pass the password directly on the command line. If this option is not specified (and a password is required) Knife will prompt for the password.
+The SSH password. This can be used to pass the password directly on the command line. If this option is not specified (and a password is required) ceth will prompt for the password.
 .TP
 .B \fB\-\-print\-after\fP
 Indicates that data will be shown after a destructive operation.
@@ -125,7 +125,7 @@ The search query used to return a list of servers to be accessed using SSH and t
 The command that will be run against the results of a search query.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -137,7 +137,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The SSH user name.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -151,7 +151,7 @@ To find the uptime of all of web servers running Ubuntu on the Amazon EC2 platfo
 .sp
 .nf
 .ft C
-$ knife ssh "role:web" "uptime" \-x ubuntu \-a ec2.public_hostname
+$ ceth ssh "role:web" "uptime" \-x ubuntu \-a ec2.public_hostname
 .ft P
 .fi
 .UNINDENT
@@ -177,7 +177,7 @@ ec2\-184\-73\-60\-141.compute\-1.amazonaws.com    13:50:48 up 1 day, 23:30,  1 u
 .sp
 .nf
 .ft C
-$ knife ssh \(aqname:*\(aq \(aqsudo seth\-client\(aq
+$ ceth ssh \(aqname:*\(aq \(aqsudo seth\-client\(aq
 .ft P
 .fi
 .UNINDENT
@@ -189,7 +189,7 @@ To force a seth\-client run on all of the web servers running Ubuntu on the Amaz
 .sp
 .nf
 .ft C
-$ knife ssh "role:web" "sudo seth\-client" \-x ubuntu \-a ec2.public_hostname
+$ ceth ssh "role:web" "sudo seth\-client" \-x ubuntu \-a ec2.public_hostname
 .ft P
 .fi
 .UNINDENT
@@ -237,7 +237,7 @@ To query for all nodes that have the "webserver" role and then use SSH to run th
 .sp
 .nf
 .ft C
-$ knife ssh "role:webserver" "sudo seth\-client"
+$ ceth ssh "role:webserver" "sudo seth\-client"
 .ft P
 .fi
 .UNINDENT
@@ -247,7 +247,7 @@ $ knife ssh "role:webserver" "sudo seth\-client"
 .sp
 .nf
 .ft C
-$ knife ssh name:* "sudo aptitude upgrade \-y"
+$ ceth ssh name:* "sudo aptitude upgrade \-y"
 .ft P
 .fi
 .UNINDENT
@@ -259,19 +259,19 @@ To specify the shell type used on the nodes returned by a search query:
 .sp
 .nf
 .ft C
-$ knife ssh roles:opscode\-omnitruck macterm
+$ ceth ssh roles:opscode\-omnitruck macterm
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .sp
-where \fBscreen\fP is one of the following values: \fBcssh\fP, \fBinteractive\fP, \fBmacterm\fP, \fBscreen\fP, or \fBtmux\fP\&. If the node does not have the shell type installed, Knife will return an error similar to the following:
+where \fBscreen\fP is one of the following values: \fBcssh\fP, \fBinteractive\fP, \fBmacterm\fP, \fBscreen\fP, or \fBtmux\fP\&. If the node does not have the shell type installed, ceth will return an error similar to the following:
 .INDENT 0.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
-you need the rb\-appscript gem to use knife ssh macterm.
+you need the rb\-appscript gem to use ceth ssh macterm.
 \(ga(sudo) gem    install rb\-appscript\(ga to install
 ERROR: LoadError: cannot load such file \-\- appscript
 .ft P

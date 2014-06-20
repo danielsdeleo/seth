@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-CONFIGURE" "1" "Seth 11.12.0" "" "knife configure"
+.TH "ceth-CONFIGURE" "1" "Seth 11.12.0" "" "ceth configure"
 .SH NAME
-knife-configure \- The man page for the knife configure subcommand.
+ceth-configure \- The man page for the ceth configure subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,17 +31,17 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife configure\fP subcommand is used to create the knife.rb and client.rb files so that they can be distributed to workstations and nodes.
+The \fBceth configure\fP subcommand is used to create the ceth.rb and client.rb files so that they can be distributed to workstations and nodes.
 .sp
 \fBSyntax\fP
 .sp
-This subcommand has the following syntax when creating a knife.rb file:
+This subcommand has the following syntax when creating a ceth.rb file:
 .INDENT 0.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
-$ knife configure (options)
+$ ceth configure (options)
 .ft P
 .fi
 .UNINDENT
@@ -53,7 +53,7 @@ and the following syntax when creating a client.rb file:
 .sp
 .nf
 .ft C
-$ knife configure client DIRECTORY
+$ ceth configure client DIRECTORY
 .ft P
 .fi
 .UNINDENT
@@ -83,7 +83,7 @@ Indicates whether colored output will be used.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -101,7 +101,7 @@ Shows help for the command.
 Use to create a API client, typically an administrator client on a freshly\-installed Seth server\&.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-print\-after\fP
 Indicates that data will be shown after a destructive operation.
@@ -113,7 +113,7 @@ The path to the seth\-repo\&.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -128,7 +128,7 @@ The name of the validation client.
 The path to the validation key used by the client, typically a file named \fBvalidation.pem\fP\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -140,7 +140,7 @@ Indicates that the seth\-client will be run in local mode, which allows all comm
 .sp
 .nf
 .ft C
-$ knife configure
+$ ceth configure
 .ft P
 .fi
 .UNINDENT
@@ -150,7 +150,7 @@ $ knife configure
 .sp
 .nf
 .ft C
-$ knife configure client \(aq/directory\(aq
+$ ceth configure client \(aq/directory\(aq
 .ft P
 .fi
 .UNINDENT

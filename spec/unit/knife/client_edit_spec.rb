@@ -18,23 +18,23 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::ClientEdit do
+describe Seth::ceth::ClientEdit do
   before(:each) do
-    @knife = Seth::Knife::ClientEdit.new
-    @knife.name_args = [ 'adam' ]
+    @ceth = Seth::ceth::ClientEdit.new
+    @ceth.name_args = [ 'adam' ]
   end
 
   describe 'run' do
     it 'should edit the client' do
-      @knife.should_receive(:edit_object).with(Seth::ApiClient, 'adam')
-      @knife.run
+      @ceth.should_receive(:edit_object).with(Seth::ApiClient, 'adam')
+      @ceth.run
     end
 
     it 'should print usage and exit when a client name is not provided' do
-      @knife.name_args = []
-      @knife.should_receive(:show_usage)
-      @knife.ui.should_receive(:fatal)
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = []
+      @ceth.should_receive(:show_usage)
+      @ceth.ui.should_receive(:fatal)
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
   end
 end

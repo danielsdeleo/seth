@@ -19,25 +19,25 @@
 # rename to cookbook not coookbook
 require 'spec_helper'
 
-describe Seth::Knife::CookbookShow do
+describe Seth::ceth::CookbookShow do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::CookbookShow.new
-    @knife.config = { }
-    @knife.name_args = [ "cookbook_name" ]
+    @ceth = Seth::ceth::CookbookShow.new
+    @ceth.config = { }
+    @ceth.name_args = [ "cookbook_name" ]
     @rest = double(Seth::REST)
-    @knife.stub(:rest).and_return(@rest)
-    @knife.stub(:pretty_print).and_return(true)
-    @knife.stub(:output).and_return(true)
+    @ceth.stub(:rest).and_return(@rest)
+    @ceth.stub(:pretty_print).and_return(true)
+    @ceth.stub(:output).and_return(true)
   end
 
   describe "run" do
     describe "with 0 arguments: help" do
       it 'should should print usage and exit when given no arguments' do
-        @knife.name_args = []
-        @knife.should_receive(:show_usage)
-        @knife.ui.should_receive(:fatal)
-        lambda { @knife.run }.should raise_error(SystemExit)
+        @ceth.name_args = []
+        @ceth.should_receive(:show_usage)
+        @ceth.ui.should_receive(:fatal)
+        lambda { @ceth.run }.should raise_error(SystemExit)
       end
     end
 
@@ -57,34 +57,34 @@ describe Seth::Knife::CookbookShow do
 
       it "should show the raw cookbook data" do
         @rest.should_receive(:get_rest).with("cookbooks/cookbook_name").and_return(@response)
-        @knife.should_receive(:format_cookbook_list_for_display).with(@response)
-        @knife.run
+        @ceth.should_receive(:format_cookbook_list_for_display).with(@response)
+        @ceth.run
       end
 
       it "should respect the user-supplied environment" do
-        @knife.config[:environment] = "foo"
+        @ceth.config[:environment] = "foo"
         @rest.should_receive(:get_rest).with("environments/foo/cookbooks/cookbook_name").and_return(@response)
-        @knife.should_receive(:format_cookbook_list_for_display).with(@response)
-        @knife.run
+        @ceth.should_receive(:format_cookbook_list_for_display).with(@response)
+        @ceth.run
       end
     end
 
     describe "with 2 arguments: name and version" do
       before(:each) do
-        @knife.name_args << "0.1.0"
+        @ceth.name_args << "0.1.0"
         @response = { "0.1.0" => { "recipes" => {"default.rb" => ""} } }
       end
 
       it "should show the specific part of a cookbook" do
         @rest.should_receive(:get_rest).with("cookbooks/cookbook_name/0.1.0").and_return(@response)
-        @knife.should_receive(:output).with(@response)
-        @knife.run
+        @ceth.should_receive(:output).with(@response)
+        @ceth.run
       end
     end
 
     describe "with 3 arguments: name, version, and segment" do
       before(:each) do
-        @knife.name_args = [ "cookbook_name", "0.1.0", "recipes" ]
+        @ceth.name_args = [ "cookbook_name", "0.1.0", "recipes" ]
         @cookbook_response = Seth::CookbookVersion.new("cookbook_name")
         @manifest = {
           "recipes" => [
@@ -102,14 +102,14 @@ describe Seth::Knife::CookbookShow do
 
       it "should print the json of the part" do
         @rest.should_receive(:get_rest).with("cookbooks/cookbook_name/0.1.0").and_return(@cookbook_response)
-        @knife.should_receive(:output).with(@cookbook_response.manifest["recipes"])
-        @knife.run
+        @ceth.should_receive(:output).with(@cookbook_response.manifest["recipes"])
+        @ceth.run
       end
     end
 
     describe "with 4 arguments: name, version, segment and filename" do
       before(:each) do
-        @knife.name_args = [ "cookbook_name", "0.1.0", "recipes", "default.rb" ]
+        @ceth.name_args = [ "cookbook_name", "0.1.0", "recipes", "default.rb" ]
         @cookbook_response = Seth::CookbookVersion.new("cookbook_name")
         @cookbook_response.manifest = {
           "recipes" => [
@@ -127,14 +127,14 @@ describe Seth::Knife::CookbookShow do
       it "should print the raw result of the request (likely a file!)" do
         @rest.should_receive(:get_rest).with("cookbooks/cookbook_name/0.1.0").and_return(@cookbook_response)
         @rest.should_receive(:get_rest).with("http://example.org/files/default.rb", true).and_return(StringIO.new(@response))
-        @knife.should_receive(:pretty_print).with(@response)
-        @knife.run
+        @ceth.should_receive(:pretty_print).with(@response)
+        @ceth.run
       end
     end
 
     describe "with 4 arguments: name, version, segment and filename -- with specificity" do
       before(:each) do
-        @knife.name_args = [ "cookbook_name", "0.1.0", "files", "afile.rb" ]
+        @ceth.name_args = [ "cookbook_name", "0.1.0", "files", "afile.rb" ]
         @cookbook_response = Seth::CookbookVersion.new("cookbook_name")
         @cookbook_response.manifest = {
           "files" => [
@@ -174,37 +174,37 @@ describe Seth::Knife::CookbookShow do
 
       describe "with --fqdn" do
         it "should pass the fqdn" do
-          @knife.config[:platform] = "example_platform"
-          @knife.config[:platform_version] = "1.0"
-          @knife.config[:fqdn] = "examplehost.example.org"
+          @ceth.config[:platform] = "example_platform"
+          @ceth.config[:platform_version] = "1.0"
+          @ceth.config[:fqdn] = "examplehost.example.org"
           @rest.should_receive(:get_rest).with("cookbooks/cookbook_name/0.1.0").and_return(@cookbook_response)
           @rest.should_receive(:get_rest).with("http://example.org/files/1111", true).and_return(StringIO.new(@response))
-          @knife.should_receive(:pretty_print).with(@response)
-          @knife.run
+          @ceth.should_receive(:pretty_print).with(@response)
+          @ceth.run
         end
       end
 
       describe "and --platform" do
         it "should pass the platform" do
-          @knife.config[:platform] = "ubuntu"
-          @knife.config[:platform_version] = "1.0"
-          @knife.config[:fqdn] = "differenthost.example.org"
+          @ceth.config[:platform] = "ubuntu"
+          @ceth.config[:platform_version] = "1.0"
+          @ceth.config[:fqdn] = "differenthost.example.org"
           @rest.should_receive(:get_rest).with("cookbooks/cookbook_name/0.1.0").and_return(@cookbook_response)
           @rest.should_receive(:get_rest).with("http://example.org/files/3333", true).and_return(StringIO.new(@response))
-          @knife.should_receive(:pretty_print).with(@response)
-          @knife.run
+          @ceth.should_receive(:pretty_print).with(@response)
+          @ceth.run
         end
       end
 
       describe "and --platform-version" do
         it "should pass the platform" do
-          @knife.config[:platform] = "ubuntu"
-          @knife.config[:platform_version] = "9.10"
-          @knife.config[:fqdn] = "differenthost.example.org"
+          @ceth.config[:platform] = "ubuntu"
+          @ceth.config[:platform_version] = "9.10"
+          @ceth.config[:fqdn] = "differenthost.example.org"
           @rest.should_receive(:get_rest).with("cookbooks/cookbook_name/0.1.0").and_return(@cookbook_response)
           @rest.should_receive(:get_rest).with("http://example.org/files/2222", true).and_return(StringIO.new(@response))
-          @knife.should_receive(:pretty_print).with(@response)
-          @knife.run
+          @ceth.should_receive(:pretty_print).with(@response)
+          @ceth.run
         end
       end
 
@@ -212,8 +212,8 @@ describe Seth::Knife::CookbookShow do
         it "should pass them all" do
           @rest.should_receive(:get_rest).with("cookbooks/cookbook_name/0.1.0").and_return(@cookbook_response)
           @rest.should_receive(:get_rest).with("http://example.org/files/4444", true).and_return(StringIO.new(@response))
-          @knife.should_receive(:pretty_print).with(@response)
-          @knife.run
+          @ceth.should_receive(:pretty_print).with(@response)
+          @ceth.run
         end
       end
 

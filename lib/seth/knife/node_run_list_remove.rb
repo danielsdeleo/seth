@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class NodeRunListRemove < Knife
+  class ceth
+    class NodeRunListRemove < ceth
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
       end
 
-      banner "knife node run_list remove [NODE] [ENTRIES] (options)"
+      banner "ceth node run_list remove [NODE] [ENTRIES] (options)"
 
       def run
         node = Seth::Node.load(@name_args[0])

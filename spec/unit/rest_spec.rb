@@ -314,7 +314,7 @@ describe Seth::REST do
       end
 
       it "sets the user agent to seth-client" do
-        # XXX: must reset to default b/c knife changes the UA
+        # XXX: must reset to default b/c ceth changes the UA
         Seth::REST::RESTRequest.user_agent = seth::REST::RESTRequest::DEFAULT_UA
         rest.request(:GET, url, {})
         expect(request_mock['User-Agent']).to match(/^Seth Client\/#{seth::VERSION}/)

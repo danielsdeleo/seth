@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class NodeBulkDelete < Knife
+  class ceth
+    class NodeBulkDelete < ceth
 
       deps do
         require 'seth/node'
         require 'seth/json_compat'
       end
 
-      banner "knife node bulk delete REGEX (options)"
+      banner "ceth node bulk delete REGEX (options)"
 
       def run
         if name_args.length < 1

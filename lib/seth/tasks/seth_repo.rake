@@ -77,7 +77,7 @@ task :default => [ :test_cookbooks ]
 
 desc "Create a new cookbook (with COOKBOOK=name, optional CB_PREFIX=site-)"
 task :new_cookbook do
-  puts "***WARN: rake new_cookbook is deprecated. Please use 'knife cookbook create COOKBOOK' command.***"
+  puts "***WARN: rake new_cookbook is deprecated. Please use 'ceth cookbook create COOKBOOK' command.***"
   create_cookbook(File.join(TOPDIR, "#{ENV["CB_PREFIX"]}cookbooks"))
   create_readme(File.join(TOPDIR, "#{ENV["CB_PREFIX"]}cookbooks"))
   create_metadata(File.join(TOPDIR, "#{ENV["CB_PREFIX"]}cookbooks"))
@@ -218,14 +218,14 @@ EOH
 end
 
 rule(%r{\b(?:site-)?cookbooks/[^/]+/metadata\.json\Z} => [ proc { |task_name| task_name.sub(/\.[^.]+$/, '.rb') } ]) do |t|
-  system("knife cookbook metadata from file #{t.source}")
+  system("ceth cookbook metadata from file #{t.source}")
 end
 
 desc "Build cookbook metadata.json from metadata.rb"
 task :metadata => FileList[File.join(TOPDIR, '*cookbooks', ENV['COOKBOOK'] || '*', 'metadata.rb')].pathmap('%X.json')
 
 rule(%r{\broles/\S+\.json\Z} => [ proc { |task_name| task_name.sub(/\.[^.]+$/, '.rb') } ]) do |t|
-  system("knife role from file #{t.source}")
+  system("ceth role from file #{t.source}")
 end
 
 desc "Update roles"
@@ -233,29 +233,29 @@ task :roles  => FileList[File.join(TOPDIR, 'roles', '**', '*.rb')].pathmap('%X.j
 
 desc "Update a specific role"
 task :role, :role_name do |t, args|
-  system("knife role from file #{File.join(TOPDIR, 'roles', args.role_name)}.rb")
+  system("ceth role from file #{File.join(TOPDIR, 'roles', args.role_name)}.rb")
 end
 
 desc "Upload all cookbooks"
 task :upload_cookbooks => [ :metadata ]
 task :upload_cookbooks do
-  system("knife cookbook upload --all")
+  system("ceth cookbook upload --all")
 end
 
 desc "Upload a single cookbook"
 task :upload_cookbook => [ :metadata ]
 task :upload_cookbook, :cookbook do |t, args|
-  system("knife cookbook upload #{args.cookbook}")
+  system("ceth cookbook upload #{args.cookbook}")
 end
 
 desc "Test all cookbooks"
 task :test_cookbooks do
-  system("knife cookbook test --all")
+  system("ceth cookbook test --all")
 end
 
 desc "Test a single cookbook"
 task :test_cookbook, :cookbook do |t, args|
-  system("knife cookbook test #{args.cookbook}")
+  system("ceth cookbook test #{args.cookbook}")
 end
 
 namespace :databag do
@@ -267,11 +267,11 @@ namespace :databag do
     databag = File.join(path, input_databag)
 
     if File.exists?(databag) && File.directory?(databag)
-      system "knife data bag create #{input_databag}"
+      system "ceth data bag create #{input_databag}"
       Dir.foreach(databag) do |item|
         name, type = item.split('.')
         if type == 'json' && name.length > 0
-          system "knife data bag from file #{input_databag} " + File.join(databag, item)
+          system "ceth data bag from file #{input_databag} " + File.join(databag, item)
         end
       end
     else

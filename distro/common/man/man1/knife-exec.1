@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-EXEC" "1" "Seth 11.12.0" "" "knife exec"
+.TH "ceth-EXEC" "1" "Seth 11.12.0" "" "ceth exec"
 .SH NAME
-knife-exec \- The man page for the knife exec subcommand.
+ceth-exec \- The man page for the ceth exec subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,11 +31,11 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife exec\fP subcommand uses the Knife configuration file to execute Ruby scripts in the context of a fully configured seth\-client\&. This subcommand is most often used to run scripts that will only access Seth server one time (or otherwise very infrequently). Use this subcommand any time that an operation does not warrant full usage of the Knife subcommand library.
+The \fBceth exec\fP subcommand uses the ceth configuration file to execute Ruby scripts in the context of a fully configured seth\-client\&. This subcommand is most often used to run scripts that will only access Seth server one time (or otherwise very infrequently). Use this subcommand any time that an operation does not warrant full usage of the ceth subcommand library.
 .sp
 \fBAuthenticated API Requests\fP
 .sp
-The \fBknife exec\fP subcommand can be used to make authenticated API requests to the Seth server using the following methods:
+The \fBceth exec\fP subcommand can be used to make authenticated API requests to the Seth server using the following methods:
 .TS
 center;
 |l|l|.
@@ -78,7 +78,7 @@ These methods are used with the \fB\-E\fP option, which executes that string loc
 .sp
 .nf
 .ft C
-$ knife exec \-E \(aqapi.method(/endpoint)\(aq
+$ ceth exec \-E \(aqapi.method(/endpoint)\(aq
 .ft P
 .fi
 .UNINDENT
@@ -98,7 +98,7 @@ For example, to get the data for a node named "Example_Node":
 .sp
 .nf
 .ft C
-$ knife exec \-E \(aqputs api.get("/nodes/Example_Node")\(aq
+$ ceth exec \-E \(aqputs api.get("/nodes/Example_Node")\(aq
 .ft P
 .fi
 .UNINDENT
@@ -110,7 +110,7 @@ and to ensure that the output is visible in the console, add the \fBputs\fP in f
 .sp
 .nf
 .ft C
-$ knife exec \-E \(aqputs api.get("/nodes/Example_Node")\(aq
+$ ceth exec \-E \(aqputs api.get("/nodes/Example_Node")\(aq
 .ft P
 .fi
 .UNINDENT
@@ -144,7 +144,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife exec SCRIPT (options)
+$ ceth exec SCRIPT (options)
 .ft P
 .fi
 .UNINDENT
@@ -168,7 +168,7 @@ Indicates whether colored output will be used.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-E CODE\fP, \fB\-\-exec CODE\fP
 A string of code that will be executed.
@@ -186,7 +186,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-p PATH:PATH\fP, \fB\-\-script\-path PATH:PATH\fP
 A colon\-separated path at which Ruby scripts are located.
@@ -198,7 +198,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -207,7 +207,7 @@ The version of the seth\-client\&.
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -215,13 +215,13 @@ Indicates that the seth\-client will be run in local mode, which allows all comm
 .sp
 \fBExamples\fP
 .sp
-There are three ways to use \fBknife exec\fP to run Ruby script files. For example:
+There are three ways to use \fBceth exec\fP to run Ruby script files. For example:
 .INDENT 0.0
 .INDENT 3.5
 .sp
 .nf
 .ft C
-$ knife exec /path/to/script_file
+$ ceth exec /path/to/script_file
 .ft P
 .fi
 .UNINDENT
@@ -233,7 +233,7 @@ Or:
 .sp
 .nf
 .ft C
-$ knife exec \-E \(aqRUBY CODE\(aq
+$ ceth exec \-E \(aqRUBY CODE\(aq
 .ft P
 .fi
 .UNINDENT
@@ -245,7 +245,7 @@ Or:
 .sp
 .nf
 .ft C
-$ knife exec
+$ ceth exec
 RUBY CODE
 ^D
 .ft P
@@ -253,7 +253,7 @@ RUBY CODE
 .UNINDENT
 .UNINDENT
 .sp
-To check the status of Knife using a Ruby script named "status.rb" (which looks like):
+To check the status of ceth using a Ruby script named "status.rb" (which looks like):
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -277,7 +277,7 @@ and is located in a directory named "scripts", enter:
 .sp
 .nf
 .ft C
-$ knife exec scripts/status.rb
+$ ceth exec scripts/status.rb
 .ft P
 .fi
 .UNINDENT
@@ -289,7 +289,7 @@ To show the available free memory for all nodes, enter:
 .sp
 .nf
 .ft C
-$ knife exec \-E \(aqnodes.all {|n| puts "#{n.name} has #{n.memory.total} free memory"}\(aq
+$ ceth exec \-E \(aqnodes.all {|n| puts "#{n.name} has #{n.memory.total} free memory"}\(aq
 .ft P
 .fi
 .UNINDENT
@@ -301,7 +301,7 @@ To list all of the available search indexes, enter:
 .sp
 .nf
 .ft C
-$ knife exec \-E \(aqputs api.get("search").keys\(aq
+$ ceth exec \-E \(aqputs api.get("search").keys\(aq
 .ft P
 .fi
 .UNINDENT
@@ -337,7 +337,7 @@ enter:
 .sp
 .nf
 .ft C
-% knife exec scripts/search_attributes.rb "hostname:test_system" ipaddress,fqdn
+% ceth exec scripts/search_attributes.rb "hostname:test_system" ipaddress,fqdn
 .ft P
 .fi
 .UNINDENT

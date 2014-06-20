@@ -11,7 +11,7 @@ class Seth
             data_bag_item = data_bag_item['raw_data']
           end
           # seth_type and data_bag come back in PUT and POST results, but we don't
-          # use those in knife-essentials.
+          # use those in ceth-essentials.
           normalize_hash(data_bag_item, {
             'id' => remove_dot_json(entry.name)
           })

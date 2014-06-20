@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-ENVIRONMENT" "1" "Seth 11.12.0" "" "knife environment"
+.TH "ceth-ENVIRONMENT" "1" "Seth 11.12.0" "" "ceth environment"
 .SH NAME
-knife-environment \- The man page for the knife environment subcommand.
+ceth-environment \- The man page for the ceth environment subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -33,10 +33,10 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .sp
 An environment is a way to map an organization\(aqs real\-life workflow to what can be configured and managed when using Seth server\&. Every organization begins with a single environment called the \fB_default\fP environment, which cannot be modified (or deleted). Additional environments can be created to reflect each organization\(aqs patterns and workflow. For example, creating \fBproduction\fP, \fBstaging\fP, \fBtesting\fP, and \fBdevelopment\fP environments. Generally, an environment is also associated with one (or more) cookbook versions.
 .sp
-The \fBknife environment\fP subcommand is used to manage environments within a single organization on the Seth server\&.
+The \fBceth environment\fP subcommand is used to manage environments within a single organization on the Seth server\&.
 .SH COMMON OPTIONS
 .sp
-The following options may be used with any of the arguments available to the \fBknife environment\fP subcommand:
+The following options may be used with any of the arguments available to the \fBceth environment\fP subcommand:
 .INDENT 0.0
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
@@ -49,7 +49,7 @@ The configuration file to use.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -64,7 +64,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -76,7 +76,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -85,7 +85,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -102,7 +102,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife environment compare [ENVIRONMENT_NAME...] (options)
+$ ceth environment compare [ENVIRONMENT_NAME...] (options)
 .ft P
 .fi
 .UNINDENT
@@ -128,7 +128,7 @@ To compare cookbook versions for a single environment:
 .sp
 .nf
 .ft C
-$ knife environment compare development
+$ ceth environment compare development
 .ft P
 .fi
 .UNINDENT
@@ -154,7 +154,7 @@ To compare cookbook versions for multiple environments:
 .sp
 .nf
 .ft C
-$ knife environment compare development staging
+$ ceth environment compare development staging
 .ft P
 .fi
 .UNINDENT
@@ -181,7 +181,7 @@ To compare all cookbook versions for all environments:
 .sp
 .nf
 .ft C
-$ knife environment compare \-\-all
+$ ceth environment compare \-\-all
 .ft P
 .fi
 .UNINDENT
@@ -227,7 +227,7 @@ windows            1.0.0    4.1.2
 .UNINDENT
 .SH CREATE
 .sp
-The \fBcreate\fP argument is used to add an environment object to the Seth server\&. When this argument is run, Knife will open $EDITOR to enable editing of the \fBENVIRONMENT\fP description field (unless a description is specified as part of the command). When finished, Knife will add the environment to the seth server\&.
+The \fBcreate\fP argument is used to add an environment object to the Seth server\&. When this argument is run, ceth will open $EDITOR to enable editing of the \fBENVIRONMENT\fP description field (unless a description is specified as part of the command). When finished, ceth will add the environment to the seth server\&.
 .sp
 \fBSyntax\fP
 .sp
@@ -237,7 +237,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife environment create ENVIRONMENT_NAME \-d DESCRIPTION
+$ ceth environment create ENVIRONMENT_NAME \-d DESCRIPTION
 .ft P
 .fi
 .UNINDENT
@@ -260,7 +260,7 @@ To create an environment named "dev" with a description of "The development envi
 .sp
 .nf
 .ft C
-$ knife environment create dev \-d "The development environment."
+$ ceth environment create dev \-d "The development environment."
 .ft P
 .fi
 .UNINDENT
@@ -277,7 +277,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife environment delete ENVIRONMENT_NAME
+$ ceth environment delete ENVIRONMENT_NAME
 .ft P
 .fi
 .UNINDENT
@@ -295,7 +295,7 @@ To delete an environment named "dev", enter:
 .sp
 .nf
 .ft C
-$ knife environment delete dev
+$ ceth environment delete dev
 .ft P
 .fi
 .UNINDENT
@@ -304,7 +304,7 @@ $ knife environment delete dev
 Type \fBY\fP to confirm a deletion.
 .SH EDIT
 .sp
-The \fBedit\fP argument is used to edit the attributes of an environment. When this argument is run, Knife will open $EDITOR to enable editing of \fBENVIRONMENT\fP attributes. When finished, Knife will update the Seth server with those changes.
+The \fBedit\fP argument is used to edit the attributes of an environment. When this argument is run, ceth will open $EDITOR to enable editing of \fBENVIRONMENT\fP attributes. When finished, ceth will update the Seth server with those changes.
 .sp
 \fBSyntax\fP
 .sp
@@ -314,7 +314,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife environment edit ENVIRONMENT_NAME
+$ ceth environment edit ENVIRONMENT_NAME
 .ft P
 .fi
 .UNINDENT
@@ -332,7 +332,7 @@ To edit an environment named "devops", enter:
 .sp
 .nf
 .ft C
-$ knife environment edit devops
+$ ceth environment edit devops
 .ft P
 .fi
 .UNINDENT
@@ -349,7 +349,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife environment [create | edit] from file FILE (options)
+$ ceth environment [create | edit] from file FILE (options)
 .ft P
 .fi
 .UNINDENT
@@ -372,7 +372,7 @@ To add an environment using data contained in a JSON file:
 .sp
 .nf
 .ft C
-$ knife environment create devops from file "path to JSON file"
+$ ceth environment create devops from file "path to JSON file"
 .ft P
 .fi
 .UNINDENT
@@ -384,7 +384,7 @@ or:
 .sp
 .nf
 .ft C
-$ knife environment edit devops from file "path to JSON file"
+$ ceth environment edit devops from file "path to JSON file"
 .ft P
 .fi
 .UNINDENT
@@ -401,7 +401,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife environment list \-w
+$ ceth environment list \-w
 .ft P
 .fi
 .UNINDENT
@@ -424,7 +424,7 @@ To view a list of environments:
 .sp
 .nf
 .ft C
-$ knife environment list \-w
+$ ceth environment list \-w
 .ft P
 .fi
 .UNINDENT
@@ -441,7 +441,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife environment show ENVIRONMENT_NAME
+$ ceth environment show ENVIRONMENT_NAME
 .ft P
 .fi
 .UNINDENT
@@ -459,7 +459,7 @@ To view information about the "dev" environment enter:
 .sp
 .nf
 .ft C
-$ knife environment show dev
+$ ceth environment show dev
 .ft P
 .fi
 .UNINDENT
@@ -471,7 +471,7 @@ to return:
 .sp
 .nf
 .ft C
-% knife environment show dev
+% ceth environment show dev
 seth_type:            environment
 cookbook_versions:
 default_attributes:
@@ -495,7 +495,7 @@ To view information in JSON format, use the \fB\-F\fP common option as part of t
 .sp
 .nf
 .ft C
-$ knife role show devops \-F json
+$ ceth role show devops \-F json
 .ft P
 .fi
 .UNINDENT

@@ -1,9 +1,9 @@
-require 'seth/seth_fs/knife'
+require 'seth/seth_fs/ceth'
 
 class Seth
-  class Knife
-    class Edit < Seth::sethFS::Knife
-      banner "knife edit [PATTERN1 ... PATTERNn]"
+  class ceth
+    class Edit < Seth::sethFS::ceth
+      banner "ceth edit [PATTERN1 ... PATTERNn]"
 
       category "path-based"
 
@@ -51,7 +51,7 @@ class Seth
 
       def edit_text(text, extension)
         if (!config[:disable_editing])
-          Tempfile.open([ 'knife-edit-', extension ]) do |file|
+          Tempfile.open([ 'ceth-edit-', extension ]) do |file|
             # Write the text to a temporary file
             file.write(text)
             file.close

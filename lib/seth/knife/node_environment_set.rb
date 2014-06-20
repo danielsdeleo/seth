@@ -16,17 +16,17 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class NodeEnvironmentSet < Knife
+  class ceth
+    class NodeEnvironmentSet < ceth
 
       deps do
         require 'seth/node'
       end
 
-      banner "knife node environment set NODE ENVIRONMENT"
+      banner "ceth node environment set NODE ENVIRONMENT"
 
       def run
         if @name_args.size < 2
@@ -46,7 +46,7 @@ class Seth
 
         config[:attribute] = "seth_environment"
 
-        output(format_for_display(node))   
+        output(format_for_display(node))
       end
 
     end

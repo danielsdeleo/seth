@@ -1,4 +1,4 @@
-module KnifeSpecs
-  class TestNameMapping < Seth::Knife
-  end  
+module cethSpecs
+  class TestNameMapping < Seth::ceth
+  end
 end

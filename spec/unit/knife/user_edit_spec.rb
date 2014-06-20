@@ -18,30 +18,30 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::UserEdit do
+describe Seth::ceth::UserEdit do
   before(:each) do
     @stderr = StringIO.new
     @stdout = StringIO.new
 
-    Seth::Knife::UserEdit.load_deps
-    @knife = Seth::Knife::UserEdit.new
-    @knife.ui.stub(:stderr).and_return(@stderr)
-    @knife.ui.stub(:stdout).and_return(@stdout)
-    @knife.name_args = [ 'my_user' ]
-    @knife.config[:disable_editing] = true
+    Seth::ceth::UserEdit.load_deps
+    @ceth = Seth::ceth::UserEdit.new
+    @ceth.ui.stub(:stderr).and_return(@stderr)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
+    @ceth.name_args = [ 'my_user' ]
+    @ceth.config[:disable_editing] = true
   end
 
   it 'loads and edits the user' do
     data = { :name => "my_user" }
     Seth::User.stub(:load).with("my_user").and_return(data)
-    @knife.should_receive(:edit_data).with(data).and_return(data)
-    @knife.run
+    @ceth.should_receive(:edit_data).with(data).and_return(data)
+    @ceth.run
   end
 
   it 'prints usage and exits when a user name is not provided' do
-    @knife.name_args = []
-    @knife.should_receive(:show_usage)
-    @knife.ui.should_receive(:fatal)
-    lambda { @knife.run }.should raise_error(SystemExit)
+    @ceth.name_args = []
+    @ceth.should_receive(:show_usage)
+    @ceth.ui.should_receive(:fatal)
+    lambda { @ceth.run }.should raise_error(SystemExit)
   end
 end

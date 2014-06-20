@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class ClientBulkDelete < Knife
+  class ceth
+    class ClientBulkDelete < ceth
 
       deps do
         require 'seth/api_client'
@@ -32,7 +32,7 @@ class Seth
        :long => "--delete-validators",
        :description => "Force deletion of clients if they're validators"
 
-      banner "knife client bulk delete REGEX (options)"
+      banner "ceth client bulk delete REGEX (options)"
 
       def run
         if name_args.length < 1

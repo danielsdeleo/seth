@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookCreate < Knife
+  class ceth
+    class CookbookCreate < ceth
 
       deps do
         require 'seth/json_compat'
@@ -28,7 +28,7 @@ class Seth
         require 'fileutils'
       end
 
-      banner "knife cookbook create COOKBOOK (options)"
+      banner "ceth cookbook create COOKBOOK (options)"
 
       option :cookbook_path,
         :short => "-o PATH",
@@ -64,7 +64,7 @@ class Seth
         end
 
         if default_cookbook_path_empty? && parameter_empty?(config[:cookbook_path])
-          raise ArgumentError, "Default cookbook_path is not specified in the knife.rb config file, and a value to -o is not provided. Nowhere to write the new cookbook to."
+          raise ArgumentError, "Default cookbook_path is not specified in the ceth.rb config file, and a value to -o is not provided. Nowhere to write the new cookbook to."
         end
 
         cookbook_path = File.expand_path(Array(config[:cookbook_path]).first)

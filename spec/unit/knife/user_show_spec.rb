@@ -18,24 +18,24 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::UserShow do
+describe Seth::ceth::UserShow do
   before(:each) do
-    Seth::Knife::UserShow.load_deps
-    @knife = Seth::Knife::UserShow.new
-    @knife.name_args = [ 'my_user' ]
+    Seth::ceth::UserShow.load_deps
+    @ceth = Seth::ceth::UserShow.new
+    @ceth.name_args = [ 'my_user' ]
     @user_mock = double('user_mock')
   end
 
   it 'loads and displays the user' do
     Seth::User.should_receive(:load).with('my_user').and_return(@user_mock)
-    @knife.should_receive(:format_for_display).with(@user_mock)
-    @knife.run
+    @ceth.should_receive(:format_for_display).with(@user_mock)
+    @ceth.run
   end
 
   it 'prints usage and exits when a user name is not provided' do
-    @knife.name_args = []
-    @knife.should_receive(:show_usage)
-    @knife.ui.should_receive(:fatal)
-    lambda { @knife.run }.should raise_error(SystemExit)
+    @ceth.name_args = []
+    @ceth.should_receive(:show_usage)
+    @ceth.ui.should_receive(:fatal)
+    lambda { @ceth.run }.should raise_error(SystemExit)
   end
 end

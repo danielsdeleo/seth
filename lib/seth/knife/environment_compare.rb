@@ -15,37 +15,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
- 
-require 'seth/knife'
- 
+
+require 'seth/ceth'
+
 class Seth
-  class Knife
-    class EnvironmentCompare < Knife
- 
+  class ceth
+    class EnvironmentCompare < ceth
+
       deps do
         require 'seth/environment'
       end
- 
-      banner "knife environment compare [ENVIRONMENT..] (options)"
+
+      banner "ceth environment compare [ENVIRONMENT..] (options)"
 
       option :all,
         :short => "-a",
         :long => "--all",
         :description => "Show all cookbooks",
-        :boolean => true 
+        :boolean => true
 
       option :mismatch,
         :short => "-m",
         :long => "--mismatch",
         :description => "Only show mismatching versions",
         :boolean => true
- 
+
       def run
         # Get the commandline environments or all if none are provided.
-        environments = environment_list     
+        environments = environment_list
 
         # Get a list of all cookbooks that have constraints and their environment.
-        constraints = constraint_list(environments) 
+        constraints = constraint_list(environments)
 
         # Get the total list of cookbooks that have constraints
         cookbooks = cookbook_list(constraints)
@@ -55,7 +55,7 @@ class Seth
           ui.error "Cannot find any environment cookbook constraints"
           exit 1
         end
-     
+
         # Get all cookbooks so we can compare them all
         cookbooks = rest.get_rest("/cookbooks?num_versions=1") if config[:all]
 
@@ -77,7 +77,7 @@ class Seth
         else
           environments = Seth::Environment.list
         end
-      end 
+      end
 
       def constraint_list(environments)
         constraints = {}
@@ -91,12 +91,12 @@ class Seth
         end
         constraints
       end
- 
+
       def cookbook_list(constraints)
         result = {}
         constraints.each { |env, cb| result.merge!(cb) }
         result
-      end      
+      end
 
       def matrix_output(cookbooks, constraints)
         rows = [ '' ]
@@ -116,7 +116,7 @@ class Seth
           rows << ui.color(c, :bold)
           environments.each do |e|
             tag = constraints[e][c] || "latest"
-            rows << ui.color(tag, color)   
+            rows << ui.color(tag, color)
           end
         end
         ui.list(rows, :uneven_columns_across, columns)

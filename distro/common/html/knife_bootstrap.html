@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>knife bootstrap &mdash; seth-client Man Pages</title>
+    <title>ceth bootstrap &mdash; seth-client Man Pages</title>
 
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -40,18 +40,18 @@
 
           <div class="body">
 
-  <div class="section" id="knife-bootstrap">
-<h1>knife bootstrap<a class="headerlink" href="#knife-bootstrap" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ceth-bootstrap">
+<h1>ceth bootstrap<a class="headerlink" href="#ceth-bootstrap" title="Permalink to this headline">¶</a></h1>
 <p>A bootstrap is a process that installs the seth-client on a target system so that it can run as a seth-client and communicate with a Seth server.</p>
-<p>The <strong>knife bootstrap</strong> subcommand is used to run a bootstrap operation that installs the seth-client on the target system. The bootstrap operation must specify the IP address or FQDN of the target system.</p>
+<p>The <strong>ceth bootstrap</strong> subcommand is used to run a bootstrap operation that installs the seth-client on the target system. The bootstrap operation must specify the IP address or FQDN of the target system.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">To bootstrap the seth-client on Microsoft Windows machines, the <a class="reference external" href="http://docs.opscode.com/plugin_knife_windows.html">knife-windows</a> plugins is required, which includes the necessary bootstrap scripts that are used to do the actual installation.</p>
+<p class="last">To bootstrap the seth-client on Microsoft Windows machines, the <a class="reference external" href="http://docs.opscode.com/plugin_ceth_windows.html">ceth-windows</a> plugins is required, which includes the necessary bootstrap scripts that are used to do the actual installation.</p>
 </div>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <p>This subcommand has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife bootstrap FQDN_or_IP_ADDRESS <span class="o">(</span>options<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth bootstrap FQDN_or_IP_ADDRESS <span class="o">(</span>options<span class="o">)</span>
 </pre></div>
 </div>
 </div>
@@ -59,7 +59,7 @@
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
+<p class="last">Review the list of <a class="reference internal" href="ceth_common_options.html"><em>common options</em></a> available to this (and all) ceth subcommands and plugins.</p>
 </div>
 <p>This subcommand has the following options:</p>
 <dl class="docutils">
@@ -77,7 +77,7 @@
 <dt><tt class="docutils literal"><span class="pre">--bootstrap-version</span> <span class="pre">VERSION</span></tt></dt>
 <dd>The version of the seth-client to install.</dd>
 <dt><tt class="docutils literal"><span class="pre">-d</span> <span class="pre">DISTRO</span></tt>, <tt class="docutils literal"><span class="pre">--distro</span> <span class="pre">DISTRO</span></tt></dt>
-<dd><p class="first">The template file to be used during a bootstrap operation. The following distributions are supported: <tt class="docutils literal"><span class="pre">seth-full</span></tt> (the default bootstrap), <tt class="docutils literal"><span class="pre">centos5-gems</span></tt>, <tt class="docutils literal"><span class="pre">fedora13-gems</span></tt>, <tt class="docutils literal"><span class="pre">ubuntu10.04-gems</span></tt>, <tt class="docutils literal"><span class="pre">ubuntu10.04-apt</span></tt>, <tt class="docutils literal"><span class="pre">ubuntu12.04-gems</span></tt>, and the name of a custom bootstrap template file. When this option is used, Knife will search for the template file in the following order: the <tt class="docutils literal"><span class="pre">bootstrap/</span></tt> folder in the current working directory, the <tt class="docutils literal"><span class="pre">bootstrap/</span></tt> folder in the seth-repo, the <tt class="docutils literal"><span class="pre">bootstrap/</span></tt> folder in the <tt class="docutils literal"><span class="pre">~/.seth/</span></tt> directory, or a default bootstrap file. Do not use the <tt class="docutils literal"><span class="pre">--template-file</span></tt> option when <tt class="docutils literal"><span class="pre">--distro</span></tt> is specified.</p>
+<dd><p class="first">The template file to be used during a bootstrap operation. The following distributions are supported: <tt class="docutils literal"><span class="pre">seth-full</span></tt> (the default bootstrap), <tt class="docutils literal"><span class="pre">centos5-gems</span></tt>, <tt class="docutils literal"><span class="pre">fedora13-gems</span></tt>, <tt class="docutils literal"><span class="pre">ubuntu10.04-gems</span></tt>, <tt class="docutils literal"><span class="pre">ubuntu10.04-apt</span></tt>, <tt class="docutils literal"><span class="pre">ubuntu12.04-gems</span></tt>, and the name of a custom bootstrap template file. When this option is used, ceth will search for the template file in the following order: the <tt class="docutils literal"><span class="pre">bootstrap/</span></tt> folder in the current working directory, the <tt class="docutils literal"><span class="pre">bootstrap/</span></tt> folder in the seth-repo, the <tt class="docutils literal"><span class="pre">bootstrap/</span></tt> folder in the <tt class="docutils literal"><span class="pre">~/.seth/</span></tt> directory, or a default bootstrap file. Do not use the <tt class="docutils literal"><span class="pre">--template-file</span></tt> option when <tt class="docutils literal"><span class="pre">--distro</span></tt> is specified.</p>
 <div class="last admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">The default bootstrap operation uses the omnibus installer, which means the default template file (<tt class="docutils literal"><span class="pre">seth-full</span></tt>) should work on all supported platforms. It is recommended to use custom bootstrap templates only when the omnibus installer cannot be used. The <tt class="docutils literal"><span class="pre">.erb</span></tt> file extension is added automatically and should not be passed as part of the bootstrap command.</p>
@@ -98,7 +98,7 @@
 <dt><tt class="docutils literal"><span class="pre">-p</span> <span class="pre">PORT</span></tt>, <tt class="docutils literal"><span class="pre">--ssh-port</span> <span class="pre">PORT</span></tt></dt>
 <dd>The SSH port.</dd>
 <dt><tt class="docutils literal"><span class="pre">-P</span> <span class="pre">PASSWORD</span></tt>, <tt class="docutils literal"><span class="pre">--ssh-password</span> <span class="pre">PASSWORD</span></tt></dt>
-<dd>The SSH password. This can be used to pass the password directly on the command line. If this option is not specified (and a password is required) Knife will prompt for the password.</dd>
+<dd>The SSH password. This can be used to pass the password directly on the command line. If this option is not specified (and a password is required) ceth will prompt for the password.</dd>
 <dt><tt class="docutils literal"><span class="pre">--prerelease</span></tt></dt>
 <dd>Indicates that pre-release gems should be installed.</dd>
 <dt><tt class="docutils literal"><span class="pre">-r</span> <span class="pre">RUN_LIST</span></tt>, <tt class="docutils literal"><span class="pre">--run-list</span> <span class="pre">RUN_LIST</span></tt></dt>
@@ -120,8 +120,8 @@
 <div class="section" id="custom-templates">
 <h2>Custom Templates<a class="headerlink" href="#custom-templates" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="docutils literal"><span class="pre">seth-full</span></tt> distribution uses the omnibus installer. For most bootstrap operations, regardless of the platform on which the target node is running, using the <tt class="docutils literal"><span class="pre">seth-full</span></tt> distribution is the best approach for installing the seth-client on a target node. In some situations, using another supported distribution is necessary. And in some situations, a custom template may be required. For example, the default bootstrap operation relies on an Internet connection to get the distribution to the target node. If a target node cannot access the Internet, then a custom template can be used to define a specific location for the distribution so that the target node may access it during the bootstrap operation.</p>
-<p>A custom bootstrap template file (<tt class="docutils literal"><span class="pre">template_filename.erb</span></tt>) must be located in a <tt class="docutils literal"><span class="pre">bootstrap/</span></tt> directory. Use the <tt class="docutils literal"><span class="pre">--distro</span></tt> option with the <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">bootstrap</span></tt> subcommand to specify the bootstrap template file. For example, a bootstrap template file named &#8220;british_sea_power.erb&#8221;:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife bootstrap 123.456.7.8 -x username -P password --sudo --distro <span class="s2">&quot;british_sea_power.erb&quot;</span>
+<p>A custom bootstrap template file (<tt class="docutils literal"><span class="pre">template_filename.erb</span></tt>) must be located in a <tt class="docutils literal"><span class="pre">bootstrap/</span></tt> directory. Use the <tt class="docutils literal"><span class="pre">--distro</span></tt> option with the <tt class="docutils literal"><span class="pre">ceth</span> <span class="pre">bootstrap</span></tt> subcommand to specify the bootstrap template file. For example, a bootstrap template file named &#8220;british_sea_power.erb&#8221;:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth bootstrap 123.456.7.8 -x username -P password --sudo --distro <span class="s2">&quot;british_sea_power.erb&quot;</span>
 </pre></div>
 </div>
 <p>The following examples show how a bootstrap template file can be customized for various platforms.</p>
@@ -129,33 +129,33 @@
 <h3>Ubuntu 12.04<a class="headerlink" href="#ubuntu-12-04" title="Permalink to this headline">¶</a></h3>
 <p>The following example shows how to modify the default script for Ubuntu 12.04. First, copy the bootstrap template from the default location. If the seth-client is installed from a RubyGems, the full path can be found in the gem contents:</p>
 <div class="highlight-bash"><div class="highlight"><pre>% gem contents seth | grep ubuntu12.04-gems
-/Users/jtimberman/.rvm/gems/ruby-1.9.2-p180/gems/seth-0.10.2/lib/seth/knife/bootstrap/ubuntu12.04-gems.erb
+/Users/jtimberman/.rvm/gems/ruby-1.9.2-p180/gems/seth-0.10.2/lib/seth/ceth/bootstrap/ubuntu12.04-gems.erb
 </pre></div>
 </div>
 <p>Copy the template to the seth-repo in the <tt class="docutils literal"><span class="pre">.seth/bootstrap</span></tt> directory:</p>
 <div class="highlight-bash"><div class="highlight"><pre>% cp /Users/jtimberman/.rvm/gems/ruby-1.9.2-p180/gems/seth-0.10.2/
-   lib/seth/knife/bootstrap/ubuntu12.04-gems.erb ~/seth-repo/.seth/
+   lib/seth/ceth/bootstrap/ubuntu12.04-gems.erb ~/seth-repo/.seth/
    bootstrap/ubuntu12.04-gems-mine.erb
 </pre></div>
 </div>
-<p>Modify the template with any editor, then use it with the <tt class="docutils literal"><span class="pre">-d</span></tt> or <tt class="docutils literal"><span class="pre">--distro</span></tt> option in the <tt class="docutils literal"><span class="pre">knife</span> <span class="pre">bootstrap</span></tt> operation, or use any of the Knife plug-ins that support cloud computing.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife bootstrap 192.168.1.100 -r <span class="s1">&#39;role[webserver]&#39;</span> -d ubuntu12.04-gems-mine
+<p>Modify the template with any editor, then use it with the <tt class="docutils literal"><span class="pre">-d</span></tt> or <tt class="docutils literal"><span class="pre">--distro</span></tt> option in the <tt class="docutils literal"><span class="pre">ceth</span> <span class="pre">bootstrap</span></tt> operation, or use any of the ceth plug-ins that support cloud computing.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth bootstrap 192.168.1.100 -r <span class="s1">&#39;role[webserver]&#39;</span> -d ubuntu12.04-gems-mine
 </pre></div>
 </div>
-<p>Alternatively, an example bootstrap template can be found in the git source for the seth-repo: <a class="reference external" href="https://github.com/opscode/seth/blob/master/lib/seth/knife/bootstrap/ubuntu12.04-gems.erb">https://github.com/opscode/seth/blob/master/lib/seth/knife/bootstrap/ubuntu12.04-gems.erb</a>. Copy the template to <tt class="docutils literal"><span class="pre">~/.seth-repo/.seth/bootstrap/ubuntu12.04-apt.erb</span></tt> and modify the template appropriately.</p>
+<p>Alternatively, an example bootstrap template can be found in the git source for the seth-repo: <a class="reference external" href="https://github.com/opscode/seth/blob/master/lib/seth/ceth/bootstrap/ubuntu12.04-gems.erb">https://github.com/opscode/seth/blob/master/lib/seth/ceth/bootstrap/ubuntu12.04-gems.erb</a>. Copy the template to <tt class="docutils literal"><span class="pre">~/.seth-repo/.seth/bootstrap/ubuntu12.04-apt.erb</span></tt> and modify the template appropriately.</p>
 </div>
 <div class="section" id="debian-and-apt">
 <h3>Debian and Apt<a class="headerlink" href="#debian-and-apt" title="Permalink to this headline">¶</a></h3>
-<p>The following example shows how to use the <strong>knife bootstrap</strong> sub-command to create a client configuration file (/etc/seth/client.rb) that uses Hosted Seth as the seth server. The configuration file will look something like:</p>
+<p>The following example shows how to use the <strong>ceth bootstrap</strong> sub-command to create a client configuration file (/etc/seth/client.rb) that uses Hosted Seth as the seth server. The configuration file will look something like:</p>
 <div class="highlight-ruby"><div class="highlight"><pre><span class="n">log_level</span>        <span class="ss">:info</span>
 <span class="n">log_location</span>     <span class="no">STDOUT</span>
 <span class="n">seth_server_url</span>  <span class="s1">&#39;https://api.opscode.com/organizations/ORGNAME&#39;</span>
 <span class="n">validation_client_name</span> <span class="s1">&#39;ORGNAME-validator&#39;</span>
 </pre></div>
 </div>
-<p>The <strong>knife bootstrap</strong> sub-command will look in three locations for the template that is used during the bootstrap operation. The locations are:</p>
+<p>The <strong>ceth bootstrap</strong> sub-command will look in three locations for the template that is used during the bootstrap operation. The locations are:</p>
 <ol class="arabic simple">
-<li>A bootstrap directory in the installed Knife library; the actual location may vary, depending how the seth-client is installed</li>
+<li>A bootstrap directory in the installed ceth library; the actual location may vary, depending how the seth-client is installed</li>
 <li>A bootstrap directory in the <tt class="docutils literal"><span class="pre">$PWD/.seth</span></tt>, e.g. in <tt class="docutils literal"><span class="pre">~/seth-repo/.seth</span></tt></li>
 <li>A bootstrap directory in the users <tt class="docutils literal"><span class="pre">$HOME/.seth</span></tt></li>
 </ol>
@@ -165,8 +165,8 @@ vi ~/.seth/bootstrap/debian5.0-apt.erb
 </pre></div>
 </div>
 <p>When finished creating the directory and the Embedded Ruby (ERB) template file, edit the template to run the SSH commands. Then set up the validation certificate and the client configuration file.</p>
-<p>Finally, run the seth-client on the node using a <strong>knife bootstrap</strong> command that specifies a run-list (the <tt class="docutils literal"><span class="pre">-r</span></tt> option). The bootstrap template can be called using a command similar to the following:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife bootstrap mynode.example.com -r <span class="s1">&#39;role[webserver]&#39;</span>,<span class="s1">&#39;role[production]&#39;</span> --distro debian5.0-apt
+<p>Finally, run the seth-client on the node using a <strong>ceth bootstrap</strong> command that specifies a run-list (the <tt class="docutils literal"><span class="pre">-r</span></tt> option). The bootstrap template can be called using a command similar to the following:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth bootstrap mynode.example.com -r <span class="s1">&#39;role[webserver]&#39;</span>,<span class="s1">&#39;role[production]&#39;</span> --distro debian5.0-apt
 </pre></div>
 </div>
 </div>
@@ -175,7 +175,7 @@ vi ~/.seth/bootstrap/debian5.0-apt.erb
 <p>The following example shows how to modify the default script for Microsoft Windows and Windows PowerShell:</p>
 <div class="highlight-bash"><div class="highlight"><pre>@setlocal
 
-&lt;%<span class="o">=</span> <span class="s2">&quot;SETX HTTP_PROXY \&quot;#{knife_config[:bootstrap_proxy]}\&quot;&quot;</span> <span class="k">if </span>knife_config<span class="o">[</span>:bootstrap_proxy<span class="o">]</span> %&gt;
+&lt;%<span class="o">=</span> <span class="s2">&quot;SETX HTTP_PROXY \&quot;#{ceth_config[:bootstrap_proxy]}\&quot;&quot;</span> <span class="k">if </span>ceth_config<span class="o">[</span>:bootstrap_proxy<span class="o">]</span> %&gt;
 @mkdir &lt;%<span class="o">=</span> bootstrap_directory %&gt;
 
 &gt; &lt;%<span class="o">=</span> bootstrap_directory %&gt;<span class="se">\w</span>get.ps1 <span class="o">(</span>
@@ -191,7 +191,7 @@ vi ~/.seth/bootstrap/debian5.0-apt.erb
 
 @powershell -ExecutionPolicy Unrestricted -NoProfile -NonInteractive <span class="s2">&quot;&amp; &#39;&lt;%= bootstrap_directory %&gt;\wget.ps1&#39; &#39;%REMOTE_SOURCE_MSI_URL%&#39; &#39;%LOCAL_DESTINATION_MSI_PATH%&#39;&quot;</span>
 
-@REM Replace install_seth from knife-windows Gem with one that has extra flags to turn on Seth service feature -- only available in seth &gt;<span class="o">=</span> 11.6.x
+@REM Replace install_seth from ceth-windows Gem with one that has extra flags to turn on Seth service feature -- only available in seth &gt;<span class="o">=</span> 11.6.x
 @REM &lt;%<span class="o">=</span> install_seth %&gt;
 @echo Installing Seth Client 11.6.0.rc1 with msiexec
 @msiexec /q /i <span class="s2">&quot;%LOCAL_DESTINATION_MSI_PATH%&quot;</span> <span class="nv">ADDLOCAL</span><span class="o">=</span><span class="s2">&quot;SethClientFeature,sethServiceFeature&quot;</span>
@@ -226,13 +226,13 @@ vi ~/.seth/bootstrap/debian5.0-apt.erb
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Use an SSH password</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife bootstrap 192.168.1.1 -x username -P PASSWORD --sudo
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth bootstrap 192.168.1.1 -x username -P PASSWORD --sudo
 </pre></div>
 </div>
 <p><strong>Use a file that contains a private key</strong></p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife bootstrap 192.168.1.1 -x username -i ~/.ssh/id_rsa --sudo
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth bootstrap 192.168.1.1 -x username -i ~/.ssh/id_rsa --sudo
 </pre></div>
 </div>
 </div>

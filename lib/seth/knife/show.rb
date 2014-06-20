@@ -1,9 +1,9 @@
-require 'seth/seth_fs/knife'
+require 'seth/seth_fs/ceth'
 
 class Seth
-  class Knife
-    class Show < Seth::sethFS::Knife
-      banner "knife show [PATTERN1 ... PATTERNn]"
+  class ceth
+    class Show < Seth::sethFS::ceth
+      banner "ceth show [PATTERN1 ... PATTERNn]"
 
       category "path-based"
 

@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-DELETE" "1" "Seth 11.12.0" "" "knife delete"
+.TH "ceth-DELETE" "1" "Seth 11.12.0" "" "ceth delete"
 .SH NAME
-knife-delete \- The man page for the knife delete subcommand.
+ceth-delete \- The man page for the ceth delete subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife delete\fP subcommand is used to delete an object from a Seth server\&. This subcommand works similar to \fBknife cookbook delete\fP, \fBknife data bag delete\fP, \fBknife environment delete\fP, \fBknife node delete\fP, and \fBknife role delete\fP, but with a single verb (and a single action).
+The \fBceth delete\fP subcommand is used to delete an object from a Seth server\&. This subcommand works similar to \fBceth cookbook delete\fP, \fBceth data bag delete\fP, \fBceth environment delete\fP, \fBceth node delete\fP, and \fBceth role delete\fP, but with a single verb (and a single action).
 .sp
 \fBSyntax\fP
 .sp
@@ -41,7 +41,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife delete [PATTERN...] (options)
+$ ceth delete [PATTERN...] (options)
 .ft P
 .fi
 .UNINDENT
@@ -74,7 +74,7 @@ The number of allowed concurrent connections. Default: \fB10\fP\&.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -89,7 +89,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-local\fP
 Indicates that only the local copy of an object should be deleted. (The remote copy will not be deleted.) Default: \fBfalse\fP\&.
@@ -107,7 +107,7 @@ The layout of the local seth\-repo\&. Possible values: \fBstatic\fP, \fBeverythi
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -116,7 +116,7 @@ The version of the seth\-client\&.
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.

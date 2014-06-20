@@ -16,22 +16,22 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'seth/knife/serve'
+require 'seth/ceth/serve'
 require 'seth/server_api'
 
-describe 'knife serve' do
+describe 'ceth serve' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
   include AppServerSupport
 
   when_the_repository 'also has one of each thing' do
     file 'nodes/x.json', { 'foo' => 'bar' }
 
-    it 'knife serve serves up /nodes/x' do
+    it 'ceth serve serves up /nodes/x' do
       exception = nil
       t = Thread.new do
         begin
-          knife('serve')
+          ceth('serve')
         rescue
           exception = $!
         end

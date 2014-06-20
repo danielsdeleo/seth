@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-NODE" "1" "Seth 11.12.0" "" "knife node"
+.TH "ceth-NODE" "1" "Seth 11.12.0" "" "ceth node"
 .SH NAME
-knife-node \- The man page for the knife node subcommand.
+ceth-node \- The man page for the ceth node subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -33,10 +33,10 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .sp
 A node is any physical, virtual, or cloud machine that is configured to be maintained by a seth\-client\&.
 .sp
-The \fBknife node\fP subcommand is used to manage the nodes that exist on a Seth server\&.
+The \fBceth node\fP subcommand is used to manage the nodes that exist on a Seth server\&.
 .SH COMMON OPTIONS
 .sp
-The following options may be used with any of the arguments available to the \fBknife node\fP subcommand:
+The following options may be used with any of the arguments available to the \fBceth node\fP subcommand:
 .INDENT 0.0
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
@@ -49,7 +49,7 @@ The configuration file to use.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -64,7 +64,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -76,7 +76,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -85,7 +85,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -102,7 +102,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife node bulk delete REGEX
+$ ceth node bulk delete REGEX
 .ft P
 .fi
 .UNINDENT
@@ -120,7 +120,7 @@ Use a regular expression to define the pattern used to bulk delete nodes:
 .sp
 .nf
 .ft C
-$ knife node bulk delete "^[0\-9]{3}$"
+$ ceth node bulk delete "^[0\-9]{3}$"
 .ft P
 .fi
 .UNINDENT
@@ -139,7 +139,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife node create NODE_NAME
+$ ceth node create NODE_NAME
 .ft P
 .fi
 .UNINDENT
@@ -157,7 +157,7 @@ To add a node, enter:
 .sp
 .nf
 .ft C
-$ knife node create node1
+$ ceth node create node1
 .ft P
 .fi
 .UNINDENT
@@ -212,7 +212,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife node delete NODE_NAME
+$ ceth node delete NODE_NAME
 .ft P
 .fi
 .UNINDENT
@@ -228,7 +228,7 @@ This command does not have any specific options.
 .sp
 .nf
 .ft C
-$ knife node delete node_name
+$ ceth node delete node_name
 .ft P
 .fi
 .UNINDENT
@@ -245,7 +245,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife node edit NODE_NAME (options)
+$ ceth node edit NODE_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -268,7 +268,7 @@ To edit the data for a node named "node1", enter:
 .sp
 .nf
 .ft C
-$ knife node edit node1 \-a
+$ ceth node edit node1 \-a
 .ft P
 .fi
 .UNINDENT
@@ -316,7 +316,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife node from file FILE
+$ ceth node from file FILE
 .ft P
 .fi
 .UNINDENT
@@ -334,7 +334,7 @@ To add a node using data contained in a JSON file:
 .sp
 .nf
 .ft C
-$ knife node from file "path to JSON file"
+$ ceth node from file "path to JSON file"
 .ft P
 .fi
 .UNINDENT
@@ -351,7 +351,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife node list (options)
+$ ceth node list (options)
 .ft P
 .fi
 .UNINDENT
@@ -374,7 +374,7 @@ To verify the list of nodes that are registered with the Seth server, enter:
 .sp
 .nf
 .ft C
-$ knife node list
+$ ceth node list
 .ft P
 .fi
 .UNINDENT
@@ -404,7 +404,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife node run_list add NODE_NAME RUN_LIST_ITEM (options)
+$ ceth node run_list add NODE_NAME RUN_LIST_ITEM (options)
 .ft P
 .fi
 .UNINDENT
@@ -427,7 +427,7 @@ To add a role to a run list, enter:
 .sp
 .nf
 .ft C
-$ knife node run_list add node \(aqrole[ROLE_NAME]\(aq
+$ ceth node run_list add node \(aqrole[ROLE_NAME]\(aq
 .ft P
 .fi
 .UNINDENT
@@ -439,7 +439,7 @@ To add roles and recipes to a run list, enter:
 .sp
 .nf
 .ft C
-$ knife node run_list add node \(aqrecipe[COOKBOOK::RECIPE_NAME],recipe[COOKBOOK::RECIPE_NAME],role[ROLE_NAME]\(aq
+$ ceth node run_list add node \(aqrecipe[COOKBOOK::RECIPE_NAME],recipe[COOKBOOK::RECIPE_NAME],role[ROLE_NAME]\(aq
 .ft P
 .fi
 .UNINDENT
@@ -451,7 +451,7 @@ To add a recipe to a run list using the fully qualified format, enter:
 .sp
 .nf
 .ft C
-$ knife node run_list add node \(aqrecipe[COOKBOOK::RECIPE_NAME]\(aq
+$ ceth node run_list add node \(aqrecipe[COOKBOOK::RECIPE_NAME]\(aq
 .ft P
 .fi
 .UNINDENT
@@ -463,7 +463,7 @@ To add a recipe to a run list using the cookbook format, enter:
 .sp
 .nf
 .ft C
-$ knife node run_list add node \(aqCOOKBOOK::RECIPE_NAME\(aq
+$ ceth node run_list add node \(aqCOOKBOOK::RECIPE_NAME\(aq
 .ft P
 .fi
 .UNINDENT
@@ -475,7 +475,7 @@ To add the default recipe of a cookbook to a run list, enter:
 .sp
 .nf
 .ft C
-$ knife node run_list add node \(aqCOOKBOOK\(aq
+$ ceth node run_list add node \(aqCOOKBOOK\(aq
 .ft P
 .fi
 .UNINDENT
@@ -492,7 +492,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife node run_list remove NODE_NAME RUN_LIST_ITEM
+$ ceth node run_list remove NODE_NAME RUN_LIST_ITEM
 .ft P
 .fi
 .UNINDENT
@@ -510,7 +510,7 @@ To remove a role from a run list, enter:
 .sp
 .nf
 .ft C
-$ knife node run_list remove node \(aqrole[ROLE_NAME]\(aq
+$ ceth node run_list remove node \(aqrole[ROLE_NAME]\(aq
 .ft P
 .fi
 .UNINDENT
@@ -522,7 +522,7 @@ To remove a recipe from a run list using the fully qualified format, enter:
 .sp
 .nf
 .ft C
-$ knife node run_list remove node \(aqrecipe[COOKBOOK::RECIPE_NAME]\(aq
+$ ceth node run_list remove node \(aqrecipe[COOKBOOK::RECIPE_NAME]\(aq
 .ft P
 .fi
 .UNINDENT
@@ -539,7 +539,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife node show NODE_NAME (options)
+$ ceth node show NODE_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -571,7 +571,7 @@ To view all data for a node named "build", enter:
 .sp
 .nf
 .ft C
-$ knife node show build
+$ ceth node show build
 .ft P
 .fi
 .UNINDENT
@@ -602,7 +602,7 @@ To show basic information about a node, truncated and nicely formatted:
 .sp
 .nf
 .ft C
-knife node show <node_name>
+ceth node show <node_name>
 .ft P
 .fi
 .UNINDENT
@@ -614,7 +614,7 @@ To show all information about a node, nicely formatted:
 .sp
 .nf
 .ft C
-knife node show \-l <node_name>
+ceth node show \-l <node_name>
 .ft P
 .fi
 .UNINDENT
@@ -626,13 +626,13 @@ To list a single node attribute:
 .sp
 .nf
 .ft C
-knife node show <node_name> \-a <attribute_name>
+ceth node show <node_name> \-a <attribute_name>
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .sp
-where \fB<attribute_name>\fP is something like kernel or platform. (This doesn\(aqt work for nested attributes like \fBnode[kernel][machine]\fP because \fBknife node show\fP doesn\(aqt understand nested attributes.)
+where \fB<attribute_name>\fP is something like kernel or platform. (This doesn\(aqt work for nested attributes like \fBnode[kernel][machine]\fP because \fBceth node show\fP doesn\(aqt understand nested attributes.)
 .sp
 To view the FQDN for a node named "i\-12345678", enter:
 .INDENT 0.0
@@ -640,7 +640,7 @@ To view the FQDN for a node named "i\-12345678", enter:
 .sp
 .nf
 .ft C
-$ knife node show i\-12345678 \-a fqdn
+$ ceth node show i\-12345678 \-a fqdn
 .ft P
 .fi
 .UNINDENT
@@ -664,7 +664,7 @@ To view the run list for a node named "dev", enter:
 .sp
 .nf
 .ft C
-$ knife node show dev \-r
+$ ceth node show dev \-r
 .ft P
 .fi
 .UNINDENT
@@ -676,7 +676,7 @@ To view information in JSON format, use the \fB\-F\fP common option as part of t
 .sp
 .nf
 .ft C
-$ knife role show devops \-F json
+$ ceth role show devops \-F json
 .ft P
 .fi
 .UNINDENT
@@ -690,7 +690,7 @@ To view node information in raw JSON, use the \fB\-l\fP or \fB\-\-long\fP option
 .sp
 .nf
 .ft C
-knife node show \-l \-F json <node_name>
+ceth node show \-l \-F json <node_name>
 .ft P
 .fi
 .UNINDENT
@@ -702,7 +702,7 @@ and/or:
 .sp
 .nf
 .ft C
-knife node show \-l \-\-format=json <node_name>
+ceth node show \-l \-\-format=json <node_name>
 .ft P
 .fi
 .UNINDENT

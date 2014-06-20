@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
-require 'seth/knife/cookbook_site_install'
+require 'seth/ceth'
+require 'seth/ceth/cookbook_site_install'
 
-class Seth::Knife::CookbookSiteVendor < seth::Knife::CookbookSiteInstall
+class Seth::ceth::CookbookSiteVendor < seth::ceth::CookbookSiteInstall
 
   def self.load_deps
     superclass.load_deps
@@ -35,7 +35,7 @@ class Seth::Knife::CookbookSiteVendor < seth::Knife::CookbookSiteInstall
 
   banner(<<-B)
 *************************************************
-DEPRECATED: please use knife cookbook site install
+DEPRECATED: please use ceth cookbook site install
 *************************************************
 
 #{superclass.banner}

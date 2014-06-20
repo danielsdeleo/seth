@@ -18,59 +18,59 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::RoleEdit do
+describe Seth::ceth::RoleEdit do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::RoleEdit.new
-    @knife.config[:print_after] = nil
-    @knife.name_args = [ "adam" ]
-    @knife.ui.stub(:output).and_return(true)
+    @ceth = Seth::ceth::RoleEdit.new
+    @ceth.config[:print_after] = nil
+    @ceth.name_args = [ "adam" ]
+    @ceth.ui.stub(:output).and_return(true)
     @role = Seth::Role.new()
     @role.stub(:save)
     Seth::Role.stub(:load).and_return(@role)
-    @knife.ui.stub(:edit_data).and_return(@role)
-    @knife.ui.stub(:msg)
+    @ceth.ui.stub(:edit_data).and_return(@role)
+    @ceth.ui.stub(:msg)
   end
 
   describe "run" do
     it "should load the role" do
       Seth::Role.should_receive(:load).with("adam").and_return(@role)
-      @knife.run
+      @ceth.run
     end
 
     it "should edit the role data" do
-      @knife.ui.should_receive(:edit_data).with(@role)
-      @knife.run
+      @ceth.ui.should_receive(:edit_data).with(@role)
+      @ceth.run
     end
 
     it "should save the edited role data" do
       pansy = Seth::Role.new
 
       @role.name("new_role_name")
-      @knife.ui.should_receive(:edit_data).with(@role).and_return(pansy)
+      @ceth.ui.should_receive(:edit_data).with(@role).and_return(pansy)
       pansy.should_receive(:save)
-      @knife.run
+      @ceth.run
     end
 
     it "should not save the unedited role data" do
       pansy = Seth::Role.new
 
-      @knife.ui.should_receive(:edit_data).with(@role).and_return(pansy)
+      @ceth.ui.should_receive(:edit_data).with(@role).and_return(pansy)
       pansy.should_not_receive(:save)
-      @knife.run
+      @ceth.run
 
     end
 
     it "should not print the role" do
-      @knife.ui.should_not_receive(:output)
-      @knife.run
+      @ceth.ui.should_not_receive(:output)
+      @ceth.run
     end
 
     describe "with -p or --print-after" do
       it "should pretty print the role, formatted for display" do
-        @knife.config[:print_after] = true
-        @knife.ui.should_receive(:output).with(@role)
-        @knife.run
+        @ceth.config[:print_after] = true
+        @ceth.ui.should_receive(:output).with(@role)
+        @ceth.run
       end
     end
   end

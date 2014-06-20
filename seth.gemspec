@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.add_dependency "yajl-ruby", "~> 1.1"
   s.add_dependency "net-ssh", "~> 2.6"
   s.add_dependency "net-ssh-multi", "~> 1.1"
-  # seth-3027: The knife-cloud plugins require newer features from highline, core seth should not.
+  # seth-3027: The ceth-cloud plugins require newer features from highline, core seth should not.
   s.add_dependency "highline", "~> 1.6", ">= 1.6.9"
   s.add_dependency "erubis", "~> 2.7"
   s.add_dependency "diff-lcs", "~> 1.2", ">= 1.2.4"
@@ -54,7 +54,7 @@ Gem::Specification.new do |s|
   # seth-service-manager is a windows only executable.
   # However gemspec doesn't give us a way to have this executable only
   # on windows. So we're including this in all platforms.
-  s.executables  = %w( seth-client seth-solo knife seth-shell shef seth-apply seth-service-manager )
+  s.executables  = %w( seth-client seth-solo ceth seth-shell shef seth-apply seth-service-manager )
 
   s.require_path = 'lib'
   s.files = %w(Rakefile LICENSE README.md CONTRIBUTING.md) + Dir.glob("{distro,lib,tasks,spec}/**/*", File::FNM_DOTMATCH).reject {|f| File.directory?(f) }

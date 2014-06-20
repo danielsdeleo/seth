@@ -16,18 +16,18 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class RoleBulkDelete < Knife
+  class ceth
+    class RoleBulkDelete < ceth
 
       deps do
         require 'seth/role'
         require 'seth/json_compat'
       end
 
-      banner "knife role bulk delete REGEX (options)"
+      banner "ceth role bulk delete REGEX (options)"
 
       def run
         if @name_args.length < 1

@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-COOKBOOK" "1" "Seth 11.12.0" "" "knife cookbook"
+.TH "ceth-COOKBOOK" "1" "Seth 11.12.0" "" "ceth cookbook"
 .SH NAME
-knife-cookbook \- The man page for the knife cookbook subcommand.
+ceth-cookbook \- The man page for the ceth cookbook subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -53,10 +53,10 @@ Versions
 Metadata about recipes (including dependencies), version constraints, supported platforms, and so on
 .UNINDENT
 .sp
-The \fBknife cookbook\fP subcommand is used to interact with cookbooks that are located on the Seth server or the local seth\-repo\&.
+The \fBceth cookbook\fP subcommand is used to interact with cookbooks that are located on the Seth server or the local seth\-repo\&.
 .SH COMMON OPTIONS
 .sp
-The following options may be used with any of the arguments available to the \fBknife cookbook\fP subcommand:
+The following options may be used with any of the arguments available to the \fBceth cookbook\fP subcommand:
 .INDENT 0.0
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
@@ -69,7 +69,7 @@ The configuration file to use.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -84,7 +84,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -96,7 +96,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -105,7 +105,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -122,7 +122,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook bulk delete REGEX (options)
+$ ceth cookbook bulk delete REGEX (options)
 .ft P
 .fi
 .UNINDENT
@@ -145,7 +145,7 @@ Use a regular expression to define the pattern used to bulk delete cookbooks:
 .sp
 .nf
 .ft C
-$ knife cookbook bulk delete "^[0\-9]{3}$" \-p
+$ ceth cookbook bulk delete "^[0\-9]{3}$" \-p
 .ft P
 .fi
 .UNINDENT
@@ -182,7 +182,7 @@ cookbook/templates/default
 .UNINDENT
 .UNINDENT
 .sp
-After the cookbook is created, it can be uploaded to the Seth server using the \fBknife upload\fP argument.
+After the cookbook is created, it can be uploaded to the Seth server using the \fBceth upload\fP argument.
 .sp
 \fBSyntax\fP
 .sp
@@ -192,7 +192,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook create COOKBOOK_NAME (options)
+$ ceth cookbook create COOKBOOK_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -227,7 +227,7 @@ To create a cookbook named "my_cookbook" with copyright, email, license, and rea
 .sp
 .nf
 .ft C
-$ knife cookbook create my_cookbook \-C "My Name" \-m "my@email.com" \-I apachev2 \-r md
+$ ceth cookbook create my_cookbook \-C "My Name" \-m "my@email.com" \-I apachev2 \-r md
 .ft P
 .fi
 .UNINDENT
@@ -258,7 +258,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook delete COOKBOOK_NAME [COOKBOOK_VERSION] (options)
+$ ceth cookbook delete COOKBOOK_NAME [COOKBOOK_VERSION] (options)
 .ft P
 .fi
 .UNINDENT
@@ -273,7 +273,7 @@ This argument has the following options:
 Indicates that a cookbook and every version of that cookbook will be deleted.
 .TP
 .B \fBCOOKBOOK_VERSION\fP
-The version of a cookbook to be deleted. If a cookbook has only one version, this option does not need to be specified. If a cookbook has more than one version and this option is not specified, Knife will prompt for a version.
+The version of a cookbook to be deleted. If a cookbook has only one version, this option does not need to be specified. If a cookbook has more than one version and this option is not specified, ceth will prompt for a version.
 .TP
 .B \fB\-p\fP, \fB\-\-purge\fP
 Indicates that a cookbook (or cookbook version) will be removed entirely from the Seth server\&. This action should be used carefully because only one copy of any single file is stored on the seth server\&. Consequently, purging a cookbook will disable any other cookbook that references one or more files from a cookbook that has been purged.
@@ -285,7 +285,7 @@ Indicates that a cookbook (or cookbook version) will be removed entirely from th
 .sp
 .nf
 .ft C
-$ knife cookbook delete cookbook_name version
+$ ceth cookbook delete cookbook_name version
 .ft P
 .fi
 .UNINDENT
@@ -297,7 +297,7 @@ For example:
 .sp
 .nf
 .ft C
-$ knife cookbook delete smartmon 0.8
+$ ceth cookbook delete smartmon 0.8
 .ft P
 .fi
 .UNINDENT
@@ -316,7 +316,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook download COOKBOOK_NAME [COOKBOOK_VERSION] (options)
+$ ceth cookbook download COOKBOOK_NAME [COOKBOOK_VERSION] (options)
 .ft P
 .fi
 .UNINDENT
@@ -345,7 +345,7 @@ To download a cookbook named "smartmon", enter:
 .sp
 .nf
 .ft C
-$ knife cookbook download smartmon
+$ ceth cookbook download smartmon
 .ft P
 .fi
 .UNINDENT
@@ -362,7 +362,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook list (options)
+$ ceth cookbook list (options)
 .ft P
 .fi
 .UNINDENT
@@ -388,7 +388,7 @@ To view a list of cookbooks:
 .sp
 .nf
 .ft C
-$ knife cookbook list
+$ ceth cookbook list
 .ft P
 .fi
 .UNINDENT
@@ -405,7 +405,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook metadata (options)
+$ ceth cookbook metadata (options)
 .ft P
 .fi
 .UNINDENT
@@ -429,7 +429,7 @@ The directory in which cookbook are created. This can be a colon\-separated path
 .sp
 .nf
 .ft C
-$ knife cookbook metadata \-a
+$ ceth cookbook metadata \-a
 .ft P
 .fi
 .UNINDENT
@@ -446,7 +446,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook metadata from file FILE
+$ ceth cookbook metadata from file FILE
 .ft P
 .fi
 .UNINDENT
@@ -462,7 +462,7 @@ This command does not have any specific options.
 .sp
 .nf
 .ft C
-$ knife cookbook metadta from file /path/to/file
+$ ceth cookbook metadta from file /path/to/file
 .ft P
 .fi
 .UNINDENT
@@ -479,7 +479,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook show COOKBOOK_NAME [COOKBOOK_VERSION] [PART...] [FILE_NAME] (options)
+$ ceth cookbook show COOKBOOK_NAME [COOKBOOK_VERSION] [PART...] [FILE_NAME] (options)
 .ft P
 .fi
 .UNINDENT
@@ -520,7 +520,7 @@ To get the list of available versions of a cookbook named "getting\-started", en
 .sp
 .nf
 .ft C
-$ knife cookbook show getting\-started
+$ ceth cookbook show getting\-started
 .ft P
 .fi
 .UNINDENT
@@ -544,7 +544,7 @@ To show a list of data about a cookbook using the name of the cookbook and the v
 .sp
 .nf
 .ft C
-$ knife cookbook show getting\-started 0.3.0
+$ ceth cookbook show getting\-started 0.3.0
 .ft P
 .fi
 .UNINDENT
@@ -580,7 +580,7 @@ To only view data about "templates", enter:
 .sp
 .nf
 .ft C
-$ knife cookbook show getting\-started 0.3.0 templates
+$ ceth cookbook show getting\-started 0.3.0 templates
 .ft P
 .fi
 .UNINDENT
@@ -608,7 +608,7 @@ To view information in JSON format, use the \fB\-F\fP common option as part of t
 .sp
 .nf
 .ft C
-$ knife role show devops \-F json
+$ ceth role show devops \-F json
 .ft P
 .fi
 .UNINDENT
@@ -627,7 +627,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook test COOKBOOK_NAME (options)
+$ ceth cookbook test COOKBOOK_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -651,7 +651,7 @@ The directory in which cookbook are created. This can be a colon\-separated path
 .sp
 .nf
 .ft C
-$ knife cookbook test cookbook_name
+$ ceth cookbook test cookbook_name
 .ft P
 .fi
 .UNINDENT
@@ -682,7 +682,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife cookbook upload [COOKBOOK_NAME...] (options)
+$ ceth cookbook upload [COOKBOOK_NAME...] (options)
 .ft P
 .fi
 .UNINDENT
@@ -721,7 +721,7 @@ The directory in which cookbook are created. This can be a colon\-separated path
 .sp
 .nf
 .ft C
-$ knife cookbook upload cookbook_name
+$ ceth cookbook upload cookbook_name
 .ft P
 .fi
 .UNINDENT
@@ -733,7 +733,7 @@ To upload a cookbook, and then prevent other users from being able to make chang
 .sp
 .nf
 .ft C
-$ knife cookbook upload redis \-\-freeze
+$ ceth cookbook upload redis \-\-freeze
 .ft P
 .fi
 .UNINDENT
@@ -752,7 +752,7 @@ Upload completed
 .UNINDENT
 .UNINDENT
 .sp
-If a cookbook is frozen and the \fB\-\-force\fP option is not specified, Knife will return an error message similar to the following:
+If a cookbook is frozen and the \fB\-\-force\fP option is not specified, ceth will return an error message similar to the following:
 .INDENT 0.0
 .INDENT 3.5
 .sp

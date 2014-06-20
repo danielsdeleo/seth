@@ -19,7 +19,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-describe Seth::Knife::DataBagEdit do
+describe Seth::ceth::DataBagEdit do
   before do
     @plain_data = {"login_name" => "alphaomega", "id" => "item_name"}
     @edited_data = {
@@ -28,27 +28,27 @@ describe Seth::Knife::DataBagEdit do
 
     Seth::Config[:node_name]  = "webmonkey.example.com"
 
-    @knife = Seth::Knife::DataBagEdit.new
+    @ceth = Seth::ceth::DataBagEdit.new
     @rest = double('seth-rest-mock')
-    @knife.stub(:rest).and_return(@rest)
+    @ceth.stub(:rest).and_return(@rest)
 
     @stdout = StringIO.new
-    @knife.stub(:stdout).and_return(@stdout)
+    @ceth.stub(:stdout).and_return(@stdout)
     @log = Seth::Log
-    @knife.name_args = ['bag_name', 'item_name']
+    @ceth.name_args = ['bag_name', 'item_name']
   end
 
   it "requires data bag and item arguments" do
-    @knife.name_args = []
-    lambda { @knife.run }.should raise_error(SystemExit)
+    @ceth.name_args = []
+    lambda { @ceth.run }.should raise_error(SystemExit)
     @stdout.string.should match(/^You must supply the data bag and an item to edit/)
   end
 
   it "saves edits on a data bag item" do
     Seth::DataBagItem.stub(:load).with('bag_name', 'item_name').and_return(@plain_data)
-    @knife.should_receive(:edit_data).with(@plain_data).and_return(@edited_data)
+    @ceth.should_receive(:edit_data).with(@plain_data).and_return(@edited_data)
     @rest.should_receive(:put_rest).with("data/bag_name/item_name", @edited_data).ordered
-    @knife.run
+    @ceth.run
   end
 
   describe "encrypted data bag items" do
@@ -75,19 +75,19 @@ describe Seth::Knife::DataBagEdit do
     end
 
     it "decrypts and encrypts via --secret" do
-      @knife.stub(:config).and_return({:secret => @secret})
-      @knife.should_receive(:edit_data).with(@plain_data).and_return(@edited_data)
+      @ceth.stub(:config).and_return({:secret => @secret})
+      @ceth.should_receive(:edit_data).with(@plain_data).and_return(@edited_data)
       @rest.should_receive(:put_rest).with("data/bag_name/item_name", @enc_edited_data).ordered
 
-      @knife.run
+      @ceth.run
     end
 
     it "decrypts and encrypts via --secret_file" do
-      @knife.stub(:config).and_return({:secret_file => @secret_file.path})
-      @knife.should_receive(:edit_data).with(@plain_data).and_return(@edited_data)
+      @ceth.stub(:config).and_return({:secret_file => @secret_file.path})
+      @ceth.should_receive(:edit_data).with(@plain_data).and_return(@edited_data)
       @rest.should_receive(:put_rest).with("data/bag_name/item_name", @enc_edited_data).ordered
 
-      @knife.run
+      @ceth.run
     end
   end
 end

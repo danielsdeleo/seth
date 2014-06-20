@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
-class Seth::Knife::RecipeList < seth::Knife
+require 'seth/ceth'
+class Seth::ceth::RecipeList < seth::ceth
 
-  banner "knife recipe list [PATTERN]"
+  banner "ceth recipe list [PATTERN]"
 
   def run
     recipes = rest.get_rest('cookbooks/_recipes')

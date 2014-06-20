@@ -17,11 +17,11 @@
 
 require 'support/shared/integration/integration_helper'
 require 'support/shared/context/config'
-require 'seth/knife/show'
+require 'seth/ceth/show'
 
-describe 'knife show' do
+describe 'ceth show' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
 
   include_context "default config options"
 
@@ -44,60 +44,60 @@ describe 'knife show' do
       file 'roles/x.json', { 'foo' => 'bar' }
       file 'users/x.json', { 'foo' => 'bar' }
 
-      it 'knife show /cookbooks/x/metadata.rb shows the remote version' do
-        knife('show /cookbooks/x/metadata.rb').should_succeed <<EOM
+      it 'ceth show /cookbooks/x/metadata.rb shows the remote version' do
+        ceth('show /cookbooks/x/metadata.rb').should_succeed <<EOM
 /cookbooks/x/metadata.rb:
 version "1.0.0"
 EOM
       end
-      it 'knife show --local /cookbooks/x/metadata.rb shows the local version' do
-        knife('show --local /cookbooks/x/metadata.rb').should_succeed <<EOM
+      it 'ceth show --local /cookbooks/x/metadata.rb shows the local version' do
+        ceth('show --local /cookbooks/x/metadata.rb').should_succeed <<EOM
 /cookbooks/x/metadata.rb:
 version "1.0.1"
 EOM
       end
-      it 'knife show /data_bags/x/y.json shows the remote version' do
-        knife('show /data_bags/x/y.json').should_succeed <<EOM
+      it 'ceth show /data_bags/x/y.json shows the remote version' do
+        ceth('show /data_bags/x/y.json').should_succeed <<EOM
 /data_bags/x/y.json:
 {
   "id": "y"
 }
 EOM
       end
-      it 'knife show --local /data_bags/x/y.json shows the local version' do
-        knife('show --local /data_bags/x/y.json').should_succeed <<EOM
+      it 'ceth show --local /data_bags/x/y.json shows the local version' do
+        ceth('show --local /data_bags/x/y.json').should_succeed <<EOM
 /data_bags/x/y.json:
 {
   "foo": "bar"
 }
 EOM
       end
-      it 'knife show /environments/x.json shows the remote version', :pending => (RUBY_VERSION < "1.9") do
-        knife('show /environments/x.json').should_succeed <<EOM
+      it 'ceth show /environments/x.json shows the remote version', :pending => (RUBY_VERSION < "1.9") do
+        ceth('show /environments/x.json').should_succeed <<EOM
 /environments/x.json:
 {
   "name": "x"
 }
 EOM
       end
-      it 'knife show --local /environments/x.json shows the local version' do
-        knife('show --local /environments/x.json').should_succeed <<EOM
+      it 'ceth show --local /environments/x.json shows the local version' do
+        ceth('show --local /environments/x.json').should_succeed <<EOM
 /environments/x.json:
 {
   "foo": "bar"
 }
 EOM
       end
-      it 'knife show /roles/x.json shows the remote version', :pending => (RUBY_VERSION < "1.9") do
-        knife('show /roles/x.json').should_succeed <<EOM
+      it 'ceth show /roles/x.json shows the remote version', :pending => (RUBY_VERSION < "1.9") do
+        ceth('show /roles/x.json').should_succeed <<EOM
 /roles/x.json:
 {
   "name": "x"
 }
 EOM
       end
-      it 'knife show --local /roles/x.json shows the local version' do
-        knife('show --local /roles/x.json').should_succeed <<EOM
+      it 'ceth show --local /roles/x.json shows the local version' do
+        ceth('show --local /roles/x.json').should_succeed <<EOM
 /roles/x.json:
 {
   "foo": "bar"
@@ -105,18 +105,18 @@ EOM
 EOM
       end
       # show directory
-      it 'knife show /data_bags/x fails' do
-        knife('show /data_bags/x').should_fail "ERROR: /data_bags/x: is a directory\n"
+      it 'ceth show /data_bags/x fails' do
+        ceth('show /data_bags/x').should_fail "ERROR: /data_bags/x: is a directory\n"
       end
-      it 'knife show --local /data_bags/x fails' do
-        knife('show --local /data_bags/x').should_fail "ERROR: /data_bags/x: is a directory\n"
+      it 'ceth show --local /data_bags/x fails' do
+        ceth('show --local /data_bags/x').should_fail "ERROR: /data_bags/x: is a directory\n"
       end
       # show nonexistent file
-      it 'knife show /environments/nonexistent.json fails' do
-        knife('show /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
+      it 'ceth show /environments/nonexistent.json fails' do
+        ceth('show /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
       end
-      it 'knife show --local /environments/nonexistent.json fails' do
-        knife('show --local /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
+      it 'ceth show --local /environments/nonexistent.json fails' do
+        ceth('show --local /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory\n"
       end
     end
   end
@@ -129,8 +129,8 @@ EOM
       'description' => 'woo',
       'name' => 'x'
     }
-    it 'knife show shows the attributes in a predetermined order', :pending => (RUBY_VERSION < "1.9") do
-      knife('show /environments/x.json').should_succeed <<EOM
+    it 'ceth show shows the attributes in a predetermined order', :pending => (RUBY_VERSION < "1.9") do
+      ceth('show /environments/x.json').should_succeed <<EOM
 /environments/x.json:
 {
   "name": "x",
@@ -151,8 +151,8 @@ EOM
 
   when_the_repository 'has an environment with bad JSON' do
     file 'environments/x.json', '{'
-    it 'knife show succeeds' do
-      knife('show --local /environments/x.json').should_succeed <<EOM
+    it 'ceth show succeeds' do
+      ceth('show --local /environments/x.json').should_succeed <<EOM
 /environments/x.json:
 {
 EOM

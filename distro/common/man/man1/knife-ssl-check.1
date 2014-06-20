@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-SSL-CHECK" "1" "Seth 11.12.0" "" "knife ssl check"
+.TH "ceth-SSL-CHECK" "1" "Seth 11.12.0" "" "ceth ssl check"
 .SH NAME
-knife-ssl-check \- The man page for the knife ssl check subcommand.
+ceth-ssl-check \- The man page for the ceth ssl check subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife ssl check\fP subcommand is used to verify the SSL configuration for the Enterprise Seth and/or Open Source seth servers, or at another location specified by a URL or URI.
+The \fBceth ssl check\fP subcommand is used to verify the SSL configuration for the Enterprise Seth and/or Open Source seth servers, or at another location specified by a URL or URI.
 .sp
 \fBWARNING:\fP
 .INDENT 0.0
@@ -48,7 +48,7 @@ This subcommand has the following syntax:
 .sp
 .nf
 .ft C
-$ knife ssl check URI
+$ ceth ssl check URI
 .ft P
 .fi
 .UNINDENT
@@ -81,7 +81,7 @@ Indicates whether colored output will be used.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -102,7 +102,7 @@ Shows help for the command.
 The SSH identity file used for authentication. Key\-based authentication is recommended.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-m\fP, \fB\-\-manual\-list\fP
 Indicates that a search query is a space\-separated list of servers. If there is more than one item in the list, put quotes around the entire list. For example: \fB\-\-manual\-list "server01 server 02 server 03"\fP
@@ -117,7 +117,7 @@ The shell type. Possible values: \fBinteractive\fP, \fBscreen\fP, \fBtmux\fP, \f
 The SSH port.
 .TP
 .B \fB\-P PASSWORD\fP, \fB\-\-ssh\-password PASSWORD\fP
-The SSH password. This can be used to pass the password directly on the command line. If this option is not specified (and a password is required) Knife will prompt for the password.
+The SSH password. This can be used to pass the password directly on the command line. If this option is not specified (and a password is required) ceth will prompt for the password.
 .TP
 .B \fB\-\-print\-after\fP
 Indicates that data will be shown after a destructive operation.
@@ -132,7 +132,7 @@ The search query used to return a list of servers to be accessed using SSH and t
 The command that will be run against the results of a search query.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-v\fP, \fB\-\-version\fP
 The version of the seth\-client\&.
@@ -144,7 +144,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The SSH user name.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -152,7 +152,7 @@ Indicates that the seth\-client will be run in local mode, which allows all comm
 .sp
 \fBExamples\fP
 .sp
-The following examples show how to use this Knife subcommand:
+The following examples show how to use this ceth subcommand:
 .sp
 \fBVerify the SSL configuration for the Seth server\fP
 .INDENT 0.0
@@ -160,7 +160,7 @@ The following examples show how to use this Knife subcommand:
 .sp
 .nf
 .ft C
-$ knife ssl check
+$ ceth ssl check
 .ft P
 .fi
 .UNINDENT
@@ -172,7 +172,7 @@ $ knife ssl check
 .sp
 .nf
 .ft C
-$ knife ssl check \-c /etc/seth/client.rb
+$ ceth ssl check \-c /etc/seth/client.rb
 .ft P
 .fi
 .UNINDENT
@@ -184,7 +184,7 @@ $ knife ssl check \-c /etc/seth/client.rb
 .sp
 .nf
 .ft C
-$ knife ssl check URL_or_URI
+$ ceth ssl check URL_or_URI
 .ft P
 .fi
 .UNINDENT
@@ -196,7 +196,7 @@ for example:
 .sp
 .nf
 .ft C
-$ knife ssl check https://www.getseth.com
+$ ceth ssl check https://www.getseth.com
 .ft P
 .fi
 .UNINDENT

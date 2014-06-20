@@ -5,12 +5,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>knife tag &mdash; seth-client Man Pages</title>
-    
+
+    <title>ceth tag &mdash; seth-client Man Pages</title>
+
     <link rel="stylesheet" href="_static/guide.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -33,20 +33,20 @@
 </div>
 
 
-  
+
 
     <div class="document">
       <div class="documentwrapper">
 
           <div class="body">
-            
-  <div class="section" id="knife-tag">
-<h1>knife tag<a class="headerlink" href="#knife-tag" title="Permalink to this headline">¶</a></h1>
-<p>A tag is a custom description that is applied to a node. A tag, once applied, can be helpful when managing nodes using Knife or when building recipes by providing alternate methods of grouping similar types of information.</p>
-<p>The <strong>knife tag</strong> subcommand is used to apply tags to nodes on a Seth server.</p>
+
+  <div class="section" id="ceth-tag">
+<h1>ceth tag<a class="headerlink" href="#ceth-tag" title="Permalink to this headline">¶</a></h1>
+<p>A tag is a custom description that is applied to a node. A tag, once applied, can be helpful when managing nodes using ceth or when building recipes by providing alternate methods of grouping similar types of information.</p>
+<p>The <strong>ceth tag</strong> subcommand is used to apply tags to nodes on a Seth server.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Review the list of <a class="reference internal" href="knife_common_options.html"><em>common options</em></a> available to this (and all) Knife subcommands and plugins.</p>
+<p class="last">Review the list of <a class="reference internal" href="ceth_common_options.html"><em>common options</em></a> available to this (and all) ceth subcommands and plugins.</p>
 </div>
 <div class="section" id="create">
 <h2>create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
@@ -54,7 +54,7 @@
 <div class="section" id="syntax">
 <h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife tag create NODE_NAME <span class="o">[</span>TAG...<span class="o">]</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth tag create NODE_NAME <span class="o">[</span>TAG...<span class="o">]</span>
 </pre></div>
 </div>
 </div>
@@ -64,10 +64,10 @@
 </div>
 <div class="section" id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Create tags</strong></p>
 <p>To create tags named &#8220;seattle&#8221;, &#8220;portland&#8221;, and &#8220;vancouver&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife tag create node seattle portland vancouver
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth tag create node seattle portland vancouver
 </pre></div>
 </div>
 </div>
@@ -78,7 +78,7 @@
 <div class="section" id="id1">
 <h3>Syntax<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife tag delete NODE_NAME <span class="o">[</span>TAG...<span class="o">]</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth tag delete NODE_NAME <span class="o">[</span>TAG...<span class="o">]</span>
 </pre></div>
 </div>
 </div>
@@ -88,10 +88,10 @@
 </div>
 <div class="section" id="id3">
 <h3>Examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>Delete tags</strong></p>
 <p>To delete tags named &#8220;denver&#8221; and &#8220;phoenix&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife tag delete node denver phoenix
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth tag delete node denver phoenix
 </pre></div>
 </div>
 <p>Type <tt class="docutils literal"><span class="pre">Y</span></tt> to confirm a deletion.</p>
@@ -103,7 +103,7 @@
 <div class="section" id="id4">
 <h3>Syntax<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>This argument has the following syntax:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife tag list <span class="o">[</span>NODE_NAME...<span class="o">]</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth tag list <span class="o">[</span>NODE_NAME...<span class="o">]</span>
 </pre></div>
 </div>
 </div>
@@ -113,10 +113,10 @@
 </div>
 <div class="section" id="id6">
 <h3>Examples<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<p>The following examples show how to use this Knife subcommand:</p>
+<p>The following examples show how to use this ceth subcommand:</p>
 <p><strong>View a list of tags</strong></p>
 <p>To view the tags for a node named &#8220;devops_prod1&#8221;, enter:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>knife tag list devops_prod1
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ceth tag list devops_prod1
 </pre></div>
 </div>
 </div>
@@ -128,7 +128,7 @@
 
       </div>
 
-  
+
       <div class="clearer"></div>
     </div>
 

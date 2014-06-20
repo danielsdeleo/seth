@@ -18,7 +18,7 @@
 require 'support/shared/integration/integration_helper'
 require 'seth/mixin/shell_out'
 
-describe "Knife cookbook API integration with IPv6" do
+describe "ceth cookbook API integration with IPv6" do
   extend IntegrationSupport
   include Seth::Mixin::ShellOut
 
@@ -63,7 +63,7 @@ END_VALIDATION_PEM
 
     let(:seth_dir) { File.join(File.dirname(__FILE__), "..", "..", "..", "bin") }
 
-    let(:knife_config_flag) { "-c '#{path_to("config/knife.rb")}'" }
+    let(:ceth_config_flag) { "-c '#{path_to("config/ceth.rb")}'" }
 
     # Some Solaris test platforms are too old for IPv6. These tests should not
     # otherwise be platform dependent, so exclude solaris
@@ -72,23 +72,23 @@ END_VALIDATION_PEM
       # This provides helper functions we need such as #path_to()
       when_the_repository "has the cookbook to be uploaded" do
 
-        let(:knife_rb_content) do
+        let(:ceth_rb_content) do
           <<-END_CLIENT_RB
 seth_server_url "http://[::1]:8900"
 syntax_check_cache_path '#{cache_path}'
-client_key '#{path_to('config/knifeuser.pem')}'
+client_key '#{path_to('config/cethuser.pem')}'
 node_name 'whoisthisis'
 cookbook_path '#{seth_SPEC_DATA}/cookbooks'
 END_CLIENT_RB
         end
 
         before do
-          file 'config/knife.rb', knife_rb_content
-          file 'config/knifeuser.pem', client_key
+          file 'config/ceth.rb', ceth_rb_content
+          file 'config/cethuser.pem', client_key
         end
 
         it "successfully uploads a cookbook" do
-          shell_out!("knife cookbook upload apache2 #{knife_config_flag}", :cwd => seth_dir)
+          shell_out!("ceth cookbook upload apache2 #{ceth_config_flag}", :cwd => seth_dir)
           versions_list_json = Seth::HTTP::Simple.new("http://[::1]:8900").get("/cookbooks/apache2", "accept" => "application/json")
           versions_list = Seth::JSONCompat.from_json(versions_list_json)
           versions_list["apache2"]["versions"].should_not be_empty
@@ -96,11 +96,11 @@ END_CLIENT_RB
 
         context "and the cookbook has been uploaded to the server" do
           before do
-            shell_out!("knife cookbook upload apache2 #{knife_config_flag}", :cwd => seth_dir)
+            shell_out!("ceth cookbook upload apache2 #{ceth_config_flag}", :cwd => seth_dir)
           end
 
           it "downloads the cookbook" do
-            s = shell_out!("knife cookbook download apache2 #{knife_config_flag} -d #{cache_path}", :cwd => seth_dir)
+            s = shell_out!("ceth cookbook download apache2 #{ceth_config_flag} -d #{cache_path}", :cwd => seth_dir)
             Dir["#{cache_path}/*"].map {|entry| File.basename(entry)}.should include("apache2-0.0.0")
           end
         end

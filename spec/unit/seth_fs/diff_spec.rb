@@ -92,26 +92,26 @@ describe 'diff', :uses_diff => true do
         results << remove_os_differences(diff)
       end
       results.should =~ [
-        'diff --knife a/both_dirs/sub_both_files_different b/both_dirs/sub_both_files_different
+        'diff --ceth a/both_dirs/sub_both_files_different b/both_dirs/sub_both_files_different
 --- a/both_dirs/sub_both_files_different DATE
 +++ b/both_dirs/sub_both_files_different DATE
 CONTEXT_LINE_NUMBERS
 -a
 +b
-','diff --knife a/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub b/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub
+','diff --ceth a/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub b/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub
 new file
 --- /dev/null DATE
 +++ b/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub DATE
 CONTEXT_LINE_NUMBERS
 +subsub
-','diff --knife a/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub b/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub
+','diff --ceth a/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub b/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub
 deleted file
 --- a/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub DATE
 +++ /dev/null DATE
 CONTEXT_LINE_NUMBERS
 -subsub
 ','Only in a/both_dirs: sub_a_only_dir
-','diff --knife a/both_dirs/sub_a_only_file b/both_dirs/sub_a_only_file
+','diff --ceth a/both_dirs/sub_a_only_file b/both_dirs/sub_a_only_file
 deleted file
 --- a/both_dirs/sub_a_only_file DATE
 +++ /dev/null DATE
@@ -120,32 +120,32 @@ CONTEXT_LINE_NUMBERS
 ','File a/both_dirs/sub_dir_in_a_file_in_b is a directory while file b/both_dirs/sub_dir_in_a_file_in_b is a regular file
 ','File a/both_dirs/sub_file_in_a_dir_in_b is a regular file while file b/both_dirs/sub_file_in_a_dir_in_b is a directory
 ','Only in b/both_dirs: sub_b_only_dir
-','diff --knife a/both_dirs/sub_b_only_file b/both_dirs/sub_b_only_file
+','diff --ceth a/both_dirs/sub_b_only_file b/both_dirs/sub_b_only_file
 new file
 --- /dev/null DATE
 +++ b/both_dirs/sub_b_only_file DATE
 CONTEXT_LINE_NUMBERS
 +sub_b_only_file
-','diff --knife a/both_files_different b/both_files_different
+','diff --ceth a/both_files_different b/both_files_different
 --- a/both_files_different DATE
 +++ b/both_files_different DATE
 CONTEXT_LINE_NUMBERS
 -a
 +b
-','diff --knife a/dirs_empty_in_a_filled_in_b/subsub b/dirs_empty_in_a_filled_in_b/subsub
+','diff --ceth a/dirs_empty_in_a_filled_in_b/subsub b/dirs_empty_in_a_filled_in_b/subsub
 new file
 --- /dev/null DATE
 +++ b/dirs_empty_in_a_filled_in_b/subsub DATE
 CONTEXT_LINE_NUMBERS
 +subsub
-','diff --knife a/dirs_empty_in_b_filled_in_a/subsub b/dirs_empty_in_b_filled_in_a/subsub
+','diff --ceth a/dirs_empty_in_b_filled_in_a/subsub b/dirs_empty_in_b_filled_in_a/subsub
 deleted file
 --- a/dirs_empty_in_b_filled_in_a/subsub DATE
 +++ /dev/null DATE
 CONTEXT_LINE_NUMBERS
 -subsub
 ','Only in a: a_only_dir
-','diff --knife a/a_only_file b/a_only_file
+','diff --ceth a/a_only_file b/a_only_file
 deleted file
 --- a/a_only_file DATE
 +++ /dev/null DATE
@@ -154,7 +154,7 @@ CONTEXT_LINE_NUMBERS
 ','File a/dir_in_a_file_in_b is a directory while file b/dir_in_a_file_in_b is a regular file
 ','File a/file_in_a_dir_in_b is a regular file while file b/file_in_a_dir_in_b is a directory
 ','Only in b: b_only_dir
-','diff --knife a/b_only_file b/b_only_file
+','diff --ceth a/b_only_file b/b_only_file
 new file
 --- /dev/null DATE
 +++ b/b_only_file DATE
@@ -168,26 +168,26 @@ CONTEXT_LINE_NUMBERS
         results << remove_os_differences(diff)
       end
       results.should =~ [
-        'diff --knife a/both_dirs/sub_both_files_different b/both_dirs/sub_both_files_different
+        'diff --ceth a/both_dirs/sub_both_files_different b/both_dirs/sub_both_files_different
 --- a/both_dirs/sub_both_files_different DATE
 +++ b/both_dirs/sub_both_files_different DATE
 CONTEXT_LINE_NUMBERS
 -a
 +b
-','diff --knife a/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub b/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub
+','diff --ceth a/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub b/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub
 new file
 --- /dev/null DATE
 +++ b/both_dirs/sub_dirs_empty_in_a_filled_in_b/subsub DATE
 CONTEXT_LINE_NUMBERS
 +subsub
-','diff --knife a/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub b/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub
+','diff --ceth a/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub b/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub
 deleted file
 --- a/both_dirs/sub_dirs_empty_in_b_filled_in_a/subsub DATE
 +++ /dev/null DATE
 CONTEXT_LINE_NUMBERS
 -subsub
 ','Only in a/both_dirs: sub_a_only_dir
-','diff --knife a/both_dirs/sub_a_only_file b/both_dirs/sub_a_only_file
+','diff --ceth a/both_dirs/sub_a_only_file b/both_dirs/sub_a_only_file
 deleted file
 --- a/both_dirs/sub_a_only_file DATE
 +++ /dev/null DATE
@@ -196,7 +196,7 @@ CONTEXT_LINE_NUMBERS
 ','File a/both_dirs/sub_dir_in_a_file_in_b is a directory while file b/both_dirs/sub_dir_in_a_file_in_b is a regular file
 ','File a/both_dirs/sub_file_in_a_dir_in_b is a regular file while file b/both_dirs/sub_file_in_a_dir_in_b is a directory
 ','Only in b/both_dirs: sub_b_only_dir
-','diff --knife a/both_dirs/sub_b_only_file b/both_dirs/sub_b_only_file
+','diff --ceth a/both_dirs/sub_b_only_file b/both_dirs/sub_b_only_file
 new file
 --- /dev/null DATE
 +++ b/both_dirs/sub_b_only_file DATE
@@ -211,7 +211,7 @@ CONTEXT_LINE_NUMBERS
       end
       results.should =~ [
 'Common subdirectories: b/both_dirs
-','diff --knife a/both_files_different b/both_files_different
+','diff --ceth a/both_files_different b/both_files_different
 --- a/both_files_different DATE
 +++ b/both_files_different DATE
 CONTEXT_LINE_NUMBERS
@@ -221,7 +221,7 @@ CONTEXT_LINE_NUMBERS
 ','Common subdirectories: b/dirs_empty_in_b_filled_in_a
 ','Common subdirectories: b/dirs_empty_in_a_filled_in_b
 ','Only in a: a_only_dir
-','diff --knife a/a_only_file b/a_only_file
+','diff --ceth a/a_only_file b/a_only_file
 deleted file
 --- a/a_only_file DATE
 +++ /dev/null DATE
@@ -230,7 +230,7 @@ CONTEXT_LINE_NUMBERS
 ','File a/dir_in_a_file_in_b is a directory while file b/dir_in_a_file_in_b is a regular file
 ','File a/file_in_a_dir_in_b is a regular file while file b/file_in_a_dir_in_b is a directory
 ','Only in b: b_only_dir
-','diff --knife a/b_only_file b/b_only_file
+','diff --ceth a/b_only_file b/b_only_file
 new file
 --- /dev/null DATE
 +++ b/b_only_file DATE
@@ -245,7 +245,7 @@ CONTEXT_LINE_NUMBERS
       end
       results.should =~ [
 'Common subdirectories: b/both_dirs
-','diff --knife a/both_files_different b/both_files_different
+','diff --ceth a/both_files_different b/both_files_different
 --- a/both_files_different DATE
 +++ b/both_files_different DATE
 CONTEXT_LINE_NUMBERS
@@ -255,7 +255,7 @@ CONTEXT_LINE_NUMBERS
 ','Common subdirectories: b/dirs_empty_in_b_filled_in_a
 ','Common subdirectories: b/dirs_empty_in_a_filled_in_b
 ','Only in a: a_only_dir
-','diff --knife a/a_only_file b/a_only_file
+','diff --ceth a/a_only_file b/a_only_file
 deleted file
 --- a/a_only_file DATE
 +++ /dev/null DATE
@@ -264,7 +264,7 @@ CONTEXT_LINE_NUMBERS
 ','File a/dir_in_a_file_in_b is a directory while file b/dir_in_a_file_in_b is a regular file
 ','File a/file_in_a_dir_in_b is a regular file while file b/file_in_a_dir_in_b is a directory
 ','Only in b: b_only_dir
-','diff --knife a/b_only_file b/b_only_file
+','diff --ceth a/b_only_file b/b_only_file
 new file
 --- /dev/null DATE
 +++ b/b_only_file DATE

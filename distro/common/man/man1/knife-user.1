@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-USER" "1" "Seth 11.12.0" "" "knife user"
+.TH "ceth-USER" "1" "Seth 11.12.0" "" "ceth user"
 .SH NAME
-knife-user \- The man page for the knife user subcommand.
+ceth-user \- The man page for the ceth user subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -31,7 +31,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \fBknife user\fP subcommand is used to manage the list of users and their associated RSA public key\-pairs.
+The \fBceth user\fP subcommand is used to manage the list of users and their associated RSA public key\-pairs.
 .sp
 \fBNOTE:\fP
 .INDENT 0.0
@@ -41,7 +41,7 @@ This subcommand ONLY works when run against the open source Seth server version 
 .UNINDENT
 .SH COMMON OPTIONS
 .sp
-The following options may be used with any of the arguments available to the \fBknife user\fP subcommand:
+The following options may be used with any of the arguments available to the \fBceth user\fP subcommand:
 .INDENT 0.0
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
@@ -54,7 +54,7 @@ The configuration file to use.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -69,7 +69,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -81,7 +81,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -90,7 +90,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -102,7 +102,7 @@ The \fBcreate\fP argument is used to create a user. This process will generate a
 .IP \(bu 2
 For the user, the private key should be copied to the system as \fB/etc/seth/client.pem\fP\&.
 .IP \(bu 2
-For Knife, the private key is typically copied to \fB~/.seth/client_name.pem\fP and referenced in the knife.rb configuration file.
+For ceth, the private key is typically copied to \fB~/.seth/client_name.pem\fP and referenced in the ceth.rb configuration file.
 .UNINDENT
 .sp
 \fBSyntax\fP
@@ -113,7 +113,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife user create USER_NAME (options)
+$ ceth user create USER_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -143,7 +143,7 @@ All users are assigned a public key. Use to write the public key to a file.
 .sp
 .nf
 .ft C
-$ knife user create "Radio Birdman" \-f /keys/user_name
+$ ceth user create "Radio Birdman" \-f /keys/user_name
 .ft P
 .fi
 .UNINDENT
@@ -160,7 +160,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife user delete USER_NAME
+$ ceth user delete USER_NAME
 .ft P
 .fi
 .UNINDENT
@@ -176,14 +176,14 @@ This command does not have any specific options.
 .sp
 .nf
 .ft C
-$ knife user delete "Steve Danno"
+$ ceth user delete "Steve Danno"
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .SH EDIT
 .sp
-The \fBedit\fP argument is used to edit the details of a user. When this argument is run, Knife will open $EDITOR\&. When finished, Knife will update the Seth server with those changes.
+The \fBedit\fP argument is used to edit the details of a user. When this argument is run, ceth will open $EDITOR\&. When finished, ceth will update the Seth server with those changes.
 .sp
 \fBSyntax\fP
 .sp
@@ -193,7 +193,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife user edit USER_NAME
+$ ceth user edit USER_NAME
 .ft P
 .fi
 .UNINDENT
@@ -218,7 +218,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife user list (options)
+$ ceth user list (options)
 .ft P
 .fi
 .UNINDENT
@@ -255,7 +255,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife user reregister USER_NAME (options)
+$ ceth user reregister USER_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -276,7 +276,7 @@ Use to save a private key to the specified file name.
 .sp
 .nf
 .ft C
-$ knife user reregister "Robert Younger"
+$ ceth user reregister "Robert Younger"
 .ft P
 .fi
 .UNINDENT
@@ -293,7 +293,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife user show USER_NAME (options)
+$ ceth user show USER_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -316,7 +316,7 @@ To view a user named "Dennis Teck", enter:
 .sp
 .nf
 .ft C
-$ knife user show "Dennis Teck"
+$ ceth user show "Dennis Teck"
 .ft P
 .fi
 .UNINDENT
@@ -343,7 +343,7 @@ To view information in JSON format, use the \fB\-F\fP common option as part of t
 .sp
 .nf
 .ft C
-$ knife user show "Dennis Teck" \-F json
+$ ceth user show "Dennis Teck" \-F json
 .ft P
 .fi
 .UNINDENT

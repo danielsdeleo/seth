@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::UserList do
+describe Seth::ceth::UserList do
   before(:each) do
-    Seth::Knife::UserList.load_deps
-    @knife = Seth::Knife::UserList.new
+    Seth::ceth::UserList.load_deps
+    @ceth = Seth::ceth::UserList.new
   end
 
   it 'lists the users' do
     Seth::User.should_receive(:list)
-    @knife.should_receive(:format_list_for_display)
-    @knife.run
+    @ceth.should_receive(:format_list_for_display)
+    @ceth.run
   end
 end

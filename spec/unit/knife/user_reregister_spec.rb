@@ -18,36 +18,36 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::UserReregister do
+describe Seth::ceth::UserReregister do
   before(:each) do
-    Seth::Knife::UserReregister.load_deps
-    @knife = Seth::Knife::UserReregister.new
-    @knife.name_args = [ 'a_user' ]
+    Seth::ceth::UserReregister.load_deps
+    @ceth = Seth::ceth::UserReregister.new
+    @ceth.name_args = [ 'a_user' ]
     @user_mock = double('user_mock', :private_key => "private_key")
     Seth::User.stub(:load).and_return(@user_mock)
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
   end
 
   it 'prints usage and exits when a user name is not provided' do
-    @knife.name_args = []
-    @knife.should_receive(:show_usage)
-    @knife.ui.should_receive(:fatal)
-    lambda { @knife.run }.should raise_error(SystemExit)
+    @ceth.name_args = []
+    @ceth.should_receive(:show_usage)
+    @ceth.ui.should_receive(:fatal)
+    lambda { @ceth.run }.should raise_error(SystemExit)
   end
 
   it 'reregisters the user and prints the key' do
     @user_mock.should_receive(:reregister).and_return(@user_mock)
-    @knife.run
+    @ceth.run
     @stdout.string.should match( /private_key/ )
   end
 
   it 'writes the private key to a file when --file is specified' do
     @user_mock.should_receive(:reregister).and_return(@user_mock)
-    @knife.config[:file] = '/tmp/a_file'
+    @ceth.config[:file] = '/tmp/a_file'
     filehandle = StringIO.new
     File.should_receive(:open).with('/tmp/a_file', 'w').and_yield(filehandle)
-    @knife.run
+    @ceth.run
     filehandle.string.should == "private_key"
   end
 end

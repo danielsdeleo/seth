@@ -19,23 +19,23 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookMetadataFromFile < Knife
+  class ceth
+    class CookbookMetadataFromFile < ceth
 
       deps do
         require 'seth/cookbook/metadata'
       end
 
-      banner "knife cookbook metadata from FILE (options)"
+      banner "ceth cookbook metadata from FILE (options)"
 
       def run
         file = @name_args[0]
         cookbook = File.basename(File.dirname(file))
 
-        @metadata = Seth::Knife::CookbookMetadata.new
+        @metadata = Seth::ceth::CookbookMetadata.new
         @metadata.generate_metadata_from_file(cookbook, file)
       end
 

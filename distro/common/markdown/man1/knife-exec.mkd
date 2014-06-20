@@ -1,28 +1,28 @@
-knife-exec(1) -- Run user scripts using the Seth API DSL
+ceth-exec(1) -- Run user scripts using the Seth API DSL
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __exec__ _(options)_
+__ceth__ __exec__ _(options)_
 
   * `-E`, `--exec CODE`:
     Provide a snippet of code to evaluate on the command line
 
 ## DESCRIPTION
 
-`knife exec` runs arbitrary ruby scripts in a context similar to that
+`ceth exec` runs arbitrary ruby scripts in a context similar to that
 of the seth-shell(1) DSL. See the seth-shell documentation for a
 description of the commands available.
 
 ## EXAMPLES
 
   * Make an API call against an arbitrary endpoint:
-    knife exec -E 'api.get("nodes/fluke.localdomain/cookbooks")'
+    ceth exec -E 'api.get("nodes/fluke.localdomain/cookbooks")'
     => list of cookbooks for the node _fluke.localdomain_
   * Remove the role _obsolete_ from all nodes:
-    knife exec -E 'nodes.transform(:all){|n| n.run\_list.delete("role[obsolete]")}'
+    ceth exec -E 'nodes.transform(:all){|n| n.run\_list.delete("role[obsolete]")}'
   * Generate the expanded run list for hosts in the `webserver` role:
-    knife exec -E 'nodes.find(:roles => "webserver") {|n| n.expand!; n[:recipes]}'
+    ceth exec -E 'nodes.find(:roles => "webserver") {|n| n.expand!; n[:recipes]}'
 
 ## SEE ALSO
 
@@ -39,4 +39,4 @@ description of the commands available.
 
 ## seth
 
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>

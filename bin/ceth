@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# ./knife - Seth CLI interface
+# ./ceth - Seth CLI interface
 #
 # Author:: Adam Jacob (<adam@opscode.com>)
 # Copyright:: Copyright (c) 2009 Opscode, Inc.
@@ -20,7 +20,7 @@
 
 require 'rubygems'
 $:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "..", "lib")))
-require 'seth/application/knife'
+require 'seth/application/ceth'
 
-Seth::Application::Knife.new.run
+Seth::Application::ceth.new.run
 

@@ -1,23 +1,23 @@
-knife-client(1) -- Manage Seth API Clients
+ceth-client(1) -- Manage Seth API Clients
 ========================================
 
 ## SYNOPSIS
 
-__knife__ __client__ _sub-command_ _(options)_
+__ceth__ __client__ _sub-command_ _(options)_
 
 ## SUB-COMMANDS
 Client subcommands follow a basic create, read, update, delete (CRUD)
 pattern. The Following subcommands are available:
 
 ## BULK DELETE
-__knife client bulk delete__ _regex_ _(options)_
+__ceth client bulk delete__ _regex_ _(options)_
 
 Delete clients where the client name matches the regular expression
 _regex_ on the Seth Server. The regular expression should be given as a
 quoted string, and not surrounded by forward slashes.
 
 ## CREATE
-__knife client create__ _client name_ _(options)_
+__ceth client create__ _client name_ _(options)_
 
   * `-a`, `--admin    `:
     Create the client as an admin
@@ -29,13 +29,13 @@ be displayed on _STDOUT_ or written to the named file. The public half
 will be stored on the Server. For _seth-client_ systems, the private key
 should be copied to the system as `/etc/seth/client.pem`.
 
-Admin clients should be created for users that will use _knife_ to
+Admin clients should be created for users that will use _ceth_ to
 access the API as an administrator. The private key will generally be
-copied to `~/.seth/client\_name.pem` and referenced in the `knife.rb`
+copied to `~/.seth/client\_name.pem` and referenced in the `ceth.rb`
 configuration file.
 
 ## DELETE
-__knife client delete__ _client name_  _(options)_
+__ceth client delete__ _client name_  _(options)_
 
 Deletes a registered client.
 
@@ -89,7 +89,7 @@ sort of "guest account" to create a client identity when initially
 setting up a host for management with Seth.
 
 ## SEE ALSO
-   __knife-node__(1)
+   __ceth-node__(1)
 
 ## AUTHOR
    Seth was written by Adam Jacob <adam@opscode.com> with many contributions from the community.
@@ -99,5 +99,5 @@ setting up a host for management with Seth.
    Permission is granted to copy, distribute and / or modify this document under the terms of the Apache 2.0 License.
 
 ## seth
-   Knife is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
+   ceth is distributed with Seth. <http://wiki.opscode.com/display/seth/Home>
 

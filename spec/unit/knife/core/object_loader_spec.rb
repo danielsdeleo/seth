@@ -18,13 +18,13 @@
 #
 
 require 'spec_helper'
-require 'seth/knife/core/object_loader'
+require 'seth/ceth/core/object_loader'
 
-describe Seth::Knife::Core::ObjectLoader do
+describe Seth::ceth::Core::ObjectLoader do
   before(:each) do
-    @knife = Seth::Knife.new
+    @ceth = Seth::ceth.new
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
     Dir.chdir(File.join(seth_SPEC_DATA, 'object_loader'))
   end
 
@@ -46,7 +46,7 @@ describe Seth::Knife::Core::ObjectLoader do
 
     describe "when the file is a #{seth_class}" do
       before do
-        @loader = Seth::Knife::Core::ObjectLoader.new(seth_class, @knife.ui)
+        @loader = Seth::ceth::Core::ObjectLoader.new(seth_class, @ceth.ui)
       end
 
       describe "when the file is a Ruby" do

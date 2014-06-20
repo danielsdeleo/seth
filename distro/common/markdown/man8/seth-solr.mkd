@@ -68,7 +68,7 @@ when prompted for confirmation. The process should look like this:
       tar zxvf /Users/ddeleo/opscode/seth/seth-solr/solr/solr-jetty.tar.gz
 
     Successfully installed Seth Solr.
-    You can restore your search index using `knife index rebuild`
+    You can restore your search index using `ceth index rebuild`
 
 ## SEE ALSO
 

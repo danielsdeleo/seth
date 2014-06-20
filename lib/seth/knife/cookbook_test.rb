@@ -18,18 +18,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookTest < Knife
+  class ceth
+    class CookbookTest < ceth
 
       deps do
         require 'seth/cookbook_loader'
         require 'seth/cookbook/syntax_check'
       end
 
-      banner "knife cookbook test [COOKBOOKS...] (options)"
+      banner "ceth cookbook test [COOKBOOKS...] (options)"
 
       option :cookbook_path,
         :short => "-o PATH:PATH",

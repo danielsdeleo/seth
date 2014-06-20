@@ -18,13 +18,13 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::EnvironmentShow do
+describe Seth::ceth::EnvironmentShow do
   before(:each) do
-    @knife = Seth::Knife::EnvironmentShow.new
-    @knife.stub(:msg).and_return true
-    @knife.stub(:output).and_return true
-    @knife.stub(:show_usage).and_return true
-    @knife.name_args = [ "production" ]
+    @ceth = Seth::ceth::EnvironmentShow.new
+    @ceth.stub(:msg).and_return true
+    @ceth.stub(:output).and_return true
+    @ceth.stub(:show_usage).and_return true
+    @ceth.name_args = [ "production" ]
 
     @environment = Seth::Environment.new
     @environment.name("production")
@@ -34,19 +34,19 @@ describe Seth::Knife::EnvironmentShow do
 
   it "should load the environment" do
     Seth::Environment.should_receive(:load).with("production")
-    @knife.run
+    @ceth.run
   end
 
   it "should pretty print the environment, formatted for display" do
-    @knife.should_receive(:format_for_display).with(@environment)
-    @knife.should_receive(:output)
-    @knife.run
+    @ceth.should_receive(:format_for_display).with(@environment)
+    @ceth.should_receive(:output)
+    @ceth.run
   end
 
   it "should show usage and exit when no environment name is provided" do
-    @knife.name_args = []
-    @knife.ui.should_receive(:fatal)
-    @knife.should_receive(:show_usage)
-    lambda { @knife.run }.should raise_error(SystemExit)
+    @ceth.name_args = []
+    @ceth.ui.should_receive(:fatal)
+    @ceth.should_receive(:show_usage)
+    lambda { @ceth.run }.should raise_error(SystemExit)
   end
 end

@@ -18,7 +18,7 @@
 
 require 'seth/version'
 class Seth
-  class Knife
+  class ceth
     class SubcommandLoader
 
       attr_reader :seth_config_dir
@@ -35,27 +35,27 @@ class Seth
         true
       end
 
-      # Returns an Array of paths to knife commands located in seth_config_dir/plugins/knife/
-      # and ~/.seth/plugins/knife/
+      # Returns an Array of paths to ceth commands located in seth_config_dir/plugins/ceth/
+      # and ~/.seth/plugins/ceth/
       def site_subcommands
         user_specific_files = []
 
         if seth_config_dir
-          user_specific_files.concat Dir.glob(File.expand_path("plugins/knife/*.rb", seth_config_dir))
+          user_specific_files.concat Dir.glob(File.expand_path("plugins/ceth/*.rb", seth_config_dir))
         end
 
-        # finally search ~/.seth/plugins/knife/*.rb
-        user_specific_files.concat Dir.glob(File.join(env['HOME'], '.seth', 'plugins', 'knife', '*.rb')) if env['HOME']
+        # finally search ~/.seth/plugins/ceth/*.rb
+        user_specific_files.concat Dir.glob(File.join(env['HOME'], '.seth', 'plugins', 'ceth', '*.rb')) if env['HOME']
 
         user_specific_files
       end
 
-      # Returns a Hash of paths to knife commands built-in to seth, or installed via gem.
-      # If rubygems is not installed, falls back to globbing the knife directory.
+      # Returns a Hash of paths to ceth commands built-in to seth, or installed via gem.
+      # If rubygems is not installed, falls back to globbing the ceth directory.
       # The Hash is of the form {"relative/path" => "/absolute/path"}
       #--
       # Note: the "right" way to load the plugins is to require the relative path, i.e.,
-      #   require 'seth/knife/command'
+      #   require 'seth/ceth/command'
       # but we're getting frustrated by bugs at every turn, and it's slow besides. So
       # subcommand loader has been modified to load the plugins by using Kernel.load
       # with the absolute path.
@@ -63,7 +63,7 @@ class Seth
         if have_plugin_manifest?
           find_subcommands_via_manifest
         else
-          # search all gems for seth/knife/*.rb
+          # search all gems for seth/ceth/*.rb
           require 'rubygems'
           find_subcommands_via_rubygems
         end
@@ -80,17 +80,17 @@ class Seth
       # file format is expected to look like:
       #
       #   { "plugins": {
-      #       "knife-ec2": {
+      #       "ceth-ec2": {
       #         "paths": [
-      #           "/home/alice/.rubymanagerthing/gems/knife-ec2-x.y.z/lib/seth/knife/ec2_server_create.rb",
-      #           "/home/alice/.rubymanagerthing/gems/knife-ec2-x.y.z/lib/seth/knife/ec2_server_delete.rb"
+      #           "/home/alice/.rubymanagerthing/gems/ceth-ec2-x.y.z/lib/seth/ceth/ec2_server_create.rb",
+      #           "/home/alice/.rubymanagerthing/gems/ceth-ec2-x.y.z/lib/seth/ceth/ec2_server_delete.rb"
       #         ]
       #       }
       #     }
       #   }
       #
       # Extraneous content in this file is ignored. This intentional so that we
-      # can adapt the file format for potential behavior changes to knife in
+      # can adapt the file format for potential behavior changes to ceth in
       # the future.
       def find_subcommands_via_manifest
         # Format of subcommand_files is "relative_path" (something you can
@@ -106,21 +106,21 @@ class Seth
       end
 
       def find_subcommands_via_dirglob
-        # The "require paths" of the core knife subcommands bundled with seth
-        files = Dir[File.expand_path('../../../knife/*.rb', __FILE__)]
+        # The "require paths" of the core ceth subcommands bundled with seth
+        files = Dir[File.expand_path('../../../ceth/*.rb', __FILE__)]
         subcommand_files = {}
-        files.each do |knife_file|
-          rel_path = knife_file[/#{seth_ROOT}#{Regexp.escape(File::SEPARATOR)}(.*)\.rb/,1]
-          subcommand_files[rel_path] = knife_file
+        files.each do |ceth_file|
+          rel_path = ceth_file[/#{seth_ROOT}#{Regexp.escape(File::SEPARATOR)}(.*)\.rb/,1]
+          subcommand_files[rel_path] = ceth_file
         end
         subcommand_files
       end
 
       def find_subcommands_via_rubygems
-        files = find_files_latest_gems 'seth/knife/*.rb'
+        files = find_files_latest_gems 'seth/ceth/*.rb'
         subcommand_files = {}
         files.each do |file|
-          rel_path = file[/(#{Regexp.escape File.join('seth', 'knife', '')}.*)\.rb/, 1]
+          rel_path = file[/(#{Regexp.escape File.join('seth', 'ceth', '')}.*)\.rb/, 1]
           subcommand_files[rel_path] = file
         end
 

@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class ConfigureClient < Knife
-      banner "knife configure client DIRECTORY"
+  class ceth
+    class ConfigureClient < ceth
+      banner "ceth configure client DIRECTORY"
 
       def run
         unless @config_dir = @name_args[0]

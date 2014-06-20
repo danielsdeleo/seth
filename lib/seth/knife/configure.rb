@@ -16,21 +16,21 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class Configure < Knife
+  class ceth
+    class Configure < ceth
       attr_reader :seth_server, :new_client_name, :admin_client_name, :admin_client_key
       attr_reader :seth_repo, :new_client_key, :validation_client_name, :validation_key
 
       deps do
         require 'ohai'
-        Seth::Knife::ClientCreate.load_deps
-        Seth::Knife::UserCreate.load_deps
+        Seth::ceth::ClientCreate.load_deps
+        Seth::ceth::UserCreate.load_deps
       end
 
-      banner "knife configure (options)"
+      banner "ceth configure (options)"
 
       option :repository,
         :short => "-r REPO",
@@ -94,7 +94,7 @@ EOH
           Seth::Config[:seth_server_url] = seth_server
           Seth::Config[:node_name] = admin_client_name
           Seth::Config[:client_key] = admin_client_key
-          user_create = Seth::Knife::UserCreate.new
+          user_create = Seth::ceth::UserCreate.new
           user_create.name_args = [ new_client_name ]
           user_create.config[:user_password] = config[:user_password] ||
             ui.ask("Please enter a password for the new user: ") {|q| q.echo = false}
@@ -108,13 +108,13 @@ EOH
           ui.msg("")
           ui.msg("You must place your client key in:")
           ui.msg("  #{new_client_key}")
-          ui.msg("Before running commands with Knife!")
+          ui.msg("Before running commands with ceth!")
           ui.msg("")
           ui.msg("*****")
           ui.msg("")
           ui.msg("You must place your validation key in:")
           ui.msg("  #{validation_key}")
-          ui.msg("Before generating instance data with Knife!")
+          ui.msg("Before generating instance data with ceth!")
           ui.msg("")
           ui.msg("*****")
         end
@@ -123,7 +123,7 @@ EOH
       end
 
       def ask_user_for_config_path
-        config[:config_file] ||= ask_question("Where should I put the config file? ", :default => "#{Seth::Config[:user_home]}/.seth/knife.rb")
+        config[:config_file] ||= ask_question("Where should I put the config file? ", :default => "#{Seth::Config[:user_home]}/.seth/ceth.rb")
         # have to use expand path to expand the tilde character to the user's home
         config[:config_file] = File.expand_path(config[:config_file])
         if File.exists?(config[:config_file])

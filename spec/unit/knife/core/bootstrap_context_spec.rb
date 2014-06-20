@@ -17,9 +17,9 @@
 #
 
 require 'spec_helper'
-require 'seth/knife/core/bootstrap_context'
+require 'seth/ceth/core/bootstrap_context'
 
-describe Seth::Knife::Core::BootstrapContext do
+describe Seth::ceth::Core::BootstrapContext do
   let(:config) { {:foo => :bar} }
   let(:run_list) { Seth::RunList.new('recipe[tmux]', 'role[base]') }
   let(:seth_config) do
@@ -105,7 +105,7 @@ EXPECTED
   describe "when installing an explicit version of seth" do
     let(:seth_config) do
       {
-        :knife => { :bootstrap_version => '123.45.678' }
+        :ceth => { :bootstrap_version => '123.45.678' }
       }
     end
     it "gives --version $VERSION as the version string" do
@@ -130,7 +130,7 @@ EXPECTED
     context "via config[:secret]" do
       let(:seth_config) do
         {
-          :knife => {:secret => "supersekret" }
+          :ceth => {:secret => "supersekret" }
         }
       end
       it "reads the encrypted_data_bag_secret" do
@@ -141,7 +141,7 @@ EXPECTED
     context "via config[:secret_file]" do
       let(:seth_config) do
         {
-          :knife => {:secret_file =>  secret_file}
+          :ceth => {:secret_file =>  secret_file}
         }
       end
       it "reads the encrypted_data_bag_secret" do
@@ -170,7 +170,7 @@ EXPECTED
   describe "when a bootstrap_version is specified" do
     let(:seth_config) do
       {
-        :knife => {:bootstrap_version => "11.12.4" }
+        :ceth => {:bootstrap_version => "11.12.4" }
       }
     end
 
@@ -182,7 +182,7 @@ EXPECTED
   describe "when a pre-release bootstrap_version is specified" do
     let(:seth_config) do
       {
-        :knife => {:bootstrap_version => "11.12.4.rc.0" }
+        :ceth => {:bootstrap_version => "11.12.4.rc.0" }
       }
     end
 

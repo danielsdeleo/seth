@@ -19,7 +19,7 @@
 require 'seth/mixin/shell_out'
 
 class Seth
-  class Knife
+  class ceth
     class CookbookSCMRepo
 
       DIRTY_REPO = /^[\s]+M/

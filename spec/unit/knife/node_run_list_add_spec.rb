@@ -18,15 +18,15 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::NodeRunListAdd do
+describe Seth::ceth::NodeRunListAdd do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::NodeRunListAdd.new
-    @knife.config = {
+    @ceth = Seth::ceth::NodeRunListAdd.new
+    @ceth.config = {
       :after => nil
     }
-    @knife.name_args = [ "adam", "role[monkey]" ]
-    @knife.stub(:output).and_return(true)
+    @ceth.name_args = [ "adam", "role[monkey]" ]
+    @ceth.stub(:output).and_return(true)
     @node = Seth::Node.new()
     @node.stub(:save).and_return(true)
     Seth::Node.stub(:load).and_return(@node)
@@ -35,30 +35,30 @@ describe Seth::Knife::NodeRunListAdd do
   describe "run" do
     it "should load the node" do
       Seth::Node.should_receive(:load).with("adam")
-      @knife.run
+      @ceth.run
     end
 
     it "should add to the run list" do
-      @knife.run
+      @ceth.run
       @node.run_list[0].should == 'role[monkey]'
     end
 
     it "should save the node" do
       @node.should_receive(:save)
-      @knife.run
+      @ceth.run
     end
 
     it "should print the run list" do
-      @knife.should_receive(:output).and_return(true)
-      @knife.run
+      @ceth.should_receive(:output).and_return(true)
+      @ceth.run
     end
 
     describe "with -a or --after specified" do
       it "should add to the run list after the specified entry" do
         @node.run_list << "role[acorns]"
         @node.run_list << "role[barn]"
-        @knife.config[:after] = "role[acorns]"
-        @knife.run
+        @ceth.config[:after] = "role[acorns]"
+        @ceth.run
         @node.run_list[0].should == "role[acorns]"
         @node.run_list[1].should == "role[monkey]"
         @node.run_list[2].should == "role[barn]"
@@ -69,8 +69,8 @@ describe Seth::Knife::NodeRunListAdd do
       it "should add to the run list before the specified entry" do
         @node.run_list << "role[acorns]"
         @node.run_list << "role[barn]"
-        @knife.config[:before] = "role[acorns]"
-        @knife.run
+        @ceth.config[:before] = "role[acorns]"
+        @ceth.run
         @node.run_list[0].should == "role[monkey]"
         @node.run_list[1].should == "role[acorns]"
         @node.run_list[2].should == "role[barn]"
@@ -81,18 +81,18 @@ describe Seth::Knife::NodeRunListAdd do
       it "exits with an error" do
         @node.run_list << "role[acorns]"
         @node.run_list << "role[barn]"
-        @knife.config[:before] = "role[acorns]"
-        @knife.config[:after]  = "role[acorns]"
-        @knife.ui.should_receive(:fatal)
-        lambda { @knife.run }.should raise_error(SystemExit)
+        @ceth.config[:before] = "role[acorns]"
+        @ceth.config[:after]  = "role[acorns]"
+        @ceth.ui.should_receive(:fatal)
+        lambda { @ceth.run }.should raise_error(SystemExit)
       end
     end
 
     describe "with more than one role or recipe" do
       it "should add to the run list all the entries" do
-        @knife.name_args = [ "adam", "role[monkey],role[duck]" ]
+        @ceth.name_args = [ "adam", "role[monkey],role[duck]" ]
         @node.run_list << "role[acorns]"
-        @knife.run
+        @ceth.run
         @node.run_list[0].should == "role[acorns]"
         @node.run_list[1].should == "role[monkey]"
         @node.run_list[2].should == "role[duck]"
@@ -101,9 +101,9 @@ describe Seth::Knife::NodeRunListAdd do
 
     describe "with more than one role or recipe with space between items" do
       it "should add to the run list all the entries" do
-        @knife.name_args = [ "adam", "role[monkey], role[duck]" ]
+        @ceth.name_args = [ "adam", "role[monkey], role[duck]" ]
         @node.run_list << "role[acorns]"
-        @knife.run
+        @ceth.run
         @node.run_list[0].should == "role[acorns]"
         @node.run_list[1].should == "role[monkey]"
         @node.run_list[2].should == "role[duck]"
@@ -112,9 +112,9 @@ describe Seth::Knife::NodeRunListAdd do
 
     describe "with more than one role or recipe as different arguments" do
       it "should add to the run list all the entries" do
-        @knife.name_args = [ "adam", "role[monkey]", "role[duck]" ]
+        @ceth.name_args = [ "adam", "role[monkey]", "role[duck]" ]
         @node.run_list << "role[acorns]"
-        @knife.run
+        @ceth.run
         @node.run_list[0].should == "role[acorns]"
         @node.run_list[1].should == "role[monkey]"
         @node.run_list[2].should == "role[duck]"
@@ -123,9 +123,9 @@ describe Seth::Knife::NodeRunListAdd do
 
     describe "with more than one role or recipe as different arguments and list separated by commas" do
       it "should add to the run list all the entries" do
-        @knife.name_args = [ "adam", "role[monkey]", "role[duck],recipe[bird::fly]" ]
+        @ceth.name_args = [ "adam", "role[monkey]", "role[duck],recipe[bird::fly]" ]
         @node.run_list << "role[acorns]"
-        @knife.run
+        @ceth.run
         @node.run_list[0].should == "role[acorns]"
         @node.run_list[1].should == "role[monkey]"
         @node.run_list[2].should == "role[duck]"
@@ -134,9 +134,9 @@ describe Seth::Knife::NodeRunListAdd do
 
     describe "with one role or recipe but with an extraneous comma" do
       it "should add to the run list one item" do
-        @knife.name_args = [ "adam", "role[monkey]," ]
+        @ceth.name_args = [ "adam", "role[monkey]," ]
         @node.run_list << "role[acorns]"
-        @knife.run
+        @ceth.run
         @node.run_list[0].should == "role[acorns]"
         @node.run_list[1].should == "role[monkey]"
       end

@@ -1,8 +1,8 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "KNIFE-CLIENT" "1" "Seth 11.12.0" "" "knife client"
+.TH "ceth-CLIENT" "1" "Seth 11.12.0" "" "ceth client"
 .SH NAME
-knife-client \- The man page for the knife client subcommand.
+ceth-client \- The man page for the ceth client subcommand.
 .
 .nr rst2man-indent-level 0
 .
@@ -39,10 +39,10 @@ During the initial seth\-client run, the seth\-client will register with the Set
 .sp
 After the initial seth\-client run has completed successfully, the seth\-validator is no longer required and may be deleted from the node. Use the \fBdelete_validation\fP recipe found in the \fBseth\-client\fP cookbook (\fI\%https://github.com/opscode\-cookbooks/seth\-client\fP) to remove the seth\-validator\&.
 .sp
-The \fBknife client\fP subcommand is used to manage an API client list and their associated RSA public key\-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the seth Server API, such as the seth\-client and Knife\&.
+The \fBceth client\fP subcommand is used to manage an API client list and their associated RSA public key\-pairs. This allows authentication requests to be made to the Seth server by any entity that uses the seth Server API, such as the seth\-client and ceth\&.
 .SH COMMON OPTIONS
 .sp
-The following options may be used with any of the arguments available to the \fBknife client\fP subcommand:
+The following options may be used with any of the arguments available to the \fBceth client\fP subcommand:
 .INDENT 0.0
 .TP
 .B \fB\-\-seth\-zero\-port PORT\fP
@@ -55,7 +55,7 @@ The configuration file to use.
 Indicates that $EDITOR will not be opened; data will be accepted as\-is.
 .TP
 .B \fB\-\-defaults\fP
-Indicates that Knife will use the default value, instead of asking a user to provide one.
+Indicates that ceth will use the default value, instead of asking a user to provide one.
 .TP
 .B \fB\-e EDITOR\fP, \fB\-\-editor EDITOR\fP
 The $EDITOR that is used for all interactive commands.
@@ -70,7 +70,7 @@ The output format: \fBsummary\fP (default), \fBtext\fP, \fBjson\fP, \fByaml\fP, 
 Shows help for the command.
 .TP
 .B \fB\-k KEY\fP, \fB\-\-key KEY\fP
-The private key that Knife will use to sign requests made by the API client to the Seth server\&.
+The private key that ceth will use to sign requests made by the API client to the Seth server\&.
 .TP
 .B \fB\-\-[no\-]color\fP
 Indicates whether colored output will be used.
@@ -82,7 +82,7 @@ Indicates that data will be shown after a destructive operation.
 The URL for the Seth server\&.
 .TP
 .B \fB\-u USER\fP, \fB\-\-user USER\fP
-The user name used by Knife to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
+The user name used by ceth to sign requests made by the API client to the Seth server\&. Authentication will fail if the user name does not match the private key.
 .TP
 .B \fB\-V\fP, \fB\-\-verbose\fP
 Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
@@ -91,7 +91,7 @@ Set for more verbose outputs. Use \fB\-VV\fP for maximum verbosity.
 The version of the seth\-client\&.
 .TP
 .B \fB\-y\fP, \fB\-\-yes\fP
-Indicates that the response to all confirmation prompts will be "Yes" (and that Knife will not ask for confirmation).
+Indicates that the response to all confirmation prompts will be "Yes" (and that ceth will not ask for confirmation).
 .TP
 .B \fB\-z\fP, \fB\-\-local\-mode\fP
 Indicates that the seth\-client will be run in local mode, which allows all commands that work against the Seth server to also work against the local seth\-repo\&.
@@ -108,7 +108,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife client bulk delete REGEX
+$ ceth client bulk delete REGEX
 .ft P
 .fi
 .UNINDENT
@@ -124,7 +124,7 @@ The \fBcreate\fP argument is used to create a new API client\&. This process wil
 .IP \(bu 2
 For the seth\-client, the private key should be copied to the system as \fB/etc/seth/client.pem\fP\&.
 .IP \(bu 2
-For Knife, the private key is typically copied to \fB~/.seth/client_name.pem\fP and referenced in the knife.rb configuration file.
+For ceth, the private key is typically copied to \fB~/.seth/client_name.pem\fP and referenced in the ceth.rb configuration file.
 .UNINDENT
 .sp
 \fBSyntax\fP
@@ -135,7 +135,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife client create CLIENT_NAME (options)
+$ ceth client create CLIENT_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -161,7 +161,7 @@ To create a Seth Admin client with the name "exampleorg" and save its private ke
 .sp
 .nf
 .ft C
-$ knife client create exampleorg \-a \-f "/etc/seth/client.pem"
+$ ceth client create exampleorg \-a \-f "/etc/seth/client.pem"
 .ft P
 .fi
 .UNINDENT
@@ -173,7 +173,7 @@ When running the \fBcreate\fP argument on Enterprise Seth, be sure to omit the \
 .sp
 .nf
 .ft C
-$ knife client create exampleorg \-f "/etc/seth/client.pem"
+$ ceth client create exampleorg \-f "/etc/seth/client.pem"
 .ft P
 .fi
 .UNINDENT
@@ -190,7 +190,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife client delete CLIENT_NAME
+$ ceth client delete CLIENT_NAME
 .ft P
 .fi
 .UNINDENT
@@ -208,7 +208,7 @@ To delete a client with the name "client_foo", enter:
 .sp
 .nf
 .ft C
-$ knife client delete client_foo
+$ ceth client delete client_foo
 .ft P
 .fi
 .UNINDENT
@@ -217,7 +217,7 @@ $ knife client delete client_foo
 Type \fBY\fP to confirm a deletion.
 .SH EDIT
 .sp
-The \fBedit\fP argument is used to edit the details of a registered API client\&. When this argument is run, Knife will open $EDITOR to enable editing of the \fBadmin\fP attribute. (None of the other attributes should be changed using this argument.) When finished, Knife will update the Seth server with those changes.
+The \fBedit\fP argument is used to edit the details of a registered API client\&. When this argument is run, ceth will open $EDITOR to enable editing of the \fBadmin\fP attribute. (None of the other attributes should be changed using this argument.) When finished, ceth will update the Seth server with those changes.
 .sp
 \fBSyntax\fP
 .sp
@@ -227,7 +227,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife client edit CLIENT_NAME
+$ ceth client edit CLIENT_NAME
 .ft P
 .fi
 .UNINDENT
@@ -245,7 +245,7 @@ To edit a client with the name "exampleorg", enter:
 .sp
 .nf
 .ft C
-$ knife client edit exampleorg
+$ ceth client edit exampleorg
 .ft P
 .fi
 .UNINDENT
@@ -262,7 +262,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife client list (options)
+$ ceth client list (options)
 .ft P
 .fi
 .UNINDENT
@@ -285,7 +285,7 @@ To verify the API client list for the Seth server, enter:
 .sp
 .nf
 .ft C
-$ knife client list
+$ ceth client list
 .ft P
 .fi
 .UNINDENT
@@ -312,7 +312,7 @@ Seth server correctly, try getting a list of clients using \fB\-u\fP and \fB\-k\
 .sp
 .nf
 .ft C
-$ knife client list \-u ORGNAME \-k .seth/ORGNAME.pem
+$ ceth client list \-u ORGNAME \-k .seth/ORGNAME.pem
 .ft P
 .fi
 .UNINDENT
@@ -336,7 +336,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife client reregister CLIENT_NAME (options)
+$ ceth client reregister CLIENT_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -359,7 +359,7 @@ To regenerate the RSA key pair for a client named "testclient" and save it to a 
 .sp
 .nf
 .ft C
-$ knife client regenerate testclient \-f rsa_key
+$ ceth client regenerate testclient \-f rsa_key
 .ft P
 .fi
 .UNINDENT
@@ -376,7 +376,7 @@ This argument has the following syntax:
 .sp
 .nf
 .ft C
-$ knife client show CLIENT_NAME (options)
+$ ceth client show CLIENT_NAME (options)
 .ft P
 .fi
 .UNINDENT
@@ -399,7 +399,7 @@ To view a client named "testclient", enter:
 .sp
 .nf
 .ft C
-$ knife client show testclient
+$ ceth client show testclient
 .ft P
 .fi
 .UNINDENT
@@ -427,7 +427,7 @@ To view information in JSON format, use the \fB\-F\fP common option as part of t
 .sp
 .nf
 .ft C
-$ knife role show devops \-F json
+$ ceth role show devops \-F json
 .ft P
 .fi
 .UNINDENT

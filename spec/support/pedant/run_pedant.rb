@@ -47,7 +47,7 @@ begin
   Pedant.config.suite = 'api'
   Pedant.config[:config_file] = 'spec/support/pedant/pedant_config.rb'
   Pedant.setup([
-    '--skip-knife',
+    '--skip-ceth',
     '--skip-validation',
     '--skip-authentication',
     '--skip-authorization',

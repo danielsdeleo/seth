@@ -18,17 +18,17 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::NodeShow do
+describe Seth::ceth::NodeShow do
   before(:each) do
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::NodeShow.new
-    @knife.config = {
+    @ceth = Seth::ceth::NodeShow.new
+    @ceth.config = {
       :attribute => nil,
       :run_list => nil,
       :environment => nil
     }
-    @knife.name_args = [ "adam" ]
-    @knife.stub(:output).and_return(true)
+    @ceth.name_args = [ "adam" ]
+    @ceth.stub(:output).and_return(true)
     @node = Seth::Node.new()
     Seth::Node.stub(:load).and_return(@node)
   end
@@ -36,13 +36,13 @@ describe Seth::Knife::NodeShow do
   describe "run" do
     it "should load the node" do
       Seth::Node.should_receive(:load).with("adam").and_return(@node)
-      @knife.run
+      @ceth.run
     end
 
     it "should pretty print the node, formatted for display" do
-      @knife.should_receive(:format_for_display).with(@node).and_return("poop")
-      @knife.should_receive(:output).with("poop")
-      @knife.run
+      @ceth.should_receive(:format_for_display).with(@node).and_return("poop")
+      @ceth.should_receive(:output).with("poop")
+      @ceth.run
     end
   end
 end

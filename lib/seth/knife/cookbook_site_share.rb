@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class CookbookSiteShare < Knife
+  class ceth
+    class CookbookSiteShare < ceth
 
       deps do
         require 'seth/cookbook_loader'
@@ -28,7 +28,7 @@ class Seth
         require 'seth/cookbook_site_streaming_uploader'
       end
 
-      banner "knife cookbook site share COOKBOOK CATEGORY (options)"
+      banner "ceth cookbook site share COOKBOOK CATEGORY (options)"
       category "cookbook site"
 
       option :cookbook_path,

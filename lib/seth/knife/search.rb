@@ -16,14 +16,14 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
-require 'seth/knife/core/node_presenter'
+require 'seth/ceth'
+require 'seth/ceth/core/node_presenter'
 
 class Seth
-  class Knife
-    class Search < Knife
+  class ceth
+    class Search < ceth
 
-      include Knife::Core::MultiAttributeReturnOption
+      include ceth::Core::MultiAttributeReturnOption
 
       deps do
         require 'seth/node'
@@ -32,9 +32,9 @@ class Seth
         require 'seth/search/query'
       end
 
-      include Knife::Core::NodeFormattingOptions
+      include ceth::Core::NodeFormattingOptions
 
-      banner "knife search INDEX QUERY (options)"
+      banner "ceth search INDEX QUERY (options)"
 
       option :sort,
         :short => "-o SORT",
@@ -76,7 +76,7 @@ class Seth
         fuzzify_query
 
         if @type == 'node'
-          ui.use_presenter Knife::Core::NodePresenter
+          ui.use_presenter ceth::Core::NodePresenter
         end
 
 
@@ -100,7 +100,7 @@ class Seth
           end
         rescue Net::HTTPServerException => e
           msg = Seth::JSONCompat.from_json(e.response.body)["error"].first
-          ui.error("knife search failed: #{msg}")
+          ui.error("ceth search failed: #{msg}")
           exit 1
         end
 

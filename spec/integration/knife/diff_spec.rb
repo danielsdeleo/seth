@@ -16,11 +16,11 @@
 # limitations under the License.
 
 require 'support/shared/integration/integration_helper'
-require 'seth/knife/diff'
+require 'seth/ceth/diff'
 
-describe 'knife diff' do
+describe 'ceth diff' do
   extend IntegrationSupport
-  include KnifeSupport
+  include cethSupport
 
   context 'without versioned cookbooks' do
     when_the_seth_server "has one of each thing" do
@@ -41,8 +41,8 @@ describe 'knife diff' do
         directory 'roles'
         directory 'users'
 
-        it 'knife diff reports everything as deleted' do
-          knife('diff --name-status /').should_succeed <<EOM
+        it 'ceth diff reports everything as deleted' do
+          ceth('diff --name-status /').should_succeed <<EOM
 D\t/clients/seth-validator.json
 D\t/clients/seth-webui.json
 D\t/clients/x.json
@@ -72,16 +72,16 @@ EOM
         file 'users/admin.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
         file 'users/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
-        it 'knife diff reports no differences' do
-          knife('diff /').should_succeed ''
+        it 'ceth diff reports no differences' do
+          ceth('diff /').should_succeed ''
         end
 
-        it 'knife diff /environments/nonexistent.json reports an error' do
-          knife('diff /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory on remote or local\n"
+        it 'ceth diff /environments/nonexistent.json reports an error' do
+          ceth('diff /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory on remote or local\n"
         end
 
-        it 'knife diff /environments/*.txt reports an error' do
-          knife('diff /environments/*.txt').should_fail "ERROR: /environments/*.txt: No such file or directory on remote or local\n"
+        it 'ceth diff /environments/*.txt reports an error' do
+          ceth('diff /environments/*.txt').should_fail "ERROR: /environments/*.txt: No such file or directory on remote or local\n"
         end
 
         context 'except the role file' do
@@ -90,8 +90,8 @@ EOM
   "foo": "bar"
 }
 EOM
-          it 'knife diff reports the role as different' do
-            knife('diff --name-status /').should_succeed <<EOM
+          it 'ceth diff reports the role as different' do
+            ceth('diff --name-status /').should_succeed <<EOM
 M\t/roles/x.json
 EOM
           end
@@ -108,8 +108,8 @@ EOM
           file 'roles/y.json', {}
           file 'users/y.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
-          it 'knife diff reports the new files as added' do
-            knife('diff --name-status /').should_succeed <<EOM
+          it 'ceth diff reports the new files as added' do
+            ceth('diff --name-status /').should_succeed <<EOM
 A\t/clients/y.json
 A\t/cookbooks/x/blah.rb
 A\t/cookbooks/y
@@ -124,14 +124,14 @@ EOM
 
           context 'when cwd is the data_bags directory' do
             cwd 'data_bags'
-            it 'knife diff reports different data bags' do
-              knife('diff --name-status').should_succeed <<EOM
+            it 'ceth diff reports different data bags' do
+              ceth('diff --name-status').should_succeed <<EOM
 A\tx/z.json
 A\ty
 EOM
             end
-            it 'knife diff * reports different data bags' do
-              knife('diff --name-status *').should_succeed <<EOM
+            it 'ceth diff * reports different data bags' do
+              ceth('diff --name-status *').should_succeed <<EOM
 A\tx/z.json
 A\ty
 EOM
@@ -141,8 +141,8 @@ EOM
       end
 
       when_the_repository 'is empty' do
-        it 'knife diff reports everything as deleted' do
-          knife('diff --name-status /').should_succeed <<EOM
+        it 'ceth diff reports everything as deleted' do
+          ceth('diff --name-status /').should_succeed <<EOM
 D\t/clients
 D\t/cookbooks
 D\t/data_bags
@@ -163,16 +163,16 @@ EOM
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => ''}
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => '' }
 
-        it 'knife diff /cookbooks/x shows differences' do
-          knife('diff --name-status /cookbooks/x').should_succeed <<EOM
+        it 'ceth diff /cookbooks/x shows differences' do
+          ceth('diff --name-status /cookbooks/x').should_succeed <<EOM
 M\t/cookbooks/x/metadata.rb
 D\t/cookbooks/x/onlyin1.0.1.rb
 A\t/cookbooks/x/onlyin1.0.0.rb
 EOM
         end
 
-        it 'knife diff --diff-filter=MAT does not show deleted files' do
-          knife('diff --diff-filter=MAT --name-status /cookbooks/x').should_succeed <<EOM
+        it 'ceth diff --diff-filter=MAT does not show deleted files' do
+          ceth('diff --diff-filter=MAT --name-status /cookbooks/x').should_succeed <<EOM
 M\t/cookbooks/x/metadata.rb
 A\t/cookbooks/x/onlyin1.0.0.rb
 EOM
@@ -182,16 +182,16 @@ EOM
       when_the_seth_server 'has an earlier version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => '' }
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => '' }
-        it 'knife diff /cookbooks/x shows no differences' do
-          knife('diff --name-status /cookbooks/x').should_succeed ''
+        it 'ceth diff /cookbooks/x shows no differences' do
+          ceth('diff --name-status /cookbooks/x').should_succeed ''
         end
       end
 
       when_the_seth_server 'has a later version for the cookbook, and no current version' do
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => '' }
 
-        it 'knife diff /cookbooks/x shows the differences' do
-          knife('diff --name-status /cookbooks/x').should_succeed <<EOM
+        it 'ceth diff /cookbooks/x shows the differences' do
+          ceth('diff --name-status /cookbooks/x').should_succeed <<EOM
 M\t/cookbooks/x/metadata.rb
 D\t/cookbooks/x/onlyin1.0.1.rb
 A\t/cookbooks/x/onlyin1.0.0.rb
@@ -202,8 +202,8 @@ EOM
       when_the_seth_server 'has an earlier version for the cookbook, and no current version' do
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => '' }
 
-        it 'knife diff /cookbooks/x shows the differences' do
-          knife('diff --name-status /cookbooks/x').should_succeed <<EOM
+        it 'ceth diff /cookbooks/x shows the differences' do
+          ceth('diff --name-status /cookbooks/x').should_succeed <<EOM
 M\t/cookbooks/x/metadata.rb
 D\t/cookbooks/x/onlyin0.9.9.rb
 A\t/cookbooks/x/onlyin1.0.0.rb
@@ -217,14 +217,14 @@ EOM
         file 'environments/x.json', {}
         when_the_seth_server 'has an empty environment' do
           environment 'x', {}
-          it 'knife diff returns no differences' do
-            knife('diff /environments/x.json').should_succeed ''
+          it 'ceth diff returns no differences' do
+            ceth('diff /environments/x.json').should_succeed ''
           end
         end
         when_the_seth_server 'has an environment with a different value' do
           environment 'x', { 'description' => 'hi' }
-          it 'knife diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
-            knife('diff /environments/x.json').should_succeed(/
+          it 'ceth diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
+            ceth('diff /environments/x.json').should_succeed(/
  {
 -  "name": "x",
 -  "description": "hi"
@@ -239,14 +239,14 @@ EOM
         file 'environments/x.json', { 'description' => 'hi' }
         when_the_seth_server 'has an environment with the same value' do
           environment 'x', { 'description' => 'hi' }
-          it 'knife diff returns no differences' do
-            knife('diff /environments/x.json').should_succeed ''
+          it 'ceth diff returns no differences' do
+            ceth('diff /environments/x.json').should_succeed ''
           end
         end
         when_the_seth_server 'has an environment with no value' do
           environment 'x', {}
-          it 'knife diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
-            knife('diff /environments/x.json').should_succeed(/
+          it 'ceth diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
+            ceth('diff /environments/x.json').should_succeed(/
  {
 -  "name": "x"
 \+  "name": "x",
@@ -257,8 +257,8 @@ EOM
         end
         when_the_seth_server 'has an environment with a different value' do
           environment 'x', { 'description' => 'lo' }
-          it 'knife diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
-            knife('diff /environments/x.json').should_succeed(/
+          it 'ceth diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
+            ceth('diff /environments/x.json').should_succeed(/
  {
    "name": "x",
 -  "description": "lo"
@@ -274,8 +274,8 @@ EOM
       environment 'x', {}
       when_the_repository 'has an environment with bad JSON' do
         file 'environments/x.json', '{'
-        it 'knife diff reports an error and does a textual diff' do
-          knife('diff /environments/x.json').should_succeed(/-  "name": "x"/, :stderr => "WARN: Parse error reading #{path_to('environments/x.json')} as JSON: A JSON text must at least contain two octets!\n")
+        it 'ceth diff reports an error and does a textual diff' do
+          ceth('diff /environments/x.json').should_succeed(/-  "name": "x"/, :stderr => "WARN: Parse error reading #{path_to('environments/x.json')} as JSON: A JSON text must at least contain two octets!\n")
         end
       end
     end
@@ -300,8 +300,8 @@ EOM
         directory 'roles'
         directory 'users'
 
-        it 'knife diff reports everything as deleted' do
-          knife('diff --name-status /').should_succeed <<EOM
+        it 'ceth diff reports everything as deleted' do
+          ceth('diff --name-status /').should_succeed <<EOM
 D\t/clients/seth-validator.json
 D\t/clients/seth-webui.json
 D\t/clients/x.json
@@ -330,16 +330,16 @@ EOM
         file 'users/admin.json', { 'admin' => true, 'public_key' => SethZero::PUBLIC_KEY }
         file 'users/x.json', { 'public_key' => SethZero::PUBLIC_KEY }
 
-        it 'knife diff reports no differences' do
-          knife('diff /').should_succeed ''
+        it 'ceth diff reports no differences' do
+          ceth('diff /').should_succeed ''
         end
 
-        it 'knife diff /environments/nonexistent.json reports an error' do
-          knife('diff /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory on remote or local\n"
+        it 'ceth diff /environments/nonexistent.json reports an error' do
+          ceth('diff /environments/nonexistent.json').should_fail "ERROR: /environments/nonexistent.json: No such file or directory on remote or local\n"
         end
 
-        it 'knife diff /environments/*.txt reports an error' do
-          knife('diff /environments/*.txt').should_fail "ERROR: /environments/*.txt: No such file or directory on remote or local\n"
+        it 'ceth diff /environments/*.txt reports an error' do
+          ceth('diff /environments/*.txt').should_fail "ERROR: /environments/*.txt: No such file or directory on remote or local\n"
         end
 
         context 'except the role file' do
@@ -348,8 +348,8 @@ EOM
   "foo": "bar"
 }
 EOM
-          it 'knife diff reports the role as different' do
-            knife('diff --name-status /').should_succeed <<EOM
+          it 'ceth diff reports the role as different' do
+            ceth('diff --name-status /').should_succeed <<EOM
 M\t/roles/x.json
 EOM
           end
@@ -367,8 +367,8 @@ EOM
           file 'roles/y.json', {}
           file 'users/y.json', {}
 
-          it 'knife diff reports the new files as added' do
-            knife('diff --name-status /').should_succeed <<EOM
+          it 'ceth diff reports the new files as added' do
+            ceth('diff --name-status /').should_succeed <<EOM
 A\t/clients/y.json
 A\t/cookbooks/x-1.0.0/blah.rb
 A\t/cookbooks/x-2.0.0
@@ -384,14 +384,14 @@ EOM
 
           context 'when cwd is the data_bags directory' do
             cwd 'data_bags'
-            it 'knife diff reports different data bags' do
-              knife('diff --name-status').should_succeed <<EOM
+            it 'ceth diff reports different data bags' do
+              ceth('diff --name-status').should_succeed <<EOM
 A\tx/z.json
 A\ty
 EOM
             end
-            it 'knife diff * reports different data bags' do
-              knife('diff --name-status *').should_succeed <<EOM
+            it 'ceth diff * reports different data bags' do
+              ceth('diff --name-status *').should_succeed <<EOM
 A\tx/z.json
 A\ty
 EOM
@@ -401,8 +401,8 @@ EOM
       end
 
       when_the_repository 'is empty' do
-        it 'knife diff reports everything as deleted' do
-          knife('diff --name-status /').should_succeed <<EOM
+        it 'ceth diff reports everything as deleted' do
+          ceth('diff --name-status /').should_succeed <<EOM
 D\t/clients
 D\t/cookbooks
 D\t/data_bags
@@ -423,30 +423,30 @@ EOM
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => ''}
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => '' }
 
-        it 'knife diff /cookbooks shows differences' do
-          knife('diff --name-status /cookbooks').should_succeed <<EOM
+        it 'ceth diff /cookbooks shows differences' do
+          ceth('diff --name-status /cookbooks').should_succeed <<EOM
 D\t/cookbooks/x-1.0.1
 EOM
         end
 
-        it 'knife diff --diff-filter=MAT does not show deleted files' do
-          knife('diff --diff-filter=MAT --name-status /cookbooks').should_succeed ''
+        it 'ceth diff --diff-filter=MAT does not show deleted files' do
+          ceth('diff --diff-filter=MAT --name-status /cookbooks').should_succeed ''
         end
       end
 
       when_the_seth_server 'has an earlier version for the cookbook' do
         cookbook 'x', '1.0.0', { 'metadata.rb' => 'version "1.0.0"', 'onlyin1.0.0.rb' => '' }
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => '' }
-        it 'knife diff /cookbooks shows the differences' do
-          knife('diff --name-status /cookbooks').should_succeed "D\t/cookbooks/x-0.9.9\n"
+        it 'ceth diff /cookbooks shows the differences' do
+          ceth('diff --name-status /cookbooks').should_succeed "D\t/cookbooks/x-0.9.9\n"
         end
       end
 
       when_the_seth_server 'has a later version for the cookbook, and no current version' do
         cookbook 'x', '1.0.1', { 'metadata.rb' => 'version "1.0.1"', 'onlyin1.0.1.rb' => '' }
 
-        it 'knife diff /cookbooks shows the differences' do
-          knife('diff --name-status /cookbooks').should_succeed <<EOM
+        it 'ceth diff /cookbooks shows the differences' do
+          ceth('diff --name-status /cookbooks').should_succeed <<EOM
 D\t/cookbooks/x-1.0.1
 A\t/cookbooks/x-1.0.0
 EOM
@@ -456,8 +456,8 @@ EOM
       when_the_seth_server 'has an earlier version for the cookbook, and no current version' do
         cookbook 'x', '0.9.9', { 'metadata.rb' => 'version "0.9.9"', 'onlyin0.9.9.rb' => '' }
 
-        it 'knife diff /cookbooks shows the differences' do
-          knife('diff --name-status /cookbooks').should_succeed <<EOM
+        it 'ceth diff /cookbooks shows the differences' do
+          ceth('diff --name-status /cookbooks').should_succeed <<EOM
 D\t/cookbooks/x-0.9.9
 A\t/cookbooks/x-1.0.0
 EOM
@@ -470,14 +470,14 @@ EOM
         file 'environments/x.json', {}
         when_the_seth_server 'has an empty environment' do
           environment 'x', {}
-          it 'knife diff returns no differences' do
-            knife('diff /environments/x.json').should_succeed ''
+          it 'ceth diff returns no differences' do
+            ceth('diff /environments/x.json').should_succeed ''
           end
         end
         when_the_seth_server 'has an environment with a different value' do
           environment 'x', { 'description' => 'hi' }
-          it 'knife diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
-            knife('diff /environments/x.json').should_succeed(/
+          it 'ceth diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
+            ceth('diff /environments/x.json').should_succeed(/
  {
 -  "name": "x",
 -  "description": "hi"
@@ -492,14 +492,14 @@ EOM
         file 'environments/x.json', { 'description' => 'hi' }
         when_the_seth_server 'has an environment with the same value' do
           environment 'x', { 'description' => 'hi' }
-          it 'knife diff returns no differences' do
-            knife('diff /environments/x.json').should_succeed ''
+          it 'ceth diff returns no differences' do
+            ceth('diff /environments/x.json').should_succeed ''
           end
         end
         when_the_seth_server 'has an environment with no value' do
           environment 'x', {}
-          it 'knife diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
-            knife('diff /environments/x.json').should_succeed(/
+          it 'ceth diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
+            ceth('diff /environments/x.json').should_succeed(/
  {
 -  "name": "x"
 \+  "name": "x",
@@ -510,8 +510,8 @@ EOM
         end
         when_the_seth_server 'has an environment with a different value' do
           environment 'x', { 'description' => 'lo' }
-          it 'knife diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
-            knife('diff /environments/x.json').should_succeed(/
+          it 'ceth diff reports the difference', :pending => (RUBY_VERSION < "1.9") do
+            ceth('diff /environments/x.json').should_succeed(/
  {
    "name": "x",
 -  "description": "lo"
@@ -527,8 +527,8 @@ EOM
       environment 'x', {}
       when_the_repository 'has an environment with bad JSON' do
         file 'environments/x.json', '{'
-        it 'knife diff reports an error and does a textual diff' do
-          knife('diff /environments/x.json').should_succeed(/-  "name": "x"/, :stderr => "WARN: Parse error reading #{path_to('environments/x.json')} as JSON: A JSON text must at least contain two octets!\n")
+        it 'ceth diff reports an error and does a textual diff' do
+          ceth('diff /environments/x.json').should_succeed(/-  "name": "x"/, :stderr => "WARN: Parse error reading #{path_to('environments/x.json')} as JSON: A JSON text must at least contain two octets!\n")
         end
       end
     end

@@ -18,19 +18,19 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::CookbookBulkDelete do
+describe Seth::ceth::CookbookBulkDelete do
   before(:each) do
     Seth::Log.logger = Logger.new(StringIO.new)
 
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::CookbookBulkDelete.new
-    @knife.config = {:print_after => nil}
-    @knife.name_args = ["."]
+    @ceth = Seth::ceth::CookbookBulkDelete.new
+    @ceth.config = {:print_after => nil}
+    @ceth.name_args = ["."]
     @stdout = StringIO.new
     @stderr = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
-    @knife.ui.stub(:stderr).and_return(@stderr)
-    @knife.ui.stub(:confirm).and_return(true)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:stderr).and_return(@stderr)
+    @ceth.ui.stub(:confirm).and_return(true)
     @cookbooks = Hash.new
     %w{cheezburger pizza lasagna}.each do |cookbook_name|
       cookbook = Seth::CookbookVersion.new(cookbook_name)
@@ -39,7 +39,7 @@ describe Seth::Knife::CookbookBulkDelete do
     @rest = double("Seth::REST")
     @rest.stub(:get_rest).and_return(@cookbooks)
     @rest.stub(:delete_rest).and_return(true)
-    @knife.stub(:rest).and_return(@rest)
+    @ceth.stub(:rest).and_return(@rest)
     Seth::CookbookVersion.stub(:list).and_return(@cookbooks)
 
   end
@@ -57,33 +57,33 @@ describe Seth::Knife::CookbookBulkDelete do
     end
 
     it "should print the cookbooks you are about to delete" do
-      expected = @knife.ui.list(@cookbooks.keys.sort, :columns_down)
-      @knife.run
+      expected = @ceth.ui.list(@cookbooks.keys.sort, :columns_down)
+      @ceth.run
       @stdout.string.should match(/#{expected}/)
     end
 
     it "should confirm you really want to delete them" do
-      @knife.ui.should_receive(:confirm)
-      @knife.run
+      @ceth.ui.should_receive(:confirm)
+      @ceth.run
     end
 
     it "should delete each cookbook" do
       {"cheezburger" => "1.0.0", "pizza" => "2.0.0", "lasagna" => '3.0.0'}.each do |cookbook_name, version|
         @rest.should_receive(:delete_rest).with("cookbooks/#{cookbook_name}/#{version}")
       end
-      @knife.run
+      @ceth.run
     end
 
     it "should only delete cookbooks that match the regex" do
-      @knife.name_args = ["cheezburger"]
+      @ceth.name_args = ["cheezburger"]
       @rest.should_receive(:delete_rest).with('cookbooks/cheezburger/1.0.0')
-      @knife.run
+      @ceth.run
     end
   end
 
   it "should exit if the regex is not provided" do
-    @knife.name_args = []
-    lambda { @knife.run }.should raise_error(SystemExit)
+    @ceth.name_args = []
+    lambda { @ceth.run }.should raise_error(SystemExit)
   end
 
 end

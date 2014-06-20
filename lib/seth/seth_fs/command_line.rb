@@ -70,7 +70,7 @@ class Seth
             elsif output_mode == :name_status
               yield "D\t#{new_path}\n"
             elsif old_value
-              result = "diff --knife #{old_path} #{new_path}\n"
+              result = "diff --ceth #{old_path} #{new_path}\n"
               result << "deleted file\n"
               result << diff_text(old_path, '/dev/null', old_value, '')
               yield result
@@ -85,7 +85,7 @@ class Seth
             elsif output_mode == :name_status
               yield "A\t#{new_path}\n"
             elsif new_value
-              result = "diff --knife #{old_path} #{new_path}\n"
+              result = "diff --ceth #{old_path} #{new_path}\n"
               result << "new file\n"
               result << diff_text('/dev/null', new_path, '', new_value)
               yield result
@@ -100,7 +100,7 @@ class Seth
             elsif output_mode == :name_status
               yield "M\t#{new_path}\n"
             else
-              result = "diff --knife #{old_path} #{new_path}\n"
+              result = "diff --ceth #{old_path} #{new_path}\n"
               result << diff_text(old_path, new_path, old_value, new_value)
               yield result
             end

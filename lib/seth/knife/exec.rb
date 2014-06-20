@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
-class Seth::Knife::Exec < seth::Knife
+class Seth::ceth::Exec < seth::ceth
 
-  banner "knife exec [SCRIPT] (options)"
+  banner "ceth exec [SCRIPT] (options)"
 
   option :exec,
     :short => "-E CODE",
@@ -41,7 +41,7 @@ class Seth::Knife::Exec < seth::Knife
     config[:script_path] ||= Array(Seth::Config[:script_path])
 
     # Default script paths are seth-repo/.seth/scripts and ~/.seth/scripts
-    config[:script_path] << File.join(Seth::Knife.seth_config_dir, 'scripts') if seth::Knife.seth_config_dir
+    config[:script_path] << File.join(Seth::ceth.seth_config_dir, 'scripts') if seth::ceth.seth_config_dir
     config[:script_path] << File.join(ENV['HOME'], '.seth', 'scripts') if ENV['HOME']
 
     scripts = Array(name_args)

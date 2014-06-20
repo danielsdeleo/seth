@@ -18,16 +18,16 @@
 
 require 'spec_helper'
 
-describe Seth::Knife::NodeBulkDelete do
+describe Seth::ceth::NodeBulkDelete do
   before(:each) do
     Seth::Log.logger = Logger.new(StringIO.new)
 
     Seth::Config[:node_name]  = "webmonkey.example.com"
-    @knife = Seth::Knife::NodeBulkDelete.new
-    @knife.name_args = ["."]
+    @ceth = Seth::ceth::NodeBulkDelete.new
+    @ceth.name_args = ["."]
     @stdout = StringIO.new
-    @knife.ui.stub(:stdout).and_return(@stdout)
-    @knife.ui.stub(:confirm).and_return(true)
+    @ceth.ui.stub(:stdout).and_return(@stdout)
+    @ceth.ui.stub(:confirm).and_return(true)
     @nodes = Hash.new
     %w{adam brent jacob}.each do |node_name|
       @nodes[node_name] = "http://localhost:4000/nodes/#{node_name}"
@@ -42,7 +42,7 @@ describe Seth::Knife::NodeBulkDelete do
       end
       Seth::Node.should_receive(:list).and_return(@nodes)
       # I hate not having == defined for anything :(
-      actual = @knife.all_nodes
+      actual = @ceth.all_nodes
       actual.keys.should =~ expected.keys
       actual.values.map {|n| n.name }.should =~ %w[adam brent jacob]
     end
@@ -57,37 +57,37 @@ describe Seth::Knife::NodeBulkDelete do
         nodes_by_name[name] = node
         nodes_by_name
       end
-      @knife.stub(:all_nodes).and_return(@inflatedish_list)
+      @ceth.stub(:all_nodes).and_return(@inflatedish_list)
     end
 
     it "should print the nodes you are about to delete" do
-      @knife.run
-      @stdout.string.should match(/#{@knife.ui.list(@nodes.keys.sort, :columns_down)}/)
+      @ceth.run
+      @stdout.string.should match(/#{@ceth.ui.list(@nodes.keys.sort, :columns_down)}/)
     end
 
     it "should confirm you really want to delete them" do
-      @knife.ui.should_receive(:confirm)
-      @knife.run
+      @ceth.ui.should_receive(:confirm)
+      @ceth.run
     end
 
     it "should delete each node" do
       @inflatedish_list.each_value do |n|
         n.should_receive(:destroy)
       end
-      @knife.run
+      @ceth.run
     end
 
     it "should only delete nodes that match the regex" do
-      @knife.name_args = ['adam']
+      @ceth.name_args = ['adam']
       @inflatedish_list['adam'].should_receive(:destroy)
       @inflatedish_list['brent'].should_not_receive(:destroy)
       @inflatedish_list['jacob'].should_not_receive(:destroy)
-      @knife.run
+      @ceth.run
     end
 
     it "should exit if the regex is not provided" do
-      @knife.name_args = []
-      lambda { @knife.run }.should raise_error(SystemExit)
+      @ceth.name_args = []
+      lambda { @ceth.run }.should raise_error(SystemExit)
     end
 
   end

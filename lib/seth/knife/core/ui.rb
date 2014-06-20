@@ -20,14 +20,14 @@
 
 require 'forwardable'
 require 'seth/platform/query_helpers'
-require 'seth/knife/core/generic_presenter'
+require 'seth/ceth/core/generic_presenter'
 require 'tempfile'
 
 class Seth
-  class Knife
+  class ceth
 
-    #==Seth::Knife::UI
-    # The User Interaction class used by knife.
+    #==Seth::ceth::UI
+    # The User Interaction class used by ceth.
     class UI
 
       extend Forwardable
@@ -45,11 +45,11 @@ class Seth
 
       def initialize(stdout, stderr, stdin, config)
         @stdout, @stderr, @stdin, @config = stdout, stderr, stdin, config
-        @presenter = Seth::Knife::Core::GenericPresenter.new(self, config)
+        @presenter = Seth::ceth::Core::GenericPresenter.new(self, config)
       end
 
       # Creates a new +presenter_class+ object and uses it to format structured
-      # data for display. By default, a Seth::Knife::Core::GenericPresenter
+      # data for display. By default, a Seth::ceth::Core::GenericPresenter
       # object is used.
       def use_presenter(presenter_class)
         @presenter = presenter_class.new(self, config)
@@ -166,7 +166,7 @@ class Seth
         output = Seth::JSONCompat.to_json_pretty(data)
 
         if (!config[:disable_editing])
-          Tempfile.open([ 'knife-edit-', '.json' ]) do |tf|
+          Tempfile.open([ 'ceth-edit-', '.json' ]) do |tf|
             tf.sync = true
             tf.puts output
             tf.close

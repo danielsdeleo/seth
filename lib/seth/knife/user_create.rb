@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class UserCreate < Knife
+  class ceth
+    class UserCreate < ceth
 
       deps do
         require 'seth/user'
@@ -48,7 +48,7 @@ class Seth
         :long => "--user-key FILENAME",
         :description => "Public key for newly created user.  By default a key will be created for you."
 
-      banner "knife user create USER (options)"
+      banner "ceth user create USER (options)"
 
       def run
         @user_name = @name_args[0]

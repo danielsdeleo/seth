@@ -16,13 +16,13 @@
 # limitations under the License.
 #
 
-require 'seth/knife'
+require 'seth/ceth'
 
 class Seth
-  class Knife
-    class IndexRebuild < Knife
+  class ceth
+    class IndexRebuild < ceth
 
-      banner "knife index rebuild (options)"
+      banner "ceth index rebuild (options)"
       option :yes,
         :short        => "-y",
         :long         => "--yes",
@@ -49,7 +49,7 @@ class Seth
         # information in a more roundabout way.  We'll try to query
         # for a node we know won't exist; the 404 response that comes
         # back will give us what we want
-        dummy_node = "knife_index_rebuild_test_#{rand(1000000)}"
+        dummy_node = "ceth_index_rebuild_test_#{rand(1000000)}"
         rest.get_rest("/nodes/#{dummy_node}")
       rescue Net::HTTPServerException => exception
         r = exception.response
@@ -64,12 +64,12 @@ class Seth
       end
 
       def unsupported_server_message(api_info)
-        ui.error("Rebuilding the index is not available via knife for #{server_type(api_info)}s version 11.0.0 and above.")
+        ui.error("Rebuilding the index is not available via ceth for #{server_type(api_info)}s version 11.0.0 and above.")
         ui.info("Instead, run the '#{ctl_command(api_info)} reindex' command on the server itself.")
       end
 
       def deprecated_server_message
-        ui.warn("'knife index rebuild' has been removed for Seth 11+ servers.  It will continue to work for prior versions, however.")
+        ui.warn("'ceth index rebuild' has been removed for Seth 11+ servers.  It will continue to work for prior versions, however.")
       end
 
       def nag

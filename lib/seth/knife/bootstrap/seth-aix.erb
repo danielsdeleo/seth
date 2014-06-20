@@ -11,13 +11,13 @@ function exists {
 
 if ! exists /usr/bin/seth-client; then
   <% if @seth_config[:aix_package] -%>
-    # Read the download URL/location from knife.rb with option aix_package
+    # Read the download URL/location from ceth.rb with option aix_package
     rm -rf /tmp/seth_installer # ensure there no older pkg
     echo "<%= @seth_config[:aix_package] %>"
     perl -e '\''use LWP::Simple; getprint($ARGV[0]);'\'' <%= @seth_config[:aix_package] %> > /tmp/seth_installer
     installp -aYF -d  /tmp/seth_installer seth
   <% else -%>
-     echo ":aix_package location is not set in knife.rb"
+     echo ":aix_package location is not set in ceth.rb"
      exit
   <% end -%>
 fi
@@ -37,10 +37,10 @@ chmod 0600 /etc/seth/encrypted_data_bag_secret
 <% end -%>
 
 <%# Generate Ohai Hints -%>
-<% unless @seth_config[:knife][:hints].nil? || @seth_config[:knife][:hints].empty? -%>
+<% unless @seth_config[:ceth][:hints].nil? || @seth_config[:ceth][:hints].empty? -%>
 mkdir -p /etc/seth/ohai/hints
 
-<% @seth_config[:knife][:hints].each do |name, hash| -%>
+<% @seth_config[:ceth][:hints].each do |name, hash| -%>
 cat > /etc/seth/ohai/hints/<%= name %>.json <<'EOP'
 <%= hash.to_json %>
 EOP
