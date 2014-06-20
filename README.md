@@ -1,11 +1,11 @@
 # Seth
 
-Want to try Seth? Get started with [learnseth](https://learnchef.opscode.com)
+Want to try Seth? Get started with [learnseth](https://learnseth.opscode.com)
 
 * Documentation: [http://docs.opscode.com](http://docs.opscode.com)
-* Source: [http://github.com/opscode/seth/tree/master](http://github.com/opscode/chef/tree/master)
+* Source: [http://github.com/opscode/seth/tree/master](http://github.com/opscode/seth/tree/master)
 * Tickets/Issues: [http://tickets.opscode.com](http://tickets.opscode.com)
-* IRC: `#seth` and `#chef-hacking` on Freenode
+* IRC: `#seth` and `#seth-hacking` on Freenode
 * Mailing list: [http://lists.opscode.com](http://lists.opscode.com)
 
 Seth is a configuration management tool designed to bring automation to your
@@ -14,7 +14,7 @@ entire infrastructure.
 This README focuses on developers who want to modify Seth source code.
 If you just want to use Seth, check out these resources:
 
-* [learnseth](https://learnchef.opscode.com): Getting started guide
+* [learnseth](https://learnseth.opscode.com): Getting started guide
 * [http://docs.opscode.com](http://docs.opscode.com): Comprehensive User Docs
 * [Installer Downloads](http://www.getseth.com/chef/install/): Install Seth as a complete package
 
@@ -22,7 +22,7 @@ If you just want to use Seth, check out these resources:
 
 **NOTE:** Unless you have a specific reason to install from source (to
 try a new feature, contribute a patch, or run seth on an OS for which no
-package is available), you should head to the [installer page](http://www.getseth.com/chef/install/)
+package is available), you should head to the [installer page](http://www.getseth.com/seth/install/)
 to get a prebuilt package.
 
 ### Prerequisites
